@@ -7,8 +7,8 @@ from django.contrib.auth.decorators import login_required
 
 @login_required(login_url='/accounts/login/')
 def docs(request):
-    context = {"active_page": "docs"}
-    return render(request, 'bengaluru/docs.html', context)
+    context = {"active_page": "bengaluru"}
+    return render(request, 'bengaluru/base.html', context)
 
 
 def load_five_hundred(request):

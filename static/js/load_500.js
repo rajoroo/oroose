@@ -1,9 +1,19 @@
+function reload_500_data() {
+    $('#nifty_500').load('/bengaluru/load-500/');
+}
+
 $(document).ready(function(){
+
     // Load table on page ready
-    $('#contenthere').load('/bengaluru/load-500/');
+    reload_500_data()
 
     // On button click load data
-    $(".load-table").click(function(){
-        $('#contenthere').load('/bengaluru/load-500/');
+    $(".load-500").click(function(){
+        reload_500_data()
     });
 });
+
+// Data reload every 60 seconds
+setInterval(function(){
+    reload_500_data()
+}, 1000 * 60);
