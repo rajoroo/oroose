@@ -1,0 +1,24 @@
+<table id="nifty500" class="green-table">
+<tr>
+    <th>Date</th>
+    <th>Time</th>
+    <th>Rank</th>
+    <th>Symbol</th>
+    <th>Identifier</th>
+    <th>Company Name</th>
+    <th>Isbin</th>
+    <th>Price</th>
+</tr>
+{% for item in items %}
+<tr>
+    <td>{{ item.date }}</td>
+    <td>{{ item.time }}</td>
+    <td>{{ item.rank }}</td>
+    <td>{{ item.symbol }}</td>
+    <td>{{ item.identifier }}</td>
+    <td>{{ item.company }}</td>
+    <td>{{ item.isbin }}</td>
+    <td>{{ item.price }}</td>
+</tr>
+{% endfor %}
+</table>

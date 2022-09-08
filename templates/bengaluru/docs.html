@@ -1,8 +1,14 @@
 {% extends "base/base.html" %}
+{% load static %}
 
 {% block content %}
-<main class="bd-content order-1 py-5" id="content">
+
     <p> Hi docs</p>
-</main>
+    <button type="button" class="btn btn-primary load-table">Primary</button>
+    <div id="contenthere"></div>
 
 {% endblock content %}
+
+{% block js_scripts %}
+<script src="{% static 'js/load_500.js' %}" crossorigin="anonymous"></script>
+{% endblock js_scripts %}
