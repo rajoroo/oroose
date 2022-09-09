@@ -4,6 +4,7 @@ from .models import FiveHundred
 import json
 from django.contrib.auth.decorators import login_required
 from core.stocks import NseStocks
+from core.pas import first_five
 from django.conf import settings
 
 
@@ -19,6 +20,7 @@ def load_nifty_500_nse(request):
     obj = NseStocks(url=settings.NSE_EQUITY_INDEX, payload=settings.NIFTY_500_PAYLOAD)
     k = obj.get_data()
     print(k)
+    first_five(value=k)
     return HttpResponse(status=200)
 
 

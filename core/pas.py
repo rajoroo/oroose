@@ -1,8 +1,8 @@
 import pandas as pd
 import json
 
-json_file = open('/home/ramesh/Desktop/equity-stockIndices.json')
-value = json.load(json_file)
+# json_file = open('/home/ramesh/Desktop/equity-stockIndices.json')
+# value = json.load(json_file)
 
 # ====================================
 # df = pd.DataFrame(value["data"])
@@ -13,7 +13,15 @@ value = json.load(json_file)
 # print(df3)
 # ====================================
 
-df = pd.json_normalize(value["data"])
-first_5 = df.loc[df['priority'] == 0][:5]
-df1 = first_5[["symbol", "lastPrice", "pChange", "meta.isin"]]
-print(df1)
+# df = pd.json_normalize(value["data"])
+# first_5 = df.loc[df['priority'] == 0][:5]
+# df1 = first_5[["symbol", "lastPrice", "pChange", "meta.isin"]]
+# print(df1)
+
+
+def first_five(value):
+    df = pd.json_normalize(value["data"])
+    first_5 = df.loc[df['priority'] == 0][:5]
+    df1 = first_5[["symbol", "lastPrice", "pChange", "meta.isin"]]
+    print(df1)
+    return df1
