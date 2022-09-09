@@ -11,6 +11,13 @@ $(document).ready(function(){
     $(".load-500").click(function(){
         reload_500_data()
     });
+
+    $(".nse-500").click(function(){
+        $.get("/bengaluru/load-nse-500/", function(data, status){
+            alert("Status: " + status);
+         });
+    });
+
 });
 
 // Data reload every 60 seconds
