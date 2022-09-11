@@ -8,10 +8,11 @@ class FiveHundred(models.Model):
     symbol = models.CharField(max_length=200, verbose_name="Symbol")
     identifier = models.CharField(max_length=200, verbose_name="Identifier")
     company_name = models.CharField(max_length=500, verbose_name="Company Name")
-    isbin = models.CharField(max_length=100, verbose_name="Isbin")
-    price = models.FloatField(verbose_name="Price")
+    isin = models.CharField(max_length=100, verbose_name="Isin")
+    last_price = models.FloatField(verbose_name="Price")
+    percentage_change = models.FloatField(verbose_name="Percentage")
 
     objects = models.Manager()
 
     class Meta:
-        ordering = ["date", "rank"]
+        ordering = ["-date", "rank"]

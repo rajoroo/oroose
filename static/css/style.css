@@ -2112,9 +2112,8 @@ fieldset:disabled a.btn {
     color: #fff !important;
 }
 .btn-primary:hover {
-    background-color: var(--primary09) !important;
-    border-color: var(--primary09);
-    color: #fff;
+  background-color: white !important;
+  color: var(--primary-bg-color) !important;
 }
 .btn-primary:focus {
     border-color: var(--primary-bg-color);

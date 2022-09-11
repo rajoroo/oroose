@@ -9,10 +9,7 @@ def show_menu_navbar(page):
     menu = [
         {"name": "home", "display_name": "Home"},
         {"name": "bengaluru", "display_name": "Bengaluru"},
-        {"name": "example", "display_name": "Examples"},
-        {"name": "icon", "display_name": "Icons"},
-        {"name": "theme", "display_name": "Themes"},
-        {"name": "blog", "display_name": "Blog"}
+        {"name": "configuration", "display_name": "Configuration"},
     ]
 
     for item in menu:

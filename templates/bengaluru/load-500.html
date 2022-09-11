@@ -1,24 +1,22 @@
 <table id="nifty500" class="green-table">
 <tr>
-    <th>Date</th>
-    <th>Time</th>
     <th>Rank</th>
+    <th>Time</th>
+    <th>Isin</th>
     <th>Symbol</th>
     <th>Identifier</th>
-    <th>Company Name</th>
-    <th>Isbin</th>
-    <th>Price</th>
+    <th>Last Price</th>
+    <th>Percentage</th>
 </tr>
 {% for item in items %}
 <tr>
-    <td>{{ item.date }}</td>
-    <td>{{ item.time }}</td>
     <td>{{ item.rank }}</td>
+    <td>{{ item.time|date:'d-m-Y H:i:s' }}</td>
+    <td>{{ item.isin }}</td>
     <td>{{ item.symbol }}</td>
     <td>{{ item.identifier }}</td>
-    <td>{{ item.company }}</td>
-    <td>{{ item.isbin }}</td>
-    <td class="value">{{ item.price }}</td>
+    <td class="value">{{ item.last_price }}</td>
+    <td class="value">{{ item.percentage_change }}</td>
 </tr>
 {% endfor %}
 </table>

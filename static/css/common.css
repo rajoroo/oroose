@@ -39,3 +39,9 @@
 table td.value {
     text-align: right;
 }
+
+.navbar-dark .navbar-nav .nav-link.active {
+    font-size: 18px;
+}
+
+.btn
