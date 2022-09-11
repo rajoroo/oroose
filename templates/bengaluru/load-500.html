@@ -18,7 +18,8 @@
     <td>{{ item.identifier }}</td>
     <td>{{ item.company }}</td>
     <td>{{ item.isbin }}</td>
-    <td>{{ item.price }}</td>
+    <td class="value">{{ item.price }}</td>
 </tr>
 {% endfor %}
 </table>
+<div class="pt-3 txt-rt">Last Updated on {% now "d-m-Y H:i:s" %}</div>

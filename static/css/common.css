@@ -17,6 +17,25 @@
     padding-top: 12px;
     padding-bottom: 12px;
     text-align: left;
-    background-color: #04AA6D;
+    background-color: #76b852;
     color: white;
+}
+
+
+.card .card-header h3::after {
+  content: "";
+  background-color: #76b852;
+  position: absolute;
+  left: 0px;
+  top: 20px;
+  width: 4px;
+  height: 20px;
+}
+
+.txt-rt {
+    text-align: right;
+}
+
+table td.value {
+    text-align: right;
 }
