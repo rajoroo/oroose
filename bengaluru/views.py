@@ -26,8 +26,8 @@ def load_nifty_500_nse(request):
 
 
 def load_five_hundred(request):
-    obj = FiveHundred.objects.all()
-    # obj = FiveHundred.objects.filter(date=datetime.today())
+    # obj = FiveHundred.objects.all()
+    obj = FiveHundred.objects.filter(date=datetime.today())
     context = {"items": list(obj.values())}
 
     return render(request, 'bengaluru/load-500.html', context=context)

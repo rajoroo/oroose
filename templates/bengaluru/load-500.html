@@ -1,6 +1,7 @@
 <table id="nifty500" class="green-table">
 <tr>
     <th>Rank</th>
+    <th>Date</th>
     <th>Time</th>
     <th>Isin</th>
     <th>Symbol</th>
@@ -11,6 +12,7 @@
 {% for item in items %}
 <tr>
     <td>{{ item.rank }}</td>
+    <td>{{ item.date }}</td>
     <td>{{ item.time|date:'d-m-Y H:i:s' }}</td>
     <td>{{ item.isin }}</td>
     <td>{{ item.symbol }}</td>
