@@ -126,6 +126,5 @@ STATICFILES_DIRS = [BASE_DIR, "static"]
 
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
-NSE_API = "https://www.nseindia.com/api/"
-NSE_EQUITY_INDEX = "equity-stockIndices"
-NIFTY_500_PAYLOAD = {"index": "NIFTY500 MULTICAP 50:25:25"}
+LIVE_INDEX_URL = "https://www.nseindia.com/market-data/live-equity-market"
+LIVE_INDEX_500_URL = "https://www.nseindia.com/api/equity-stockIndices?index=NIFTY500%20MULTICAP%2050%3A25%3A25"

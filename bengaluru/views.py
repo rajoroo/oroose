@@ -5,7 +5,7 @@ import json
 from datetime import datetime
 from django.contrib.auth.decorators import login_required
 from core.stocks import NseStocks
-from core.pas import first_five
+from core.pas import first_five, update_five_hundred
 from django.conf import settings
 
 
@@ -16,17 +16,15 @@ def bengaluru_page(request):
 
 
 def load_nifty_500_nse(request):
-    print(settings.NSE_EQUITY_INDEX)
-    print(settings.NIFTY_500_PAYLOAD)
-    obj = NseStocks(url=settings.NSE_EQUITY_INDEX, payload=settings.NIFTY_500_PAYLOAD)
-    k = obj.get_data()
-    print(k)
-    first_five(value=k)
+    obj = NseStocks(base_url=settings.LIVE_INDEX_URL, url=settings.LIVE_INDEX_500_URL)
+    # data = obj.get_data()
+    data = obj.get_dumy_data()
+    df = first_five(value=data)
+    update_five_hundred(data=df)
     return HttpResponse(status=200)
 
 
 def load_five_hundred(request):
-    # obj = FiveHundred.objects.all()
     obj = FiveHundred.objects.filter(date=datetime.today())
     context = {"items": list(obj.values())}
 

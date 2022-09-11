@@ -13,9 +13,7 @@ $(document).ready(function(){
     });
 
     $(".nse-500").click(function(){
-        $.get("/bengaluru/load-nse-500/", function(data, status){
-            alert("Status: " + status);
-         });
+        $.get("/bengaluru/load-nse-500/");
     });
 
 });

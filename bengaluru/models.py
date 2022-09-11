@@ -16,3 +16,6 @@ class FiveHundred(models.Model):
 
     class Meta:
         ordering = ["-date", "rank"]
+        constraints = [
+            models.UniqueConstraint(fields=['date', 'isin'], name='unique_five_hundred')
+        ]
