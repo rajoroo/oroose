@@ -66,3 +66,7 @@ def update_five_hundred(data):
     #                 )
     #     for item in data
     # ])
+
+
+def reset_fd_data():
+    FiveHundred.objects.filter(date=datetime.now()).update(rank=None)

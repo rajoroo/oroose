@@ -11,7 +11,7 @@
 </tr>
 {% for item in items %}
 <tr>
-    <td>{{ item.rank }}</td>
+    <td>{% if item.rank %}{{ item.rank }}{% endif %}</td>
     <td>{{ item.date }}</td>
     <td>{{ item.time|date:'d-m-Y H:i:s' }}</td>
     <td>{{ item.isin }}</td>

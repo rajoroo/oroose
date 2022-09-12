@@ -4,7 +4,7 @@ from django.db import models
 class FiveHundred(models.Model):
     date = models.DateField(verbose_name="Date")
     time = models.DateTimeField(verbose_name="Time")
-    rank = models.IntegerField(verbose_name="Rank")
+    rank = models.IntegerField(verbose_name="Rank", null=True, blank=True)
     symbol = models.CharField(max_length=200, verbose_name="Symbol")
     identifier = models.CharField(max_length=200, verbose_name="Identifier")
     company_name = models.CharField(max_length=500, verbose_name="Company Name")
