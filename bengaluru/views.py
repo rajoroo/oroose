@@ -17,8 +17,8 @@ def bengaluru_page(request):
 
 def load_nifty_500_nse(request):
     obj = NseStocks(base_url=settings.LIVE_INDEX_URL, url=settings.LIVE_INDEX_500_URL)
-    data = obj.get_data()
-    # data = obj.get_dumy_data()
+    # data = obj.get_data()
+    data = obj.get_dumy_data()
     df = first_five(value=data)
     reset_fd_data()
     update_five_hundred(data=df)
