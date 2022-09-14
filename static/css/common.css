@@ -44,4 +44,12 @@ table td.value {
     font-size: 18px;
 }
 
-.btn
+
+.form-check-input:checked {
+    background-color: #76b852;
+    border-color: #76b852;
+}
+
+.settings-table {
+    text-align: center;
+}

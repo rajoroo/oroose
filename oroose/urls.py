@@ -17,10 +17,12 @@ from django.contrib import admin
 from django.urls import include, path
 from home import views
 
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("accounts/", include("django.contrib.auth.urls")),
     path('', views.home, name='home'),
     path('bengaluru/', include("bengaluru.urls")),
-    path('configuration/', views.home, name='configuration'),
+    path('load_configuration/', views.load_configuration, name='configuration'),
+    path('load_configuration/<int:config_id>/', views.config_update, name='config_update'),
 ]
