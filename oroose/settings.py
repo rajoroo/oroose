@@ -125,6 +125,11 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [BASE_DIR, "static"]
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+
+LIVE_STOCKS_NSE_500 = "LIVE-STOCKS-NSE-500"
 
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
