@@ -1,0 +1,10 @@
+# celery run beat only:
+celery -A oroose beat -l info
+
+
+# celery run worker only:
+celery -A oroose worker -l info
+
+
+# run both beat and worker:
+celery -A oroose worker --beat -l info
