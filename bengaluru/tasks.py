@@ -1,9 +1,9 @@
-from celery import shared_task
 from oroose.celery import app
-from datetime import datetime
+from .evaluation import polling_live_stocks_five_hundred
 
 
-# @shared_task(name='adds')
 @app.task
-def add(value):
-    print(f"i call bengaluru.task.add {value} {datetime.now().strftime('%d-%m-%Y')}")
+def schedule_live_stocks_five_hundred():
+    print("Schedule live stocks five hundred started")
+    polling_live_stocks_five_hundred()
+    print("Schedule live stocks five hundred end")

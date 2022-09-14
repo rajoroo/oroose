@@ -23,13 +23,9 @@ def debug_task(self):
 
 
 app.conf.beat_schedule = {
-    #Scheduler Name
-    'print-message-ten-seconds': {
-        # Task Name (Name Specified in Decorator)
-        'task': 'bengaluru.tasks.add',
-        # Schedule
-        'schedule': 10.0,
-        # Function Arguments
-        'args': ("Hello",)
+    'schedule-live-stocks-five-hundred-ten-minutes': {
+        'task': 'bengaluru.tasks.schedule_live_stocks_five_hundred',
+        'schedule': 600.0,  # schedule every 10 minutes
+        'args': ()
     }
 }

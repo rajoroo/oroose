@@ -1,5 +1,5 @@
 function reload_500_data() {
-    $('#nifty_500').load('/bengaluru/load-500/');
+    $('#nifty_500').load('/bengaluru/load_five_hundred/');
 }
 
 $(document).ready(function(){
@@ -8,12 +8,12 @@ $(document).ready(function(){
     reload_500_data()
 
     // On button click load data
-    $(".load-500").click(function(){
+    $(".load_500").click(function(){
         reload_500_data()
     });
 
-    $(".nse-500").click(function(){
-        $.get("/bengaluru/load-nse-500/");
+    $(".pull_500").click(function(){
+        $.get("/bengaluru/pull_five_hundred/");
     });
 
 });
