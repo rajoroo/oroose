@@ -1,4 +1,10 @@
 from django.db import models
+from django.utils.translation import gettext_lazy as _
+
+
+class FiveHundredStatus(models.TextChoices):
+    TOPPER = 'TOP', _('Topper')
+    BOTTOM = 'BTM', _('Bottom')
 
 
 class FiveHundred(models.Model):
@@ -11,6 +17,10 @@ class FiveHundred(models.Model):
     isin = models.CharField(max_length=100, verbose_name="Isin")
     last_price = models.FloatField(verbose_name="Price")
     percentage_change = models.FloatField(verbose_name="Percentage")
+    status = models.CharField(
+        max_length=3,
+        choices=FiveHundredStatus.choices
+    )
 
     objects = models.Manager()
 
