@@ -4,6 +4,7 @@ from .models import FiveHundred
 from datetime import datetime
 from django.contrib.auth.decorators import login_required
 from .evaluation import polling_live_stocks_five_hundred
+from django.db.models import Max
 
 
 @login_required(login_url='/accounts/login/')
@@ -20,5 +21,9 @@ def pull_five_hundred(request):
 
 def load_five_hundred(request):
     obj = FiveHundred.objects.filter(date=datetime.today()).filter(rank__isnull=False)
-    context = {"items": list(obj.values())}
+    last_pull_time = FiveHundred.objects.aggregate(Max('time'))['time__max']
+    context = {
+        "items": list(obj.values()),
+        "last_pull_time": last_pull_time
+    }
     return render(request, 'bengaluru/load-500.html', context=context)
