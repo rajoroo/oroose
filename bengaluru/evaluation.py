@@ -1,4 +1,4 @@
-from bengaluru.models import FiveHundred, FiveHundredStatus
+from bengaluru.models import FiveHundred
 from datetime import datetime
 from core.stocks import LiveStocks
 from django.conf import settings
@@ -17,7 +17,6 @@ def update_five_hundred(data):
             obj.rank = row['index']
             obj.last_price = row["lastPrice"]
             obj.percentage_change = row["pChange"]
-            obj.status = FiveHundredStatus.TOPPER if row['index'] <= 5 else FiveHundredStatus.BOTTOM
             obj.save()
         else:
             obj = FiveHundred(
@@ -30,7 +29,6 @@ def update_five_hundred(data):
                 company_name=row["meta.companyName"],
                 time=datetime.strptime(row["lastUpdateTime"], "%d-%b-%Y %H:%M:%S").replace(tzinfo=get_current_timezone()),
                 rank=row['index'],
-                status=FiveHundredStatus.TOPPER if row['index'] <= 5 else FiveHundredStatus.BOTTOM
             )
             obj.save()
 
@@ -45,6 +43,5 @@ def polling_live_stocks_five_hundred():
         url=settings.LIVE_INDEX_500_URL,
         symbols=symbols
     )
-    # df = obj.filter_stock_list()
-    df = obj.filter_stock_list_v1()
+    df = obj.filter_stock_list()
     return update_five_hundred(data=df)
