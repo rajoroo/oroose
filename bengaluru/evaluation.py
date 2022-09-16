@@ -17,6 +17,7 @@ def update_five_hundred(data):
             obj.rank = row['index']
             obj.last_price = row["lastPrice"]
             obj.percentage_change = row["pChange"]
+            obj.status = FiveHundredStatus.TOPPER if row['index'] <= 5 else FiveHundredStatus.BOTTOM
             obj.save()
         else:
             obj = FiveHundred(
@@ -29,7 +30,7 @@ def update_five_hundred(data):
                 company_name=row["meta.companyName"],
                 time=datetime.strptime(row["lastUpdateTime"], "%d-%b-%Y %H:%M:%S").replace(tzinfo=get_current_timezone()),
                 rank=row['index'],
-                status=FiveHundredStatus.TOPPER if row['index'] < 5 else FiveHundredStatus.BOTTOM
+                status=FiveHundredStatus.TOPPER if row['index'] <= 5 else FiveHundredStatus.BOTTOM
             )
             obj.save()
 

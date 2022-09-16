@@ -35,9 +35,9 @@ class LiveStocks:
         return df1
 
     def filter_stock_list_v1(self, nos=5):
-        # stock_data = self.get_live_data()
-        json_file = open('/home/ramesh/Desktop/equity-stockIndices.json')
-        stock_data = json.load(json_file)
+        stock_data = self.get_live_data()
+        # json_file = open('/home/ramesh/Desktop/equity-stockIndices.json')
+        # stock_data = json.load(json_file)
 
         df1 = pd.json_normalize(stock_data["data"])
         df2 = df1.loc[df1['priority'] == 0]
