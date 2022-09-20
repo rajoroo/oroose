@@ -128,12 +128,13 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR, "static"]
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-
-
-LIVE_STOCKS_NSE_500 = "LIVE-STOCKS-NSE-500"
-
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
+
+LOAD_CONFIG_PATH = '/home/ramesh/Desktop/config.json'
+
+
+
 LIVE_INDEX_URL = "https://www.nseindia.com/market-data/live-equity-market"
 LIVE_INDEX_500_URL = "https://www.nseindia.com/api/equity-stockIndices?index=NIFTY500%20MULTICAP%2050%3A25%3A25"
 

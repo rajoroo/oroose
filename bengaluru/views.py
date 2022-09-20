@@ -24,10 +24,11 @@ def pull_five_hundred(request):
 def load_five_hundred(request):
     obj = FiveHundred.objects.filter(date=datetime.today()).filter(rank__isnull=False)
     last_pull_time = FiveHundred.objects.aggregate(Max('time'))['time__max']
-    config_objs = ConfigureSettings.objects.filter(name=settings.LIVE_STOCKS_NSE_500)
+    config_objs = ConfigureSettings.objects.filter(name="FH_LIVE_STOCKS_NSE")
+
     context = {
         "items": list(obj.values()),
         "last_pull_time": last_pull_time,
-        "polling_status": config_objs[0].status if config_objs.first() else False,
+        "polling_status": config_objs[0].render_status if config_objs.first() else False,
     }
     return render(request, 'bengaluru/load-500.html', context=context)

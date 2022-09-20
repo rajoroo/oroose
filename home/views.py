@@ -18,12 +18,3 @@ def load_configuration(request):
         "active_page": "configuration"
     }
     return render(request, 'base/configure_settings.html', context=context)
-
-
-@login_required(login_url='/accounts/login/')
-def config_update(request, config_id):
-    status = request.GET.get('status', 'false')
-    obj = ConfigureSettings.objects.get(id=config_id)
-    obj.status = True if status == "true" else False
-    obj.save()
-    return HttpResponse(status=200)

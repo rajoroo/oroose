@@ -24,5 +24,4 @@ urlpatterns = [
     path('', views.home, name='home'),
     path('bengaluru/', include("bengaluru.urls")),
     path('load_configuration/', views.load_configuration, name='configuration'),
-    path('load_configuration/<int:config_id>/', views.config_update, name='config_update'),
 ]
