@@ -13,3 +13,8 @@ class Command(BaseCommand):
             name=settings.LIVE_STOCKS_NSE_500,
             status=False,
         )
+
+        # obj, created = ConfigureSettings.objects.get_or_create(
+        #     name=settings.LIVE_STOCKS_NSE_500,
+        #     status=False,
+        # )

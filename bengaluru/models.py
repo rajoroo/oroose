@@ -20,3 +20,24 @@ class FiveHundred(models.Model):
         constraints = [
             models.UniqueConstraint(fields=['date', 'isin'], name='unique_five_hundred')
         ]
+
+
+class FhZeroStatus(models.TextChoices):
+    pass
+
+
+# class FhZero(models.Model):
+#     date = models.DateField(verbose_name="Date")
+#     time = models.DateTimeField(verbose_name="Time")
+#     tag = models.CharField(max_length=10, verbose_name="Tag")
+#     fh_id = models.ForeignKey()
+#     symbol = models.CharField(max_length=200, verbose_name="Symbol")
+#     isin = models.CharField(max_length=100, verbose_name="Isin")
+#     status = ""
+#     buy_price = models.FloatField(verbose_name="Buy Price")
+#     sell_price = models.FloatField(verbose_name="Sell Price")
+#     profit_loss = models.FloatField(verbose_name="Profit Loss")
+#
+#     objects = models.Manager()
+
+
