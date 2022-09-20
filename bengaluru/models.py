@@ -1,10 +1,13 @@
 from django.db import models
-from django.utils.translation import gettext_lazy as _
+import string
+import secrets
+from datetime import datetime
 
 
 class FiveHundred(models.Model):
     date = models.DateField(verbose_name="Date")
     time = models.DateTimeField(verbose_name="Time")
+    sequence = models.CharField(max_length=4, verbose_name="Sequence")
     rank = models.IntegerField(verbose_name="Rank", null=True, blank=True)
     symbol = models.CharField(max_length=200, verbose_name="Symbol")
     identifier = models.CharField(max_length=200, verbose_name="Identifier")
@@ -20,6 +23,13 @@ class FiveHundred(models.Model):
         constraints = [
             models.UniqueConstraint(fields=['date', 'isin'], name='unique_five_hundred')
         ]
+
+    def save(self, *args, **kwargs):
+        objs = FiveHundred.objects.filter(date=datetime.today()).values_list("sequence")
+        print(objs)
+        # alphanum = string.ascii_letters + string.digits
+        # self.sequence = ''.join(secrets.choice(alphanum) for i in range(4))
+        super(FiveHundred, self).save(*args, **kwargs)
 
 
 class FhZeroStatus(models.TextChoices):
