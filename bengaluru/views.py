@@ -4,9 +4,8 @@ from .models import FiveHundred
 from datetime import datetime
 from django.contrib.auth.decorators import login_required
 from .evaluation import polling_live_stocks_five_hundred
-from django.db.models import Max, Case, When
-from core.models import ConfigureSettings
-from django.conf import settings
+from django.db.models import Max
+from core.configuration import ConfigSettings
 
 
 @login_required(login_url='/accounts/login/')
@@ -24,12 +23,12 @@ def pull_five_hundred(request):
 def load_five_hundred(request):
     obj = FiveHundred.objects.filter(date=datetime.today()).filter(rank__isnull=False)
     last_pull_time = FiveHundred.objects.aggregate(Max('time'))['time__max']
-    config_objs = ConfigureSettings.objects.filter(name="FH_LIVE_STOCKS_NSE")
+    polling_status = ConfigSettings().get_conf("FH_LIVE_STOCKS_NSE")
 
     context = {
         "items": list(obj.values()),
         "last_pull_time": last_pull_time,
-        "polling_status": config_objs[0].render_status if config_objs.first() else False,
+        "polling_status": polling_status,
     }
     return render(request, 'bengaluru/load-500.html', context=context)
 

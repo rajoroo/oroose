@@ -1,7 +1,6 @@
 from django.contrib.auth.decorators import login_required
-from core.models import ConfigureSettings
+from core.configuration import ConfigSettings
 from django.shortcuts import render
-from django.http import HttpResponse
 
 
 @login_required(login_url='/accounts/login/')
@@ -12,9 +11,9 @@ def home(request):
 
 @login_required(login_url='/accounts/login/')
 def load_configuration(request):
-    obj = ConfigureSettings.objects.all()
+    confs = ConfigSettings().get_all_configs()
     context = {
-        "items": list(obj.values()),
+        "confs": confs,
         "active_page": "configuration"
     }
     return render(request, 'base/configure_settings.html', context=context)
