@@ -23,21 +23,34 @@ class FiveHundred(models.Model):
 
 
 class FhZeroStatus(models.TextChoices):
-    pass
+    TO_BUY = "TO_BUY", "To Buy"
+    PURCHASED = "PURCHASED", "Purchased"
+    TO_SELL = "TO_SELL", "To Sell"
+    SOLD = "SOLD", "Sold"
 
 
-# class FhZero(models.Model):
-#     date = models.DateField(verbose_name="Date")
-#     time = models.DateTimeField(verbose_name="Time")
-#     tag = models.CharField(max_length=10, verbose_name="Tag")
-#     fh_id = models.ForeignKey()
-#     symbol = models.CharField(max_length=200, verbose_name="Symbol")
-#     isin = models.CharField(max_length=100, verbose_name="Isin")
-#     status = ""
-#     buy_price = models.FloatField(verbose_name="Buy Price")
-#     sell_price = models.FloatField(verbose_name="Sell Price")
-#     profit_loss = models.FloatField(verbose_name="Profit Loss")
-#
-#     objects = models.Manager()
+class FhZero(models.Model):
+    date = models.DateField(verbose_name="Date")
+    time = models.DateTimeField(verbose_name="Time")
+    tag = models.CharField(max_length=10, verbose_name="Tag")
+    fh_id = models.ForeignKey(
+        FiveHundred,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name="Five Hundred",
+    )
+    symbol = models.CharField(max_length=200, verbose_name="Symbol")
+    isin = models.CharField(max_length=100, verbose_name="Isin")
+    status = models.CharField(
+        max_length=10,
+        choices=FhZeroStatus.choices,
+        verbose_name="Status",
+    )
+    buy_price = models.FloatField(verbose_name="Buy Price")
+    sell_price = models.FloatField(verbose_name="Sell Price")
+    profit_loss = models.FloatField(verbose_name="Profit Loss")
+
+    objects = models.Manager()
 
 

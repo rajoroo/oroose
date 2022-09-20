@@ -16,9 +16,17 @@ $(document).ready(function(){
         $.get("/bengaluru/pull_five_hundred/");
     });
 
+    // On button click load data
+    $(".get_zero").click(function(){
+        console.log("ip")
+        $.get("/bengaluru/get_zero_value/");
+    });
+
 });
 
 // Data reload every 60 seconds
 setInterval(function(){
     reload_500_data()
 }, 1000 * 60);
+
+
