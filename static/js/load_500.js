@@ -1,9 +1,11 @@
 function reload_fh_data() {
-    $('#show_fh').load('/bengaluru/load_five_hundred/');
+    url = $('#show_fh').attr('trigger-url');
+    $('#show_fh').load(url);
 }
 
 function reload_fhz_data() {
-    $('#show_fhz').load('/bengaluru/load_five_hundred_zero/');
+    url = $('#show_fhz').attr('trigger-url');
+    $('#show_fhz').load(url);
 }
 
 
@@ -26,19 +28,15 @@ $("#load_fh").click(function(){
     reload_fh_data()
 });
 
-// On button click pull FH data
-$("#pull_fh").click(function(){
-    $.get("/bengaluru/pull_five_hundred/");
-});
-
 // On button click load FHZ data
 $("#load_fhz").click(function(){
     reload_fhz_data()
 });
 
-// On button click analyse FHZ data
-$("#analyse_fhz").click(function(){
-    $.get("/bengaluru/get_zero_value/");
+// On button click trigger url
+$(".ser_act").click(function(){
+    url = $(this).attr('trigger-url');
+    $.get(url);
 });
 
 /* --------End Button action--------- */
