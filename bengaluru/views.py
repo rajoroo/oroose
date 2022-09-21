@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from .models import FiveHundred
+from .models import FiveHundred, FhZero, FhZeroStatus
 from datetime import datetime
 from django.contrib.auth.decorators import login_required
 from .evaluation import polling_live_stocks_five_hundred
@@ -33,26 +33,34 @@ def load_five_hundred(request):
     return render(request, 'bengaluru/load-500.html', context=context)
 
 
+def load_five_hundred_zero(request):
+    obj = FhZero.objects.filter(date=datetime.today())
+
+    context = {
+        "items": list(obj.values()),
+    }
+    return render(request, 'bengaluru/load-fh-zero.html', context=context)
+
+
 def get_zero_value(request):
-    obj = FiveHundred.objects.filter(date=datetime.today())
-    for rec in obj:
-        result = True
-        if 1 <= rec.rank <= 5:
-            result = False
+    five_hundred = FiveHundred.objects.filter(date=datetime.today())
+    for rec in five_hundred:
+        if (
+                (1 <= rec.rank <= 5) and
+                (1 <= rec.last_price <= 4500) and
+                (rec.percentage_change <= 11) and
+                (rec.fhzero_set.all().count() <= 2) and
+                (rec.fhzero_set.filter(status__in=["TO_BUY", "PURCHASED", "TO_SELL"]).count() == 0)
+        ):
 
-        if 1 <= rec.last_price <= 4500:
-            result = False
-
-        if 11 <= rec.percentage_change:
-            result = False
-
-        if 2 <= rec.fhzero_set.all().count():
-            result = False
-
-        if rec.fhzero_set.filter(status__in=["TO_BUY", "PURCHASED", "TO_SELL"]):
-            result = False
-
-        if result:
-            print("ok", rec.pk)
+            five_hundred_zero = FhZero(
+                date=datetime.now(),
+                time=datetime.now(),
+                symbol=rec.symbol,
+                isin=rec.isin,
+                five_hundred=rec,
+                status=FhZeroStatus.TO_BUY
+            )
+            five_hundred_zero.save()
 
     return HttpResponse(status=200)
