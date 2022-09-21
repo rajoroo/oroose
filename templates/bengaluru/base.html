@@ -8,10 +8,10 @@
             <div class="card">
                 <div class="card-body">
                     <div class="btn-list">
-                        <button type="button" class="btn btn-primary load_500">Load Nifty 500</button>
-                        <button type="button" class="btn btn-primary pull_500">Pull Nifty 500</button>
-                        <button type="button" class="btn btn-primary load_fh_zero">Load FH Zero</button>
-                        <button type="button" class="btn btn-primary get_zero">Get Zero</button>
+                        <button type="button" class="btn btn-primary" id="load_fh">Load Nifty 500</button>
+                        <button type="button" class="btn btn-primary" id="pull_fh">Pull Nifty 500</button>
+                        <button type="button" class="btn btn-primary" id="load_fhz">Load FH Zero</button>
+                        <button type="button" class="btn btn-primary" id="analyse_fhz">Analyse FH Zero</button>
                     </div>
                 </div>
             </div>
@@ -25,7 +25,7 @@
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <div id="nifty_500"></div>
+                        <div id="show_fh"></div>
                     </div>
                 </div>
             </div>
@@ -37,7 +37,7 @@
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <div id="fh_zero"></div>
+                        <div id="show_fhz"></div>
                     </div>
                 </div>
             </div>
