@@ -61,7 +61,7 @@ def analyse_stocks_five_hundred():
         ):
             five_hundred_zero = FhZero(
                 date=datetime.now(),
-                time=datetime.now(),
+                time=datetime.now().replace(tzinfo=get_current_timezone()),
                 symbol=rec.symbol,
                 isin=rec.isin,
                 five_hundred=rec,

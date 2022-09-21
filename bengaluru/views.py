@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from .evaluation import polling_live_stocks_five_hundred, analyse_stocks_five_hundred
 from django.db.models import Max
 from core.configuration import ConfigSettings
+from core.models import DataLog
 
 
 @login_required(login_url='/accounts/login/')
@@ -16,7 +17,8 @@ def bengaluru_page(request):
 
 def load_fh(request):
     obj = FiveHundred.objects.filter(date=datetime.today()).filter(rank__isnull=False)
-    last_pull_time = FiveHundred.objects.aggregate(Max('time'))['time__max']
+    data_log_name = ConfigSettings().get_conf("LOG_SCHEDULE_LIVE_500")
+    last_pull_time = DataLog.objects.filter(name=data_log_name).aggregate(Max('end_time'))['end_time__max']
     polling_status = ConfigSettings().get_conf("FH_LIVE_STOCKS_NSE")
 
     context = {

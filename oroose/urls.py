@@ -24,4 +24,5 @@ urlpatterns = [
     path('', views.home_page, name='home'),
     path('bengaluru/', include("bengaluru.urls")),
     path('load_configuration/', views.load_configuration, name='configuration'),
+    path('data_log/', views.load_data_log, name='data_log'),
 ]
