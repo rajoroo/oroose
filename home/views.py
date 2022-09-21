@@ -4,7 +4,7 @@ from django.shortcuts import render
 
 
 @login_required(login_url='/accounts/login/')
-def home(request):
+def home_page(request):
     context = {"active_page": "home"}
     return render(request, 'base/home.html', context)
 
