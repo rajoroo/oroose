@@ -26,8 +26,6 @@ class Migration(migrations.Migration):
         ),
         migrations.AddConstraint(
             model_name="fivehundred",
-            constraint=models.UniqueConstraint(
-                fields=("date", "isin"), name="unique_five_hundred"
-            ),
+            constraint=models.UniqueConstraint(fields=("date", "isin"), name="unique_five_hundred"),
         ),
     ]

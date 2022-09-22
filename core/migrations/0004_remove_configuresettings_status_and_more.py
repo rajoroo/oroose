@@ -17,9 +17,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="configuresettings",
             name="boolean_value",
-            field=models.BooleanField(
-                blank=True, null=True, verbose_name="Boolean Value"
-            ),
+            field=models.BooleanField(blank=True, null=True, verbose_name="Boolean Value"),
         ),
         migrations.AddField(
             model_name="configuresettings",
@@ -40,8 +38,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="configuresettings",
             name="integer_value",
-            field=models.IntegerField(
-                blank=True, null=True, verbose_name="Integer Value"
-            ),
+            field=models.IntegerField(blank=True, null=True, verbose_name="Integer Value"),
         ),
     ]

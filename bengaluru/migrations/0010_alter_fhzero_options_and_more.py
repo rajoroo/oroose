@@ -19,8 +19,6 @@ class Migration(migrations.Migration):
         ),
         migrations.AddConstraint(
             model_name="fhzero",
-            constraint=models.UniqueConstraint(
-                fields=("date", "tag"), name="bengaluru_fhzero_unique_tag"
-            ),
+            constraint=models.UniqueConstraint(fields=("date", "tag"), name="bengaluru_fhzero_unique_tag"),
         ),
     ]

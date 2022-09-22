@@ -18,9 +18,7 @@ def bengaluru_page(request):
 def load_fh(request):
     obj = FiveHundred.objects.filter(date=datetime.today()).filter(rank__isnull=False)
     data_log_name = ConfigSettings().get_conf("LOG_SCHEDULE_LIVE_500")
-    last_pull_time = DataLog.objects.filter(name=data_log_name).aggregate(
-        Max("end_time")
-    )["end_time__max"]
+    last_pull_time = DataLog.objects.filter(name=data_log_name).aggregate(Max("end_time"))["end_time__max"]
     polling_status = ConfigSettings().get_conf("FH_LIVE_STOCKS_NSE")
 
     context = {

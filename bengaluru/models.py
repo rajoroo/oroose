@@ -19,9 +19,7 @@ class FiveHundred(models.Model):
 
     class Meta:
         ordering = ["-date", "rank"]
-        constraints = [
-            models.UniqueConstraint(fields=["date", "isin"], name="unique_five_hundred")
-        ]
+        constraints = [models.UniqueConstraint(fields=["date", "isin"], name="unique_five_hundred")]
 
 
 class FhZeroStatus(models.TextChoices):
@@ -59,11 +57,7 @@ class FhZero(models.Model):
 
     class Meta:
         ordering = ["-date", "symbol"]
-        constraints = [
-            models.UniqueConstraint(
-                fields=["date", "tag"], name="%(app_label)s_%(class)s_unique_tag"
-            )
-        ]
+        constraints = [models.UniqueConstraint(fields=["date", "tag"], name="%(app_label)s_%(class)s_unique_tag")]
 
     def save(self, *args, **kwargs):
         tag_list = FhZero.objects.filter(date=datetime.today()).values_list("tag")

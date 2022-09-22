@@ -12,8 +12,6 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AddConstraint(
             model_name="configuresettings",
-            constraint=models.UniqueConstraint(
-                fields=("name",), name="core_configuresettings_unique"
-            ),
+            constraint=models.UniqueConstraint(fields=("name",), name="core_configuresettings_unique"),
         ),
     ]
