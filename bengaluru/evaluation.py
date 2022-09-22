@@ -12,22 +12,26 @@ def update_five_hundred(data):
         items = FiveHundred.objects.filter(date=datetime.now(), symbol=row["symbol"])
         if items:
             obj = items[0]
-            obj.date = datetime.strptime(row["lastUpdateTime"], "%d-%b-%Y %H:%M:%S").replace(tzinfo=get_current_timezone())
-            obj.time = datetime.strptime(row["lastUpdateTime"], "%d-%b-%Y %H:%M:%S").replace(tzinfo=get_current_timezone())
+            obj.date = datetime.strptime(row["lastUpdateTime"], "%d-%b-%Y %H:%M:%S").replace(
+                tzinfo=get_current_timezone())
+            obj.time = datetime.strptime(row["lastUpdateTime"], "%d-%b-%Y %H:%M:%S").replace(
+                tzinfo=get_current_timezone())
             obj.rank = row['index']
             obj.last_price = row["lastPrice"]
             obj.percentage_change = row["pChange"]
             obj.save()
         else:
             obj = FiveHundred(
-                date=datetime.strptime(row["lastUpdateTime"], "%d-%b-%Y %H:%M:%S").replace(tzinfo=get_current_timezone()),
+                date=datetime.strptime(row["lastUpdateTime"], "%d-%b-%Y %H:%M:%S").replace(
+                    tzinfo=get_current_timezone()),
+                time=datetime.strptime(row["lastUpdateTime"], "%d-%b-%Y %H:%M:%S").replace(
+                    tzinfo=get_current_timezone()),
                 symbol=row["symbol"],
                 identifier=row["identifier"],
                 last_price=row["lastPrice"],
                 percentage_change=row["pChange"],
                 isin=row["meta.isin"],
                 company_name=row["meta.companyName"],
-                time=datetime.strptime(row["lastUpdateTime"], "%d-%b-%Y %H:%M:%S").replace(tzinfo=get_current_timezone()),
                 rank=row['index'],
             )
             obj.save()

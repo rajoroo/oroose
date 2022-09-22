@@ -1,6 +1,5 @@
 import factory.fuzzy
 from bengaluru.models import FiveHundred
-from datetime import datetime
 
 
 class FiveHundredFactory(factory.django.DjangoModelFactory):
