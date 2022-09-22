@@ -6,14 +6,14 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('bengaluru', '0007_fhzero_status'),
+        ("bengaluru", "0007_fhzero_status"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='fivehundred',
-            name='sequence',
-            field=models.CharField(default='as', max_length=4, verbose_name='Sequence'),
+            model_name="fivehundred",
+            name="sequence",
+            field=models.CharField(default="as", max_length=4, verbose_name="Sequence"),
             preserve_default=False,
         ),
     ]

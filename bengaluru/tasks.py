@@ -13,7 +13,7 @@ def schedule_live_stocks_five_hundred():
     obj = DataLog(
         date=datetime.now(),
         start_time=datetime.now().replace(tzinfo=get_current_timezone()),
-        name=data_log_name
+        name=data_log_name,
     )
     obj.save()
     if ConfigSettings().get_conf("FH_LIVE_STOCKS_NSE"):

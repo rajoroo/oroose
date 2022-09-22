@@ -20,7 +20,7 @@ class FiveHundred(models.Model):
     class Meta:
         ordering = ["-date", "rank"]
         constraints = [
-            models.UniqueConstraint(fields=['date', 'isin'], name='unique_five_hundred')
+            models.UniqueConstraint(fields=["date", "isin"], name="unique_five_hundred")
         ]
 
 
@@ -60,7 +60,9 @@ class FhZero(models.Model):
     class Meta:
         ordering = ["-date", "symbol"]
         constraints = [
-            models.UniqueConstraint(fields=['date', 'tag'], name='%(app_label)s_%(class)s_unique_tag')
+            models.UniqueConstraint(
+                fields=["date", "tag"], name="%(app_label)s_%(class)s_unique_tag"
+            )
         ]
 
     def save(self, *args, **kwargs):
@@ -68,7 +70,7 @@ class FhZero(models.Model):
 
         while True:
             alphanum = string.ascii_letters + string.digits
-            tag = ''.join(secrets.choice(alphanum) for i in range(4))
+            tag = "".join(secrets.choice(alphanum) for i in range(4))
             if tag not in tag_list:
                 self.tag = tag
                 break

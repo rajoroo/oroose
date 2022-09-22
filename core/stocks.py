@@ -3,8 +3,8 @@ import pandas as pd
 import json
 
 headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36",
-    }
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36",
+}
 
 
 class LiveStocks:
@@ -31,12 +31,21 @@ class LiveStocks:
         # stock_data = json.load(json_file)
 
         df1 = pd.json_normalize(stock_data["data"])
-        df2 = df1.loc[df1['priority'] == 0]
+        df2 = df1.loc[df1["priority"] == 0]
         df3 = df2.reset_index(level=0)
-        df4 = df3.loc[df3['index'] <= nos]
-        df5 = df3.loc[df3['symbol'].isin(self.symbols)]
-        df6 = pd.concat([df4, df5]).drop_duplicates('symbol').reset_index(
-            drop=True)
-        df = df6[["index", "symbol", "identifier", "lastPrice", "pChange",
-                  "lastUpdateTime", "meta.isin", "meta.companyName"]]
+        df4 = df3.loc[df3["index"] <= nos]
+        df5 = df3.loc[df3["symbol"].isin(self.symbols)]
+        df6 = pd.concat([df4, df5]).drop_duplicates("symbol").reset_index(drop=True)
+        df = df6[
+            [
+                "index",
+                "symbol",
+                "identifier",
+                "lastPrice",
+                "pChange",
+                "lastUpdateTime",
+                "meta.isin",
+                "meta.companyName",
+            ]
+        ]
         return df

@@ -6,13 +6,21 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('core', '0004_remove_configuresettings_status_and_more'),
+        ("core", "0004_remove_configuresettings_status_and_more"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='configuresettings',
-            name='config_type',
-            field=models.CharField(choices=[('Boolean', 'Boolean'), ('Float', 'Float'), ('String', 'String')], max_length=10, verbose_name='Configure Type'),
+            model_name="configuresettings",
+            name="config_type",
+            field=models.CharField(
+                choices=[
+                    ("Boolean", "Boolean"),
+                    ("Float", "Float"),
+                    ("String", "String"),
+                ],
+                max_length=10,
+                verbose_name="Configure Type",
+            ),
         ),
     ]

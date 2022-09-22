@@ -23,10 +23,10 @@ pre_check_server_start()
 
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path("admin/", admin.site.urls),
     path("accounts/", include("django.contrib.auth.urls")),
-    path('', views.home_page, name='home'),
-    path('bengaluru/', include("bengaluru.urls")),
-    path('load_configuration/', views.load_configuration, name='configuration'),
-    path('data_log/', views.load_data_log, name='data_log'),
+    path("", views.home_page, name="home"),
+    path("bengaluru/", include("bengaluru.urls")),
+    path("load_configuration/", views.load_configuration, name="configuration"),
+    path("data_log/", views.load_data_log, name="data_log"),
 ]

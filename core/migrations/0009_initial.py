@@ -8,18 +8,26 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('core', '0008_delete_configuresettings'),
+        ("core", "0008_delete_configuresettings"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='DataLog',
+            name="DataLog",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('date', models.DateField(verbose_name='Date')),
-                ('start_time', models.DateTimeField(verbose_name='Start Time')),
-                ('end_time', models.DateTimeField(verbose_name='End Time')),
-                ('name', models.CharField(max_length=200, verbose_name='Name')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("date", models.DateField(verbose_name="Date")),
+                ("start_time", models.DateTimeField(verbose_name="Start Time")),
+                ("end_time", models.DateTimeField(verbose_name="End Time")),
+                ("name", models.CharField(max_length=200, verbose_name="Name")),
             ],
         ),
     ]

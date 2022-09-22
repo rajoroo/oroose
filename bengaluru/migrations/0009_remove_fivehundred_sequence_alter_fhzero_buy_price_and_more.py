@@ -6,27 +6,27 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('bengaluru', '0008_fivehundred_sequence'),
+        ("bengaluru", "0008_fivehundred_sequence"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='fivehundred',
-            name='sequence',
+            model_name="fivehundred",
+            name="sequence",
         ),
         migrations.AlterField(
-            model_name='fhzero',
-            name='buy_price',
-            field=models.FloatField(blank=True, null=True, verbose_name='Buy Price'),
+            model_name="fhzero",
+            name="buy_price",
+            field=models.FloatField(blank=True, null=True, verbose_name="Buy Price"),
         ),
         migrations.AlterField(
-            model_name='fhzero',
-            name='profit_loss',
-            field=models.FloatField(blank=True, null=True, verbose_name='Profit Loss'),
+            model_name="fhzero",
+            name="profit_loss",
+            field=models.FloatField(blank=True, null=True, verbose_name="Profit Loss"),
         ),
         migrations.AlterField(
-            model_name='fhzero',
-            name='sell_price',
-            field=models.FloatField(blank=True, null=True, verbose_name='Sell Price'),
+            model_name="fhzero",
+            name="sell_price",
+            field=models.FloatField(blank=True, null=True, verbose_name="Sell Price"),
         ),
     ]

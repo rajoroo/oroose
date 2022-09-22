@@ -16,11 +16,7 @@ class ConfigSettings:
     def get_all_configs(self, prefix=None):
         self.load_data()
         if prefix:
-            return {
-                k: v
-                for k, v in self.data.items()
-                if k.startswith(prefix)
-            }
+            return {k: v for k, v in self.data.items() if k.startswith(prefix)}
 
         return self.data
 

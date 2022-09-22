@@ -6,14 +6,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('bengaluru', '0003_alter_fivehundred_options_alter_fivehundred_isin_and_more'),
+        ("bengaluru", "0003_alter_fivehundred_options_alter_fivehundred_isin_and_more"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='fivehundred',
-            name='status',
-            field=models.CharField(choices=[('TOP', 'Topper'), ('BTM', 'Bottom')], default='BTM', max_length=3),
+            model_name="fivehundred",
+            name="status",
+            field=models.CharField(
+                choices=[("TOP", "Topper"), ("BTM", "Bottom")],
+                default="BTM",
+                max_length=3,
+            ),
             preserve_default=False,
         ),
     ]

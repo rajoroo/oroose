@@ -6,26 +6,28 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('bengaluru', '0002_rename_price_fivehundred_last_price_and_more'),
+        ("bengaluru", "0002_rename_price_fivehundred_last_price_and_more"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='fivehundred',
-            options={'ordering': ['-date', 'rank']},
+            name="fivehundred",
+            options={"ordering": ["-date", "rank"]},
         ),
         migrations.AlterField(
-            model_name='fivehundred',
-            name='isin',
-            field=models.CharField(max_length=100, verbose_name='Isin'),
+            model_name="fivehundred",
+            name="isin",
+            field=models.CharField(max_length=100, verbose_name="Isin"),
         ),
         migrations.AlterField(
-            model_name='fivehundred',
-            name='rank',
-            field=models.IntegerField(blank=True, null=True, verbose_name='Rank'),
+            model_name="fivehundred",
+            name="rank",
+            field=models.IntegerField(blank=True, null=True, verbose_name="Rank"),
         ),
         migrations.AddConstraint(
-            model_name='fivehundred',
-            constraint=models.UniqueConstraint(fields=('date', 'isin'), name='unique_five_hundred'),
+            model_name="fivehundred",
+            constraint=models.UniqueConstraint(
+                fields=("date", "isin"), name="unique_five_hundred"
+            ),
         ),
     ]

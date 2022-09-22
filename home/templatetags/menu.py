@@ -3,7 +3,7 @@ from django import template
 register = template.Library()
 
 
-@register.inclusion_tag('base/menu_navbar.html')
+@register.inclusion_tag("base/menu_navbar.html")
 def show_menu_navbar(page):
 
     menu = [

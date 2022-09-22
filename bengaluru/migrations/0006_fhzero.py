@@ -7,23 +7,40 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('bengaluru', '0005_remove_fivehundred_status'),
+        ("bengaluru", "0005_remove_fivehundred_status"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='FhZero',
+            name="FhZero",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('date', models.DateField(verbose_name='Date')),
-                ('time', models.DateTimeField(verbose_name='Time')),
-                ('tag', models.CharField(max_length=10, verbose_name='Tag')),
-                ('symbol', models.CharField(max_length=200, verbose_name='Symbol')),
-                ('isin', models.CharField(max_length=100, verbose_name='Isin')),
-                ('buy_price', models.FloatField(verbose_name='Buy Price')),
-                ('sell_price', models.FloatField(verbose_name='Sell Price')),
-                ('profit_loss', models.FloatField(verbose_name='Profit Loss')),
-                ('fh_id', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='bengaluru.fivehundred', verbose_name='Five Hundred')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("date", models.DateField(verbose_name="Date")),
+                ("time", models.DateTimeField(verbose_name="Time")),
+                ("tag", models.CharField(max_length=10, verbose_name="Tag")),
+                ("symbol", models.CharField(max_length=200, verbose_name="Symbol")),
+                ("isin", models.CharField(max_length=100, verbose_name="Isin")),
+                ("buy_price", models.FloatField(verbose_name="Buy Price")),
+                ("sell_price", models.FloatField(verbose_name="Sell Price")),
+                ("profit_loss", models.FloatField(verbose_name="Profit Loss")),
+                (
+                    "fh_id",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        to="bengaluru.fivehundred",
+                        verbose_name="Five Hundred",
+                    ),
+                ),
             ],
         ),
     ]

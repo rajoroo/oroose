@@ -6,12 +6,14 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('core', '0006_configuresettings_string_value_and_more'),
+        ("core", "0006_configuresettings_string_value_and_more"),
     ]
 
     operations = [
         migrations.AddConstraint(
-            model_name='configuresettings',
-            constraint=models.UniqueConstraint(fields=('name',), name='core_configuresettings_unique'),
+            model_name="configuresettings",
+            constraint=models.UniqueConstraint(
+                fields=("name",), name="core_configuresettings_unique"
+            ),
         ),
     ]
