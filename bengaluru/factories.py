@@ -1,4 +1,5 @@
 import factory.fuzzy
+
 from bengaluru.models import FiveHundred
 
 

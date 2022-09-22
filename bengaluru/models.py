@@ -1,7 +1,8 @@
-from django.db import models
-import string
 import secrets
+import string
 from datetime import datetime
+
+from django.db import models
 
 
 class FiveHundred(models.Model):

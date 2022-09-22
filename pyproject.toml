@@ -1,8 +1,6 @@
-[tool.flake8]
-ignore = ['.git', 'venv']
-max-line-length = 119
-count = true
-
-
 [tool.black]
 line-length = 119
+
+
+[tool.isort]
+profile = "black"

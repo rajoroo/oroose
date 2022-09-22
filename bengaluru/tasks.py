@@ -1,9 +1,12 @@
-from oroose.celery import app
-from .evaluation import polling_live_stocks_five_hundred, analyse_stocks_five_hundred
+from datetime import datetime
+
+from django.utils.timezone import get_current_timezone
+
 from core.configuration import ConfigSettings
 from core.models import DataLog
-from datetime import datetime
-from django.utils.timezone import get_current_timezone
+from oroose.celery import app
+
+from .evaluation import analyse_stocks_five_hundred, polling_live_stocks_five_hundred
 
 
 @app.task

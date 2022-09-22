@@ -1,8 +1,10 @@
-from django.contrib.auth.decorators import login_required
-from core.configuration import ConfigSettings
-from django.shortcuts import render
-from core.models import DataLog
 from datetime import datetime
+
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render
+
+from core.configuration import ConfigSettings
+from core.models import DataLog
 
 
 @login_required(login_url="/accounts/login/")

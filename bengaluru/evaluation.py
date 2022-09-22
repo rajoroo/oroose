@@ -1,8 +1,10 @@
-from bengaluru.models import FiveHundred, FhZero, FhZeroStatus
 from datetime import datetime
-from core.stocks import LiveStocks
+
 from django.utils.timezone import get_current_timezone
+
+from bengaluru.models import FhZero, FhZeroStatus, FiveHundred
 from core.configuration import ConfigSettings
+from core.stocks import LiveStocks
 
 
 def update_five_hundred(data):

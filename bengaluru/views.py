@@ -1,12 +1,15 @@
-from django.shortcuts import render
-from django.http import HttpResponse
-from .models import FiveHundred, FhZero, FhZeroStatus
 from datetime import datetime
+
 from django.contrib.auth.decorators import login_required
-from .evaluation import polling_live_stocks_five_hundred, analyse_stocks_five_hundred
 from django.db.models import Max
+from django.http import HttpResponse
+from django.shortcuts import render
+
 from core.configuration import ConfigSettings
 from core.models import DataLog
+
+from .evaluation import analyse_stocks_five_hundred, polling_live_stocks_five_hundred
+from .models import FhZero, FhZeroStatus, FiveHundred
 
 
 @login_required(login_url="/accounts/login/")

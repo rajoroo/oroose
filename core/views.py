@@ -1,6 +1,7 @@
-from django.conf import settings
 import json
 import sys
+
+from django.conf import settings
 
 
 def pre_check_server_start():
