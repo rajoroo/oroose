@@ -26,7 +26,13 @@
     <td>{{ item.buy_price }}</td>
     <td>{{ item.sell_price }}</td>
     <td>{{ item.status }}</td>
-    <td><button type="button" class="btn btn-primary ser_act" trigger-url="{% url 'process_fhz' rec.pk %}">Approve</button></td>
+    <td>
+        <button type="button"
+                class="btn btn-primary ser_act"
+                trigger-url="{% url 'process_fhz' item.id %}">
+            Approve
+        </button>
+    </td>
 
 </tr>
 {% endfor %}
