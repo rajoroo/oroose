@@ -48,3 +48,7 @@ def analyse_fhz(request):
     if not analyse_stocks_five_hundred():
         return HttpResponse(status=404)
     return HttpResponse(status=200)
+
+
+def process_fhz(request, object_id):
+    print(object_id)

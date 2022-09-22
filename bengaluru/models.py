@@ -49,6 +49,8 @@ class FhZero(models.Model):
         choices=FhZeroStatus.choices,
         verbose_name="Status",
     )
+    quantity = models.IntegerField(verbose_name="Quantity")
+    last_price = models.FloatField(verbose_name="Last Price")
     buy_price = models.FloatField(null=True, blank=True, verbose_name="Buy Price")
     sell_price = models.FloatField(null=True, blank=True, verbose_name="Sell Price")
     profit_loss = models.FloatField(null=True, blank=True, verbose_name="Profit Loss")

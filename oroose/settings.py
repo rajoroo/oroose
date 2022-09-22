@@ -131,12 +131,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
 
+# Config file
 LOAD_CONFIG_PATH = '/home/ramesh/Desktop/config.json'
-
-
-
-LIVE_INDEX_URL = "https://www.nseindia.com/market-data/live-equity-market"
-LIVE_INDEX_500_URL = "https://www.nseindia.com/api/equity-stockIndices?index=NIFTY500%20MULTICAP%2050%3A25%3A25"
 
 
 # Celery - prefix with CELERY_

@@ -7,6 +7,10 @@
     <th>Isin</th>
     <th>Tag</th>
     <th>Symbol</th>
+    <th>Quantity</th>
+    <th>Last Price</th>
+    <th>Buy Price</th>
+    <th>Sell Price</th>
     <th>Status</th>
     <th>Action</th>
 </tr>
@@ -17,8 +21,12 @@
     <td>{{ item.isin }}</td>
     <td>{{ item.tag }}</td>
     <td>{{ item.symbol }}</td>
+    <td>{{ item.quantity }}</td>
+    <td>{{ item.last_price }}</td>
+    <td>{{ item.buy_price }}</td>
+    <td>{{ item.sell_price }}</td>
     <td>{{ item.status }}</td>
-    <td><button type="button" class="btn btn-primary">Approve</button></td>
+    <td><button type="button" class="btn btn-primary ser_act" trigger-url="{% url 'process_fhz' rec.pk %}">Approve</button></td>
 
 </tr>
 {% endfor %}

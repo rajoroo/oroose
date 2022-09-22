@@ -65,7 +65,9 @@ def analyse_stocks_five_hundred():
                 symbol=rec.symbol,
                 isin=rec.isin,
                 five_hundred=rec,
-                status=FhZeroStatus.TO_BUY
+                status=FhZeroStatus.TO_BUY,
+                quantity=int(20000/rec.last_price),
+                last_price=rec.last_price
             )
             five_hundred_zero.save()
 
