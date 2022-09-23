@@ -8,8 +8,27 @@ services:
     ports:
       - 5432:5432
     environment:
-      POSTGRES_DB: rose
-      POSTGRES_PASSWORD: postgres
+      - POSTGRES_DB=rose
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+
+  web:
+    build: .
+    command: >
+      bash -c "python manage.py migrate
+      && python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - .:/code
+      - /home/ramesh/Desktop/test:/config
+    ports:
+      - "8000:8000"
+    environment:
+      - POSTGRES_NAME=rose
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - LOAD_CONFIG_PATH=/config/config.json
+    depends_on:
+      - db
 
   cache:
     image: redis:6.2-alpine

@@ -8,3 +8,11 @@ celery -A oroose worker -l info
 
 # run both beat and worker:
 celery -A oroose worker --beat -l info
+
+
+# Create superuser
+docker-compose -f testing-server.yml run web python manage.py createsuperuser
+
+
+# New build
+docker-compose -f testing-server.yml up --build

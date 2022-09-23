@@ -55,5 +55,5 @@ def analyse_fhz(request):
 
 def process_fhz(request):
     recs = FhZero.objects.filter(date=datetime.today())
-    
+
     return HttpResponse(status=200)
