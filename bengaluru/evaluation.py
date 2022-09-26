@@ -58,6 +58,7 @@ def polling_live_stocks_five_hundred():
 def analyse_stocks_five_hundred():
     five_hundred = FiveHundred.objects.filter(date=datetime.today())
     for rec in five_hundred:
+        purchased_obj = rec.fhzero_set.filter(status="PURCHASED")
         if 1 <= rec.rank <= 5 and rec.generate_fhz_evaluation:
             five_hundred_zero = FhZero(
                 date=datetime.now(),
@@ -70,7 +71,9 @@ def analyse_stocks_five_hundred():
                 last_price=rec.last_price,
             )
             five_hundred_zero.save()
-        else:
-            pass
+        elif rec.rank > 5 and purchased_obj.count() == 1:
+            fhz_obj = purchased_obj.first()
+            fhz_obj.status = FhZeroStatus.TO_SELL
+            fhz_obj.save()
 
     return True
