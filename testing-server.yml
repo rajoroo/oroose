@@ -26,6 +26,7 @@ services:
       - POSTGRES_NAME=rose
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
+      - POSTGRES_HOST=db
       - LOAD_CONFIG_PATH=/config/config.json
       - MAIN_PROCESS=1
     depends_on:
@@ -38,6 +39,40 @@ services:
     command: redis-server --save 20 1 --loglevel warning
     volumes:
       - cache:/data
+
+  celery:
+    build: .
+    command: celery -A oroose worker -l info
+    volumes:
+      - .:/code
+      - /etc/oroose_test:/config
+    environment:
+      - POSTGRES_NAME=rose
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_HOST=db
+      - LOAD_CONFIG_PATH=/config/config.json
+      - MAIN_PROCESS=1
+    depends_on:
+      - db
+      - cache
+
+  celery-beat:
+    build: .
+    command: celery -A oroose beat -l info
+    volumes:
+      - .:/code
+      - /etc/oroose_test:/config
+    environment:
+      - POSTGRES_NAME=rose
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_HOST=db
+      - LOAD_CONFIG_PATH=/config/config.json
+      - MAIN_PROCESS=1
+    depends_on:
+      - db
+      - cache
 
 volumes:
   postgres_data:

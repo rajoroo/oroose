@@ -87,7 +87,7 @@ DATABASES = {
         'NAME': os.environ.get('POSTGRES_NAME'),
         'USER': os.environ.get('POSTGRES_USER'),
         'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
-        'HOST': 'db',
+        'HOST': os.environ.get("POSTGRES_HOST", "localhost"),
         'PORT': 5432,
     }
 }
@@ -143,7 +143,7 @@ LOAD_CONFIG_PATH = os.environ.get('LOAD_CONFIG_PATH')
 
 
 # Celery - prefix with CELERY_
-CELERY_BROKER_URL = "redis://localhost:6379"
+CELERY_BROKER_URL = "redis://cache:6379"
 CELERY_RESULT_BACKEND = CELERY_BROKER_URL
 CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
