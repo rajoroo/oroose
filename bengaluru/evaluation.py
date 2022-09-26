@@ -3,8 +3,12 @@ from datetime import datetime
 from django.utils.timezone import get_current_timezone
 
 from bengaluru.models import FhZero, FhZeroStatus, FiveHundred
-from core.configuration import ConfigSettings
+from core.configuration import ParameterStore
 from core.stocks import LiveStocks
+
+
+LIVE_INDEX_URL = ParameterStore().get_conf("LIVE_INDEX_URL")
+LIVE_INDEX_500_URL = ParameterStore().get_conf("LIVE_INDEX_500_URL")
 
 
 def update_five_hundred(data):
@@ -48,9 +52,7 @@ def update_five_hundred(data):
 def polling_live_stocks_five_hundred():
     """Polling live stocks 500 and update the bengaluru with top 5 stocks"""
     symbols = FiveHundred.objects.filter(date=datetime.now()).values_list("symbol", flat=True)
-    base_url = ConfigSettings().get_conf("LIVE_INDEX_URL")
-    url = ConfigSettings().get_conf("LIVE_INDEX_500_URL")
-    obj = LiveStocks(base_url=base_url, url=url, symbols=symbols)
+    obj = LiveStocks(base_url=LIVE_INDEX_URL, url=LIVE_INDEX_500_URL, symbols=symbols)
     df = obj.filter_stock_list()
     return update_five_hundred(data=df)
 

@@ -5,15 +5,15 @@ from django.db.models import Max
 from django.http import HttpResponse
 from django.shortcuts import render
 
-from core.configuration import ConfigSettings
+from core.configuration import ParameterStore
 from core.models import DataLog
 
 from .evaluation import analyse_stocks_five_hundred, polling_live_stocks_five_hundred
 from .models import FhZero, FhZeroStatus, FiveHundred
 
 
-LOG_SCHEDULE_LIVE_500 = ConfigSettings().get_conf("LOG_SCHEDULE_LIVE_500")
-FH_LIVE_STOCKS_NSE = ConfigSettings().get_conf("FH_LIVE_STOCKS_NSE")
+LOG_SCHEDULE_LIVE_500 = ParameterStore().get_conf("LOG_SCHEDULE_LIVE_500")
+FH_LIVE_STOCKS_NSE = ParameterStore().get_conf("FH_LIVE_STOCKS_NSE")
 
 
 @login_required(login_url="/accounts/login/")

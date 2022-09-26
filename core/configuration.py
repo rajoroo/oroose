@@ -3,7 +3,7 @@ import json
 from django.conf import settings
 
 
-class ConfigSettings:
+class ParameterStore:
     def __init__(self):
         self.path = settings.LOAD_CONFIG_PATH
         self.data = None
