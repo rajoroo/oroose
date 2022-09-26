@@ -54,6 +54,19 @@ def analyse_fhz(request):
 
 
 def process_fhz(request):
-    recs = FhZero.objects.filter(date=datetime.today())
+    obj = FhZero.objects.filter(
+        date=datetime.today(),
+        status__in=[FhZeroStatus.TO_BUY, FhZeroStatus.TO_SELL]
+    ).first()
 
+    if not obj:
+        return HttpResponse(status=200)
+
+    if obj.status == FhZeroStatus.TO_BUY:
+        obj.status = FhZeroStatus.PURCHASED
+
+    elif obj.status == FhZeroStatus.TO_SELL:
+        obj.status = FhZeroStatus.SOLD
+
+    obj.save()
     return HttpResponse(status=200)

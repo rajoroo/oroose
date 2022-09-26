@@ -22,6 +22,20 @@ class FiveHundred(models.Model):
         ordering = ["-date", "rank"]
         constraints = [models.UniqueConstraint(fields=["date", "isin"], name="unique_five_hundred")]
 
+    @property
+    def generate_fhz_evaluation(self):
+        result = False
+        if (
+            (1 <= self.rank <= 5)
+            and (1 <= self.last_price <= 4500)
+            and (self.percentage_change <= 11)
+            and (self.fhzero_set.all().count() <= 2)
+            and (self.fhzero_set.filter(status__in=["TO_BUY", "PURCHASED", "TO_SELL"]).count() == 0)
+        ):
+            result = True
+
+        return result
+
 
 class FhZeroStatus(models.TextChoices):
     TO_BUY = "TO_BUY", "To Buy"
@@ -71,3 +85,4 @@ class FhZero(models.Model):
                 break
 
         super(FhZero, self).save(*args, **kwargs)
+
