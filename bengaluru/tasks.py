@@ -24,9 +24,9 @@ def schedule_live_stocks_five_hundred():
     obj.save()
     if FH_LIVE_STOCKS_NSE:
         print("Schedule live stocks five hundred in-progress")
-        polling_live_stocks_five_hundred()
+        # polling_live_stocks_five_hundred()
         print("Schedule live stocks five hundred zero in-progress")
-        analyse_stocks_five_hundred()
+        # analyse_stocks_five_hundred()
     print("Schedule live stocks five hundred end")
     obj.end_time = datetime.now()
     obj.save()
