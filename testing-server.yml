@@ -27,6 +27,7 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
       - LOAD_CONFIG_PATH=/config/config.json
+      - MAIN_PROCESS=1
     depends_on:
       - db
 
@@ -37,14 +38,6 @@ services:
     command: redis-server --save 20 1 --loglevel warning
     volumes:
       - cache:/data
-
-  celery_beat_worker:
-    build:
-      context: .
-    command: celery -A oroose worker --beat -l info
-    depends_on:
-      - cache
-      - db
 
 volumes:
   postgres_data:

@@ -16,7 +16,8 @@ from dotenv import load_dotenv
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-load_dotenv(dotenv_path=os.path.join(BASE_DIR, ".env"))
+if os.environ.get('MAIN_PROCESS', '1') != '1':
+    load_dotenv(dotenv_path=os.path.join(BASE_DIR, ".env"))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
@@ -86,7 +87,7 @@ DATABASES = {
         'NAME': os.environ.get('POSTGRES_NAME'),
         'USER': os.environ.get('POSTGRES_USER'),
         'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
-        'HOST': 'localhost',
+        'HOST': 'db',
         'PORT': 5432,
     }
 }
