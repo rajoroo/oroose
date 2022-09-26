@@ -27,6 +27,6 @@ urlpatterns = [
     path("accounts/", include("django.contrib.auth.urls")),
     path("", views.home_page, name="home"),
     path("bengaluru/", include("bengaluru.urls")),
-    path("load_configuration/", views.load_configuration, name="configuration"),
-    path("data_log/", views.load_data_log, name="data_log"),
+    path("configuration_page/", views.configuration_page, name="configuration"),
+    path("data_log_page/", views.data_log_page, name="data_log"),
 ]

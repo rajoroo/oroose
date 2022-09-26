@@ -12,61 +12,66 @@ from .evaluation import analyse_stocks_five_hundred, polling_live_stocks_five_hu
 from .models import FhZero, FhZeroStatus, FiveHundred
 
 
+LOG_SCHEDULE_LIVE_500 = ConfigSettings().get_conf("LOG_SCHEDULE_LIVE_500")
+FH_LIVE_STOCKS_NSE = ConfigSettings().get_conf("FH_LIVE_STOCKS_NSE")
+
+
 @login_required(login_url="/accounts/login/")
 def bengaluru_page(request):
     context = {"active_page": "bengaluru"}
-    return render(request, "bengaluru/base.html", context)
+    return render(request, "bengaluru/base_page.html", context)
 
 
-def load_fh(request):
-    obj = FiveHundred.objects.filter(date=datetime.today()).filter(rank__isnull=False)
-    data_log_name = ConfigSettings().get_conf("LOG_SCHEDULE_LIVE_500")
-    last_pull_time = DataLog.objects.filter(name=data_log_name).aggregate(Max("end_time"))["end_time__max"]
-    polling_status = ConfigSettings().get_conf("FH_LIVE_STOCKS_NSE")
+def load_fh_view(request):
+    """Load five hundred objects display in table view"""
+    fh = FiveHundred.objects.filter(date=datetime.today())
+    last_pull_time = DataLog.objects.filter(name=LOG_SCHEDULE_LIVE_500).aggregate(Max("end_time"))["end_time__max"]
 
     context = {
-        "items": list(obj.values()),
+        "items": list(fh.values()),
         "last_pull_time": last_pull_time,
-        "polling_status": polling_status,
+        "polling_status": FH_LIVE_STOCKS_NSE,
     }
-    return render(request, "bengaluru/load-fh.html", context=context)
+    return render(request, "bengaluru/load_fh_view.html", context=context)
 
 
-def pull_fhz(request):
+def pull_fh_api(request):
+    """Pull the five hundred data from stock api"""
     if not polling_live_stocks_five_hundred():
         return HttpResponse(status=404)
     return HttpResponse(status=200)
 
 
-def load_fhz(request):
-    obj = FhZero.objects.filter(date=datetime.today())
+def load_fh_zero_view(request):
+    """Load five hundred zero objects display in table view"""
+    fhz = FhZero.objects.filter(date=datetime.today())
 
     context = {
-        "items": list(obj.values()),
+        "items": list(fhz.values()),
     }
-    return render(request, "bengaluru/load-fhz.html", context=context)
+    return render(request, "bengaluru/load_fh_zero_view.html", context=context)
 
 
-def analyse_fhz(request):
+def evaluate_fh_zero(request):
     if not analyse_stocks_five_hundred():
         return HttpResponse(status=404)
     return HttpResponse(status=200)
 
 
-def process_fhz(request):
-    obj = FhZero.objects.filter(
+def process_fh_zero_api(request):
+    fhz = FhZero.objects.filter(
         date=datetime.today(),
         status__in=[FhZeroStatus.TO_BUY, FhZeroStatus.TO_SELL]
     ).first()
 
-    if not obj:
+    if not fhz:
         return HttpResponse(status=200)
 
-    if obj.status == FhZeroStatus.TO_BUY:
-        obj.status = FhZeroStatus.PURCHASED
+    if fhz.status == FhZeroStatus.TO_BUY:
+        fhz.status = FhZeroStatus.PURCHASED
 
-    elif obj.status == FhZeroStatus.TO_SELL:
-        obj.status = FhZeroStatus.SOLD
+    elif fhz.status == FhZeroStatus.TO_SELL:
+        fhz.status = FhZeroStatus.SOLD
 
-    obj.save()
+    fhz.save()
     return HttpResponse(status=200)

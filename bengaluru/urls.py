@@ -3,10 +3,10 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path("load_five_hundred/", views.load_fh, name="load_fh"),
-    path("pull_five_hundred/", views.pull_fhz, name="pull_fh"),
-    path("get_zero_value/", views.analyse_fhz, name="analyse_fhz"),
-    path("load_five_hundred_zero/", views.load_fhz, name="load_fhz"),
-    path("process_fhz/", views.process_fhz, name="process_fhz"),
+    path("load_fh_view/", views.load_fh_view, name="load_fh_view"),
+    path("pull_fh_api/", views.pull_fh_api, name="pull_fh_api"),
+    path("evaluate_fh_zero/", views.evaluate_fh_zero, name="evaluate_fh_zero"),
+    path("load_fh_zero_view/", views.load_fh_zero_view, name="load_fh_zero_view"),
+    path("process_fh_zero_api/", views.process_fh_zero_api, name="process_fh_zero_api"),
     path("", views.bengaluru_page, name="bengaluru"),
 ]
