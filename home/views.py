@@ -3,7 +3,7 @@ from datetime import datetime
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 
-from core.configuration import ConfigSettings
+from core.configuration import ParameterStore
 from core.models import DataLog
 
 
@@ -15,7 +15,7 @@ def home_page(request):
 
 @login_required(login_url="/accounts/login/")
 def configuration_page(request):
-    confs = ConfigSettings().get_all_configs()
+    confs = ParameterStore().get_all_configs()
     context = {"confs": confs, "active_page": "configuration"}
     return render(request, "base/configure_settings.html", context=context)
 
