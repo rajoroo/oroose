@@ -19,6 +19,15 @@ services:
     command: redis-server --save 20 1 --loglevel warning
     volumes:
       - cache:/data
+
+  celery_beat_worker:
+    image: django_celery_beat_worker
+    command: celery -A oroose worker --beat -l info
+    container_name: celery_beat
+    depends_on:
+      - redis
+      - db
+
 volumes:
   postgres_data:
   cache:
