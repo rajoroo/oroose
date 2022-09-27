@@ -25,7 +25,7 @@ def debug_task(self):
 app.conf.beat_schedule = {
     "schedule-live-stocks-five-hundred-ten-minutes": {
         "task": "bengaluru.tasks.schedule_live_stocks_five_hundred",
-        "schedule": 60.0,  # schedule every 10 minutes
+        "schedule": 600.0,  # schedule every 10 minutes
         "args": (),
     }
 }
