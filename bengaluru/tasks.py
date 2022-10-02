@@ -10,13 +10,25 @@ from .evaluation import analyse_stocks_five_hundred, polling_live_stocks_five_hu
 
 
 LOG_SCHEDULE_LIVE_500 = ParameterStore().get_conf("LOG_SCHEDULE_LIVE_500")
+FH_STOCK_LIVE_START = ParameterStore().get_conf("FH_STOCK_LIVE_START")
+FH_STOCK_LIVE_END = ParameterStore().get_conf("FH_STOCK_LIVE_END")
 SETTINGS_FH_LIVE_STOCKS_NSE = "SETTINGS_FH_LIVE_STOCKS_NSE"
 
 
 def condition_schedule_live_stocks_fh():
     ps = ParameterSettings.objects.get(name=SETTINGS_FH_LIVE_STOCKS_NSE)
-    if ps.status:
+    start = datetime.strptime(FH_STOCK_LIVE_START, '%H%M').time()
+    end = datetime.strptime(FH_STOCK_LIVE_END, '%H%M').time()
+    start_time = datetime.combine(datetime.today(), start)
+    end_time = datetime.combine(datetime.today(), end)
+
+    if (
+        ps.status
+        and (start_time <= datetime.now() <= end_time)
+        and (datetime.today().weekday() < 5)
+    ):
         return True
+
     return False
 
 
