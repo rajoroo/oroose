@@ -1,8 +1,16 @@
 import secrets
 import string
 from datetime import datetime
+from core.configuration import ParameterStore
 
 from django.db import models
+
+
+FH_RANK_FROM = ParameterStore().get_conf("FH_RANK_FROM")  # 1
+FH_RANK_TILL = ParameterStore().get_conf("FH_RANK_TILL")  # 5
+FH_MAX_PRICE = ParameterStore().get_conf("FH_MAX_PRICE")  # 4500
+FH_MAX_PERCENT = ParameterStore().get_conf("FH_MAX_PERCENT")  # 11
+FH_MAX_BUY_ORDER = ParameterStore().get_conf("FH_MAX_BUY_ORDER")  # 2
 
 
 class FiveHundred(models.Model):
@@ -23,14 +31,27 @@ class FiveHundred(models.Model):
         constraints = [models.UniqueConstraint(fields=["date", "isin"], name="unique_five_hundred")]
 
     @property
-    def generate_fhz_evaluation(self):
+    def fhz_to_buy_condition(self):
         result = False
         if (
-            (1 <= self.rank <= 5)
-            and (1 <= self.last_price <= 4500)
-            and (self.percentage_change <= 11)
-            and (self.fhzero_set.all().count() <= 2)
-            and (self.fhzero_set.filter(status__in=["TO_BUY", "PURCHASED", "TO_SELL"]).count() == 0)
+            (FH_RANK_FROM <= self.rank <= FH_RANK_TILL)
+            and (1 <= self.last_price <= FH_MAX_PRICE)
+            and (self.percentage_change <= FH_MAX_PERCENT)
+            and (self.fhzero_set.all().count() <= FH_MAX_BUY_ORDER)
+            and (not self.fhzero_set.filter(status__in=["TO_BUY", "PURCHASED", "TO_SELL"]).exists())
+        ):
+            result = True
+
+        return result
+
+    @property
+    def fhz_to_sell_condition(self):
+        result = False
+        purchased_obj = self.fhzero_set.filter(status=FhZeroStatus.PURCHASED)
+        if (
+            self.rank > FH_RANK_TILL
+            and purchased_obj
+            and purchased_obj.count() == 1
         ):
             result = True
 

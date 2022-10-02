@@ -15,6 +15,11 @@ def pre_check_server_start():
         "SETTINGS_FH_LIVE_STOCKS_NSE",
         "LIVE_INDEX_URL",
         "LIVE_INDEX_500_URL",
+        "FH_RANK_FROM",
+        "FH_RANK_TILL",
+        "FH_MAX_PRICE",
+        "FH_MAX_PERCENT",
+        "FH_MAX_BUY_ORDER",
     ]
 
     for item in items:
