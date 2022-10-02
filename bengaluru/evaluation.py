@@ -9,6 +9,7 @@ from core.stocks import LiveStocks
 
 LIVE_INDEX_URL = ParameterStore().get_conf("LIVE_INDEX_URL")
 LIVE_INDEX_500_URL = ParameterStore().get_conf("LIVE_INDEX_500_URL")
+FH_MAX_TOTAL_PRICE = ParameterStore().get_conf("FH_MAX_TOTAL_PRICE")  # 20000
 
 
 def update_five_hundred(data):
@@ -70,7 +71,7 @@ def analyse_stocks_five_hundred():
                 isin=rec.isin,
                 five_hundred=rec,
                 status=FhZeroStatus.TO_BUY,
-                quantity=int(20000 / rec.last_price),
+                quantity=int(FH_MAX_TOTAL_PRICE / rec.last_price),
                 last_price=rec.last_price,
             )
             five_hundred_zero.save()
