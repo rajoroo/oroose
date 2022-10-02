@@ -12,7 +12,7 @@ def pre_check_server_start():
     conf = list(confs.keys())
 
     items = [
-        "FH_LIVE_STOCKS_NSE",
+        "SETTINGS_FH_LIVE_STOCKS_NSE",
         "LIVE_INDEX_URL",
         "LIVE_INDEX_500_URL",
     ]

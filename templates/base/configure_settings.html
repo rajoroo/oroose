@@ -4,19 +4,19 @@
 {% block content %}
 
     <div class="row">
-        <div class="col-9 col-sm-9">
+        <div class="col-8 col-sm-8">
             <div class="card configure-settings">
                 <div class="card-header border-bottom">
-                    <h3 class="card-title mb-0">Configure Settings</h3>
+                    <h3 class="card-title mb-0">Parameter Store</h3>
                 </div>
                 <div class="card-body">
-                    <div id="configure_settings">
+                    <div id="parameter_store">
                         <table class="green-table">
                             <tr>
                                 <th>Name</th>
                                 <th>Value</th>
                             </tr>
-                            {% for key, value in confs.items %}
+                            {% for key, value in param_configs.items %}
                             <tr>
                                 <td>{{ key }}</td>
                                 <td>{{ value }}</td>
@@ -27,6 +27,42 @@
                 </div>
             </div>
         </div>
+        <div class="col-4 col-sm-4">
+            <div class="card configure-settings">
+                <div class="card-header border-bottom">
+                    <h3 class="card-title mb-0">Parameter Settings</h3>
+                </div>
+                <div class="card-body">
+                    <div id="parameter_settings">
+                        <table class="green-table">
+                            <tr>
+                                <th>Name</th>
+                                <th>Value</th>
+                            </tr>
+                            {% for item in param_settings %}
+                            <tr>
+                                <td>{{ item.name }}</td>
+                                <td class="text-center">
+                                    <div class="form-check">
+                                        <input class="form-check-input"
+                                               type="checkbox"
+                                               value=""
+                                               id="flexCheckDefault"
+                                               data-target="{% url 'params_update' item.id %}"
+                                               {% if item.status %}checked {% endif %}>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
 {% endblock content %}
+
+{% block js_scripts %}
+<script src="{% static 'js/configure_settings.js' %}" crossorigin="anonymous"></script>
+{% endblock js_scripts %}
