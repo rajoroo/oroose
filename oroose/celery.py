@@ -27,5 +27,12 @@ app.conf.beat_schedule = {
         "task": "bengaluru.tasks.schedule_live_stocks_five_hundred",
         "schedule": 600.0,  # schedule every 10 minutes
         "args": (),
-    }
+    },
+    "schedule-zero-five-hundred-two-minutes": {
+        "task": "bengaluru.tasks.schedule_zero_five_hundred",
+        "schedule": 120.0,  # schedule every 2 minutes
+        "args": (),
+    },
+
 }
+
