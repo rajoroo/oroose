@@ -6,13 +6,15 @@ from core.configuration import ParameterStore
 from core.models import DataLog, ParameterSettings
 from oroose.celery import app
 
-from .evaluation import analyse_stocks_five_hundred, polling_live_stocks_five_hundred
+from .evaluation import analyse_stocks_five_hundred, polling_live_stocks_five_hundred, process_five_hundred
 
 
 LOG_SCHEDULE_LIVE_500 = ParameterStore().get_conf("LOG_SCHEDULE_LIVE_500")
+LOG_SCHEDULE_ZERO_500 = ParameterStore().get_conf("LOG_SCHEDULE_ZERO_500")
 FH_STOCK_LIVE_START = ParameterStore().get_conf("FH_STOCK_LIVE_START")
 FH_STOCK_LIVE_END = ParameterStore().get_conf("FH_STOCK_LIVE_END")
 SETTINGS_FH_LIVE_STOCKS_NSE = "SETTINGS_FH_LIVE_STOCKS_NSE"
+SETTINGS_FH_ZERO = "SETTINGS_FH_ZERO"
 
 
 def condition_schedule_live_stocks_fh():
@@ -48,5 +50,41 @@ def schedule_live_stocks_five_hundred():
         print("Schedule live stocks five hundred zero in-progress")
         analyse_stocks_five_hundred()
     print("Schedule live stocks five hundred end")
+    obj.end_time = datetime.now()
+    obj.save()
+
+
+def condition_schedule_zero_fh():
+    ps = ParameterSettings.objects.get(name=SETTINGS_FH_ZERO)
+    start = datetime.strptime(FH_STOCK_LIVE_START, '%H%M').time()
+    end = datetime.strptime(FH_STOCK_LIVE_END, '%H%M').time()
+    start_time = datetime.combine(datetime.today(), start)
+    end_time = datetime.combine(datetime.today(), end)
+
+    if (
+        ps.status
+        and (start_time <= datetime.now() <= end_time)
+        and (datetime.today().weekday() < 5)
+    ):
+        return True
+
+    return False
+
+
+@app.task
+def schedule_zero_five_hundred():
+    print("Schedule zero five hundred started")
+    obj = DataLog(
+        date=datetime.now(),
+        start_time=datetime.now().replace(tzinfo=get_current_timezone()),
+        name=LOG_SCHEDULE_ZERO_500,
+    )
+    obj.save()
+    print(condition_schedule_zero_fh())
+    if condition_schedule_zero_fh():
+        print("Schedule zero five hundred in-progress")
+        process_five_hundred()
+        print("Schedule zero five hundred zero in-progress")
+    print("Schedule zero five hundred end")
     obj.end_time = datetime.now()
     obj.save()

@@ -8,7 +8,7 @@ from django.shortcuts import render
 from core.configuration import ParameterStore
 from core.models import DataLog
 
-from .evaluation import analyse_stocks_five_hundred, polling_live_stocks_five_hundred
+from .evaluation import analyse_stocks_five_hundred, polling_live_stocks_five_hundred, process_five_hundred
 from .models import FhZero, FhZeroStatus, FiveHundred
 
 
@@ -59,19 +59,5 @@ def evaluate_fh_zero(request):
 
 
 def process_fh_zero_api(request):
-    fhz = FhZero.objects.filter(
-        date=datetime.today(),
-        status__in=[FhZeroStatus.TO_BUY, FhZeroStatus.TO_SELL]
-    ).first()
-
-    if not fhz:
-        return HttpResponse(status=200)
-
-    if fhz.status == FhZeroStatus.TO_BUY:
-        fhz.status = FhZeroStatus.PURCHASED
-
-    elif fhz.status == FhZeroStatus.TO_SELL:
-        fhz.status = FhZeroStatus.SOLD
-
-    fhz.save()
+    process_five_hundred()
     return HttpResponse(status=200)

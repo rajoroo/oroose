@@ -84,3 +84,24 @@ def analyse_stocks_five_hundred():
             fhz_obj.save()
 
     return True
+
+
+def process_five_hundred():
+    fhz = FhZero.objects.filter(
+        date=datetime.today(),
+        status__in=[FhZeroStatus.TO_BUY, FhZeroStatus.TO_SELL]
+    ).first()
+
+    if not fhz:
+        return None
+
+    if fhz.status == FhZeroStatus.TO_BUY:
+        fhz.status = FhZeroStatus.PURCHASED
+        fhz.buy_price = fhz.five_hundred.last_price
+
+    elif fhz.status == FhZeroStatus.TO_SELL:
+        fhz.status = FhZeroStatus.SOLD
+        fhz.sell_price = fhz.five_hundred.last_price
+        fhz.profit_loss = fhz.buy_price - fhz.five_hundred.last_price
+
+    fhz.save()

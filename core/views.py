@@ -13,6 +13,7 @@ def pre_check_server_start():
 
     items = [
         "SETTINGS_FH_LIVE_STOCKS_NSE",
+        "SETTINGS_FH_ZERO",
         "LIVE_INDEX_URL",
         "LIVE_INDEX_500_URL",
         "FH_RANK_FROM",
@@ -20,6 +21,10 @@ def pre_check_server_start():
         "FH_MAX_PRICE",
         "FH_MAX_PERCENT",
         "FH_MAX_BUY_ORDER",
+        "FH_STOCK_LIVE_START",
+        "FH_STOCK_LIVE_END",
+        "LOG_SCHEDULE_LIVE_500",
+        "LOG_SCHEDULE_ZERO_500",
     ]
 
     for item in items:
