@@ -25,6 +25,8 @@ def pre_check_server_start():
         "FH_STOCK_LIVE_END",
         "LOG_SCHEDULE_LIVE_500",
         "LOG_SCHEDULE_ZERO_500",
+        "FH_ZERO_START",
+        "FH_ZERO_END",
     ]
 
     for item in items:

@@ -2,6 +2,7 @@ import secrets
 import string
 from datetime import datetime
 from core.configuration import ParameterStore
+from core.models import ParameterSettings
 
 from django.db import models
 
@@ -11,6 +12,10 @@ FH_RANK_TILL = ParameterStore().get_conf("FH_RANK_TILL")  # 5
 FH_MAX_PRICE = ParameterStore().get_conf("FH_MAX_PRICE")  # 4500
 FH_MAX_PERCENT = ParameterStore().get_conf("FH_MAX_PERCENT")  # 11
 FH_MAX_BUY_ORDER = ParameterStore().get_conf("FH_MAX_BUY_ORDER")  # 2
+
+FH_ZERO_START = ParameterStore().get_conf("FH_ZERO_START")
+FH_ZERO_END = ParameterStore().get_conf("FH_ZERO_END")
+SETTINGS_FH_ZERO = "SETTINGS_FH_ZERO"
 
 
 class FiveHundred(models.Model):
@@ -33,12 +38,22 @@ class FiveHundred(models.Model):
     @property
     def fhz_to_buy_condition(self):
         result = False
+
+        ps = ParameterSettings.objects.get(name=SETTINGS_FH_ZERO)
+        start = datetime.strptime(FH_ZERO_START, '%H%M').time()
+        end = datetime.strptime(FH_ZERO_END, '%H%M').time()
+        start_time = datetime.combine(datetime.today(), start)
+        end_time = datetime.combine(datetime.today(), end)
+
         if (
-            (FH_RANK_FROM <= self.rank <= FH_RANK_TILL)
+            ps.status
+            and (FH_RANK_FROM <= self.rank <= FH_RANK_TILL)
             and (1 <= self.last_price <= FH_MAX_PRICE)
             and (self.percentage_change <= FH_MAX_PERCENT)
             and (self.fhzero_set.all().count() <= FH_MAX_BUY_ORDER)
             and (not self.fhzero_set.filter(status__in=["TO_BUY", "PURCHASED", "TO_SELL"]).exists())
+            and (start_time <= datetime.now() <= end_time)
+            and (datetime.today().weekday() < 5)
         ):
             result = True
 
@@ -47,9 +62,11 @@ class FiveHundred(models.Model):
     @property
     def fhz_to_sell_condition(self):
         result = False
+        ps = ParameterSettings.objects.get(name=SETTINGS_FH_ZERO)
         purchased_obj = self.fhzero_set.filter(status=FhZeroStatus.PURCHASED)
         if (
-            self.rank > FH_RANK_TILL
+            ps.status
+            and self.rank > FH_RANK_TILL
             and purchased_obj
             and purchased_obj.count() == 1
         ):
