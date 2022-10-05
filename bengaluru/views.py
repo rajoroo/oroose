@@ -6,14 +6,14 @@ from django.http import HttpResponse
 from django.shortcuts import render
 
 from core.configuration import ParameterStore
-from core.models import DataLog
+from core.models import DataLog, ParameterSettings
 
 from .evaluation import analyse_stocks_five_hundred, polling_live_stocks_five_hundred, process_five_hundred
 from .models import FhZero, FhZeroStatus, FiveHundred
 
 
 LOG_SCHEDULE_LIVE_500 = ParameterStore().get_conf("LOG_SCHEDULE_LIVE_500")
-FH_LIVE_STOCKS_NSE = ParameterStore().get_conf("FH_LIVE_STOCKS_NSE")
+SETTINGS_FH_LIVE_STOCKS_NSE = "SETTINGS_FH_LIVE_STOCKS_NSE"
 
 
 @login_required(login_url="/accounts/login/")
@@ -26,11 +26,12 @@ def load_fh_view(request):
     """Load five hundred objects display in table view"""
     fh = FiveHundred.objects.filter(date=datetime.today())
     last_pull_time = DataLog.objects.filter(name=LOG_SCHEDULE_LIVE_500).aggregate(Max("end_time"))["end_time__max"]
+    ps = ParameterSettings.objects.get(name=SETTINGS_FH_LIVE_STOCKS_NSE)
 
     context = {
         "items": list(fh.values()),
         "last_pull_time": last_pull_time,
-        "polling_status": FH_LIVE_STOCKS_NSE,
+        "polling_status": ps.status,
     }
     return render(request, "bengaluru/load_fh_view.html", context=context)
 
