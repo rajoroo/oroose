@@ -62,3 +62,7 @@ def evaluate_fh_zero(request):
 def process_fh_zero_api(request):
     process_five_hundred()
     return HttpResponse(status=200)
+
+
+def m_addition(a, b):
+    return a + b

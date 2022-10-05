@@ -2,6 +2,10 @@ venv/
 .idea/
 __pycache__/
 
+htmlcov/
+
+.coverage
+celerybeat-*
 *.bak
 *.dat
 *.dir
