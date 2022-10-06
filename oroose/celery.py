@@ -1,6 +1,7 @@
 import os
 
-from celery import Celery
+# from core.configuration import only_one
+from celery import Celery, Task
 
 # Set the default Django settings module for the 'celery' program.
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "oroose.settings")
@@ -22,15 +23,24 @@ def debug_task(self):
     print(f"Request: {self.request!r}")
 
 
+# class SingleTask(app.Task):
+#     """A task."""
+#
+#     @only_one(key="SingleTask", timeout=60 * 5)
+#     def run(self, **kwargs):
+#         """Run task."""
+#         print("Acquired lock for up to 5 minutes and ran task!")
+
+
 app.conf.beat_schedule = {
     "schedule-live-stocks-five-hundred-ten-minutes": {
         "task": "bengaluru.tasks.schedule_live_stocks_five_hundred",
-        "schedule": 600.0,  # schedule every 10 minutes
+        "schedule": 300.0,  # schedule every 10 minutes
         "args": (),
     },
     "schedule-zero-five-hundred-two-minutes": {
         "task": "bengaluru.tasks.schedule_zero_five_hundred",
-        "schedule": 120.0,  # schedule every 2 minutes
+        "schedule": 60.0,  # schedule every 2 minutes
         "args": (),
     },
 

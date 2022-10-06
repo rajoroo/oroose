@@ -1,3 +1,4 @@
+import time
 from datetime import datetime
 
 from django.utils.timezone import get_current_timezone
@@ -5,6 +6,7 @@ from django.utils.timezone import get_current_timezone
 from core.configuration import ParameterStore
 from core.models import DataLog, ParameterSettings
 from oroose.celery import app
+from core.configuration import only_one
 
 from .evaluation import analyse_stocks_five_hundred, polling_live_stocks_five_hundred, process_five_hundred
 
@@ -34,7 +36,8 @@ def condition_schedule_live_stocks_fh():
     return False
 
 
-@app.task
+@app.task(name="bengaluru.tasks.schedule_live_stocks_five_hundred")
+@only_one(key="SingleTask", timeout=60 * 5)
 def schedule_live_stocks_five_hundred():
     print("Schedule live stocks five hundred started")
     obj = DataLog(
@@ -46,12 +49,14 @@ def schedule_live_stocks_five_hundred():
     print(condition_schedule_live_stocks_fh())
     if condition_schedule_live_stocks_fh():
         print("Schedule live stocks five hundred in-progress")
-        polling_live_stocks_five_hundred()
+        time.sleep(120)
+        # polling_live_stocks_five_hundred()
         print("Schedule live stocks five hundred zero in-progress")
-        analyse_stocks_five_hundred()
+        # analyse_stocks_five_hundred()
     print("Schedule live stocks five hundred end")
     obj.end_time = datetime.now()
     obj.save()
+
 
 
 def condition_schedule_zero_fh():
@@ -71,7 +76,8 @@ def condition_schedule_zero_fh():
     return False
 
 
-@app.task
+@app.task(name="bengaluru.tasks.schedule_zero_five_hundred")
+@only_one(key="SingleTask", timeout=60 * 5)
 def schedule_zero_five_hundred():
     print("Schedule zero five hundred started")
     obj = DataLog(
@@ -83,7 +89,7 @@ def schedule_zero_five_hundred():
     print(condition_schedule_zero_fh())
     if condition_schedule_zero_fh():
         print("Schedule zero five hundred in-progress")
-        process_five_hundred()
+        # process_five_hundred()
         print("Schedule zero five hundred zero in-progress")
     print("Schedule zero five hundred end")
     obj.end_time = datetime.now()
