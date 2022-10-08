@@ -1,31 +1,63 @@
-# from django.test import TestCase
-# from bengaluru.models import FiveHundred
-# from bengaluru.views import m_addition
-# import pytest
-#
-#
-# @pytest.mark.django_db
-# def test_something(client):
-#     response = client.get('/')
-#     print(response)
-#     print(dir(response))
-#     print(response.context)
-#     assert b'Success!' in client.get('').content
-#
-#
-# def test_capital_case():
-#     assert 'Semaphore' == 'Semaphore'
-#
-#
-# class AnimalTestCase(TestCase):
-#     @classmethod
-#     def setUpTestData(cls):
-#         """Set up test for JointVentureAdmin"""
-#         cls.max = 1
-#         cls.xam = 2
-#
-#     def setUp(self):
-#         pass
-#
-#     def test_m_addition(self):
-#         assert m_addition(self.max, self.xam) == 3
+from django.test import TestCase
+from django.test import Client
+from django.urls import reverse
+from unittest.mock import patch
+from http import HTTPStatus
+from django.contrib.auth.models import User
+
+
+class BengaluruPageViewTestCase(TestCase):
+
+    @classmethod
+    def setUpTestData(cls):
+        """Set up test for bengaluru.bengaluru_page function"""
+
+        cls.title = '<title>Oroose - Bengaluru</title>'
+
+    def setUp(self) -> None:
+        self.client = Client()
+        self.user = User.objects.create_user('john', 'lennon@xing.com', 'johnpassword')
+        self.client.login(username='john', password='johnpassword')
+
+    @patch("core.views.pre_check_server_start", return_value=True)
+    def test_bengaluru_page(self, mock_request):
+        response = self.client.get(reverse('bengaluru'))
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        active_page = response.context[0].get("active_page")
+        self.assertEqual(active_page, "bengaluru")
+        self.assertInHTML(self.title, response.content.decode())
+
+    def test_display_buttons(self):
+        response = self.client.get(reverse('bengaluru'))
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertInHTML("Load Data", response.content.decode())
+        self.assertInHTML("Pull Nifty 500", response.content.decode())
+        self.assertInHTML("Analyse FH Zero", response.content.decode())
+        self.assertInHTML("Process FH Zero", response.content.decode())
+
+    def test_display_tables(self):
+        response = self.client.get(reverse('bengaluru'))
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertInHTML("Nifty 500", response.content.decode())
+        self.assertInHTML("FH Zero", response.content.decode())
+
+
+class LoadFHView():
+    pass
+
+
+class LoadFHZeroView():
+    pass
+
+
+class PullFHApi():
+    pass
+
+
+class EvaluateFHZero():
+    pass
+
+
+class ProcessFHApi():
+    pass
+
