@@ -4,8 +4,14 @@ from django.urls import reverse
 from unittest.mock import patch
 from http import HTTPStatus
 from django.contrib.auth.models import User
+from bengaluru.models import FiveHundred
+from bengaluru.views import load_fh_view
+from core.models import ParameterSettings
+import pytest
+from oroose.conftest import login_user
 
 
+@pytest.mark.usefixtures("login_user")
 class BengaluruPageViewTestCase(TestCase):
 
     @classmethod
@@ -16,8 +22,7 @@ class BengaluruPageViewTestCase(TestCase):
 
     def setUp(self) -> None:
         self.client = Client()
-        self.user = User.objects.create_user('john', 'lennon@xing.com', 'johnpassword')
-        self.client.login(username='john', password='johnpassword')
+        self.client.force_login(self.user)
 
     @patch("core.views.pre_check_server_start", return_value=True)
     def test_bengaluru_page(self, mock_request):
@@ -41,9 +46,39 @@ class BengaluruPageViewTestCase(TestCase):
         self.assertInHTML("Nifty 500", response.content.decode())
         self.assertInHTML("FH Zero", response.content.decode())
 
+    def test_load_scripts(self):
+        response = self.client.get(reverse('bengaluru'))
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        assert "load_bengaluru.js" in str(response.content.decode())
 
-class LoadFHView():
-    pass
+
+@pytest.mark.usefixtures("login_user")
+class LoadFHViewTestCase(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        """Set up test for bengaluru.load_fh_view function"""
+
+        cls.ps = ParameterSettings(
+            name="SETTINGS_FH_LIVE_STOCKS_NSE",
+            status=True
+        )
+        cls.ps.save()
+
+    def setUp(self) -> None:
+        self.client = Client()
+        self.client.force_login(self.user)
+
+    def test_load_fh_view_parameter_settings_true(self):
+        response = self.client.get(reverse('load_fh_view'))
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        assert 'bg-primary' in str(response.content.decode())
+
+    def test_load_fh_view_parameter_settings_false(self):
+        self.ps.status = False
+        self.ps.save()
+        response = self.client.get(reverse('load_fh_view'))
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        assert 'bg-danger' in str(response.content.decode())
 
 
 class LoadFHZeroView():
@@ -60,4 +95,3 @@ class EvaluateFHZero():
 
 class ProcessFHApi():
     pass
-
