@@ -1,5 +1,5 @@
 from django.test import TestCase
-from unittest.mock import patch, MagicMock, mock_open
+from unittest.mock import patch
 from core.views import pre_check_server_start
 import pytest
 
