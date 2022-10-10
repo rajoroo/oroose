@@ -1,7 +1,7 @@
 import os
 
 # from core.configuration import only_one
-from celery import Celery, Task
+from celery import Celery
 
 # Set the default Django settings module for the 'celery' program.
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "oroose.settings")
@@ -45,4 +45,3 @@ app.conf.beat_schedule = {
     },
 
 }
-

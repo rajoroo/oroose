@@ -123,4 +123,3 @@ class FhZero(models.Model):
                 break
 
         super(FhZero, self).save(*args, **kwargs)
-

@@ -1,10 +1,7 @@
 from bengaluru.models import FiveHundred
 from django.test import TestCase
 from datetime import datetime
-from oroose.conftest import generate_valid_ps
 import pytest
-from core.models import ParameterSettings
-from unittest.mock import patch
 import time_machine
 from zoneinfo import ZoneInfo
 

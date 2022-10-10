@@ -9,7 +9,7 @@ from django.conf import settings
 from core.models import DataLog, ParameterSettings
 
 from .evaluation import analyse_stocks_five_hundred, polling_live_stocks_five_hundred, process_five_hundred
-from .models import FhZero, FhZeroStatus, FiveHundred
+from bengaluru.models import FhZero, FiveHundred
 
 
 LOG_SCHEDULE_LIVE_500 = settings.LOG_SCHEDULE_LIVE_500

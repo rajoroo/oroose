@@ -1,11 +1,8 @@
 from django.test import TestCase
 from django.test import Client
 from django.urls import reverse
-from unittest.mock import patch
 from http import HTTPStatus
-from django.contrib.auth.models import User
 from bengaluru.models import FiveHundred
-from bengaluru.views import load_fh_view
 from core.models import ParameterSettings
 import pytest
 from oroose.conftest import login_user
