@@ -50,9 +50,9 @@ def schedule_live_stocks_five_hundred():
     if condition_schedule_live_stocks_fh():
         print("Schedule live stocks five hundred in-progress")
         time.sleep(120)
-        # polling_live_stocks_five_hundred()
+        polling_live_stocks_five_hundred()
         print("Schedule live stocks five hundred zero in-progress")
-        # analyse_stocks_five_hundred()
+        analyse_stocks_five_hundred()
     print("Schedule live stocks five hundred end")
     obj.end_time = datetime.now()
     obj.save()
@@ -89,7 +89,7 @@ def schedule_zero_five_hundred():
     print(condition_schedule_zero_fh())
     if condition_schedule_zero_fh():
         print("Schedule zero five hundred in-progress")
-        # process_five_hundred()
+        process_five_hundred()
         print("Schedule zero five hundred zero in-progress")
     print("Schedule zero five hundred end")
     obj.end_time = datetime.now()
