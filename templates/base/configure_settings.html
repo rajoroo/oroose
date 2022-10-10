@@ -7,20 +7,20 @@
 
 {% block content %}
 
-    <div class="row">
-        <div class="col-8 col-sm-8">
+    <div class="card-columns">
+        {% for conf_key, conf_value in param_configs.items %}
             <div class="card configure-settings">
                 <div class="card-header border-bottom">
-                    <h3 class="card-title mb-0">Parameter Store</h3>
+                    <h3 class="card-title mb-0">{{ conf_value.display_name }}</h3>
                 </div>
                 <div class="card-body">
-                    <div id="parameter_store">
+                    <div id="parameter_{{ conf_key }}">
                         <table class="green-table">
                             <tr>
                                 <th>Name</th>
                                 <th>Value</th>
                             </tr>
-                            {% for key, value in param_configs.items %}
+                            {% for key, value in conf_value.value.items %}
                             <tr>
                                 <td>{{ key }}</td>
                                 <td>{{ value }}</td>
@@ -30,8 +30,7 @@
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="col-4 col-sm-4">
+        {% endfor %}
             <div class="card configure-settings">
                 <div class="card-header border-bottom">
                     <h3 class="card-title mb-0">Parameter Settings</h3>
@@ -62,7 +61,6 @@
                     </div>
                 </div>
             </div>
-        </div>
     </div>
 
 {% endblock content %}

@@ -6,6 +6,47 @@ from django.conf import settings
 REDIS_CLIENT = redis.Redis()
 
 
+parameter_store = {
+    "api": {
+        "display_name": "API",
+        "value": {
+            "LIVE_INDEX_URL": settings.LIVE_INDEX_URL,
+            "LIVE_INDEX_500_URL": settings.LIVE_INDEX_500_URL,
+        }
+
+    },
+    "five_hundred": {
+        "display_name": "Five Hundred",
+        "value": {
+            "FH_RANK_FROM": settings.FH_RANK_FROM,
+            "FH_RANK_TILL": settings.FH_RANK_TILL,
+            "FH_MAX_PRICE": settings.FH_MAX_PRICE,
+            "FH_MAX_PERCENT": settings.FH_MAX_PERCENT,
+            "FH_MAX_BUY_ORDER": settings.FH_MAX_BUY_ORDER,
+        }
+
+    },
+    "timings": {
+        "display_name": "Timings",
+        "value": {
+            "FH_STOCK_LIVE_START": settings.FH_STOCK_LIVE_START,
+            "FH_STOCK_LIVE_END": settings.FH_STOCK_LIVE_END,
+            "FH_ZERO_START": settings.FH_ZERO_START,
+            "FH_ZERO_END": settings.FH_ZERO_END,
+        }
+
+    },
+    "loggers": {
+        "display_name": "Loggers",
+        "value": {
+            "LOG_SCHEDULE_LIVE_500": settings.LOG_SCHEDULE_LIVE_500,
+            "LOG_SCHEDULE_ZERO_500": settings.LOG_SCHEDULE_ZERO_500,
+        }
+
+    },
+}
+
+
 class ParameterStore:
     def __init__(self):
         self.path = settings.LOAD_CONFIG_PATH
