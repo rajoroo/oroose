@@ -16,7 +16,11 @@ from dotenv import load_dotenv
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-if os.environ.get('MAIN_PROCESS') != 'PRODUCTION':
+
+if os.environ.get('MAIN_PROCESS') in ['PRODUCTION', 'TESTING']:
+    load_config = os.environ.get('LOAD_CONFIG_PATH')
+    load_dotenv(dotenv_path=load_config)
+else:
     load_dotenv(dotenv_path=os.path.join(BASE_DIR, ".env"))
 
 # Quick-start development settings - unsuitable for production
