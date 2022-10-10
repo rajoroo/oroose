@@ -3,18 +3,19 @@ from datetime import datetime
 
 from django.utils.timezone import get_current_timezone
 
-from core.configuration import ParameterStore
 from core.models import DataLog, ParameterSettings
 from oroose.celery import app
 from core.configuration import only_one
+from django.conf import settings
 
 from .evaluation import analyse_stocks_five_hundred, polling_live_stocks_five_hundred, process_five_hundred
 
 
-LOG_SCHEDULE_LIVE_500 = ParameterStore().get_conf("LOG_SCHEDULE_LIVE_500")
-LOG_SCHEDULE_ZERO_500 = ParameterStore().get_conf("LOG_SCHEDULE_ZERO_500")
-FH_STOCK_LIVE_START = ParameterStore().get_conf("FH_STOCK_LIVE_START")
-FH_STOCK_LIVE_END = ParameterStore().get_conf("FH_STOCK_LIVE_END")
+LOG_SCHEDULE_LIVE_500 = settings.LOG_SCHEDULE_LIVE_500
+LOG_SCHEDULE_ZERO_500 = settings.LOG_SCHEDULE_ZERO_500
+FH_STOCK_LIVE_START = settings.FH_STOCK_LIVE_START
+FH_STOCK_LIVE_END = settings.FH_STOCK_LIVE_END
+
 SETTINGS_FH_LIVE_STOCKS_NSE = "SETTINGS_FH_LIVE_STOCKS_NSE"
 SETTINGS_FH_ZERO = "SETTINGS_FH_ZERO"
 

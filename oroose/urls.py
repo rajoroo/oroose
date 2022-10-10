@@ -16,10 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path
 
-from core.views import pre_check_server_start
 from home import views
-
-pre_check_server_start()
 
 
 urlpatterns = [

@@ -1,15 +1,15 @@
 from datetime import datetime
 
 from django.utils.timezone import get_current_timezone
+from django.conf import settings
 
 from bengaluru.models import FhZero, FhZeroStatus, FiveHundred
-from core.configuration import ParameterStore
 from core.stocks import LiveStocks
 
 
-LIVE_INDEX_URL = ParameterStore().get_conf("LIVE_INDEX_URL")
-LIVE_INDEX_500_URL = ParameterStore().get_conf("LIVE_INDEX_500_URL")
-FH_MAX_TOTAL_PRICE = ParameterStore().get_conf("FH_MAX_TOTAL_PRICE")  # 20000
+LIVE_INDEX_URL = settings.LIVE_INDEX_URL
+LIVE_INDEX_500_URL = settings.LIVE_INDEX_500_URL
+FH_MAX_TOTAL_PRICE = settings.FH_MAX_TOTAL_PRICE  # 20000
 
 
 def update_five_hundred(data):

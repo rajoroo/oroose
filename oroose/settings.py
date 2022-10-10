@@ -162,6 +162,7 @@ LIVE_INDEX_500_URL = os.environ.get('LIVE_INDEX_500_URL')
 FH_RANK_FROM = os.environ.get('FH_RANK_FROM')
 FH_RANK_TILL = os.environ.get('FH_RANK_TILL')
 FH_MAX_PRICE = os.environ.get('FH_MAX_PRICE')
+FH_MAX_TOTAL_PRICE = os.environ.get('FH_MAX_TOTAL_PRICE')
 FH_MAX_PERCENT = os.environ.get('FH_MAX_PERCENT')
 FH_MAX_BUY_ORDER = os.environ.get('FH_MAX_BUY_ORDER')
 
