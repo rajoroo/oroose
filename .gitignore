@@ -5,7 +5,7 @@ __pycache__/
 htmlcov/
 
 .coverage
-.env.sample
+.env
 
 celerybeat-*
 *.bak

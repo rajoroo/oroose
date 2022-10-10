@@ -16,12 +16,8 @@ from dotenv import load_dotenv
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-if os.environ.get('MAIN_PROCESS') == 'PRODUCTION':
-    load_dotenv(dotenv_path=os.path.join(BASE_DIR, "prod.env"))
-elif os.environ.get('MAIN_PROCESS') == 'TESTING':
-    load_dotenv(dotenv_path=os.path.join(BASE_DIR, "test.env"))
-else:
-    load_dotenv(dotenv_path=os.path.join(BASE_DIR, "devel.env"))
+if os.environ.get('MAIN_PROCESS') != 'PRODUCTION':
+    load_dotenv(dotenv_path=os.path.join(BASE_DIR, ".env"))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
@@ -140,10 +136,6 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
-
-# Config file
-# LOAD_CONFIG_PATH = "config.json"
-LOAD_CONFIG_PATH = os.environ.get('LOAD_CONFIG_PATH')
 
 
 # Celery - prefix with CELERY_
