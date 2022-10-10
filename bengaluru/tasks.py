@@ -58,7 +58,6 @@ def schedule_live_stocks_five_hundred():
     obj.save()
 
 
-
 def condition_schedule_zero_fh():
     ps = ParameterSettings.objects.get(name=SETTINGS_FH_ZERO)
     start = datetime.strptime(FH_STOCK_LIVE_START, '%H%M').time()
