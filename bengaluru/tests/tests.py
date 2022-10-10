@@ -25,8 +25,7 @@ class BengaluruPageViewTestCase(TestCase):
         self.client = Client()
         self.client.force_login(self.user)
 
-    @patch("core.views.pre_check_server_start", return_value=True)
-    def test_bengaluru_page(self, mock_request):
+    def test_bengaluru_page(self):
         response = self.client.get(reverse('bengaluru'))
         self.assertEqual(response.status_code, HTTPStatus.OK)
         active_page = response.context[0].get("active_page")
@@ -91,18 +90,7 @@ class PullFHApiTestCase(TestCase):
     def setUpTestData(cls):
         """Set up test for bengaluru.pull_fh_api function"""
 
-        fh = FiveHundred(
-            date="",
-            time="",
-            rank="",
-            symbol="",
-            identifier="",
-            company_name="",
-            isin="",
-            last_price="",
-            percentage_change="",
-        )
-        fh.save()
+        pass
 
     def test_live_stocks(self):
         pass

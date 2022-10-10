@@ -1,17 +1,16 @@
 from bengaluru.models import FiveHundred
 from django.test import TestCase
 from datetime import datetime
-from oroose.conftest import pre_check_server_start_json, generate_valid_ps
+from oroose.conftest import generate_valid_ps
 import pytest
 from core.models import ParameterSettings
 from unittest.mock import patch
 import time_machine
 from zoneinfo import ZoneInfo
 
-hill_valley_tz = ZoneInfo("America/Los_Angeles")
+tz_info = ZoneInfo("Asia/Kolkata")
 
 
-@pytest.mark.usefixtures("pre_check_server_start_json")
 @pytest.mark.usefixtures("generate_valid_ps")
 class FiveHundredTestCase(TestCase):
     fh_1 = None
@@ -33,6 +32,6 @@ class FiveHundredTestCase(TestCase):
         )
         cls.fh_1.save()
 
-    @time_machine.travel(datetime(2022, 10, 7, 1, 24, tzinfo=hill_valley_tz))
+    @time_machine.travel(datetime(2022, 10, 7, 1, 24, tzinfo=tz_info))
     def test_valid_buy(self):
         self.assertTrue(self.fh_1.fhz_to_buy_condition)
