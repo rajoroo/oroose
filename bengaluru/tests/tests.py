@@ -9,6 +9,7 @@ from bengaluru.views import load_fh_view
 from core.models import ParameterSettings
 import pytest
 from oroose.conftest import login_user
+from datetime import datetime
 
 
 @pytest.mark.usefixtures("login_user")
@@ -85,12 +86,60 @@ class LoadFHZeroView():
     pass
 
 
-class PullFHApi():
-    pass
+class PullFHApiTestCase(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        """Set up test for bengaluru.pull_fh_api function"""
+
+        fh = FiveHundred(
+            date="",
+            time="",
+            rank="",
+            symbol="",
+            identifier="",
+            company_name="",
+            isin="",
+            last_price="",
+            percentage_change="",
+        )
+        fh.save()
+
+    def test_live_stocks(self):
+        pass
+
+    def test_update_fh(self):
+        pass
+
+    def test_api_pass(self):
+        pass
+
+    def test_api_fail(self):
+        pass
 
 
-class EvaluateFHZero():
-    pass
+class EvaluateFHZeroTestCase(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        """Set up test for bengaluru.evaluate_fh_zero function"""
+
+        fh = FiveHundred(
+            date=datetime.today(),
+            time=datetime.now(),
+            rank=1,
+            symbol="STOCK1",
+            identifier="STOCK1",
+            company_name="Stock 1",
+            isin="isin12345",
+            last_price=250,
+            percentage_change=4,
+        )
+        fh.save()
+
+    def test_valid_buy(self):
+        pass
+
+    def test_valid_sell(self):
+        pass
 
 
 class ProcessFHApi():

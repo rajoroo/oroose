@@ -2,8 +2,10 @@ from django.test import TestCase
 from unittest.mock import patch
 from core.views import pre_check_server_start
 import pytest
+from oroose.conftest import pre_check_server_start_json
 
 
+@pytest.mark.usefixtures("pre_check_server_start_json")
 class PreCheckServerStartTestCase(TestCase):
     key_list = None
 
@@ -44,7 +46,7 @@ class PreCheckServerStartTestCase(TestCase):
 
     @patch("core.views.json.load")
     def test_pre_check_server_start_valid_json(self, mock_json_load):
-        mock_json_load.return_value = dict({"data": self.key_dict})
+        mock_json_load.return_value = dict({"data": self.valid_json["data"]})
         self.assertTrue(pre_check_server_start())
 
     @patch("core.views.json.load")
