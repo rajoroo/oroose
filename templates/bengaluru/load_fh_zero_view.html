@@ -12,6 +12,7 @@
         <th>Last Price</th>
         <th>Buy Price</th>
         <th>Sell Price</th>
+        <th>Profit/Loss</th>
         <th>Status</th>
     </tr>
     {% for item in items %}
@@ -25,6 +26,7 @@
         <td>{{ item.last_price }}</td>
         <td>{{ item.buy_price }}</td>
         <td>{{ item.sell_price }}</td>
+        <td>{{ item.profit_loss }}</td>
         <td>{{ item.status }}</td>
     </tr>
 {% endfor %}

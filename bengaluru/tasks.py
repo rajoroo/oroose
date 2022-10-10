@@ -49,7 +49,6 @@ def schedule_live_stocks_five_hundred():
     print(condition_schedule_live_stocks_fh())
     if condition_schedule_live_stocks_fh():
         print("Schedule live stocks five hundred in-progress")
-        time.sleep(120)
         polling_live_stocks_five_hundred()
         print("Schedule live stocks five hundred zero in-progress")
         analyse_stocks_five_hundred()
