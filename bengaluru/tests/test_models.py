@@ -30,5 +30,35 @@ class FiveHundredTestCase(TestCase):
         cls.fh_1.save()
 
     @time_machine.travel(datetime(2022, 10, 7, 1, 24, tzinfo=tz_info))
-    def test_valid_buy(self):
+    def test_buy_valid(self):
         self.assertTrue(self.fh_1.fhz_to_buy_condition)
+
+    def test_buy_invalid_rank(self):
+        pass
+
+    def test_buy_invalid_price(self):
+        pass
+
+    def test_buy_invalid_percentage(self):
+        pass
+
+    def test_buy_invalid_order(self):
+        pass
+
+    def test_buy_invalid_time(self):
+        pass
+
+    def test_buy_invalid_day(self):
+        pass
+
+    def test_buy_invalid_settings(self):
+        pass
+
+    def test_sell_valid(self):
+        pass
+
+    def test_sell_invalid_rank(self):
+        pass
+
+    def test_sell_invalid_order(self):
+        pass
