@@ -50,3 +50,6 @@ class ConfigurationPageViewTestCase(TestCase):
         active_page = response.context[0].get("active_page")
         self.assertEqual(active_page, "configuration")
         self.assertInHTML(self.title, response.content.decode())
+
+    def test_configuration_page_tables(self):
+        pass
