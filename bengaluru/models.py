@@ -115,7 +115,7 @@ class FhZero(models.Model):
     objects = models.Manager()
 
     class Meta:
-        ordering = ["-id"]
+        ordering = ["symbol"]
         constraints = [
             models.UniqueConstraint(
                 fields=["date", "tag"],
@@ -124,13 +124,14 @@ class FhZero(models.Model):
         ]
 
     def save(self, *args, **kwargs):
-        tag_list = FhZero.objects.filter(date=datetime.today()).values_list("tag")
+        if not self.tag:
+            tag_list = FhZero.objects.filter(date=datetime.today()).values_list("tag")
 
-        while True:
-            alphanum = string.ascii_letters + string.digits
-            tag = "".join(secrets.choice(alphanum) for i in range(4))
-            if tag not in tag_list:
-                self.tag = tag
-                break
+            while True:
+                alphanum = string.ascii_letters + string.digits
+                tag = "".join(secrets.choice(alphanum) for i in range(4))
+                if tag not in tag_list:
+                    self.tag = tag
+                    break
 
         super(FhZero, self).save(*args, **kwargs)
