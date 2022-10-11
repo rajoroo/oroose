@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from django.contrib.auth.decorators import login_required
-from django.db.models import Max
+from django.db.models import Max, F
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.conf import settings
@@ -45,7 +45,10 @@ def pull_fh_api(request):
 
 def load_fh_zero_view(request):
     """Load five hundred zero objects display in table view"""
-    fhz = FhZero.objects.filter(date=datetime.today())
+    fhz = (
+        FhZero.objects.filter(date=datetime.today())
+        .annotate(profit_loss=F("quantity") * (F("sell_price") - F("buy_price")))
+    )
 
     context = {
         "items": list(fhz.values()),

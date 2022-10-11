@@ -102,6 +102,5 @@ def process_five_hundred():
     elif fhz.status == FhZeroStatus.TO_SELL:
         fhz.status = FhZeroStatus.SOLD
         fhz.sell_price = fhz.five_hundred.last_price
-        fhz.profit_loss = fhz.buy_price - fhz.five_hundred.last_price
 
     fhz.save()

@@ -26,7 +26,7 @@
         <td>{{ item.last_price }}</td>
         <td>{{ item.buy_price }}</td>
         <td>{{ item.sell_price }}</td>
-        <td>{{ item.profit_loss }}</td>
+        <td>{{ item.profit_loss|floatformat:2 }}</td>
         <td>{{ item.status }}</td>
     </tr>
 {% endfor %}
