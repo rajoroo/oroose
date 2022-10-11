@@ -90,7 +90,7 @@ def process_five_hundred():
     fhz = FhZero.objects.filter(
         date=datetime.today(),
         status__in=[FhZeroStatus.TO_BUY, FhZeroStatus.TO_SELL]
-    ).first()
+    ).order_by('updated_date').first()
 
     if not fhz:
         return None

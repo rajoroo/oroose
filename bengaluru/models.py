@@ -33,7 +33,12 @@ class FiveHundred(models.Model):
 
     class Meta:
         ordering = ["-date", "rank"]
-        constraints = [models.UniqueConstraint(fields=["date", "isin"], name="unique_five_hundred")]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["date", "symbol"],
+                name="%(app_label)s_%(class)s_unique_five_hundred"
+            )
+        ]
 
     @property
     def fhz_to_buy_condition(self):
@@ -63,12 +68,10 @@ class FiveHundred(models.Model):
     def fhz_to_sell_condition(self):
         result = False
         ps = ParameterSettings.objects.get(name=SETTINGS_FH_ZERO)
-        purchased_obj = self.fhzero_set.filter(status=FhZeroStatus.PURCHASED)
         if (
             ps.status
             and self.rank > FH_RANK_TILL
-            and purchased_obj
-            and purchased_obj.count() == 1
+            and self.fhzero_set.filter(status=FhZeroStatus.PURCHASED).exists()
         ):
             result = True
 
@@ -85,6 +88,7 @@ class FhZeroStatus(models.TextChoices):
 class FhZero(models.Model):
     date = models.DateField(verbose_name="Date")
     time = models.DateTimeField(verbose_name="Time")
+    updated_date = models.DateTimeField(verbose_name="Updated Date", auto_now_add=True)
     tag = models.CharField(max_length=10, verbose_name="Tag")
     five_hundred = models.ForeignKey(
         FiveHundred,
@@ -100,17 +104,24 @@ class FhZero(models.Model):
         choices=FhZeroStatus.choices,
         verbose_name="Status",
     )
+    order_id = models.CharField(max_length=100, verbose_name="Order ID", null=True, blank=True)
+    stop_loss_id = models.CharField(max_length=100, verbose_name="Stop Loss ID", null=True, blank=True)
     quantity = models.IntegerField(verbose_name="Quantity")
     last_price = models.FloatField(verbose_name="Last Price")
-    buy_price = models.FloatField(null=True, blank=True, verbose_name="Buy Price")
-    sell_price = models.FloatField(null=True, blank=True, verbose_name="Sell Price")
-    profit_loss = models.FloatField(null=True, blank=True, verbose_name="Profit Loss")
+    buy_price = models.FloatField(verbose_name="Buy Price", default=0.0)
+    sell_price = models.FloatField(verbose_name="Sell Price", default=0.0)
+    current_price = models.FloatField(verbose_name="Current Price", default=0.0)
 
     objects = models.Manager()
 
     class Meta:
-        ordering = ["-date", "symbol"]
-        constraints = [models.UniqueConstraint(fields=["date", "tag"], name="%(app_label)s_%(class)s_unique_tag")]
+        ordering = ["-id"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["date", "tag"],
+                name="%(app_label)s_%(class)s_unique_tag"
+            )
+        ]
 
     def save(self, *args, **kwargs):
         tag_list = FhZero.objects.filter(date=datetime.today()).values_list("tag")
