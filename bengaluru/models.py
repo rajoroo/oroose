@@ -124,6 +124,7 @@ class FhZero(models.Model):
         ]
 
     def save(self, *args, **kwargs):
+        self.updated_date = datetime.now()
         if not self.tag:
             tag_list = FhZero.objects.filter(date=datetime.today()).values_list("tag")
 
