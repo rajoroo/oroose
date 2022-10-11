@@ -9,7 +9,7 @@ from core.stocks import LiveStocks
 
 LIVE_INDEX_URL = settings.LIVE_INDEX_URL
 LIVE_INDEX_500_URL = settings.LIVE_INDEX_500_URL
-FH_MAX_TOTAL_PRICE = settings.FH_MAX_TOTAL_PRICE  # 20000
+FH_MAX_TOTAL_PRICE = float(settings.FH_MAX_TOTAL_PRICE)  # 20000
 
 
 def update_five_hundred(data):
