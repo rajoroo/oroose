@@ -7,11 +7,11 @@ from django.db import models
 from django.conf import settings
 
 
-FH_RANK_FROM = int(settings.FH_RANK_FROM)  # 1
-FH_RANK_TILL = int(settings.FH_RANK_TILL)  # 5
-FH_MAX_PRICE = int(settings.FH_MAX_PRICE)  # 4500
-FH_MAX_PERCENT = int(settings.FH_MAX_PERCENT)  # 11
-FH_MAX_BUY_ORDER = int(settings.FH_MAX_BUY_ORDER)  # 2
+FH_RANK_FROM = settings.FH_RANK_FROM  # 1
+FH_RANK_TILL = settings.FH_RANK_TILL  # 5
+FH_MAX_PRICE = settings.FH_MAX_PRICE  # 4500
+FH_MAX_PERCENT = settings.FH_MAX_PERCENT  # 11
+FH_MAX_BUY_ORDER = settings.FH_MAX_BUY_ORDER  # 2
 
 FH_ZERO_START = settings.FH_ZERO_START
 FH_ZERO_END = settings.FH_ZERO_END

@@ -155,12 +155,12 @@ LIVE_INDEX_URL = os.environ.get('LIVE_INDEX_URL')
 LIVE_INDEX_500_URL = os.environ.get('LIVE_INDEX_500_URL')
 
 # FHZ Configuration
-FH_RANK_FROM = os.environ.get('FH_RANK_FROM')
-FH_RANK_TILL = os.environ.get('FH_RANK_TILL')
-FH_MAX_PRICE = os.environ.get('FH_MAX_PRICE')
-FH_MAX_TOTAL_PRICE = os.environ.get('FH_MAX_TOTAL_PRICE')
-FH_MAX_PERCENT = os.environ.get('FH_MAX_PERCENT')
-FH_MAX_BUY_ORDER = os.environ.get('FH_MAX_BUY_ORDER')
+FH_RANK_FROM = int(os.environ.get('FH_RANK_FROM'))
+FH_RANK_TILL = int(os.environ.get('FH_RANK_TILL'))
+FH_MAX_PRICE = float(os.environ.get('FH_MAX_PRICE'))
+FH_MAX_TOTAL_PRICE = float(os.environ.get('FH_MAX_TOTAL_PRICE'))
+FH_MAX_PERCENT = float(os.environ.get('FH_MAX_PERCENT'))
+FH_MAX_BUY_ORDER = int(os.environ.get('FH_MAX_BUY_ORDER'))
 
 # Logger
 LOG_SCHEDULE_LIVE_500 = os.environ.get('LOG_SCHEDULE_LIVE_500')
