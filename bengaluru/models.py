@@ -50,8 +50,6 @@ class FiveHundred(models.Model):
         start_time = datetime.combine(datetime.today(), start)
         end_time = datetime.combine(datetime.today(), end)
 
-        print(ps.status==False, "----")
-
         if (
             ps.status
             and (FH_RANK_FROM <= self.rank <= FH_RANK_TILL)
@@ -108,11 +106,14 @@ class FhZero(models.Model):
     )
     order_id = models.CharField(max_length=100, verbose_name="Order ID", null=True, blank=True)
     stop_loss_id = models.CharField(max_length=100, verbose_name="Stop Loss ID", null=True, blank=True)
+    sell_id = models.CharField(max_length=100, verbose_name="Sell ID", null=True, blank=True)
     quantity = models.IntegerField(verbose_name="Quantity")
     last_price = models.FloatField(verbose_name="Last Price")
     buy_price = models.FloatField(verbose_name="Buy Price", default=0.0)
     sell_price = models.FloatField(verbose_name="Sell Price", default=0.0)
     current_price = models.FloatField(verbose_name="Current Price", default=0.0)
+    error = models.BooleanField(default=False, verbose_name="Error")
+    error_message = models.TextField(verbose_name="Error Message", null=True, blank=True)
 
     objects = models.Manager()
 

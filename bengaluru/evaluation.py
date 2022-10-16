@@ -89,7 +89,11 @@ def analyse_stocks_five_hundred():
 def process_five_hundred():
     fhz = FhZero.objects.filter(
         date=datetime.today(),
-        status__in=[FhZeroStatus.TO_BUY, FhZeroStatus.TO_SELL]
+        status__in=[
+            FhZeroStatus.TO_BUY,
+            FhZeroStatus.TO_SELL,
+            FhZeroStatus.PURCHASED
+        ]
     ).order_by('updated_date').first()
 
     if not fhz:
@@ -98,6 +102,9 @@ def process_five_hundred():
     if fhz.status == FhZeroStatus.TO_BUY:
         fhz.status = FhZeroStatus.PURCHASED
         fhz.buy_price = fhz.five_hundred.last_price
+
+    elif fhz.status == FhZeroStatus.PURCHASED:
+        fhz.current_price = fhz.five_hundred.last_price
 
     elif fhz.status == FhZeroStatus.TO_SELL:
         fhz.status = FhZeroStatus.SOLD

@@ -48,6 +48,7 @@ def load_fh_zero_view(request):
     fhz = (
         FhZero.objects.filter(date=datetime.today())
         .annotate(profit_loss=F("quantity") * (F("sell_price") - F("buy_price")))
+        .annotate(current_pl=F("quantity") * (F("current_price") - F("buy_price")))
     )
 
     context = {

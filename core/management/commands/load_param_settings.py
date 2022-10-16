@@ -17,7 +17,7 @@ class Command(BaseCommand):
         ParameterSettings.objects.bulk_create([
             ParameterSettings(
                 name=item,
-                status=True,
+                status=False,
             )
             for item in configs
         ])
