@@ -2,7 +2,9 @@ import redis
 
 from django.conf import settings
 
-REDIS_CLIENT = redis.Redis()
+
+REDIS_CLIENT = redis.Redis.from_url(settings.CELERY_BROKER_URL)
+print(REDIS_CLIENT, "-----REDIS ClIEnt")
 
 
 parameter_store = {
