@@ -14,10 +14,6 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         ParameterSettings.objects.all().delete()
-        ParameterSettings.objects.bulk_create([
-            ParameterSettings(
-                name=item,
-                status=False,
-            )
-            for item in configs
-        ])
+
+        ParameterSettings.objects.create(name="SETTINGS_FH_LIVE_STOCKS_NSE")
+        ParameterSettings.objects.create(name="SETTINGS_FH_ZERO")

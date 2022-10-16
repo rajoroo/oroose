@@ -19,6 +19,7 @@ parameter_store = {
         "value": {
             "FH_RANK_FROM": settings.FH_RANK_FROM,
             "FH_RANK_TILL": settings.FH_RANK_TILL,
+            "FH_MIN_PRICE": settings.FH_MIN_PRICE,
             "FH_MAX_PRICE": settings.FH_MAX_PRICE,
             "FH_MAX_PERCENT": settings.FH_MAX_PERCENT,
             "FH_MAX_BUY_ORDER": settings.FH_MAX_BUY_ORDER,
