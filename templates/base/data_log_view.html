@@ -21,6 +21,7 @@
                                 <th>Name</th>
                                 <th>Start Time</th>
                                 <th>End Time</th>
+                                <th>Seconds</th>
                             </tr>
                             {% for item in items %}
                             <tr>
@@ -28,6 +29,7 @@
                                 <td>{{ item.name }}</td>
                                 <td>{{ item.start_time }}</td>
                                 <td>{% if item.end_time %}{{ item.end_time }}{% else %}-{% endif %}</td>
+                                <td>{{ item.seconds_diff }}</td>
                             </tr>
                             {% endfor %}
                         </table>

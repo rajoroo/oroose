@@ -9,6 +9,9 @@ class DataLog(models.Model):
 
     objects = models.Manager()
 
+    class Meta:
+        ordering = ["-start_time"]
+
 
 class ParameterSettings(models.Model):
     name = models.CharField(max_length=200, verbose_name="Name")

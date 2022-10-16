@@ -2,6 +2,7 @@ from datetime import datetime
 
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, HttpResponse
+from django.db.models import F
 
 from core.configuration import parameter_store
 from core.models import DataLog, ParameterSettings
@@ -26,7 +27,8 @@ def configuration_page(request):
 
 @login_required(login_url="/accounts/login/")
 def data_log_page(request):
-    obj = DataLog.objects.filter(date=datetime.today())
+    obj = DataLog.objects.filter(date=datetime.today())[:25]
+    obj.annotate(seconds_diff=F("end_time") - F("start_time"))
 
     context = {"items": list(obj.values()), "active_page": "data_log"}
     return render(request, "base/data_log_view.html", context=context)
