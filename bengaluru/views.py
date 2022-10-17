@@ -46,7 +46,7 @@ def pull_fh_api(request):
 def load_fh_zero_view(request):
     """Load five hundred zero objects display in table view"""
     fhz = (
-        FhZero.objects.filter()
+        FhZero.objects.filter(date=datetime.today())
         .annotate(profit_loss=F("quantity") * (F("sell_price") - F("buy_price")))
         .annotate(current_pl=F("quantity") * (F("current_price") - F("buy_price")))
     )
