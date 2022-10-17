@@ -26,18 +26,18 @@
         <td>{{ item.symbol }}</td>
         <td>{{ item.quantity }}</td>
         <td>{{ item.last_price }}</td>
-        <td>{{ item.buy_id }}</td>
-        <td>{{ item.stop_loss_id }}</td>
-        <td>{{ item.sell_id }}</td>
+        <td>{{ item.buy_id|default_if_none:"" }}</td>
+        <td>{{ item.stop_loss_id|default_if_none:"" }}</td>
+        <td>{{ item.sell_id|default_if_none:"" }}</td>
         <td>{{ item.buy_price }}</td>
         <td>{{ item.stop_loss_price }}</td>
         <td>{{ item.sell_price }}</td>
         <td>{{ item.current_price }}</td>
         <td>{{ item.status }}</td>
-        <td>{{ item.error }}</td>
-        <td>{{ item.error_message }}</td>
-        <td>{{ item.current_pl|floatformat:2 }}</td>
-        <td>{{ item.profit_loss|floatformat:2 }}</td>
+        <td>{% if item.error %}{{ item.error }}{% endif %}</td>
+        <td>{% if item.error_message %}{{ item.error_message }}{% endif %}</td>
+        <td>{% if item.sell_price == 0 %}{{ item.current_pl|floatformat:2 }}{% endif %}</td>
+        <td>{% if item.sell_price > 0 %}{{ item.profit_loss|floatformat:2 }}{% endif %}</td>
 
     </tr>
 {% endfor %}

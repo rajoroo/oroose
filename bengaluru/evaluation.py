@@ -70,7 +70,8 @@ def analyse_stocks_five_hundred():
                 isin=rec.isin,
                 five_hundred=rec,
                 status=FhZeroStatus.TO_BUY,
-                quantity=int(FH_MAX_TOTAL_PRICE / rec.last_price),
+                # quantity=int(FH_MAX_TOTAL_PRICE / rec.last_price),
+                quantity=1,
                 last_price=rec.last_price,
             )
             five_hundred_zero.save()
