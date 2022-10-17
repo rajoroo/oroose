@@ -173,3 +173,7 @@ FH_STOCK_LIVE_START = os.environ.get('FH_STOCK_LIVE_START')
 FH_STOCK_LIVE_END = os.environ.get('FH_STOCK_LIVE_END')
 FH_ZERO_START = os.environ.get('FH_ZERO_START')
 FH_ZERO_END = os.environ.get('FH_ZERO_END')
+
+# API Config
+ZERO_API_KEY = os.environ.get('ZERO_API_KEY')
+ZERO_ACCESS_TOKEN = os.environ.get('ZERO_ACCESS_TOKEN')

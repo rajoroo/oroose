@@ -1,8 +1,10 @@
 import logging
 from kiteconnect import KiteConnect
-from kite_settings import api_key, access_token
+from django.conf import settings
 import time
 import numpy as np
+
+from bengaluru.models import FhZeroStatus
 
 PRICE_PERCENTAGE = 99
 TRIGGER_PRICE_PERCENTAGE = 99.2
@@ -23,8 +25,8 @@ def zero_handler(func):
 
 class ZeroZero:
     def __init__(self, symbol, quantity, sl_id=None):
-        self.kite = KiteConnect(api_key=api_key)
-        self.kite.set_access_token(access_token)
+        self.kite = KiteConnect(api_key=settings.ZERO_API_KEY)
+        self.kite.set_access_token(settings.ZERO_ACCESS_TOKEN)
         self.symbol = symbol
         self.quantity = quantity
         self.buy_id = None
@@ -227,6 +229,7 @@ class ZeroZero:
 
         return {
             "status": read_sl_status.get("status", False),
+            "current_price": ltp,
             "sell_price": sell_price,
             "sl_price": sl_latest_price,
             "error": self.error,
@@ -277,7 +280,86 @@ class ZeroZero:
                 sell_price = read_sell_result.get("average_price", None)
 
         return {
+            "sell_id": self.sell_id,
             "sell_price": sell_price,
             "error": self.error,
             "error_message": self.error_message
         }
+
+
+def fhz_buy_stock(fhz_obj):
+    symbol = fhz_obj.symbol
+    quantity = 1
+
+    zo_buy = ZeroZero(symbol=symbol, quantity=quantity)
+    result = zo_buy.create_buy_stock()
+
+    # Orders
+    fhz_obj.buy_id = result.get("buy_id")
+    fhz_obj.stop_loss_id = result.get("sl_id")
+
+    # Price
+    fhz_obj.buy_price = result.get("buy_price")
+    fhz_obj.stop_loss_price = result.get("sl_price")
+    fhz_obj.current_price = result.get("buy_price")
+
+    # Error
+    fhz_obj.error = result.get("error")
+    fhz_obj.error_message = result.get("error_message")
+
+    # Status
+    if not result.get("error"):
+        fhz_obj.status = FhZeroStatus.PURCHASED
+
+    fhz_obj.save()
+
+
+def fhz_maintain_stock(fhz_obj):
+    symbol = fhz_obj.symbol
+    quantity = 1
+    sl_id = fhz_obj.stop_loss_id
+    sl_price = fhz_obj.stop_loss_price
+
+    zo_maintain = ZeroZero(symbol=symbol, quantity=quantity, sl_id=sl_id)
+    result = zo_maintain.maintain_stock(sl_price=sl_price)
+
+    # Price
+    if result.get("status", False) == "COMPLETE":
+        fhz_obj.sell_price = result.get("sell_price")
+        fhz_obj.sell_id = sl_id
+        fhz_obj.status = FhZeroStatus.SOLD
+    elif result.get("status", False) == "TRIGGER PENDING":
+        fhz_obj.stop_loss_price = result.get("sl_price")
+
+    fhz_obj.current_price = result.get("current_price")
+
+    # Error
+    fhz_obj.error = result.get("error")
+    fhz_obj.error_message = result.get("error_message")
+
+    fhz_obj.save()
+
+
+def fhz_sell_stock(fhz_obj):
+    symbol = fhz_obj.symbol
+    quantity = 1
+    sl_id = fhz_obj.stop_loss_id
+
+    zo_sell = ZeroZero(symbol=symbol, quantity=quantity, sl_id=sl_id)
+    result = zo_sell.sell_stock()
+
+    # Orders
+    fhz_obj.sell_id = result.get("sell_id")
+
+    # Price
+    fhz_obj.sell_price = result.get("sell_price")
+
+    # Error
+    fhz_obj.error = result.get("error")
+    fhz_obj.error_message = result.get("error_message")
+
+    # Status
+    if not result.get("error"):
+        fhz_obj.status = FhZeroStatus.SOLD
+
+    fhz_obj.save()
