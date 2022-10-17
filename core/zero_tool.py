@@ -1,0 +1,283 @@
+import logging
+from kiteconnect import KiteConnect
+from kite_settings import api_key, access_token
+import time
+import numpy as np
+
+PRICE_PERCENTAGE = 99
+TRIGGER_PRICE_PERCENTAGE = 99.2
+MIN_DIFFERENCE = 0.1
+
+logging.basicConfig(level=logging.DEBUG)
+
+
+def zero_handler(func):
+    def inner_function(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except Exception as e:
+            args[0].error = True
+            args[0].error_message = "Error: {error}".format(error=str(e))
+    return inner_function
+
+
+class ZeroZero:
+    def __init__(self, symbol, quantity, sl_id=None):
+        self.kite = KiteConnect(api_key=api_key)
+        self.kite.set_access_token(access_token)
+        self.symbol = symbol
+        self.quantity = quantity
+        self.buy_id = None
+        self.sl_id = sl_id
+        self.sell_id = None
+        self.error = False
+        self.error_message = None
+
+    @zero_handler
+    def read_orders(self, order_id, fields=None):
+        """
+        Read order
+        :param order_id: Order id
+        :param fields: The list of fields are requested to return as result
+        """
+        result = None
+        orders = self.kite.orders()
+        for order in orders:
+            if order["order_id"] == order_id:
+                result = {field: order[field] for field in fields}
+
+        print("Read is completed")
+        return result
+
+    @zero_handler
+    def generate_buy_order(self):
+        self.buy_id = self.kite.place_order(
+            tradingsymbol=self.symbol,
+            exchange=self.kite.EXCHANGE_NSE,
+            transaction_type=self.kite.TRANSACTION_TYPE_BUY,
+            quantity=self.quantity,
+            variety=self.kite.VARIETY_REGULAR,
+            order_type=self.kite.ORDER_TYPE_MARKET,
+            product=self.kite.PRODUCT_MIS,
+            validity=self.kite.VALIDITY_DAY
+        )
+        time.sleep(10)
+        print(f"buy order is completed {self.buy_id}")
+        return True
+
+    @zero_handler
+    def generate_sell_order(self):
+        self.sell_id = self.kite.place_order(
+            tradingsymbol=self.symbol,
+            exchange=self.kite.EXCHANGE_NSE,
+            transaction_type=self.kite.TRANSACTION_TYPE_SELL,
+            quantity=self.quantity,
+            variety=self.kite.VARIETY_REGULAR,
+            order_type=self.kite.ORDER_TYPE_MARKET,
+            product=self.kite.PRODUCT_MIS,
+            validity=self.kite.VALIDITY_DAY
+        )
+        time.sleep(10)
+        print(f"sell order is completed {self.sell_id}")
+        return True
+
+    @zero_handler
+    def generate_sl_order(self, price, trigger_price):
+        self.sl_id = self.kite.place_order(
+            tradingsymbol=self.symbol,
+            exchange=self.kite.EXCHANGE_NSE,
+            transaction_type=self.kite.TRANSACTION_TYPE_SELL,
+            quantity=self.quantity,
+            price=price,
+            trigger_price=trigger_price,
+            variety=self.kite.VARIETY_REGULAR,
+            order_type=self.kite.ORDER_TYPE_SL,
+            product=self.kite.PRODUCT_MIS,
+            validity=self.kite.VALIDITY_DAY
+        )
+        time.sleep(10)
+        print(f"sl order is completed {self.sl_id}")
+        return True
+
+    @zero_handler
+    def sl_modify_order(self, price, trigger_price):
+        self.kite.modify_order(
+            variety=self.kite.VARIETY_REGULAR,
+            order_id=self.sl_id,
+            price=price,
+            trigger_price=trigger_price,
+            order_type=self.kite.ORDER_TYPE_SL,
+            validity=self.kite.VALIDITY_DAY
+        )
+        time.sleep(10)
+        print(f"modify order is completed {self.sl_id}")
+        return True
+
+    @zero_handler
+    def sl_cancel_order(self):
+        self.kite.cancel_order(
+            variety=self.kite.VARIETY_REGULAR,
+            order_id=self.sl_id,
+        )
+        time.sleep(10)
+        print(f"cancel order is completed {self.sl_id}")
+        return True
+
+    def get_trigger_price(self, value):
+        one_percent = float(value) / 100
+        price = np.round(one_percent * PRICE_PERCENTAGE, 1)
+        trigger_price = np.round(one_percent * TRIGGER_PRICE_PERCENTAGE, 1)
+        if price == trigger_price:
+            trigger_price = price - MIN_DIFFERENCE
+
+        print("Price and trigger price is calculated")
+        return {
+            "price": price,
+            "trigger_price": trigger_price
+        }
+
+    @zero_handler
+    def fetch_stock_ltp(self):
+        instrument = f"NSE:{self.symbol}"
+        quote_response = self.kite.ltp(instrument)
+        last_trade_price = quote_response[instrument]["last_price"]
+
+        print(f"last traded price is fetched is {last_trade_price}")
+        return last_trade_price
+
+    def create_buy_stock(self):
+        """
+        step 1: get stock last traded price
+        step 2: Compute trigger price
+        step 3: create buy order
+        step 4: Read order status
+        step 5: generate stop loss order
+        step 6: Read stop loss order
+        :return: buy_id, sl_id, buy_price, sl_price
+        """
+        ltp = None
+        price_response = None
+        buy_result = None
+        read_buy_result = None
+        sl_result = None
+        read_sl_result = None
+        sl_price = None
+
+        # Fetch last traded price
+        ltp = self.fetch_stock_ltp()
+
+        # Create BUY
+        if not self.error and ltp:
+            price_response = self.get_trigger_price(ltp)
+            buy_result = self.generate_buy_order()
+
+        # Read BUY
+        if not self.error and buy_result:
+            read_buy_result = self.read_orders(order_id=self.buy_id, fields=["status", "average_price"])
+
+        # Create stop loss
+        if not self.error and read_buy_result.get("status", False) == "COMPLETE":
+            sl_result = self.generate_sl_order(price_response["price"], price_response["trigger_price"])
+
+        # Read stop loss
+        if not self.error and sl_result:
+            read_sl_result = self.read_orders(order_id=self.sl_id, fields=["status", "price"])
+
+        if not self.error and read_sl_result.get("status", False) == "TRIGGER PENDING":
+            sl_price = read_sl_result.get("price", None)
+
+        return {
+            "buy_id": self.buy_id,
+            "sl_id": self.sl_id,
+            "buy_price": read_buy_result.get("average_price", None),
+            "sl_price": sl_price,
+            "error": self.error,
+            "error_message": self.error_message
+        }
+
+    def maintain_stock(self, sl_price):
+        """
+        step 1: Read last traded price
+        step 2: Read stop loss status
+        step 3: if stop loss status is COMPLETE updated sl_id as sell_id
+        step 4: if stop loss status is TRIGGER PENDING updated sl_id price and trigger_price
+        :return:
+        """
+        sell_price = None
+        price_response = None
+        sl_latest_price = sl_price
+
+        # Fetch last traded price
+        ltp = self.fetch_stock_ltp()
+
+        # Read stop loss
+        read_sl_status = self.read_orders(order_id=self.sl_id, fields=["status", "average_price"])
+
+        # update sl_id as sell_id if status is COMPLETE
+        if not self.error and read_sl_status.get("status", False) == "COMPLETE":
+            self.sell_id = self.sl_id
+            sell_price = read_sl_status.get("average_price", None)
+
+        # Update stop loss order if status is TRIGGER PENDING
+        elif not self.error and read_sl_status.get("status", False) == "TRIGGER PENDING":
+            price_response = self.get_trigger_price(ltp)
+            if price_response["price"] > sl_price:
+                self.sl_modify_order(price_response["price"], price_response["trigger_price"])
+                sl_latest_price = price_response["price"]
+
+        return {
+            "status": read_sl_status.get("status", False),
+            "sell_price": sell_price,
+            "sl_price": sl_latest_price,
+            "error": self.error,
+            "error_message": self.error_message
+        }
+
+    def sell_stock(self):
+        """
+        step 1: Read stop loss order
+        step 2: if stop loss order is COMPLETE updated sl_id as sell_id
+        step 3: if stop loss order is TRIGGER PENDING
+        step 3.1: Cancel stop loss
+        step 3.2: Read cancel is executed
+        step 3.3: Create sell order
+        step 3.4: Read sell price from sell order
+        :return:
+        """
+        cancel_result = None
+        read_sl_cancel = None
+        sell_result = None
+        sell_price = None
+        read_sell_result = None
+
+        # Read stop loss
+        read_sl_status = self.read_orders(order_id=self.sl_id, fields=["status", "average_price"])
+
+        # update sl_id as sell_id if status is COMPLETE
+        if not self.error and read_sl_status.get("status", False) == "COMPLETE":
+            self.sell_id = self.sl_id
+            sell_price = read_sl_status.get("average_price", None)
+
+        # Cancel stop loss order if status is TRIGGER PENDING
+        elif not self.error and read_sl_status.get("status", False) == "TRIGGER PENDING":
+            cancel_result = self.sl_cancel_order()
+
+            # Read stop loss
+            if not self.error and cancel_result:
+                read_sl_cancel = self.read_orders(order_id=self.sl_id, fields=["status"])
+
+            if not self.error and read_sl_cancel.get("status", False) == "CANCELLED":
+                sell_result = self.generate_sell_order()
+
+            # Read SELL
+            if not self.error and sell_result:
+                read_sell_result = self.read_orders(order_id=self.sell_id, fields=["status", "average_price"])
+
+            if not self.error and read_sell_result.get("status", False) == "COMPLETE":
+                sell_price = read_sell_result.get("average_price", None)
+
+        return {
+            "sell_price": sell_price,
+            "error": self.error,
+            "error_message": self.error_message
+        }
