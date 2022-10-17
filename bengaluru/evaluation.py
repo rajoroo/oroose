@@ -5,6 +5,7 @@ from django.conf import settings
 
 from bengaluru.models import FhZero, FhZeroStatus, FiveHundred
 from core.stocks import LiveStocks
+from core.zero_tool import fhz_buy_stock, fhz_maintain_stock, fhz_sell_stock
 
 
 LIVE_INDEX_URL = settings.LIVE_INDEX_URL
@@ -87,6 +88,7 @@ def analyse_stocks_five_hundred():
 def process_five_hundred():
     fhz = FhZero.objects.filter(
         date=datetime.today(),
+        error=False,
         status__in=[
             FhZeroStatus.TO_BUY,
             FhZeroStatus.TO_SELL,
@@ -98,14 +100,11 @@ def process_five_hundred():
         return None
 
     if fhz.status == FhZeroStatus.TO_BUY:
-        fhz.status = FhZeroStatus.PURCHASED
-        fhz.buy_price = fhz.five_hundred.last_price
+        fhz_buy_stock(fhz_obj=fhz)
 
     elif fhz.status == FhZeroStatus.PURCHASED:
-        fhz.current_price = fhz.five_hundred.last_price
+        fhz_maintain_stock(fhz_obj=fhz)
 
     elif fhz.status == FhZeroStatus.TO_SELL:
-        fhz.status = FhZeroStatus.SOLD
-        fhz.sell_price = fhz.five_hundred.last_price
+        fhz_sell_stock(fhz_obj=fhz)
 
-    fhz.save()
