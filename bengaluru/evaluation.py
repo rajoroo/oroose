@@ -13,8 +13,6 @@ FH_MAX_TOTAL_PRICE = settings.FH_MAX_TOTAL_PRICE  # 20000
 
 
 def update_five_hundred(data):
-    FiveHundred.objects.filter(date=datetime.now()).update(rank=None)
-
     for index, row in data.iterrows():
         items = FiveHundred.objects.filter(date=datetime.now(), symbol=row["symbol"])
         if items:
