@@ -297,6 +297,7 @@ def fhz_buy_stock(fhz_obj):
     # Orders
     fhz_obj.buy_id = result.get("buy_id")
     fhz_obj.stop_loss_id = result.get("sl_id")
+    fhz_obj.quantity = quantity
 
     # Price
     fhz_obj.buy_price = result.get("buy_price")
@@ -332,6 +333,7 @@ def fhz_maintain_stock(fhz_obj):
         fhz_obj.stop_loss_price = result.get("sl_price")
 
     fhz_obj.current_price = result.get("current_price")
+    fhz_obj.quantity = quantity
 
     # Error
     fhz_obj.error = result.get("error")
@@ -350,6 +352,7 @@ def fhz_sell_stock(fhz_obj):
 
     # Orders
     fhz_obj.sell_id = result.get("sell_id")
+    fhz_obj.quantity = quantity
 
     # Price
     fhz_obj.sell_price = result.get("sell_price")
