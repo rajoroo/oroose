@@ -3,35 +3,42 @@
 {% if items %}
 <table id="fhzero" class="green-table">
     <tr>
-        <th>Create Data</th>
         <th>Update Date</th>
-        <th>Isin</th>
-        <th>Tag</th>
         <th>Symbol</th>
         <th>Quantity</th>
         <th>Last Price</th>
+        <th>Buy ID</th>
+        <th>SL ID</th>
+        <th>Sell ID</th>
         <th>Buy Price</th>
+        <th>SL Price</th>
         <th>Sell Price</th>
         <th>Current Price</th>
-        <th>Profit/Loss</th>
-        <th>Current PL</th>
         <th>Status</th>
+        <th>Error</th>
+        <th>Error msg</th>
+        <th>Current PL</th>
+        <th>Profit/Loss</th>
     </tr>
     {% for item in items %}
     <tr>
-        <td>{{ item.time|date:'d-m-Y H:i:s' }}</td>
         <td>{{ item.updated_date|date:'d-m-Y H:i:s' }}</td>
-        <td>{{ item.isin }}</td>
-        <td>{{ item.tag }}</td>
         <td>{{ item.symbol }}</td>
         <td>{{ item.quantity }}</td>
         <td>{{ item.last_price }}</td>
+        <td>{{ item.buy_id }}</td>
+        <td>{{ item.stop_loss_id }}</td>
+        <td>{{ item.sell_id }}</td>
         <td>{{ item.buy_price }}</td>
+        <td>{{ item.stop_loss_price }}</td>
         <td>{{ item.sell_price }}</td>
         <td>{{ item.current_price }}</td>
-        <td>{{ item.profit_loss|floatformat:2 }}</td>
-        <td>{{ item.current_pl|floatformat:2 }}</td>
         <td>{{ item.status }}</td>
+        <td>{{ item.error }}</td>
+        <td>{{ item.error_message }}</td>
+        <td>{{ item.current_pl|floatformat:2 }}</td>
+        <td>{{ item.profit_loss|floatformat:2 }}</td>
+
     </tr>
 {% endfor %}
 </table>
