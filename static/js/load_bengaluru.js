@@ -3,6 +3,10 @@ function reload_data() {
     $('#show_fh').load(fh_url);
     fhz_url = $('#show_fhz').attr('trigger-url');
     $('#show_fhz').load(fhz_url);
+    fhz_url = $('#show_error_fhz').attr('trigger-url');
+    $('#show_error_fhz').load(fhz_url);
+    fhz_url = $('#show_sold_fhz').attr('trigger-url');
+    $('#show_sold_fhz').load(fhz_url);
 }
 
 /* --------Start Auto reload--------- */

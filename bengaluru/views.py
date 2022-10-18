@@ -9,7 +9,7 @@ from django.conf import settings
 from core.models import DataLog, ParameterSettings
 
 from .evaluation import analyse_stocks_five_hundred, polling_live_stocks_five_hundred, process_five_hundred
-from bengaluru.models import FhZero, FiveHundred
+from bengaluru.models import FhZero, FiveHundred, FhZeroStatus
 
 
 LOG_SCHEDULE_LIVE_500 = settings.LOG_SCHEDULE_LIVE_500
@@ -46,15 +46,52 @@ def pull_fh_api(request):
 def load_fh_zero_view(request):
     """Load five hundred zero objects display in table view"""
     fhz = (
-        FhZero.objects.filter(date=datetime.today())
+        FhZero.objects.filter(
+            date=datetime.today(),
+            status__in=[FhZeroStatus.TO_BUY, FhZeroStatus.PURCHASED, FhZeroStatus.TO_SELL],
+            error=False
+        )
         .annotate(profit_loss=F("quantity") * (F("sell_price") - F("buy_price")))
         .annotate(current_pl=F("quantity") * (F("current_price") - F("buy_price")))
-    )
+    ).order_by('-updated_date')
 
     context = {
         "items": list(fhz.values()),
     }
     return render(request, "bengaluru/load_fh_zero_view.html", context=context)
+
+
+def load_fh_zero_error_view(request):
+    """Load five hundred zero objects display in table view"""
+    fhz = (
+        FhZero.objects.filter(
+            date=datetime.today(),
+            status__in=[FhZeroStatus.TO_BUY, FhZeroStatus.PURCHASED, FhZeroStatus.TO_SELL],
+            error=True
+        )
+        .annotate(profit_loss=F("quantity") * (F("sell_price") - F("buy_price")))
+    )
+
+    context = {
+        "items": list(fhz.values()),
+    }
+    return render(request, "bengaluru/load_fh_zero_error_view.html", context=context)
+
+
+def load_fh_zero_sold_view(request):
+    """Load five hundred zero objects display in table view"""
+    fhz = (
+        FhZero.objects.filter(
+            date=datetime.today(),
+            status=FhZeroStatus.SOLD
+        )
+        .annotate(profit_loss=F("quantity") * (F("sell_price") - F("buy_price")))
+    )
+
+    context = {
+        "items": list(fhz.values()),
+    }
+    return render(request, "bengaluru/load_fh_zero_sold_view.html", context=context)
 
 
 def evaluate_fh_zero(request):

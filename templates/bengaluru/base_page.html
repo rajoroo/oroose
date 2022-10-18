@@ -46,6 +46,30 @@
                 </div>
             </div>
         </div>
+        <div class="col-12 col-sm-12">
+            <div class="card nifty-table">
+                <div class="card-header border-bottom">
+                    <h3 class="card-title mb-0">FH Zero Error</h3>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <div id="show_error_fhz" trigger-url="{% url 'load_fh_zero_error_view' %}"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-sm-12">
+            <div class="card nifty-table">
+                <div class="card-header border-bottom">
+                    <h3 class="card-title mb-0">FH Zero Sold</h3>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <div id="show_sold_fhz" trigger-url="{% url 'load_fh_zero_sold_view' %}"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
 {% endblock content %}

@@ -7,6 +7,8 @@ urlpatterns = [
     path("pull_fh_api/", views.pull_fh_api, name="pull_fh_api"),
     path("evaluate_fh_zero/", views.evaluate_fh_zero, name="evaluate_fh_zero"),
     path("load_fh_zero_view/", views.load_fh_zero_view, name="load_fh_zero_view"),
+    path("load_fh_zero_error_view/", views.load_fh_zero_error_view, name="load_fh_zero_error_view"),
+    path("load_fh_zero_sold_view/", views.load_fh_zero_sold_view, name="load_fh_zero_sold_view"),
     path("process_fh_zero_api/", views.process_fh_zero_api, name="process_fh_zero_api"),
     path("", views.bengaluru_page, name="bengaluru"),
 ]

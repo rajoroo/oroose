@@ -160,10 +160,11 @@ class ZeroZero:
         ltp = None
         price_response = None
         buy_result = None
+        buy_price = 0.0
         read_buy_result = None
         sl_result = None
         read_sl_result = None
-        sl_price = None
+        sl_price = 0.0
 
         # Fetch last traded price
         ltp = self.fetch_stock_ltp()
@@ -177,6 +178,9 @@ class ZeroZero:
         if not self.error and buy_result:
             read_buy_result = self.read_orders(order_id=self.buy_id, fields=["status", "average_price"])
 
+        if isinstance(read_buy_result, dict):
+            buy_price = read_buy_result.get("average_price", 0.0)
+
         # Create stop loss
         if not self.error and read_buy_result.get("status", False) == "COMPLETE":
             sl_result = self.generate_sl_order(price_response["price"], price_response["trigger_price"])
@@ -186,12 +190,12 @@ class ZeroZero:
             read_sl_result = self.read_orders(order_id=self.sl_id, fields=["status", "price"])
 
         if not self.error and read_sl_result.get("status", False) == "TRIGGER PENDING":
-            sl_price = read_sl_result.get("price", None)
+            sl_price = read_sl_result.get("price", 0.0)
 
         return {
             "buy_id": self.buy_id,
             "sl_id": self.sl_id,
-            "buy_price": read_buy_result.get("average_price", None),
+            "buy_price": buy_price,
             "sl_price": sl_price,
             "error": self.error,
             "error_message": self.error_message
@@ -205,7 +209,7 @@ class ZeroZero:
         step 4: if stop loss status is TRIGGER PENDING updated sl_id price and trigger_price
         :return:
         """
-        sell_price = None
+        sell_price = 0.0
         price_response = None
         sl_latest_price = sl_price
 
@@ -218,7 +222,7 @@ class ZeroZero:
         # update sl_id as sell_id if status is COMPLETE
         if not self.error and read_sl_status.get("status", False) == "COMPLETE":
             self.sell_id = self.sl_id
-            sell_price = read_sl_status.get("average_price", None)
+            sell_price = read_sl_status.get("average_price", 0.0)
 
         # Update stop loss order if status is TRIGGER PENDING
         elif not self.error and read_sl_status.get("status", False) == "TRIGGER PENDING":
@@ -250,7 +254,7 @@ class ZeroZero:
         cancel_result = None
         read_sl_cancel = None
         sell_result = None
-        sell_price = None
+        sell_price = 0.0
         read_sell_result = None
 
         # Read stop loss
@@ -259,7 +263,7 @@ class ZeroZero:
         # update sl_id as sell_id if status is COMPLETE
         if not self.error and read_sl_status.get("status", False) == "COMPLETE":
             self.sell_id = self.sl_id
-            sell_price = read_sl_status.get("average_price", None)
+            sell_price = read_sl_status.get("average_price", 0.0)
 
         # Cancel stop loss order if status is TRIGGER PENDING
         elif not self.error and read_sl_status.get("status", False) == "TRIGGER PENDING":
@@ -277,7 +281,7 @@ class ZeroZero:
                 read_sell_result = self.read_orders(order_id=self.sell_id, fields=["status", "average_price"])
 
             if not self.error and read_sell_result.get("status", False) == "COMPLETE":
-                sell_price = read_sell_result.get("average_price", None)
+                sell_price = read_sell_result.get("average_price", 0.0)
 
         return {
             "sell_id": self.sell_id,

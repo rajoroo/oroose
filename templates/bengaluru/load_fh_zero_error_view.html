@@ -1,0 +1,44 @@
+{% load humanize %}
+
+{% if items %}
+<table id="fhzero" class="green-table">
+    <tr>
+        <th>Update Date</th>
+        <th>Symbol</th>
+        <th>Quantity</th>
+        <th>Last Price</th>
+        <th>Buy ID</th>
+        <th>SL ID</th>
+        <th>Sell ID</th>
+        <th>Buy Price</th>
+        <th>SL Price</th>
+        <th>Sell Price</th>
+        <th>Status</th>
+        <th>Error</th>
+        <th>Error msg</th>
+
+    </tr>
+    {% for item in items %}
+    <tr>
+        <td>{{ item.updated_date|date:'d-m-Y H:i:s' }}</td>
+        <td>{{ item.symbol }}</td>
+        <td>{{ item.quantity }}</td>
+        <td>{{ item.last_price }}</td>
+        <td>{{ item.buy_id|default_if_none:"" }}</td>
+        <td>{{ item.stop_loss_id|default_if_none:"" }}</td>
+        <td>{{ item.sell_id|default_if_none:"" }}</td>
+        <td>{{ item.buy_price }}</td>
+        <td>{{ item.stop_loss_price }}</td>
+        <td>{{ item.sell_price }}</td>
+        <td>{{ item.status }}</td>
+        <td>{% if item.error %}{{ item.error }}{% endif %}</td>
+        <td>{% if item.error_message %}{{ item.error_message }}{% endif %}</td>
+
+    </tr>
+{% endfor %}
+</table>
+{% endif %}
+
+<div class="pt-3 txt-rt">
+    Last Updated on {% now "d-m-Y H:i:s" %}
+</div>
