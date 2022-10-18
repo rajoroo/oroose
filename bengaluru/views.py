@@ -51,7 +51,6 @@ def load_fh_zero_view(request):
             status__in=[FhZeroStatus.TO_BUY, FhZeroStatus.PURCHASED, FhZeroStatus.TO_SELL],
             error=False
         )
-        .annotate(profit_loss=F("quantity") * (F("sell_price") - F("buy_price")))
         .annotate(current_pl=F("quantity") * (F("current_price") - F("buy_price")))
     ).order_by('-updated_date')
 
