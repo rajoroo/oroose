@@ -37,7 +37,7 @@ def condition_schedule_live_stocks_fh():
 
 
 @app.task(name="bengaluru.tasks.schedule_live_stocks_five_hundred")
-@only_one(key="SingleTask", timeout=60 * 5)
+@only_one(key="SingleTask", timeout=60 * 15)
 def schedule_live_stocks_five_hundred():
     print("Schedule live stocks five hundred started")
     obj = DataLog(

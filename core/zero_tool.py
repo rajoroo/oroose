@@ -6,8 +6,8 @@ import numpy as np
 
 from bengaluru.models import FhZeroStatus
 
-PRICE_PERCENTAGE = 99
-TRIGGER_PRICE_PERCENTAGE = 99.2
+PRICE_PERCENTAGE = 99.5
+TRIGGER_PRICE_PERCENTAGE = 99.6
 MIN_DIFFERENCE = 0.1
 
 logging.basicConfig(level=logging.DEBUG)
@@ -293,7 +293,7 @@ class ZeroZero:
 
 def fhz_buy_stock(fhz_obj):
     symbol = fhz_obj.symbol
-    quantity = 1
+    quantity = fhz_obj.quantity
 
     zo_buy = ZeroZero(symbol=symbol, quantity=quantity)
     result = zo_buy.create_buy_stock()
@@ -320,7 +320,7 @@ def fhz_buy_stock(fhz_obj):
 
 def fhz_maintain_stock(fhz_obj):
     symbol = fhz_obj.symbol
-    quantity = 1
+    quantity = fhz_obj.quantity
     sl_id = fhz_obj.stop_loss_id
     sl_price = fhz_obj.stop_loss_price
 
@@ -346,7 +346,7 @@ def fhz_maintain_stock(fhz_obj):
 
 def fhz_sell_stock(fhz_obj):
     symbol = fhz_obj.symbol
-    quantity = 1
+    quantity = fhz_obj.quantity
     sl_id = fhz_obj.stop_loss_id
 
     zo_sell = ZeroZero(symbol=symbol, quantity=quantity, sl_id=sl_id)
