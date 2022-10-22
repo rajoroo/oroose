@@ -40,7 +40,7 @@ app.conf.beat_schedule = {
     },
     "schedule-zero-five-hundred-two-minutes": {
         "task": "bengaluru.tasks.schedule_zero_five_hundred",
-        "schedule": 100.0,  # schedule every 2 minutes
+        "schedule": 60.0,  # schedule every 2 minutes
         "args": (),
     },
 
