@@ -29,45 +29,55 @@ class ZeroZero:
         self.kite.set_access_token(settings.ZERO_ACCESS_TOKEN)
         self.symbol = symbol
         self.quantity = quantity
+        self.ltp = None
         self.buy_id = None
         self.sl_id = sl_id
         self.sell_id = None
+        self.price_data = None
         self.error = False
         self.error_message = None
 
-    @zero_handler
-    def read_orders(self, order_id, fields=None):
+    def read_orders(self, order_id):
         """
         Read order
         :param order_id: Order id
-        :param fields: The list of fields are requested to return as result
         """
-        result = None
-        orders = self.kite.orders()
-        for order in orders:
-            if order["order_id"] == order_id:
-                result = {field: order[field] for field in fields}
+        result_data = None
+        fields = ["order_id", "status", "average_price", "price", "trigger_price"]
+        if (not self.error) and order_id:
+            try:
+                orders = self.kite.orders()
+                for order in orders:
+                    if order["order_id"] == order_id:
+                        result_data = {field: order[field] for field in fields}
+            except Exception as e:
+                self.error = True
+                self.error_message = str(e)
 
-        print("Read is completed")
-        return result
+            print("Read is completed")
+        return result_data
 
-    @zero_handler
     def generate_buy_order(self):
-        self.buy_id = self.kite.place_order(
-            tradingsymbol=self.symbol,
-            exchange=self.kite.EXCHANGE_NSE,
-            transaction_type=self.kite.TRANSACTION_TYPE_BUY,
-            quantity=self.quantity,
-            variety=self.kite.VARIETY_REGULAR,
-            order_type=self.kite.ORDER_TYPE_MARKET,
-            product=self.kite.PRODUCT_MIS,
-            validity=self.kite.VALIDITY_DAY
-        )
-        time.sleep(10)
-        print(f"buy order is completed {self.buy_id}")
-        return True
+        order_id = False
+        if (not self.error) and self.ltp:
+            try:
+                order_id = self.kite.place_order(
+                    tradingsymbol=self.symbol,
+                    exchange=self.kite.EXCHANGE_NSE,
+                    transaction_type=self.kite.TRANSACTION_TYPE_BUY,
+                    quantity=self.quantity,
+                    variety=self.kite.VARIETY_REGULAR,
+                    order_type=self.kite.ORDER_TYPE_MARKET,
+                    product=self.kite.PRODUCT_MIS,
+                    validity=self.kite.VALIDITY_DAY
+                )
+                time.sleep(10)
+            except Exception as e:
+                self.error = True
+                self.error_message = str(e)
+            print(f"buy order is completed {order_id}")
+        return order_id
 
-    @zero_handler
     def generate_sell_order(self):
         self.sell_id = self.kite.place_order(
             tradingsymbol=self.symbol,
@@ -83,23 +93,28 @@ class ZeroZero:
         print(f"sell order is completed {self.sell_id}")
         return True
 
-    @zero_handler
     def generate_sl_order(self, price, trigger_price):
-        self.sl_id = self.kite.place_order(
-            tradingsymbol=self.symbol,
-            exchange=self.kite.EXCHANGE_NSE,
-            transaction_type=self.kite.TRANSACTION_TYPE_SELL,
-            quantity=self.quantity,
-            price=price,
-            trigger_price=trigger_price,
-            variety=self.kite.VARIETY_REGULAR,
-            order_type=self.kite.ORDER_TYPE_SL,
-            product=self.kite.PRODUCT_MIS,
-            validity=self.kite.VALIDITY_DAY
-        )
-        time.sleep(10)
-        print(f"sl order is completed {self.sl_id}")
-        return True
+        order_id = False
+        if (not self.error) and self.buy_id:
+            try:
+                order_id = self.kite.place_order(
+                        tradingsymbol=self.symbol,
+                        exchange=self.kite.EXCHANGE_NSE,
+                        transaction_type=self.kite.TRANSACTION_TYPE_SELL,
+                        quantity=self.quantity,
+                        price=price,
+                        trigger_price=trigger_price,
+                        variety=self.kite.VARIETY_REGULAR,
+                        order_type=self.kite.ORDER_TYPE_SL,
+                        product=self.kite.PRODUCT_MIS,
+                        validity=self.kite.VALIDITY_DAY
+                    )
+                time.sleep(10)
+            except Exception as e:
+                self.error = True
+                self.error_message = str(e)
+            print(f"sl order is completed {self.sl_id}")
+        return order_id
 
     @zero_handler
     def sl_modify_order(self, price, trigger_price):
@@ -125,10 +140,13 @@ class ZeroZero:
         print(f"cancel order is completed {self.sl_id}")
         return True
 
-    def get_trigger_price(self, value):
+    def get_trigger_price(self, value, trade_percentage):
         one_percent = float(value) / 100
-        price = np.round(one_percent * PRICE_PERCENTAGE, 1)
-        trigger_price = np.round(one_percent * TRIGGER_PRICE_PERCENTAGE, 1)
+        trigger_price_percentage = 100 - trade_percentage
+        price_percentage = trigger_price_percentage - (trade_percentage * 0.2)
+
+        price = np.round(one_percent * price_percentage, 1)
+        trigger_price = np.round(one_percent * trigger_price_percentage, 1)
         if price == trigger_price:
             trigger_price = price - MIN_DIFFERENCE
 
@@ -140,11 +158,16 @@ class ZeroZero:
 
     @zero_handler
     def fetch_stock_ltp(self):
-        instrument = f"NSE:{self.symbol}"
-        quote_response = self.kite.ltp(instrument)
-        last_trade_price = quote_response[instrument]["last_price"]
-
-        print(f"last traded price is fetched is {last_trade_price}")
+        last_trade_price = False
+        if not self.error:
+            try:
+                instrument = f"NSE:{self.symbol}"
+                quote_response = self.kite.ltp(instrument)
+                last_trade_price = quote_response[instrument]["last_price"]
+            except Exception as e:
+                self.error = True
+                self.error_message = str(e)
+            print(f"last traded price is fetched is {last_trade_price}")
         return last_trade_price
 
     def create_buy_stock(self):
@@ -167,19 +190,24 @@ class ZeroZero:
         sl_price = 0.0
 
         # Fetch last traded price
-        ltp = self.fetch_stock_ltp()
+        # ltp = self.fetch_stock_ltp()
 
-        # Create BUY
-        if not self.error and ltp:
-            price_response = self.get_trigger_price(ltp)
-            buy_result = self.generate_buy_order()
+        self.ltp = self.fetch_stock_ltp()
+        price_data = self.get_trigger_price(value=self.ltp, trade_percentage=1)
+        self.buy_id = self.generate_buy_order()
+        self.buy_data = self.read_orders(order_id=self.buy_id)
+
+        # # Create BUY
+        # if not self.error and ltp:
+        #     price_response = self.get_trigger_price(ltp)
+        #     buy_result = self.generate_buy_order()
 
         # Read BUY
-        if not self.error and buy_result:
-            read_buy_result = self.read_orders(order_id=self.buy_id, fields=["status", "average_price"])
+        # if not self.error and buy_result:
+        #     read_buy_result = self.read_orders(order_id=self.buy_id, fields=["status", "average_price"])
 
-        if isinstance(read_buy_result, dict):
-            buy_price = read_buy_result.get("average_price", 0.0)
+        # if isinstance(read_buy_result, dict):
+        #     buy_price = read_buy_result.get("average_price", 0.0)
 
         # Create stop loss
         if not self.error and read_buy_result.get("status", False) == "COMPLETE":
