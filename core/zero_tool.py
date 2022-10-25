@@ -32,14 +32,12 @@ class ZeroZero:
         self.ltp = None
 
         self.buy_id = None
-        self.sl_id = sl_id
-        self.sell_id = None
-
         self.buy_data = None
+        self.sl_id = sl_id
         self.sl_data = None
+        self.sell_id = None
         self.sell_data = None
 
-        self.price_data = None
         self.error = False
         self.error_message = None
 
