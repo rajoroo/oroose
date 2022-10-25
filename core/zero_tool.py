@@ -13,16 +13,6 @@ MIN_DIFFERENCE = float(0.1)
 logging.basicConfig(level=logging.DEBUG)
 
 
-def zero_handler(func):
-    def inner_function(*args, **kwargs):
-        try:
-            return func(*args, **kwargs)
-        except Exception as e:
-            args[0].error = True
-            args[0].error_message = "Error: {error}".format(error=str(e))
-    return inner_function
-
-
 class ZeroZero:
     def __init__(self, symbol, quantity, sl_id=None):
         self.kite = KiteConnect(api_key=settings.ZERO_API_KEY)
