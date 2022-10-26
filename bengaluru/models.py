@@ -9,6 +9,7 @@ from django.conf import settings
 
 FH_RANK_FROM = settings.FH_RANK_FROM  # 1
 FH_RANK_TILL = settings.FH_RANK_TILL  # 5
+FH_GRACE_RANK = settings.FH_GRACE_RANK  # 2
 FH_MIN_PRICE = settings.FH_MIN_PRICE  # 20
 FH_MAX_PRICE = settings.FH_MAX_PRICE  # 4500
 FH_MAX_PERCENT = settings.FH_MAX_PERCENT  # 11
@@ -71,7 +72,7 @@ class FiveHundred(models.Model):
         ps = ParameterSettings.objects.get(name=SETTINGS_FH_ZERO)
         if (
             ps.status
-            and self.rank > FH_RANK_TILL
+            and self.rank > FH_RANK_TILL + FH_GRACE_RANK
             and self.fhzero_set.filter(status=FhZeroStatus.PURCHASED).exists()
         ):
             result = True
