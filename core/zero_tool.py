@@ -39,7 +39,7 @@ class ZeroZero:
         result_data = False
         status = False
         fields = ["order_id", "status", "average_price", "price", "trigger_price"]
-        status_list = ["COMPLETE", "T"]
+        status_list = ["COMPLETE", "CANCELLED", "REJECTED", "TRIGGER PENDING"]
         count = 0
         if (not self.error) and order_id:
             while True:
