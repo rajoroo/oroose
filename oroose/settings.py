@@ -158,6 +158,7 @@ LIVE_INDEX_500_URL = os.environ.get('LIVE_INDEX_500_URL')
 # FHZ Configuration
 FH_RANK_FROM = int(os.environ.get('FH_RANK_FROM'))
 FH_RANK_TILL = int(os.environ.get('FH_RANK_TILL'))
+FH_GRACE_RANK = int(os.environ.get('FH_GRACE_RANK'))
 FH_MIN_PRICE = float(os.environ.get('FH_MIN_PRICE'))
 FH_MAX_PRICE = float(os.environ.get('FH_MAX_PRICE'))
 FH_MAX_TOTAL_PRICE = float(os.environ.get('FH_MAX_TOTAL_PRICE'))

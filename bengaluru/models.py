@@ -91,7 +91,6 @@ class FhZero(models.Model):
     date = models.DateField(verbose_name="Date")
     time = models.DateTimeField(verbose_name="Time")
     updated_date = models.DateTimeField(verbose_name="Updated Date", auto_now_add=True)
-    tag = models.CharField(max_length=10, verbose_name="Tag")
     five_hundred = models.ForeignKey(
         FiveHundred,
         on_delete=models.SET_NULL,
@@ -123,23 +122,7 @@ class FhZero(models.Model):
 
     class Meta:
         ordering = ["symbol"]
-        constraints = [
-            models.UniqueConstraint(
-                fields=["date", "tag"],
-                name="%(app_label)s_%(class)s_unique_tag"
-            )
-        ]
 
     def save(self, *args, **kwargs):
         self.updated_date = datetime.now()
-        if not self.tag:
-            tag_list = FhZero.objects.filter(date=datetime.today()).values_list("tag")
-
-            while True:
-                alphanum = string.ascii_letters + string.digits
-                tag = "".join(secrets.choice(alphanum) for i in range(4))
-                if tag not in tag_list:
-                    self.tag = tag
-                    break
-
         super(FhZero, self).save(*args, **kwargs)

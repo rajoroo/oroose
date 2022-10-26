@@ -134,7 +134,6 @@ class FiveHundredBuyTestCase(TestCase):
             date=datetime.today(),
             time=datetime.now(),
             updated_date=datetime.now(),
-            tag="xde",
             five_hundred=self.fh_1,
             symbol=self.fh_1.symbol,
             isin=self.fh_1.isin,
@@ -188,7 +187,6 @@ class FiveHundredSellTestCase(TestCase):
             date=datetime.today(),
             time=datetime.now(),
             updated_date=datetime.now(),
-            tag="xde",
             five_hundred=cls.fh_1,
             symbol=cls.fh_1.symbol,
             isin=cls.fh_1.isin,
@@ -199,7 +197,7 @@ class FiveHundredSellTestCase(TestCase):
 
     @time_machine.travel(datetime(2022, 10, 7, 10, 24, tzinfo=tz_info))
     def test_sell_valid(self):
-        self.fh_1.rank = 6
+        self.fh_1.rank = 8
         self.fh_1.save()
         self.assertTrue(self.fh_1.fhz_to_sell_condition)
 
@@ -263,7 +261,6 @@ class FhZeroTestCase(TestCase):
             date=datetime.today(),
             time=datetime.now(),
             updated_date=datetime.now(),
-            tag="xde",
             five_hundred=cls.fh_1,
             symbol=cls.fh_1.symbol,
             isin=cls.fh_1.isin,
@@ -277,7 +274,6 @@ class FhZeroTestCase(TestCase):
             date=datetime.today(),
             time=datetime.now(),
             updated_date=datetime.now(),
-            tag="kdf",
             five_hundred=self.fh_2,
             symbol=self.fh_2.symbol,
             isin=self.fh_2.isin,
@@ -289,7 +285,6 @@ class FhZeroTestCase(TestCase):
             date=datetime.today(),
             time=datetime.now(),
             updated_date=datetime.now(),
-            tag="ghe",
             five_hundred=self.fh_3,
             symbol=self.fh_3.symbol,
             isin=self.fh_3.isin,
@@ -303,37 +298,6 @@ class FhZeroTestCase(TestCase):
         self.assertEqual(fhz_obj[0].symbol, "KUTIP1")
         self.assertEqual(fhz_obj[1].symbol, "MAXIM1")
         self.assertEqual(fhz_obj[2].symbol, "STOCK1")
-
-    def test_unique_constraint(self):
-        with self.assertRaises(IntegrityError) as ie:
-            FhZero.objects.create(
-                date=datetime.today(),
-                time=datetime.now(),
-                updated_date=datetime.now(),
-                tag="xde",
-                five_hundred=self.fh_1,
-                symbol=self.fh_1.symbol,
-                isin=self.fh_1.isin,
-                status=FhZeroStatus.TO_BUY,
-                quantity=4,
-                last_price=200,
-            )
-        assert 'violates unique constraint "bengaluru_fhzero_unique_tag"' in str(
-            ie.exception
-        )
-
-    def test_tag_created_on_save(self):
-        FhZero.objects.create(
-            date=datetime.today(),
-            time=datetime.now(),
-            updated_date=datetime.now(),
-            five_hundred=self.fh_1,
-            symbol=self.fh_1.symbol,
-            isin=self.fh_1.isin,
-            status=FhZeroStatus.TO_BUY,
-            quantity=4,
-            last_price=200,
-        )
 
     def test_updated_date_on_save(self):
         updated_date = self.fhz_1.updated_date
