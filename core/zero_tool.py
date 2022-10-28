@@ -7,7 +7,7 @@ import numpy as np
 from bengaluru.models import FhZeroStatus
 
 TRADE_PERCENTAGE_BUY = float(1.0)
-TRADE_PERCENTAGE_MAINTAIN = float(2.0)
+TRADE_PERCENTAGE_MAINTAIN = float(1.0)
 MIN_DIFFERENCE = float(0.1)
 
 logging.basicConfig(level=logging.DEBUG)
@@ -41,8 +41,10 @@ class ZeroZero:
         fields = ["order_id", "status", "average_price", "price", "trigger_price"]
         status_list = ["COMPLETE", "CANCELLED", "REJECTED", "TRIGGER PENDING"]
         count = 0
+        break_while = False
         if (not self.error) and order_id:
             while True:
+                print(f"loop {count}")
                 count = count + 1
                 time.sleep(10)
                 orders = self.kite.orders()
@@ -51,7 +53,10 @@ class ZeroZero:
                         result_data = {field: order[field] for field in fields}
                         status = result_data["status"]
                         if status in status_list:
-                            break
+                            break_while = True
+
+                if break_while:
+                    break
 
                 if count > 3:
                     self.error = True
@@ -174,7 +179,7 @@ class ZeroZero:
         if price == trigger_price:
             trigger_price = price - MIN_DIFFERENCE
 
-        print("Price and trigger price is calculated")
+        print(f"Price and trigger price is calculated {trigger_price}, {price}")
         return {
             "price": price,
             "trigger_price": trigger_price
@@ -202,7 +207,7 @@ class ZeroZero:
     def get_sl_price(self):
         result = 0.0
         if (not self.error) and self.sl_data and self.sl_data.get("status", False) == "TRIGGER PENDING":
-            result = self.buy_data.get("price")
+            result = self.sl_data.get("price")
         return result
 
     def get_sell_price(self):
