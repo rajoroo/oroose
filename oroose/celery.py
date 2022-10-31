@@ -23,15 +23,6 @@ def debug_task(self):
     print(f"Request: {self.request!r}")
 
 
-# class SingleTask(app.Task):
-#     """A task."""
-#
-#     @only_one(key="SingleTask", timeout=60 * 5)
-#     def run(self, **kwargs):
-#         """Run task."""
-#         print("Acquired lock for up to 5 minutes and ran task!")
-
-
 app.conf.beat_schedule = {
     "schedule-live-stocks-five-hundred-ten-minutes": {
         "task": "bengaluru.tasks.schedule_live_stocks_five_hundred",

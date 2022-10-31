@@ -43,8 +43,9 @@ def schedule_live_stocks_five_hundred():
     )
     obj.save()
     if condition_schedule_live_stocks_fh():
-        polling_live_stocks_five_hundred()
-        analyse_stocks_five_hundred()
+        pass
+        # polling_live_stocks_five_hundred()
+        # analyse_stocks_five_hundred()
     print("FH end")
     obj.end_time = datetime.now()
     obj.save()
@@ -74,7 +75,8 @@ def schedule_zero_five_hundred():
     )
     obj.save()
     if condition_schedule_zero_fh():
-        process_five_hundred()
+        pass
+        # process_five_hundred()
     print("ZERO end")
     obj.end_time = datetime.now()
     obj.save()
