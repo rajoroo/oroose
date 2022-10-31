@@ -17,11 +17,7 @@ def home_page(request):
 @login_required(login_url="/accounts/login/")
 def configuration_page(request):
     param_settings = ParameterSettings.objects.all()
-    context = {
-        "param_configs": parameter_store,
-        "param_settings": param_settings,
-        "active_page": "configuration"
-    }
+    context = {"param_configs": parameter_store, "param_settings": param_settings, "active_page": "configuration"}
     return render(request, "base/configure_settings.html", context=context)
 
 
@@ -35,7 +31,7 @@ def data_log_page(request):
 
 
 def params_update(request, config_id):
-    status = request.GET.get('status', 'false')
+    status = request.GET.get("status", "false")
     obj = ParameterSettings.objects.get(id=config_id)
     obj.status = True if status == "true" else False
     obj.save()

@@ -1,6 +1,1 @@
-fh_data = {
-    "status": "success",
-    "data": {
-        ""
-    }
-}
+fh_data = {"status": "success", "data": {""}}

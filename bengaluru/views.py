@@ -49,10 +49,9 @@ def load_fh_zero_view(request):
         FhZero.objects.filter(
             date=datetime.today(),
             status__in=[FhZeroStatus.TO_BUY, FhZeroStatus.PURCHASED, FhZeroStatus.TO_SELL],
-            error=False
-        )
-        .annotate(current_pl=F("quantity") * (F("current_price") - F("buy_price")))
-    ).order_by('-updated_date')
+            error=False,
+        ).annotate(current_pl=F("quantity") * (F("current_price") - F("buy_price")))
+    ).order_by("-updated_date")
 
     context = {
         "items": list(fhz.values()),
@@ -62,14 +61,11 @@ def load_fh_zero_view(request):
 
 def load_fh_zero_error_view(request):
     """Load five hundred zero objects display in table view"""
-    fhz = (
-        FhZero.objects.filter(
-            date=datetime.today(),
-            status__in=[FhZeroStatus.TO_BUY, FhZeroStatus.PURCHASED, FhZeroStatus.TO_SELL],
-            error=True
-        )
-        .annotate(profit_loss=F("quantity") * (F("sell_price") - F("buy_price")))
-    )
+    fhz = FhZero.objects.filter(
+        date=datetime.today(),
+        status__in=[FhZeroStatus.TO_BUY, FhZeroStatus.PURCHASED, FhZeroStatus.TO_SELL],
+        error=True,
+    ).annotate(profit_loss=F("quantity") * (F("sell_price") - F("buy_price")))
 
     context = {
         "items": list(fhz.values()),
@@ -79,12 +75,8 @@ def load_fh_zero_error_view(request):
 
 def load_fh_zero_sold_view(request):
     """Load five hundred zero objects display in table view"""
-    fhz = (
-        FhZero.objects.filter(
-            date=datetime.today(),
-            status=FhZeroStatus.SOLD
-        )
-        .annotate(profit_loss=F("quantity") * (F("sell_price") - F("buy_price")))
+    fhz = FhZero.objects.filter(date=datetime.today(), status=FhZeroStatus.SOLD).annotate(
+        profit_loss=F("quantity") * (F("sell_price") - F("buy_price"))
     )
 
     context = {

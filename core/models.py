@@ -23,7 +23,6 @@ class ParameterSettings(models.Model):
         ordering = ["name"]
         constraints = [
             models.UniqueConstraint(
-                fields=["name", "status"],
-                name="%(app_label)s_%(class)s_unique_parameter_settings"
+                fields=["name", "status"], name="%(app_label)s_%(class)s_unique_parameter_settings"
             )
         ]

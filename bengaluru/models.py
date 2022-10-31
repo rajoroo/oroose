@@ -1,7 +1,4 @@
-import secrets
-import string
 from datetime import datetime, timedelta
-from django.utils import timezone
 from core.models import ParameterSettings
 
 from django.db import models
@@ -37,10 +34,7 @@ class FiveHundred(models.Model):
     class Meta:
         ordering = ["-date", "rank"]
         constraints = [
-            models.UniqueConstraint(
-                fields=["date", "symbol"],
-                name="%(app_label)s_%(class)s_unique_five_hundred"
-            )
+            models.UniqueConstraint(fields=["date", "symbol"], name="%(app_label)s_%(class)s_unique_five_hundred")
         ]
 
     @property
@@ -48,8 +42,8 @@ class FiveHundred(models.Model):
         result = False
 
         ps = ParameterSettings.objects.get(name=SETTINGS_FH_ZERO)
-        start = datetime.strptime(FH_ZERO_START, '%H%M').time()
-        end = datetime.strptime(FH_ZERO_END, '%H%M').time()
+        start = datetime.strptime(FH_ZERO_START, "%H%M").time()
+        end = datetime.strptime(FH_ZERO_END, "%H%M").time()
         start_time = datetime.combine(datetime.today(), start)
         end_time = datetime.combine(datetime.today(), end)
         before_min = datetime.now() - timedelta(minutes=20)
@@ -67,7 +61,7 @@ class FiveHundred(models.Model):
             result = True
 
         if self.fhzero_set.all():
-            latest_fhz = self.fhzero_set.latest('updated_date')
+            latest_fhz = self.fhzero_set.latest("updated_date")
             print(latest_fhz.updated_date, before_min)
             result = True if (latest_fhz.updated_date < before_min) else False
 

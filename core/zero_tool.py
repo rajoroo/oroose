@@ -77,7 +77,7 @@ class ZeroZero:
                     variety=self.kite.VARIETY_REGULAR,
                     order_type=self.kite.ORDER_TYPE_MARKET,
                     product=self.kite.PRODUCT_MIS,
-                    validity=self.kite.VALIDITY_DAY
+                    validity=self.kite.VALIDITY_DAY,
                 )
                 time.sleep(10)
             except Exception as e:
@@ -88,10 +88,7 @@ class ZeroZero:
 
     def generate_sell_order(self):
         order_id = False
-        if (
-            (not self.error)
-            and self.sl_data.get("status", False) == "CANCELLED"
-        ):
+        if (not self.error) and self.sl_data.get("status", False) == "CANCELLED":
             try:
                 order_id = self.kite.place_order(
                     tradingsymbol=self.symbol,
@@ -101,7 +98,7 @@ class ZeroZero:
                     variety=self.kite.VARIETY_REGULAR,
                     order_type=self.kite.ORDER_TYPE_MARKET,
                     product=self.kite.PRODUCT_MIS,
-                    validity=self.kite.VALIDITY_DAY
+                    validity=self.kite.VALIDITY_DAY,
                 )
                 time.sleep(10)
             except Exception as e:
@@ -112,25 +109,20 @@ class ZeroZero:
 
     def generate_sl_order(self, price, trigger_price):
         order_id = False
-        if (
-            (not self.error)
-            and self.buy_id
-            and self.buy_data
-            and self.buy_data.get("status", False)
-        ) == "COMPLETE":
+        if ((not self.error) and self.buy_id and self.buy_data and self.buy_data.get("status", False)) == "COMPLETE":
             try:
                 order_id = self.kite.place_order(
-                        tradingsymbol=self.symbol,
-                        exchange=self.kite.EXCHANGE_NSE,
-                        transaction_type=self.kite.TRANSACTION_TYPE_SELL,
-                        quantity=self.quantity,
-                        price=price,
-                        trigger_price=trigger_price,
-                        variety=self.kite.VARIETY_REGULAR,
-                        order_type=self.kite.ORDER_TYPE_SL,
-                        product=self.kite.PRODUCT_MIS,
-                        validity=self.kite.VALIDITY_DAY
-                    )
+                    tradingsymbol=self.symbol,
+                    exchange=self.kite.EXCHANGE_NSE,
+                    transaction_type=self.kite.TRANSACTION_TYPE_SELL,
+                    quantity=self.quantity,
+                    price=price,
+                    trigger_price=trigger_price,
+                    variety=self.kite.VARIETY_REGULAR,
+                    order_type=self.kite.ORDER_TYPE_SL,
+                    product=self.kite.PRODUCT_MIS,
+                    validity=self.kite.VALIDITY_DAY,
+                )
                 time.sleep(10)
             except Exception as e:
                 self.error = True
@@ -147,7 +139,7 @@ class ZeroZero:
                     price=price,
                     trigger_price=trigger_price,
                     order_type=self.kite.ORDER_TYPE_SL,
-                    validity=self.kite.VALIDITY_DAY
+                    validity=self.kite.VALIDITY_DAY,
                 )
                 time.sleep(10)
             except Exception as e:
@@ -180,10 +172,7 @@ class ZeroZero:
             trigger_price = price - MIN_DIFFERENCE
 
         print(f"Price and trigger price is calculated {trigger_price}, {price}")
-        return {
-            "price": price,
-            "trigger_price": trigger_price
-        }
+        return {"price": price, "trigger_price": trigger_price}
 
     def fetch_stock_ltp(self):
         last_trade_price = False
@@ -244,7 +233,7 @@ class ZeroZero:
             "buy_price": buy_price,
             "sl_price": sl_price,
             "error": self.error,
-            "error_message": self.error_message
+            "error_message": self.error_message,
         }
 
     def maintain_stock(self, sl_price):
@@ -280,7 +269,7 @@ class ZeroZero:
             "sell_price": sell_price,
             "sl_price": sl_latest_price,
             "error": self.error,
-            "error_message": self.error_message
+            "error_message": self.error_message,
         }
 
     def sell_stock(self):
@@ -315,7 +304,7 @@ class ZeroZero:
             "sell_id": self.sell_id,
             "sell_price": sell_price,
             "error": self.error,
-            "error_message": self.error_message
+            "error_message": self.error_message,
         }
 
 

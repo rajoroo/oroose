@@ -21,16 +21,12 @@ SETTINGS_FH_ZERO = "SETTINGS_FH_ZERO"
 
 def condition_schedule_live_stocks_fh():
     ps = ParameterSettings.objects.get(name=SETTINGS_FH_LIVE_STOCKS_NSE)
-    start = datetime.strptime(FH_STOCK_LIVE_START, '%H%M').time()
-    end = datetime.strptime(FH_STOCK_LIVE_END, '%H%M').time()
+    start = datetime.strptime(FH_STOCK_LIVE_START, "%H%M").time()
+    end = datetime.strptime(FH_STOCK_LIVE_END, "%H%M").time()
     start_time = datetime.combine(datetime.today(), start)
     end_time = datetime.combine(datetime.today(), end)
 
-    if (
-        ps.status
-        and (start_time <= datetime.now() <= end_time)
-        and (datetime.today().weekday() < 5)
-    ):
+    if ps.status and (start_time <= datetime.now() <= end_time) and (datetime.today().weekday() < 5):
         return True
 
     return False
@@ -59,16 +55,12 @@ def schedule_live_stocks_five_hundred():
 
 def condition_schedule_zero_fh():
     ps = ParameterSettings.objects.get(name=SETTINGS_FH_ZERO)
-    start = datetime.strptime(FH_STOCK_LIVE_START, '%H%M').time()
-    end = datetime.strptime(FH_STOCK_LIVE_END, '%H%M').time()
+    start = datetime.strptime(FH_STOCK_LIVE_START, "%H%M").time()
+    end = datetime.strptime(FH_STOCK_LIVE_END, "%H%M").time()
     start_time = datetime.combine(datetime.today(), start)
     end_time = datetime.combine(datetime.today(), end)
 
-    if (
-        ps.status
-        and (start_time <= datetime.now() <= end_time)
-        and (datetime.today().weekday() < 5)
-    ):
+    if ps.status and (start_time <= datetime.now() <= end_time) and (datetime.today().weekday() < 5):
         return True
 
     return False

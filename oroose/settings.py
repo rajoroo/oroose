@@ -17,8 +17,8 @@ from dotenv import load_dotenv
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
-if os.environ.get('MAIN_PROCESS') in ['PRODUCTION', 'TESTING']:
-    load_config = os.environ.get('LOAD_CONFIG_PATH')
+if os.environ.get("MAIN_PROCESS") in ["PRODUCTION", "TESTING"]:
+    load_config = os.environ.get("LOAD_CONFIG_PATH")
     load_dotenv(dotenv_path=load_config)
 else:
     load_dotenv(dotenv_path=os.path.join(BASE_DIR, ".env"))
@@ -67,7 +67,7 @@ ROOT_URLCONF = "oroose.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [os.path.join(BASE_DIR, 'templates')],
+        "DIRS": [os.path.join(BASE_DIR, "templates")],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -87,13 +87,13 @@ WSGI_APPLICATION = "oroose.wsgi.application"
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get('POSTGRES_NAME'),
-        'USER': os.environ.get('POSTGRES_USER'),
-        'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
-        'HOST': os.environ.get("POSTGRES_HOST"),
-        'PORT': os.environ.get("POSTGRES_PORT"),
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": os.environ.get("POSTGRES_NAME"),
+        "USER": os.environ.get("POSTGRES_USER"),
+        "PASSWORD": os.environ.get("POSTGRES_PASSWORD"),
+        "HOST": os.environ.get("POSTGRES_HOST"),
+        "PORT": os.environ.get("POSTGRES_PORT"),
     }
 }
 
@@ -134,7 +134,7 @@ USE_TZ = False
 
 STATIC_URL = "/static/"
 
-STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
+STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 LOGIN_REDIRECT_URL = "/"
@@ -142,7 +142,7 @@ LOGOUT_REDIRECT_URL = "/"
 
 
 # Celery - prefix with CELERY_
-CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_URL')
+CELERY_BROKER_URL = os.environ.get("CELERY_BROKER_URL")
 CELERY_RESULT_BACKEND = CELERY_BROKER_URL
 CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
@@ -150,29 +150,29 @@ CELERY_TASK_TRACK_STARTED = True
 
 
 # API
-LIVE_INDEX_URL = os.environ.get('LIVE_INDEX_URL')
-LIVE_INDEX_500_URL = os.environ.get('LIVE_INDEX_500_URL')
+LIVE_INDEX_URL = os.environ.get("LIVE_INDEX_URL")
+LIVE_INDEX_500_URL = os.environ.get("LIVE_INDEX_500_URL")
 
 # FHZ Configuration
-FH_RANK_FROM = int(os.environ.get('FH_RANK_FROM'))
-FH_RANK_TILL = int(os.environ.get('FH_RANK_TILL'))
-FH_GRACE_RANK = int(os.environ.get('FH_GRACE_RANK'))
-FH_MIN_PRICE = float(os.environ.get('FH_MIN_PRICE'))
-FH_MAX_PRICE = float(os.environ.get('FH_MAX_PRICE'))
-FH_MAX_TOTAL_PRICE = float(os.environ.get('FH_MAX_TOTAL_PRICE'))
-FH_MAX_PERCENT = float(os.environ.get('FH_MAX_PERCENT'))
-FH_MAX_BUY_ORDER = int(os.environ.get('FH_MAX_BUY_ORDER'))
+FH_RANK_FROM = int(os.environ.get("FH_RANK_FROM"))
+FH_RANK_TILL = int(os.environ.get("FH_RANK_TILL"))
+FH_GRACE_RANK = int(os.environ.get("FH_GRACE_RANK"))
+FH_MIN_PRICE = float(os.environ.get("FH_MIN_PRICE"))
+FH_MAX_PRICE = float(os.environ.get("FH_MAX_PRICE"))
+FH_MAX_TOTAL_PRICE = float(os.environ.get("FH_MAX_TOTAL_PRICE"))
+FH_MAX_PERCENT = float(os.environ.get("FH_MAX_PERCENT"))
+FH_MAX_BUY_ORDER = int(os.environ.get("FH_MAX_BUY_ORDER"))
 
 # Logger
-LOG_SCHEDULE_LIVE_500 = os.environ.get('LOG_SCHEDULE_LIVE_500')
-LOG_SCHEDULE_ZERO_500 = os.environ.get('LOG_SCHEDULE_ZERO_500')
+LOG_SCHEDULE_LIVE_500 = os.environ.get("LOG_SCHEDULE_LIVE_500")
+LOG_SCHEDULE_ZERO_500 = os.environ.get("LOG_SCHEDULE_ZERO_500")
 
 # Timing
-FH_STOCK_LIVE_START = os.environ.get('FH_STOCK_LIVE_START')
-FH_STOCK_LIVE_END = os.environ.get('FH_STOCK_LIVE_END')
-FH_ZERO_START = os.environ.get('FH_ZERO_START')
-FH_ZERO_END = os.environ.get('FH_ZERO_END')
+FH_STOCK_LIVE_START = os.environ.get("FH_STOCK_LIVE_START")
+FH_STOCK_LIVE_END = os.environ.get("FH_STOCK_LIVE_END")
+FH_ZERO_START = os.environ.get("FH_ZERO_START")
+FH_ZERO_END = os.environ.get("FH_ZERO_END")
 
 # API Config
-ZERO_API_KEY = os.environ.get('ZERO_API_KEY')
-ZERO_ACCESS_TOKEN = os.environ.get('ZERO_ACCESS_TOKEN')
+ZERO_API_KEY = os.environ.get("ZERO_API_KEY")
+ZERO_ACCESS_TOKEN = os.environ.get("ZERO_ACCESS_TOKEN")

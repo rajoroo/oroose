@@ -43,5 +43,4 @@ app.conf.beat_schedule = {
         "schedule": 60.0,  # schedule every 2 minutes
         "args": (),
     },
-
 }

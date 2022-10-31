@@ -11,26 +11,25 @@ from datetime import datetime
 
 @pytest.mark.usefixtures("login_user")
 class BengaluruPageViewTestCase(TestCase):
-
     @classmethod
     def setUpTestData(cls):
         """Set up test for bengaluru.bengaluru_page function"""
 
-        cls.title = '<title>Oroose - Bengaluru</title>'
+        cls.title = "<title>Oroose - Bengaluru</title>"
 
     def setUp(self) -> None:
         self.client = Client()
         self.client.force_login(self.user)
 
     def test_bengaluru_page(self):
-        response = self.client.get(reverse('bengaluru'))
+        response = self.client.get(reverse("bengaluru"))
         self.assertEqual(response.status_code, HTTPStatus.OK)
         active_page = response.context[0].get("active_page")
         self.assertEqual(active_page, "bengaluru")
         self.assertInHTML(self.title, response.content.decode())
 
     def test_display_buttons(self):
-        response = self.client.get(reverse('bengaluru'))
+        response = self.client.get(reverse("bengaluru"))
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertInHTML("Load Data", response.content.decode())
         self.assertInHTML("Pull Nifty 500", response.content.decode())
@@ -38,13 +37,13 @@ class BengaluruPageViewTestCase(TestCase):
         self.assertInHTML("Process FH Zero", response.content.decode())
 
     def test_display_tables(self):
-        response = self.client.get(reverse('bengaluru'))
+        response = self.client.get(reverse("bengaluru"))
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertInHTML("Nifty 500", response.content.decode())
         self.assertInHTML("FH Zero", response.content.decode())
 
     def test_load_scripts(self):
-        response = self.client.get(reverse('bengaluru'))
+        response = self.client.get(reverse("bengaluru"))
         self.assertEqual(response.status_code, HTTPStatus.OK)
         assert "load_bengaluru.js" in str(response.content.decode())
 
@@ -55,10 +54,7 @@ class LoadFHViewTestCase(TestCase):
     def setUpTestData(cls):
         """Set up test for bengaluru.load_fh_view function"""
 
-        cls.ps = ParameterSettings(
-            name="SETTINGS_FH_LIVE_STOCKS_NSE",
-            status=True
-        )
+        cls.ps = ParameterSettings(name="SETTINGS_FH_LIVE_STOCKS_NSE", status=True)
         cls.ps.save()
 
     def setUp(self) -> None:
@@ -66,19 +62,19 @@ class LoadFHViewTestCase(TestCase):
         self.client.force_login(self.user)
 
     def test_load_fh_view_parameter_settings_true(self):
-        response = self.client.get(reverse('load_fh_view'))
+        response = self.client.get(reverse("load_fh_view"))
         self.assertEqual(response.status_code, HTTPStatus.OK)
-        assert 'bg-primary' in str(response.content.decode())
+        assert "bg-primary" in str(response.content.decode())
 
     def test_load_fh_view_parameter_settings_false(self):
         self.ps.status = False
         self.ps.save()
-        response = self.client.get(reverse('load_fh_view'))
+        response = self.client.get(reverse("load_fh_view"))
         self.assertEqual(response.status_code, HTTPStatus.OK)
-        assert 'bg-danger' in str(response.content.decode())
+        assert "bg-danger" in str(response.content.decode())
 
 
-class LoadFHZeroView():
+class LoadFHZeroView:
     pass
 
 
@@ -127,5 +123,5 @@ class EvaluateFHZeroTestCase(TestCase):
         pass
 
 
-class ProcessFHApi():
+class ProcessFHApi:
     pass

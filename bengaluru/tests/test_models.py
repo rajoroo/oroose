@@ -76,9 +76,7 @@ class FiveHundredTestCase(TestCase):
                 last_price=250,
                 percentage_change=4,
             )
-        assert 'violates unique constraint "bengaluru_fivehundred_unique_five_hundred"' in str(
-            ie.exception
-        )
+        assert 'violates unique constraint "bengaluru_fivehundred_unique_five_hundred"' in str(ie.exception)
 
 
 @pytest.mark.usefixtures("generate_valid_ps")
