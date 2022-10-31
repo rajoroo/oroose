@@ -1,6 +1,7 @@
 from bengaluru.models import FiveHundred, FhZero, FhZeroStatus
 from django.test import TestCase
-from datetime import datetime
+from datetime import datetime, timedelta
+from django.utils import timezone
 import pytest
 import time_machine
 from zoneinfo import ZoneInfo
@@ -82,13 +83,14 @@ class FiveHundredTestCase(TestCase):
 
 @pytest.mark.usefixtures("generate_valid_ps")
 class FiveHundredBuyTestCase(TestCase):
-    fh_1 = None
+    fh = None
+    fhz = None
 
     @classmethod
     def setUpTestData(cls):
         """Set up test for bengaluru.evaluate_fh_zero function"""
 
-        cls.fh_1 = FiveHundred.objects.create(
+        cls.fh = FiveHundred.objects.create(
             date=datetime.today(),
             time=datetime.now(),
             rank=1,
@@ -99,68 +101,87 @@ class FiveHundredBuyTestCase(TestCase):
             last_price=250,
             percentage_change=4,
         )
+        cls.fhz = FhZero.objects.create(
+            date=datetime.today(),
+            time=datetime.now(),
+            updated_date=datetime.now() - timedelta(minutes=30),
+            five_hundred=cls.fh,
+            symbol=cls.fh.symbol,
+            isin=cls.fh.isin,
+            status=FhZeroStatus.SOLD,
+            quantity=4,
+            last_price=200,
+        )
 
     @time_machine.travel(datetime(2022, 10, 7, 10, 24, tzinfo=tz_info))
     def test_valid(self):
-        self.assertTrue(self.fh_1.fhz_to_buy_condition)
+        self.fhz.delete()
+        self.assertTrue(self.fh.fhz_to_buy_condition)
 
     @time_machine.travel(datetime(2022, 10, 7, 10, 24, tzinfo=tz_info))
     def test_invalid_rank_greater(self):
-        self.fh_1.rank = 10
-        self.fh_1.save()
-        self.assertFalse(self.fh_1.fhz_to_buy_condition)
+        self.fh.rank = 10
+        self.fh.save()
+        self.assertFalse(self.fh.fhz_to_buy_condition)
 
     @time_machine.travel(datetime(2022, 10, 7, 10, 24, tzinfo=tz_info))
     def test_invalid_rank_lesser(self):
-        self.fh_1.rank = 0
-        self.fh_1.save()
-        self.assertFalse(self.fh_1.fhz_to_buy_condition)
+        self.fh.rank = 0
+        self.fh.save()
+        self.assertFalse(self.fh.fhz_to_buy_condition)
 
     @time_machine.travel(datetime(2022, 10, 7, 10, 24, tzinfo=tz_info))
     def test_invalid_price(self):
-        self.fh_1.last_price = 30000
-        self.fh_1.save()
-        self.assertFalse(self.fh_1.fhz_to_buy_condition)
+        self.fh.last_price = 30000
+        self.fh.save()
+        self.assertFalse(self.fh.fhz_to_buy_condition)
 
     @time_machine.travel(datetime(2022, 10, 7, 10, 24, tzinfo=tz_info))
     def test_invalid_percentage(self):
-        self.fh_1.percentage_change = 10.02
-        self.fh_1.save()
-        self.assertFalse(self.fh_1.fhz_to_buy_condition)
+        self.fh.percentage_change = 10.02
+        self.fh.save()
+        self.assertFalse(self.fh.fhz_to_buy_condition)
 
     @time_machine.travel(datetime(2022, 10, 7, 10, 24, tzinfo=tz_info))
-    def test_invalid_order(self):
+    def test_invalid_order_fhzero_exist(self):
         FhZero.objects.create(
             date=datetime.today(),
             time=datetime.now(),
             updated_date=datetime.now(),
-            five_hundred=self.fh_1,
-            symbol=self.fh_1.symbol,
-            isin=self.fh_1.isin,
+            five_hundred=self.fh,
+            symbol=self.fh.symbol,
+            isin=self.fh.isin,
             status=FhZeroStatus.TO_BUY,
             quantity=4,
             last_price=200,
         )
-        self.assertFalse(self.fh_1.fhz_to_buy_condition)
+        self.assertFalse(self.fh.fhz_to_buy_condition)
+
+    @time_machine.travel(datetime(2022, 10, 7, 10, 24, tzinfo=tz_info))
+    def test_invalid_order_fhzero_before_interval(self):
+        self.fhz.updated_date = datetime.now()
+        self.fhz.save()
+        print(datetime.now())
+        self.assertFalse(self.fh.fhz_to_buy_condition)
 
     @time_machine.travel(datetime(2022, 10, 7, 8, 24, tzinfo=tz_info))
     def test_invalid_time_before_exchange(self):
-        self.assertFalse(self.fh_1.fhz_to_buy_condition)
+        self.assertFalse(self.fh.fhz_to_buy_condition)
 
     @time_machine.travel(datetime(2022, 10, 7, 16, 24, tzinfo=tz_info))
     def test_invalid_time_after_exchange(self):
-        self.assertFalse(self.fh_1.fhz_to_buy_condition)
+        self.assertFalse(self.fh.fhz_to_buy_condition)
 
     @time_machine.travel(datetime(2022, 10, 8, 10, 24, tzinfo=tz_info))
     def test_invalid_day(self):
-        self.assertFalse(self.fh_1.fhz_to_buy_condition)
+        self.assertFalse(self.fh.fhz_to_buy_condition)
 
     @time_machine.travel(datetime(2022, 10, 7, 10, 24, tzinfo=tz_info))
     def test_invalid_settings(self):
         ps = ParameterSettings.objects.get(name="SETTINGS_FH_ZERO")
         ps.status = False
         ps.save()
-        self.assertFalse(self.fh_1.fhz_to_buy_condition)
+        self.assertFalse(self.fh.fhz_to_buy_condition)
 
 
 @pytest.mark.usefixtures("generate_valid_ps")

@@ -1,6 +1,7 @@
 import secrets
 import string
-from datetime import datetime
+from datetime import datetime, timedelta
+from django.utils import timezone
 from core.models import ParameterSettings
 
 from django.db import models
@@ -51,6 +52,7 @@ class FiveHundred(models.Model):
         end = datetime.strptime(FH_ZERO_END, '%H%M').time()
         start_time = datetime.combine(datetime.today(), start)
         end_time = datetime.combine(datetime.today(), end)
+        before_min = datetime.now() - timedelta(minutes=20)
 
         if (
             ps.status
@@ -63,6 +65,11 @@ class FiveHundred(models.Model):
             and (datetime.today().weekday() < 5)
         ):
             result = True
+
+        if self.fhzero_set.all():
+            latest_fhz = self.fhzero_set.latest('updated_date')
+            print(latest_fhz.updated_date, before_min)
+            result = True if (latest_fhz.updated_date < before_min) else False
 
         return result
 
