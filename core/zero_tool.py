@@ -44,7 +44,6 @@ class ZeroZero:
         break_while = False
         if (not self.error) and order_id:
             while True:
-                print(f"loop {count}")
                 count = count + 1
                 time.sleep(10)
                 orders = self.kite.orders()
@@ -62,7 +61,7 @@ class ZeroZero:
                     self.error = True
                     self.error_message = f"Read Failed status: {status}"
                     break
-            print("Read is completed")
+            print(f"Read is completed count:{count} times, data:{result_data}")
         return result_data
 
     def generate_buy_order(self):
@@ -83,7 +82,7 @@ class ZeroZero:
             except Exception as e:
                 self.error = True
                 self.error_message = str(e)
-            print(f"buy order is completed {order_id}")
+            print(f"buy order is completed order:{order_id}")
         return order_id
 
     def generate_sell_order(self):
@@ -104,7 +103,7 @@ class ZeroZero:
             except Exception as e:
                 self.error = True
                 self.error_message = str(e)
-            print(f"sell order is completed {order_id}")
+            print(f"sell order is completed order:{order_id}")
         return order_id
 
     def generate_sl_order(self, price, trigger_price):
@@ -127,7 +126,7 @@ class ZeroZero:
             except Exception as e:
                 self.error = True
                 self.error_message = str(e)
-            print(f"sl order is completed {order_id}")
+            print(f"sl order is completed order:{order_id}")
         return order_id
 
     def sl_modify_order(self, price, trigger_price):
@@ -145,7 +144,7 @@ class ZeroZero:
             except Exception as e:
                 self.error = True
                 self.error_message = str(e)
-        print(f"modify order is completed {self.sl_id}")
+        print("modify order is completed")
         return True
 
     def sl_cancel_order(self):
@@ -158,7 +157,7 @@ class ZeroZero:
         except Exception as e:
             self.error = True
             self.error_message = str(e)
-        print(f"cancel order is completed {self.sl_id}")
+        print("cancel order is completed")
         return True
 
     def get_trigger_price(self, value, trade_percentage):
@@ -171,7 +170,7 @@ class ZeroZero:
         if price == trigger_price:
             trigger_price = price - MIN_DIFFERENCE
 
-        print(f"Price and trigger price is calculated {trigger_price}, {price}")
+        print(f"Price calculated trigger-price:{trigger_price}, price:{price}")
         return {"price": price, "trigger_price": trigger_price}
 
     def fetch_stock_ltp(self):
@@ -184,7 +183,7 @@ class ZeroZero:
             except Exception as e:
                 self.error = True
                 self.error_message = str(e)
-            print(f"last traded price is fetched is {last_trade_price}")
+            print(f"last traded price is fetched, ltp:{last_trade_price}")
         return last_trade_price
 
     def get_buy_price(self):

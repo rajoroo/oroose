@@ -101,10 +101,13 @@ def process_five_hundred():
         return None
 
     if fhz.status == FhZeroStatus.TO_BUY:
+        print("TO BUY Started")
         fhz_buy_stock(fhz_obj=fhz)
 
     elif fhz.status == FhZeroStatus.PURCHASED:
+        print("PURCHASED Started")
         fhz_maintain_stock(fhz_obj=fhz)
 
     elif fhz.status == FhZeroStatus.TO_SELL:
+        print("TO SELL Started")
         fhz_sell_stock(fhz_obj=fhz)

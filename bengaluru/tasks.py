@@ -35,20 +35,17 @@ def condition_schedule_live_stocks_fh():
 @app.task(name="bengaluru.tasks.schedule_live_stocks_five_hundred")
 @only_one(key="SingleTask", timeout=60 * 15)
 def schedule_live_stocks_five_hundred():
-    print("Schedule live stocks five hundred started")
+    print("FH started")
     obj = DataLog(
         date=datetime.now(),
         start_time=datetime.now().replace(tzinfo=get_current_timezone()),
         name=LOG_SCHEDULE_LIVE_500,
     )
     obj.save()
-    print(condition_schedule_live_stocks_fh())
     if condition_schedule_live_stocks_fh():
-        print("Schedule live stocks five hundred in-progress")
         polling_live_stocks_five_hundred()
-        print("Schedule live stocks five hundred zero in-progress")
         analyse_stocks_five_hundred()
-    print("Schedule live stocks five hundred end")
+    print("FH end")
     obj.end_time = datetime.now()
     obj.save()
 
@@ -69,18 +66,15 @@ def condition_schedule_zero_fh():
 @app.task(name="bengaluru.tasks.schedule_zero_five_hundred")
 @only_one(key="SingleTask", timeout=60 * 5)
 def schedule_zero_five_hundred():
-    print("Schedule zero five hundred started")
+    print("ZERO started")
     obj = DataLog(
         date=datetime.now(),
         start_time=datetime.now().replace(tzinfo=get_current_timezone()),
         name=LOG_SCHEDULE_ZERO_500,
     )
     obj.save()
-    print(condition_schedule_zero_fh())
     if condition_schedule_zero_fh():
-        print("Schedule zero five hundred in-progress")
         process_five_hundred()
-        print("Schedule zero five hundred zero in-progress")
-    print("Schedule zero five hundred end")
+    print("ZERO end")
     obj.end_time = datetime.now()
     obj.save()
