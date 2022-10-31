@@ -60,10 +60,10 @@ class FiveHundred(models.Model):
         ):
             result = True
 
-        if self.fhzero_set.all():
+        if self.fhzero_set.all() and result:
             latest_fhz = self.fhzero_set.latest("updated_date")
-            print(latest_fhz.updated_date, before_min)
-            result = True if (latest_fhz.updated_date < before_min) else False
+            if latest_fhz.updated_date > before_min:
+                result = False
 
         return result
 

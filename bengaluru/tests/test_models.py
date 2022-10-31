@@ -85,6 +85,7 @@ class FiveHundredBuyTestCase(TestCase):
     fhz = None
 
     @classmethod
+    @time_machine.travel(datetime(2022, 10, 7, 10, 0, tzinfo=tz_info))
     def setUpTestData(cls):
         """Set up test for bengaluru.evaluate_fh_zero function"""
 
@@ -113,35 +114,65 @@ class FiveHundredBuyTestCase(TestCase):
 
     @time_machine.travel(datetime(2022, 10, 7, 10, 24, tzinfo=tz_info))
     def test_valid(self):
-        self.fhz.delete()
+        """
+        Test valid entry
+        1. ParameterSettings is True
+        2. FH_RANK_FROM <= rank <= FH_RANK_TILL
+        3. FH_MIN_PRICE <= last_price <= FH_MAX_PRICE
+        4. percentage_change <= FH_MAX_PERCENT
+        5. Total orders <= FH_MAX_BUY_ORDER
+        6. No current orders exists
+        7. FH_ZERO_START <= now <= FH_ZERO_END
+        8. Works only on weekdays
+        """
         self.assertTrue(self.fh.fhz_to_buy_condition)
 
     @time_machine.travel(datetime(2022, 10, 7, 10, 24, tzinfo=tz_info))
     def test_invalid_rank_greater(self):
+        """
+        Test invalid rank
+        condition: FH_RANK_FROM <= rank <= FH_RANK_TILL
+        """
         self.fh.rank = 10
         self.fh.save()
         self.assertFalse(self.fh.fhz_to_buy_condition)
 
     @time_machine.travel(datetime(2022, 10, 7, 10, 24, tzinfo=tz_info))
     def test_invalid_rank_lesser(self):
+        """
+        Test invalid rank
+        condition: FH_RANK_FROM <= rank <= FH_RANK_TILL
+        """
         self.fh.rank = 0
         self.fh.save()
         self.assertFalse(self.fh.fhz_to_buy_condition)
 
     @time_machine.travel(datetime(2022, 10, 7, 10, 24, tzinfo=tz_info))
     def test_invalid_price(self):
+        """
+        Test invalid price
+        condition: FH_MIN_PRICE <= last_price <= FH_MAX_PRICE
+        """
         self.fh.last_price = 30000
         self.fh.save()
         self.assertFalse(self.fh.fhz_to_buy_condition)
 
     @time_machine.travel(datetime(2022, 10, 7, 10, 24, tzinfo=tz_info))
     def test_invalid_percentage(self):
+        """
+        Test invalid percentage
+        condition: percentage_change <= FH_MAX_PERCENT
+        """
         self.fh.percentage_change = 10.02
         self.fh.save()
         self.assertFalse(self.fh.fhz_to_buy_condition)
 
     @time_machine.travel(datetime(2022, 10, 7, 10, 24, tzinfo=tz_info))
     def test_invalid_order_fhzero_exist(self):
+        """
+        Test invalid order exists
+        condition: status not in "TO_BUY", "PURCHASED", "TO_SELL"
+        """
         FhZero.objects.create(
             date=datetime.today(),
             time=datetime.now(),
@@ -157,25 +188,44 @@ class FiveHundredBuyTestCase(TestCase):
 
     @time_machine.travel(datetime(2022, 10, 7, 10, 24, tzinfo=tz_info))
     def test_invalid_order_fhzero_before_interval(self):
+        """
+        Test invalid order
+        condition: New order takes FH_MIN_TIME to create
+        """
         self.fhz.updated_date = datetime.now()
         self.fhz.save()
-        print(datetime.now())
         self.assertFalse(self.fh.fhz_to_buy_condition)
 
     @time_machine.travel(datetime(2022, 10, 7, 8, 24, tzinfo=tz_info))
     def test_invalid_time_before_exchange(self):
+        """
+        Test invalid time
+        condition: FH_ZERO_START <= now <= FH_ZERO_END
+        """
         self.assertFalse(self.fh.fhz_to_buy_condition)
 
     @time_machine.travel(datetime(2022, 10, 7, 16, 24, tzinfo=tz_info))
     def test_invalid_time_after_exchange(self):
+        """
+        Test invalid time
+        condition: FH_ZERO_START <= now <= FH_ZERO_END
+        """
         self.assertFalse(self.fh.fhz_to_buy_condition)
 
     @time_machine.travel(datetime(2022, 10, 8, 10, 24, tzinfo=tz_info))
     def test_invalid_day(self):
+        """
+        Test invalid weekend
+        condition: Works only on weekdays
+        """
         self.assertFalse(self.fh.fhz_to_buy_condition)
 
     @time_machine.travel(datetime(2022, 10, 7, 10, 24, tzinfo=tz_info))
     def test_invalid_settings(self):
+        """
+        Test invalid ParameterSettings
+        condition: ParameterSettings is True
+        """
         ps = ParameterSettings.objects.get(name="SETTINGS_FH_ZERO")
         ps.status = False
         ps.save()
@@ -184,13 +234,13 @@ class FiveHundredBuyTestCase(TestCase):
 
 @pytest.mark.usefixtures("generate_valid_ps")
 class FiveHundredSellTestCase(TestCase):
-    fh_1 = None
+    fh = None
 
     @classmethod
     def setUpTestData(cls):
         """Set up test for bengaluru.evaluate_fh_zero function"""
 
-        cls.fh_1 = FiveHundred.objects.create(
+        cls.fh = FiveHundred.objects.create(
             date=datetime.today(),
             time=datetime.now(),
             rank=1,
@@ -206,9 +256,9 @@ class FiveHundredSellTestCase(TestCase):
             date=datetime.today(),
             time=datetime.now(),
             updated_date=datetime.now(),
-            five_hundred=cls.fh_1,
-            symbol=cls.fh_1.symbol,
-            isin=cls.fh_1.isin,
+            five_hundred=cls.fh,
+            symbol=cls.fh.symbol,
+            isin=cls.fh.isin,
             status=FhZeroStatus.PURCHASED,
             quantity=4,
             last_price=200,
@@ -216,21 +266,21 @@ class FiveHundredSellTestCase(TestCase):
 
     @time_machine.travel(datetime(2022, 10, 7, 10, 24, tzinfo=tz_info))
     def test_sell_valid(self):
-        self.fh_1.rank = 8
-        self.fh_1.save()
-        self.assertTrue(self.fh_1.fhz_to_sell_condition)
+        self.fh.rank = 8
+        self.fh.save()
+        self.assertTrue(self.fh.fhz_to_sell_condition)
 
     @time_machine.travel(datetime(2022, 10, 7, 10, 24, tzinfo=tz_info))
     def test_sell_invalid_rank(self):
-        self.fh_1.rank = 3
-        self.fh_1.save()
-        self.assertFalse(self.fh_1.fhz_to_sell_condition)
+        self.fh.rank = 3
+        self.fh.save()
+        self.assertFalse(self.fh.fhz_to_sell_condition)
 
     @time_machine.travel(datetime(2022, 10, 7, 10, 24, tzinfo=tz_info))
     def test_sell_invalid_order(self):
-        self.fh_1.status = FhZeroStatus.SOLD
-        self.fh_1.save()
-        self.assertFalse(self.fh_1.fhz_to_sell_condition)
+        self.fh.status = FhZeroStatus.SOLD
+        self.fh.save()
+        self.assertFalse(self.fh.fhz_to_sell_condition)
 
 
 @pytest.mark.usefixtures("generate_valid_ps")
