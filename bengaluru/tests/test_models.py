@@ -8,19 +8,21 @@ from django.test import TestCase
 
 from bengaluru.models import FhZero, FhZeroStatus, FiveHundred
 from core.models import ParameterSettings
+from oroose.conftest import generate_valid_ps  # noqa: F401
 
 tz_info = ZoneInfo("Asia/Kolkata")
 
 
 @pytest.mark.usefixtures("generate_valid_ps")
 class FiveHundredTestCase(TestCase):
-    fh_1 = None
+    """FiveHundred model test """
+    fh = None
 
     @classmethod
     def setUpTestData(cls):
         """Set up test for bengaluru.evaluate_fh_zero function"""
 
-        cls.fh_1 = FiveHundred.objects.create(
+        FiveHundred.objects.create(
             date=datetime.today(),
             time=datetime.now(),
             rank=3,
@@ -33,6 +35,7 @@ class FiveHundredTestCase(TestCase):
         )
 
     def test_ordering(self):
+        """Test FiveHundred ordering by rank ascending"""
         FiveHundred.objects.create(
             date=datetime.today(),
             time=datetime.now(),
@@ -63,6 +66,7 @@ class FiveHundredTestCase(TestCase):
         self.assertEqual(fh_obj[2].rank, 4)
 
     def test_unique_constraint(self):
+        """Test FiveHundred unique constraints with fields [date, symbol]"""
         with self.assertRaises(IntegrityError) as ie:
             FiveHundred.objects.create(
                 date=datetime.today(),
@@ -80,6 +84,7 @@ class FiveHundredTestCase(TestCase):
 
 @pytest.mark.usefixtures("generate_valid_ps")
 class FiveHundredBuyTestCase(TestCase):
+    """FiveHundred BUY test """
     fh = None
     fhz = None
 
@@ -233,6 +238,7 @@ class FiveHundredBuyTestCase(TestCase):
 
 @pytest.mark.usefixtures("generate_valid_ps")
 class FiveHundredSellTestCase(TestCase):
+    """FiveHundred SELL test """
     fh = None
 
     @classmethod
@@ -284,6 +290,7 @@ class FiveHundredSellTestCase(TestCase):
 
 @pytest.mark.usefixtures("generate_valid_ps")
 class FhZeroTestCase(TestCase):
+    """FHZero model testcase """
     fhz = None
 
     @classmethod
@@ -325,7 +332,7 @@ class FhZeroTestCase(TestCase):
             percentage_change=4,
         )
 
-        cls.fhz_1 = FhZero.objects.create(
+        cls.fhz = FhZero.objects.create(
             date=datetime.today(),
             time=datetime.now(),
             updated_date=datetime.now(),
@@ -338,6 +345,7 @@ class FhZeroTestCase(TestCase):
         )
 
     def test_ordering(self):
+        """Test FHZero ordering by symbol ascending"""
         FhZero.objects.create(
             date=datetime.today(),
             time=datetime.now(),
@@ -368,7 +376,8 @@ class FhZeroTestCase(TestCase):
         self.assertEqual(fhz_obj[2].symbol, "STOCK1")
 
     def test_updated_date_on_save(self):
-        updated_date = self.fhz_1.updated_date
-        self.fhz_1.buy_price = 10.0
-        self.fhz_1.save()
-        self.assertNotEqual(updated_date, self.fhz_1.updated_date)
+        """Test FHZero updated date is changed on save"""
+        updated_date = self.fhz.updated_date
+        self.fhz.buy_price = 10.0
+        self.fhz.save()
+        self.assertNotEqual(updated_date, self.fhz.updated_date)
