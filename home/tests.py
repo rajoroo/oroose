@@ -4,7 +4,7 @@ import pytest
 from django.test import Client, TestCase
 from django.urls import reverse
 
-from oroose.conftest import login_user
+from oroose.conftest import login_user  # noqa: F401
 
 
 @pytest.mark.usefixtures("login_user")

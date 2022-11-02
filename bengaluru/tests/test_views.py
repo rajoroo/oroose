@@ -7,7 +7,7 @@ from django.urls import reverse
 
 from bengaluru.models import FiveHundred
 from core.models import ParameterSettings
-from oroose.conftest import login_user
+from oroose.conftest import login_user  # noqa: F401
 
 
 @pytest.mark.usefixtures("login_user")

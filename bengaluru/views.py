@@ -2,7 +2,7 @@ from datetime import datetime
 
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
-from django.db.models import Case, F, Max, Value, When
+from django.db.models import F, Max
 from django.http import HttpResponse
 from django.shortcuts import render
 
