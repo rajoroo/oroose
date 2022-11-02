@@ -23,6 +23,7 @@ services:
     volumes:
       - .:/code
       - /etc/oroose_test:/config
+      - /var/log/oroose_test:/log
     ports:
       - "8005:8005"
     environment:
@@ -47,6 +48,7 @@ services:
     volumes:
       - .:/code
       - /etc/oroose_test:/config
+      - /var/log/oroose_test:/log
     environment:
       - LOAD_CONFIG_PATH=/config/.env.test
       - MAIN_PROCESS=TESTING
@@ -61,6 +63,7 @@ services:
     volumes:
       - .:/code
       - /etc/oroose_test:/config
+      - /var/log/oroose_test:/log
     environment:
       - LOAD_CONFIG_PATH=/config/.env.test
       - MAIN_PROCESS=TESTING
