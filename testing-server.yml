@@ -29,6 +29,9 @@ services:
     environment:
       - LOAD_CONFIG_PATH=/config/.env.test
       - MAIN_PROCESS=TESTING
+      - POSTGRES_DB=rose_test
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
     depends_on:
       - db
 
@@ -52,6 +55,9 @@ services:
     environment:
       - LOAD_CONFIG_PATH=/config/.env.test
       - MAIN_PROCESS=TESTING
+      - POSTGRES_DB=rose_test
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
     depends_on:
       - db
       - cache
@@ -67,6 +73,9 @@ services:
     environment:
       - LOAD_CONFIG_PATH=/config/.env.test
       - MAIN_PROCESS=TESTING
+      - POSTGRES_DB=rose_test
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
     depends_on:
       - db
       - cache
