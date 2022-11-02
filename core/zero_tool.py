@@ -11,7 +11,7 @@ TRADE_PERCENTAGE_BUY = float(1.0)
 TRADE_PERCENTAGE_MAINTAIN = float(1.0)
 MIN_DIFFERENCE = float(0.1)
 
-logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger("celery")
 
 
 class ZeroZero:
@@ -62,7 +62,7 @@ class ZeroZero:
                     self.error = True
                     self.error_message = f"Read Failed status: {status}"
                     break
-            print(f"Read is completed count:{count} times, data:{result_data}")
+            logger.info(f"Read is completed count:{count} times, data:{result_data}")
         return result_data
 
     def generate_buy_order(self):
@@ -83,7 +83,7 @@ class ZeroZero:
             except Exception as e:
                 self.error = True
                 self.error_message = str(e)
-            print(f"buy order is completed order:{order_id}")
+            logger.info(f"buy order is completed order:{order_id}")
         return order_id
 
     def generate_sell_order(self):
@@ -104,7 +104,7 @@ class ZeroZero:
             except Exception as e:
                 self.error = True
                 self.error_message = str(e)
-            print(f"sell order is completed order:{order_id}")
+            logger.info(f"sell order is completed order:{order_id}")
         return order_id
 
     def generate_sl_order(self, price, trigger_price):
@@ -127,7 +127,7 @@ class ZeroZero:
             except Exception as e:
                 self.error = True
                 self.error_message = str(e)
-            print(f"sl order is completed order:{order_id}")
+            logger.info(f"sl order is completed order:{order_id}")
         return order_id
 
     def sl_modify_order(self, price, trigger_price):
@@ -145,7 +145,7 @@ class ZeroZero:
             except Exception as e:
                 self.error = True
                 self.error_message = str(e)
-        print("modify order is completed")
+        logger.info("modify order is completed")
         return True
 
     def sl_cancel_order(self):
@@ -158,7 +158,7 @@ class ZeroZero:
         except Exception as e:
             self.error = True
             self.error_message = str(e)
-        print("cancel order is completed")
+        logger.info("cancel order is completed")
         return True
 
     def get_trigger_price(self, value, trade_percentage):
@@ -171,7 +171,7 @@ class ZeroZero:
         if price == trigger_price:
             trigger_price = price - MIN_DIFFERENCE
 
-        print(f"Price calculated trigger-price:{trigger_price}, price:{price}")
+        logger.info(f"Price calculated trigger-price:{trigger_price}, price:{price}")
         return {"price": price, "trigger_price": trigger_price}
 
     def fetch_stock_ltp(self):
@@ -184,7 +184,7 @@ class ZeroZero:
             except Exception as e:
                 self.error = True
                 self.error_message = str(e)
-            print(f"last traded price is fetched, ltp:{last_trade_price}")
+            logger.info(f"last traded price is fetched, ltp:{last_trade_price}")
         return last_trade_price
 
     def get_buy_price(self):
