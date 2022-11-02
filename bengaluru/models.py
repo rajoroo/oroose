@@ -1,9 +1,9 @@
 from datetime import datetime, timedelta
-from core.models import ParameterSettings
 
-from django.db import models
 from django.conf import settings
+from django.db import models
 
+from core.models import ParameterSettings
 
 FH_RANK_FROM = settings.FH_RANK_FROM  # 1
 FH_RANK_TILL = settings.FH_RANK_TILL  # 5

@@ -1,14 +1,16 @@
 from datetime import datetime
 
-from django.utils.timezone import get_current_timezone
-
-from core.models import DataLog, ParameterSettings
-from oroose.celery import app
-from core.configuration import only_one
 from django.conf import settings
 
-from .evaluation import analyse_stocks_five_hundred, polling_live_stocks_five_hundred, process_five_hundred
+from core.configuration import only_one
+from core.models import DataLog, ParameterSettings
+from oroose.celery import app
 
+from .evaluation import (
+    analyse_stocks_five_hundred,
+    polling_live_stocks_five_hundred,
+    process_five_hundred,
+)
 
 LOG_SCHEDULE_LIVE_500 = settings.LOG_SCHEDULE_LIVE_500
 LOG_SCHEDULE_ZERO_500 = settings.LOG_SCHEDULE_ZERO_500
@@ -38,7 +40,7 @@ def schedule_live_stocks_five_hundred():
     print("FH started")
     obj = DataLog(
         date=datetime.now(),
-        start_time=datetime.now().replace(tzinfo=get_current_timezone()),
+        start_time=datetime.now(),
         name=LOG_SCHEDULE_LIVE_500,
     )
     obj.save()
@@ -70,7 +72,7 @@ def schedule_zero_five_hundred():
     print("ZERO started")
     obj = DataLog(
         date=datetime.now(),
-        start_time=datetime.now().replace(tzinfo=get_current_timezone()),
+        start_time=datetime.now(),
         name=LOG_SCHEDULE_ZERO_500,
     )
     obj.save()

@@ -1,8 +1,8 @@
-from django.test import Client
-from django.contrib.auth.models import User
-from core.models import ParameterSettings
-
 import pytest
+from django.contrib.auth.models import User
+from django.test import Client
+
+from core.models import ParameterSettings
 
 
 @pytest.fixture(scope="class")

@@ -1,14 +1,15 @@
-from bengaluru.models import FiveHundred, FhZero, FhZeroStatus
-from django.test import TestCase
 from datetime import datetime, timedelta
-from django.utils import timezone
+from unittest.mock import patch
+from zoneinfo import ZoneInfo
+
 import pytest
 import time_machine
-from zoneinfo import ZoneInfo
-from oroose.conftest import generate_valid_ps
-from unittest.mock import patch
 from django.db.utils import IntegrityError
+from django.test import TestCase
+
+from bengaluru.models import FhZero, FhZeroStatus, FiveHundred
 from core.models import ParameterSettings
+from oroose.conftest import generate_valid_ps
 
 tz_info = ZoneInfo("Asia/Kolkata")
 

@@ -1,12 +1,10 @@
 from datetime import datetime
 
-from django.utils.timezone import get_current_timezone
 from django.conf import settings
 
 from bengaluru.models import FhZero, FhZeroStatus, FiveHundred
 from core.stocks import LiveStocks
 from core.zero_tool import fhz_buy_stock, fhz_maintain_stock, fhz_sell_stock
-
 
 LIVE_INDEX_URL = settings.LIVE_INDEX_URL
 LIVE_INDEX_500_URL = settings.LIVE_INDEX_500_URL
@@ -18,24 +16,16 @@ def update_five_hundred(data):
         items = FiveHundred.objects.filter(date=datetime.now(), symbol=row["symbol"])
         if items:
             obj = items[0]
-            obj.date = datetime.strptime(row["lastUpdateTime"], "%d-%b-%Y %H:%M:%S").replace(
-                tzinfo=get_current_timezone()
-            )
-            obj.time = datetime.strptime(row["lastUpdateTime"], "%d-%b-%Y %H:%M:%S").replace(
-                tzinfo=get_current_timezone()
-            )
+            obj.date = datetime.strptime(row["lastUpdateTime"], "%d-%b-%Y %H:%M:%S")
+            obj.time = datetime.strptime(row["lastUpdateTime"], "%d-%b-%Y %H:%M:%S")
             obj.rank = row["index"]
             obj.last_price = row["lastPrice"]
             obj.percentage_change = row["pChange"]
             obj.save()
         else:
             obj = FiveHundred(
-                date=datetime.strptime(row["lastUpdateTime"], "%d-%b-%Y %H:%M:%S").replace(
-                    tzinfo=get_current_timezone()
-                ),
-                time=datetime.strptime(row["lastUpdateTime"], "%d-%b-%Y %H:%M:%S").replace(
-                    tzinfo=get_current_timezone()
-                ),
+                date=datetime.strptime(row["lastUpdateTime"], "%d-%b-%Y %H:%M:%S"),
+                time=datetime.strptime(row["lastUpdateTime"], "%d-%b-%Y %H:%M:%S"),
                 symbol=row["symbol"],
                 identifier=row["identifier"],
                 last_price=row["lastPrice"],
@@ -65,7 +55,7 @@ def analyse_stocks_five_hundred():
         if rec.fhz_to_buy_condition:
             five_hundred_zero = FhZero(
                 date=datetime.now(),
-                time=datetime.now().replace(tzinfo=get_current_timezone()),
+                time=datetime.now(),
                 symbol=rec.symbol,
                 isin=rec.isin,
                 five_hundred=rec,

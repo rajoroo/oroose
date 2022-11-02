@@ -1,8 +1,9 @@
 import logging
-from kiteconnect import KiteConnect
-from django.conf import settings
 import time
+
 import numpy as np
+from django.conf import settings
+from kiteconnect import KiteConnect
 
 from bengaluru.models import FhZeroStatus
 

@@ -1,16 +1,19 @@
 from datetime import datetime
 
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
-from django.db.models import Max, F, Case, When, Value
+from django.db.models import Case, F, Max, Value, When
 from django.http import HttpResponse
 from django.shortcuts import render
-from django.conf import settings
 
+from bengaluru.models import FhZero, FhZeroStatus, FiveHundred
 from core.models import DataLog, ParameterSettings
 
-from .evaluation import analyse_stocks_five_hundred, polling_live_stocks_five_hundred, process_five_hundred
-from bengaluru.models import FhZero, FiveHundred, FhZeroStatus
-
+from .evaluation import (
+    analyse_stocks_five_hundred,
+    polling_live_stocks_five_hundred,
+    process_five_hundred,
+)
 
 LOG_SCHEDULE_LIVE_500 = settings.LOG_SCHEDULE_LIVE_500
 SETTINGS_FH_LIVE_STOCKS_NSE = "SETTINGS_FH_LIVE_STOCKS_NSE"

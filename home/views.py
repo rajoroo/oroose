@@ -1,8 +1,8 @@
 from datetime import datetime
 
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, HttpResponse
 from django.db.models import F
+from django.shortcuts import HttpResponse, render
 
 from core.configuration import parameter_store
 from core.models import DataLog, ParameterSettings

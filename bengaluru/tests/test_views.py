@@ -1,12 +1,13 @@
-from django.test import TestCase
-from django.test import Client
-from django.urls import reverse
+from datetime import datetime
 from http import HTTPStatus
+
+import pytest
+from django.test import Client, TestCase
+from django.urls import reverse
+
 from bengaluru.models import FiveHundred
 from core.models import ParameterSettings
-import pytest
 from oroose.conftest import login_user
-from datetime import datetime
 
 
 @pytest.mark.usefixtures("login_user")

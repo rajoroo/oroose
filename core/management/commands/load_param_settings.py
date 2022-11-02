@@ -1,5 +1,6 @@
-from core.models import ParameterSettings
 from django.core.management.base import BaseCommand
+
+from core.models import ParameterSettings
 
 configs = [
     "SETTINGS_FH_LIVE_STOCKS_NSE",

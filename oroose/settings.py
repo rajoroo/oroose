@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
 import os
+
 from dotenv import load_dotenv
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -122,6 +123,8 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = "en-us"
 
+TIME_ZONE = "Asia/Kolkata"
+
 USE_I18N = True
 
 USE_L10N = True
@@ -129,38 +132,38 @@ USE_L10N = True
 USE_TZ = False
 
 LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'formatters': {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
         "coloredlogs": {
             "()": "coloredlogs.ColoredFormatter",
             "fmt": "[%(asctime)s] %(name)s %(levelname)s %(message)s",
         },
     },
-    'handlers': {
-        'file': {
-            'level': 'DEBUG',
-            'class': 'logging.FileHandler',
-            'filename': os.environ.get("LOG_FILE_WEB"),
-            'formatter': 'coloredlogs'
+    "handlers": {
+        "file": {
+            "level": "DEBUG",
+            "class": "logging.FileHandler",
+            "filename": os.environ.get("LOG_FILE_WEB"),
+            "formatter": "coloredlogs",
         },
-        'celery': {
-            'level': 'INFO',
-            'class': 'logging.handlers.RotatingFileHandler',
-            'filename': os.environ.get("LOG_FILE_SCHEDULER"),
-            'formatter': 'coloredlogs'
+        "celery": {
+            "level": "INFO",
+            "class": "logging.handlers.RotatingFileHandler",
+            "filename": os.environ.get("LOG_FILE_SCHEDULER"),
+            "formatter": "coloredlogs",
         },
     },
-    'loggers': {
-        'django': {
-            'handlers': ['file'],
-            'level': 'INFO',
-            'propagate': True,
+    "loggers": {
+        "django": {
+            "handlers": ["file"],
+            "level": "INFO",
+            "propagate": True,
         },
-        'celery': {
-            'handlers': ['celery'],
-            'level': 'INFO',
-            'propagate': True,
+        "celery": {
+            "handlers": ["celery"],
+            "level": "INFO",
+            "propagate": True,
         },
     },
 }
