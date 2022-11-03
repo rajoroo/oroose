@@ -2,7 +2,7 @@ from datetime import datetime
 
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
-from django.db.models import F, Max
+from django.db.models import F, Max, Sum
 from django.http import HttpResponse
 from django.shortcuts import render
 
@@ -84,6 +84,7 @@ def load_fh_zero_sold_view(request):
 
     context = {
         "items": list(fhz.values()),
+        "realized_amount": fhz.aggregate(Sum('profit_loss'))["profit_loss__sum"]
     }
     return render(request, "bengaluru/load_fh_zero_sold_view.html", context=context)
 
