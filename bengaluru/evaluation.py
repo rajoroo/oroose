@@ -4,7 +4,8 @@ from django.conf import settings
 
 from bengaluru.models import FhZero, FhZeroStatus, FiveHundred
 from core.stocks import LiveStocks
-from core.zero_tool import fhz_buy_stock, fhz_maintain_stock, fhz_sell_stock
+# from core.zero_tool import fhz_buy_stock, fhz_maintain_stock, fhz_sell_stock
+from core.zero_util import fhz_buy_stock, fhz_maintain_stock, fhz_sell_stock
 
 LIVE_INDEX_URL = settings.LIVE_INDEX_URL
 LIVE_INDEX_500_URL = settings.LIVE_INDEX_500_URL
@@ -60,8 +61,8 @@ def analyse_stocks_five_hundred():
                 isin=rec.isin,
                 five_hundred=rec,
                 status=FhZeroStatus.TO_BUY,
-                # quantity=int(FH_MAX_TOTAL_PRICE / rec.last_price),
-                quantity=1,
+                quantity=int(FH_MAX_TOTAL_PRICE / rec.last_price),
+                # quantity=1,
                 last_price=rec.last_price,
             )
             five_hundred_zero.save()
@@ -84,20 +85,20 @@ def process_five_hundred():
             status__in=[FhZeroStatus.TO_BUY, FhZeroStatus.TO_SELL, FhZeroStatus.PURCHASED],
         )
         .order_by("updated_date")
-        .first()
     )
 
     if not fhz:
         return None
 
-    if fhz.status == FhZeroStatus.TO_BUY:
-        print("TO BUY Started")
-        fhz_buy_stock(fhz_obj=fhz)
+    for rec in fhz:
+        if rec.status == FhZeroStatus.TO_BUY:
+            print("TO BUY Started")
+            fhz_buy_stock(fhz_obj=rec)
 
-    elif fhz.status == FhZeroStatus.PURCHASED:
-        print("PURCHASED Started")
-        fhz_maintain_stock(fhz_obj=fhz)
+        elif rec.status == FhZeroStatus.PURCHASED:
+            print("PURCHASED Started")
+            fhz_maintain_stock(fhz_obj=rec)
 
-    elif fhz.status == FhZeroStatus.TO_SELL:
-        print("TO SELL Started")
-        fhz_sell_stock(fhz_obj=fhz)
+        elif rec.status == FhZeroStatus.TO_SELL:
+            print("TO SELL Started")
+            fhz_sell_stock(fhz_obj=rec)
