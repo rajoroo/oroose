@@ -53,7 +53,7 @@ class FiveHundred(models.Model):
             and (FH_RANK_FROM <= self.rank <= FH_RANK_TILL)
             and (FH_MIN_PRICE <= self.last_price <= FH_MAX_PRICE)
             and (self.percentage_change <= FH_MAX_PERCENT)
-            and (self.fhzero_set.all().count() <= FH_MAX_BUY_ORDER)
+            and (self.fhzero_set.all().count() < FH_MAX_BUY_ORDER)
             and (not self.fhzero_set.filter(status__in=["TO_BUY", "PURCHASED", "TO_SELL"]).exists())
             and (start_time <= datetime.now() <= end_time)
             and (datetime.today().weekday() < 5)
