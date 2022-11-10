@@ -16,7 +16,7 @@ def get_kite():
 def create_intraday_buy(symbol, quantity):
     kite = get_kite()
     order_id = None
-    error = None
+    error = False
     error_message = None
     try:
         order_id = kite.place_order(
@@ -29,6 +29,7 @@ def create_intraday_buy(symbol, quantity):
             product=kite.PRODUCT_MIS,
             validity=kite.VALIDITY_DAY,
         )
+        time.sleep(10)
     except Exception as e:
         error = True
         error_message = str(e)
@@ -44,7 +45,7 @@ def create_intraday_buy(symbol, quantity):
 def create_intraday_sell(symbol, quantity):
     kite = get_kite()
     order_id = None
-    error = None
+    error = False
     error_message = None
     try:
         order_id = kite.place_order(
@@ -57,6 +58,7 @@ def create_intraday_sell(symbol, quantity):
             product=kite.PRODUCT_MIS,
             validity=kite.VALIDITY_DAY,
         )
+        time.sleep(10)
     except Exception as e:
         error = True
         error_message = str(e)
@@ -70,7 +72,7 @@ def create_intraday_sell(symbol, quantity):
 
 def read_intraday_order(order_id):
     kite = get_kite()
-    result_data = False
+    result_data = {}
     status = False
     fields = ["order_id", "status", "average_price", "price", "trigger_price"]
     status_list = ["COMPLETE", "CANCELLED", "REJECTED", "TRIGGER PENDING"]
@@ -83,6 +85,8 @@ def read_intraday_order(order_id):
         for order in orders:
             if order["order_id"] == order_id:
                 result_data = {field: order[field] for field in fields}
+                result_data["error"] = False
+                result_data["error_message"] = None
                 status = result_data["status"]
                 if status in status_list:
                     break_while = True
@@ -90,7 +94,7 @@ def read_intraday_order(order_id):
         if break_while:
             break
 
-        if count > 3:
+        if count > 10:
             result_data["error"] = True
             result_data["error_message"] = f"Read Failed status: {status}"
             break
@@ -122,13 +126,20 @@ def fhz_buy_stock(fhz_obj):
     symbol = fhz_obj.symbol
     quantity = fhz_obj.quantity
 
-    order_id = create_intraday_buy(symbol=symbol, quantity=quantity)
+    order = create_intraday_buy(symbol=symbol, quantity=quantity)
+    order_id = order["order_id"]
+    if order["error"]:
+        fhz_obj.error = order.get("error")
+        fhz_obj.error_message = order.get("error_message")
+        fhz_obj.save()
+        return None
+
     result = read_intraday_order(order_id)
 
     # Orders
     fhz_obj.buy_id = result.get("order_id")
-    fhz_obj.buy_price = result.get("average_price")
-    fhz_obj.current_price = result.get("average_price")
+    fhz_obj.buy_price = result.get("average_price", 0.0)
+    fhz_obj.current_price = result.get("average_price", 0.0)
     fhz_obj.error = result.get("error")
     fhz_obj.error_message = result.get("error_message")
 
@@ -143,12 +154,19 @@ def fhz_sell_stock(fhz_obj):
     symbol = fhz_obj.symbol
     quantity = fhz_obj.quantity
 
-    order_id = create_intraday_sell(symbol=symbol, quantity=quantity)
+    order = create_intraday_sell(symbol=symbol, quantity=quantity)
+    order_id = order["order_id"]
+    if order["error"]:
+        fhz_obj.error = order.get("error")
+        fhz_obj.error_message = order.get("error_message")
+        fhz_obj.save()
+        return None
+
     result = read_intraday_order(order_id)
 
     # Orders
     fhz_obj.sell_id = result.get("order_id")
-    fhz_obj.sell_price = result.get("average_price")
+    fhz_obj.sell_price = result.get("average_price", 0.0)
     fhz_obj.error = result.get("error")
     fhz_obj.error_message = result.get("error_message")
 
@@ -165,6 +183,7 @@ def fhz_maintain_stock(fhz_obj):
     buy_price_2p = price + (price * 0.02)
 
     result = fetch_stock_ltp(symbol)
+    logger.info(f"buy_price: {price}, buy_price_2p: {buy_price_2p}, ltp: {result['last_trade_price']}")
     if result["last_trade_price"] >= buy_price_2p:
         fhz_sell_stock(fhz_obj)
 
