@@ -180,7 +180,7 @@ def fhz_sell_stock(fhz_obj):
 def fhz_maintain_stock(fhz_obj):
     symbol = fhz_obj.symbol
     price = fhz_obj.buy_price
-    buy_price_2p = price + (price * 0.02)
+    buy_price_2p = price + (price * 0.015)
 
     result = fetch_stock_ltp(symbol)
     logger.info(f"buy_price: {price}, buy_price_2p: {buy_price_2p}, ltp: {result['last_trade_price']}")

@@ -22,6 +22,9 @@ class LiveStocks:
         """
         base_response = self.session.get(self.base_url)
         response = self.session.get(self.url, cookies=base_response.cookies)
+        print(response, "----json response")
+        print(response.content, "----json response")
+        print(response.json(), "----json response")
         return response.json()
 
     def filter_stock_list(self, nos=5):
