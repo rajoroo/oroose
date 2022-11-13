@@ -14,11 +14,7 @@ urlpatterns = [
     path("fhz_downtrend_record/<int:pk>", views.EditFhzDowntrend.as_view(), name="fhz_downtrend_record"),
     path("load_fhz_downtrend_view/", views.load_fhz_downtrend_view, name="fhz_downtrend_view"),
     path("load_fhz_downtrend_error_view/", views.load_fhz_downtrend_error_view, name="fhz_downtrend_error_view"),
-    path(
-        "load_fhz_downtrend_purchased_view/",
-        views.load_fhz_downtrend_purchased_view,
-        name="fhz_downtrend_purchased_view",
-    ),
+    path("load_fhz_downtrend_purc_view/", views.load_fhz_downtrend_purc_view, name="fhz_downtrend_purc_view"),
     path("", views.bengaluru_page, name="bengaluru"),
     path("mysuru/", views.mysuru_page, name="mysuru"),
 ]

@@ -125,7 +125,7 @@ def load_fhz_downtrend_error_view(request):
     return render(request, "mysuru/load_fh_zero_error_view.html", context=context)
 
 
-def load_fhz_downtrend_purchased_view(request):
+def load_fhz_downtrend_purc_view(request):
     """Load five hundred zero objects display in table view"""
     fhz = FhZeroDownTrend.objects.filter(date=datetime.today(), status=FhZeroStatus.PURCHASED).annotate(
         profit_loss=F("quantity") * (F("sell_price") - F("buy_price"))
