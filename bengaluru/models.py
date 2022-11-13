@@ -21,9 +21,6 @@ SETTINGS_FH_ZERO = "SETTINGS_FH_ZERO"
 class FiveHundred(models.Model):
     date = models.DateField(verbose_name="Date")
     time = models.DateTimeField(verbose_name="Time")
-    highest_rank = models.IntegerField(verbose_name="Highest Rank")
-    lowest_rank = models.IntegerField(verbose_name="Lowest Rank")
-    previous_rank = models.IntegerField(verbose_name="Previous Rank")
     rank = models.IntegerField(verbose_name="Rank")
     symbol = models.CharField(max_length=200, verbose_name="Symbol")
     identifier = models.CharField(max_length=200, verbose_name="Identifier")
