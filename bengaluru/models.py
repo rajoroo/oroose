@@ -21,6 +21,9 @@ SETTINGS_FH_ZERO = "SETTINGS_FH_ZERO"
 class FiveHundred(models.Model):
     date = models.DateField(verbose_name="Date")
     time = models.DateTimeField(verbose_name="Time")
+    highest_rank = models.IntegerField(verbose_name="Highest Rank")
+    lowest_rank = models.IntegerField(verbose_name="Lowest Rank")
+    previous_rank = models.IntegerField(verbose_name="Previous Rank")
     rank = models.IntegerField(verbose_name="Rank")
     symbol = models.CharField(max_length=200, verbose_name="Symbol")
     identifier = models.CharField(max_length=200, verbose_name="Identifier")
@@ -37,8 +40,7 @@ class FiveHundred(models.Model):
             models.UniqueConstraint(fields=["date", "symbol"], name="%(app_label)s_%(class)s_unique_five_hundred")
         ]
 
-    @property
-    def fhz_to_buy_condition(self):
+    def fhz_uptrend_to_buy_condition(self):
         result = False
 
         ps = ParameterSettings.objects.get(name=SETTINGS_FH_ZERO)
@@ -53,28 +55,27 @@ class FiveHundred(models.Model):
             and (FH_RANK_FROM <= self.rank <= FH_RANK_TILL)
             and (FH_MIN_PRICE <= self.last_price <= FH_MAX_PRICE)
             and (self.percentage_change <= FH_MAX_PERCENT)
-            and (self.fhzero_set.all().count() < FH_MAX_BUY_ORDER)
-            and (not self.fhzero_set.filter(status__in=["TO_BUY", "PURCHASED", "TO_SELL"]).exists())
+            and (self.fhzerouptrend_set.all().count() < FH_MAX_BUY_ORDER)
+            and (not self.fhzerouptrend_set.filter(status__in=["TO_BUY", "PURCHASED", "TO_SELL"]).exists())
             and (start_time <= datetime.now() <= end_time)
             and (datetime.today().weekday() < 5)
         ):
             result = True
 
-        if result and self.fhzero_set.all():
-            latest_fhz = self.fhzero_set.latest("updated_date")
+        if result and self.fhzerouptrend_set.all():
+            latest_fhz = self.fhzerouptrend_set.latest("updated_date")
             if latest_fhz.updated_date > before_min:
                 result = False
 
         return result
 
-    @property
-    def fhz_to_sell_condition(self):
+    def fhz_uptrend_to_sell_condition(self):
         result = False
         ps = ParameterSettings.objects.get(name=SETTINGS_FH_ZERO)
         if (
             ps.status
             and self.rank > FH_RANK_TILL + FH_GRACE_RANK
-            and self.fhzero_set.filter(status=FhZeroStatus.PURCHASED).exists()
+            and self.fhzerouptrend_set.filter(status=FhZeroStatus.PURCHASED).exists()
         ):
             result = True
 
@@ -88,10 +89,9 @@ class FhZeroStatus(models.TextChoices):
     SOLD = "SOLD", "Sold"
 
 
-class FhZero(models.Model):
+class FhZeroUpTrend(models.Model):
     date = models.DateField(verbose_name="Date")
     time = models.DateTimeField(verbose_name="Time")
-    updated_date = models.DateTimeField(verbose_name="Updated Date", auto_now_add=True)
     five_hundred = models.ForeignKey(
         FiveHundred,
         on_delete=models.SET_NULL,
@@ -107,13 +107,11 @@ class FhZero(models.Model):
         verbose_name="Status",
     )
     buy_id = models.CharField(max_length=100, verbose_name="Buy ID", null=True, blank=True)
-    stop_loss_id = models.CharField(max_length=100, verbose_name="Stop Loss ID", null=True, blank=True)
     sell_id = models.CharField(max_length=100, verbose_name="Sell ID", null=True, blank=True)
 
     quantity = models.IntegerField(verbose_name="Quantity")
     last_price = models.FloatField(verbose_name="Last Price")
     buy_price = models.FloatField(verbose_name="Buy Price", default=0.0)
-    stop_loss_price = models.FloatField(verbose_name="Buy Price", default=0.0)
     sell_price = models.FloatField(verbose_name="Sell Price", default=0.0)
     current_price = models.FloatField(verbose_name="Current Price", default=0.0)
     error = models.BooleanField(default=False, verbose_name="Error")
@@ -123,7 +121,3 @@ class FhZero(models.Model):
 
     class Meta:
         ordering = ["symbol"]
-
-    def save(self, *args, **kwargs):
-        self.updated_date = datetime.now()
-        super(FhZero, self).save(*args, **kwargs)

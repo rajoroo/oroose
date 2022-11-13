@@ -6,11 +6,11 @@ from django.db.models import F, Max, Sum
 from django.http import HttpResponse
 from django.shortcuts import render
 
-from bengaluru.models import FhZero, FhZeroStatus, FiveHundred
+from bengaluru.models import FhZeroUpTrend, FhZeroStatus, FiveHundred
 from core.models import DataLog, ParameterSettings
 
 from .evaluation import (
-    analyse_stocks_five_hundred,
+    trigger_fhz_up_trend,
     polling_live_stocks_five_hundred,
     process_five_hundred,
 )
@@ -49,7 +49,7 @@ def pull_fh_api(request):
 def load_fh_zero_view(request):
     """Load five hundred zero objects display in table view"""
     fhz = (
-        FhZero.objects.filter(
+        FhZeroUpTrend.objects.filter(
             date=datetime.today(),
             status__in=[FhZeroStatus.TO_BUY, FhZeroStatus.PURCHASED, FhZeroStatus.TO_SELL],
             error=False,
@@ -64,7 +64,7 @@ def load_fh_zero_view(request):
 
 def load_fh_zero_error_view(request):
     """Load five hundred zero objects display in table view"""
-    fhz = FhZero.objects.filter(
+    fhz = FhZeroUpTrend.objects.filter(
         date=datetime.today(),
         status__in=[FhZeroStatus.TO_BUY, FhZeroStatus.PURCHASED, FhZeroStatus.TO_SELL],
         error=True,
@@ -78,7 +78,7 @@ def load_fh_zero_error_view(request):
 
 def load_fh_zero_sold_view(request):
     """Load five hundred zero objects display in table view"""
-    fhz = FhZero.objects.filter(date=datetime.today(), status=FhZeroStatus.SOLD).annotate(
+    fhz = FhZeroUpTrend.objects.filter(date=datetime.today(), status=FhZeroStatus.SOLD).annotate(
         profit_loss=F("quantity") * (F("sell_price") - F("buy_price"))
     )
 
@@ -90,7 +90,7 @@ def load_fh_zero_sold_view(request):
 
 
 def evaluate_fh_zero(request):
-    if not analyse_stocks_five_hundred():
+    if not trigger_fhz_up_trend():
         return HttpResponse(status=404)
     return HttpResponse(status=200)
 

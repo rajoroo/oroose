@@ -6,7 +6,7 @@ import time_machine
 from django.db.utils import IntegrityError
 from django.test import TestCase
 
-from bengaluru.models import FhZero, FhZeroStatus, FiveHundred
+from bengaluru.models import FhZeroUpTrend, FhZeroStatus, FiveHundred
 from core.models import ParameterSettings
 from oroose.conftest import generate_valid_ps  # noqa: F401
 
