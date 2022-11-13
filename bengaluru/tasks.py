@@ -22,10 +22,12 @@ FH_ZERO_START = settings.FH_ZERO_START
 FH_ZERO_END = settings.FH_ZERO_END
 
 SETTINGS_FH_LIVE_STOCKS_NSE = "SETTINGS_FH_LIVE_STOCKS_NSE"
-SETTINGS_FH_ZERO = "SETTINGS_FH_ZERO"
+SETTINGS_FHZ_UPTREND = "SETTINGS_FHZ_UPTREND"
+SETTINGS_FHZ_DOWNTREND = "SETTINGS_FHZ_DOWNTREND"
 
 
 def condition_schedule_live_stocks_fh():
+    print("i call")
     ps = ParameterSettings.objects.get(name=SETTINGS_FH_LIVE_STOCKS_NSE)
     start = datetime.strptime(FH_STOCK_LIVE_START, "%H%M").time()
     end = datetime.strptime(FH_STOCK_LIVE_END, "%H%M").time()
@@ -57,8 +59,8 @@ def schedule_live_stocks_five_hundred():
     obj.save()
 
 
-def condition_schedule_zero_fh():
-    ps = ParameterSettings.objects.get(name=SETTINGS_FH_ZERO)
+def condition_schedule_fhz_uptrend():
+    ps = ParameterSettings.objects.get(name=SETTINGS_FHZ_UPTREND)
     start = datetime.strptime(FH_ZERO_START, "%H%M").time()
     end = datetime.strptime(FH_ZERO_END, "%H%M").time()
     start_time = datetime.combine(datetime.today(), start)
@@ -80,11 +82,24 @@ def schedule_fhz_uptrend():
         name=LOG_SCHEDULE_ZERO_500,
     )
     obj.save()
-    if condition_schedule_zero_fh():
+    if condition_schedule_fhz_uptrend():
         process_fhz_uptrend()
     logger.info("ZERO uptrend end")
     obj.end_time = datetime.now()
     obj.save()
+
+
+def condition_schedule_fhz_downtrend():
+    ps = ParameterSettings.objects.get(name=SETTINGS_FHZ_DOWNTREND)
+    start = datetime.strptime(FH_ZERO_START, "%H%M").time()
+    end = datetime.strptime(FH_ZERO_END, "%H%M").time()
+    start_time = datetime.combine(datetime.today(), start)
+    end_time = datetime.combine(datetime.today(), end)
+
+    if ps.status and (start_time <= datetime.now() <= end_time) and (datetime.today().weekday() < 5):
+        return True
+
+    return False
 
 
 @app.task(name="bengaluru.tasks.schedule_fhz_downtrend")
@@ -97,7 +112,7 @@ def schedule_fhz_downtrend():
         name=LOG_SCHEDULE_ZERO_500,
     )
     obj.save()
-    if condition_schedule_zero_fh():
+    if condition_schedule_fhz_downtrend():
         process_fhz_downtrend()
     logger.info("ZERO downtrend end")
     obj.end_time = datetime.now()

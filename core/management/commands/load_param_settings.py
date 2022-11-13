@@ -17,4 +17,5 @@ class Command(BaseCommand):
         ParameterSettings.objects.all().delete()
 
         ParameterSettings.objects.create(name="SETTINGS_FH_LIVE_STOCKS_NSE")
-        ParameterSettings.objects.create(name="SETTINGS_FH_ZERO")
+        ParameterSettings.objects.create(name="SETTINGS_FHZ_UPTREND")
+        ParameterSettings.objects.create(name="SETTINGS_FHZ_DOWNTREND")

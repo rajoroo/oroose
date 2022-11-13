@@ -131,42 +131,42 @@ USE_L10N = True
 
 USE_TZ = False
 
-# LOGGING = {
-#     "version": 1,
-#     "disable_existing_loggers": False,
-#     "formatters": {
-#         "coloredlogs": {
-#             "()": "coloredlogs.ColoredFormatter",
-#             "fmt": "[%(asctime)s] %(name)s %(levelname)s %(message)s",
-#         },
-#     },
-#     "handlers": {
-#         "file": {
-#             "level": "DEBUG",
-#             "class": "logging.FileHandler",
-#             "filename": os.environ.get("LOG_FILE_WEB"),
-#             "formatter": "coloredlogs",
-#         },
-#         "celery": {
-#             "level": "INFO",
-#             "class": "logging.handlers.RotatingFileHandler",
-#             "filename": os.environ.get("LOG_FILE_SCHEDULER"),
-#             "formatter": "coloredlogs",
-#         },
-#     },
-#     "loggers": {
-#         "django": {
-#             "handlers": ["file"],
-#             "level": "INFO",
-#             "propagate": True,
-#         },
-#         "celery": {
-#             "handlers": ["celery"],
-#             "level": "INFO",
-#             "propagate": True,
-#         },
-#     },
-# }
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        'simple': {
+            'format': '[{asctime}] {levelname} {module} {message}',
+            'style': '{',
+        },
+    },
+    "handlers": {
+        "file": {
+            "level": "DEBUG",
+            "class": "logging.FileHandler",
+            "filename": os.environ.get("LOG_FILE_WEB"),
+            "formatter": "simple",
+        },
+        "celery": {
+            "level": "INFO",
+            "class": "logging.handlers.RotatingFileHandler",
+            "filename": os.environ.get("LOG_FILE_SCHEDULER"),
+            "formatter": "simple",
+        },
+    },
+    "loggers": {
+        "django": {
+            "handlers": ["file"],
+            "level": "INFO",
+            "propagate": True,
+        },
+        "celery": {
+            "handlers": ["celery"],
+            "level": "INFO",
+            "propagate": True,
+        },
+    },
+}
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
