@@ -8,7 +8,8 @@ from core.models import DataLog, ParameterSettings
 from oroose.celery import app
 
 from .evaluation import (
-    trigger_fhz_up_trend,
+    trigger_fhz_uptrend,
+    trigger_fhz_downtrend,
     polling_live_stocks_five_hundred,
     process_five_hundred,
 )
@@ -50,7 +51,8 @@ def schedule_live_stocks_five_hundred():
     obj.save()
     if condition_schedule_live_stocks_fh():
         polling_live_stocks_five_hundred()
-        trigger_fhz_up_trend()
+        trigger_fhz_uptrend()
+        trigger_fhz_downtrend()
     logger.info("FH end")
     obj.end_time = datetime.now()
     obj.save()

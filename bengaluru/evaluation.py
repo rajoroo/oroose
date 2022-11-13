@@ -2,7 +2,7 @@ from datetime import datetime
 
 from django.conf import settings
 
-from bengaluru.models import FhZeroUpTrend, FhZeroStatus, FiveHundred
+from bengaluru.models import FhZeroUpTrend, FhZeroDownTrend, FhZeroStatus, FiveHundred
 from core.stocks import LiveStocks
 # from core.zero_tool import fhz_buy_stock, fhz_maintain_stock, fhz_sell_stock
 from core.zero_util import fhz_buy_stock, fhz_maintain_stock, fhz_sell_stock
@@ -48,7 +48,7 @@ def polling_live_stocks_five_hundred():
     return update_five_hundred(data=df)
 
 
-def trigger_fhz_up_trend():
+def trigger_fhz_uptrend():
     five_hundred = FiveHundred.objects.filter(date=datetime.today())
     for rec in five_hundred:
 
@@ -72,6 +72,35 @@ def trigger_fhz_up_trend():
             purchased_obj = rec.fhzerouptrend_set.filter(status=FhZeroStatus.PURCHASED)
             fhz_obj = purchased_obj.first()
             fhz_obj.status = FhZeroStatus.TO_SELL
+            fhz_obj.save()
+
+    return True
+
+
+def trigger_fhz_downtrend():
+    five_hundred = FiveHundred.objects.filter(date=datetime.today())
+    for rec in five_hundred:
+
+        #  Sell condition check
+        if rec.fhz_downtrend_to_sell_condition():
+            five_hundred_zero = FhZeroDownTrend(
+                date=datetime.now(),
+                time=datetime.now(),
+                symbol=rec.symbol,
+                isin=rec.isin,
+                five_hundred=rec,
+                status=FhZeroStatus.TO_SELL,
+                quantity=int(FH_MAX_TOTAL_PRICE / rec.last_price),
+                # quantity=5,
+                last_price=rec.last_price,
+            )
+            five_hundred_zero.save()
+
+        #  Buy condition check
+        if rec.fhz_downtrend_to_buy_condition():
+            sold_obj = rec.fhzerodowntrend_set.filter(status=FhZeroStatus.SOLD)
+            fhz_obj = sold_obj.first()
+            fhz_obj.status = FhZeroStatus.TO_BUY
             fhz_obj.save()
 
     return True
