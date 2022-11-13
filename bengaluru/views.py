@@ -103,7 +103,7 @@ def load_fhz_downtrend_view(request):
     fhz = (
         FhZeroDownTrend.objects.filter(
             date=datetime.today(),
-            status__in=[FhZeroStatus.TO_BUY, FhZeroStatus.PURCHASED, FhZeroStatus.TO_SELL],
+            status__in=[FhZeroStatus.TO_BUY, FhZeroStatus.SOLD, FhZeroStatus.TO_SELL],
             error=False,
         ).annotate(current_pl=F("quantity") * (F("sell_price") - F("current_price")))
     ).order_by("-updated_date")
@@ -118,7 +118,7 @@ def load_fhz_downtrend_error_view(request):
     """Load five hundred zero objects display in table view"""
     fhz = FhZeroDownTrend.objects.filter(
         date=datetime.today(),
-        status__in=[FhZeroStatus.TO_BUY, FhZeroStatus.PURCHASED, FhZeroStatus.TO_SELL],
+        status__in=[FhZeroStatus.TO_BUY, FhZeroStatus.SOLD, FhZeroStatus.TO_SELL],
         error=True,
     ).annotate(profit_loss=F("quantity") * (F("sell_price") - F("buy_price")))
 
@@ -128,9 +128,9 @@ def load_fhz_downtrend_error_view(request):
     return render(request, "mysuru/load_fh_zero_error_view.html", context=context)
 
 
-def load_fhz_downtrend_sold_view(request):
+def load_fhz_downtrend_purchased_view(request):
     """Load five hundred zero objects display in table view"""
-    fhz = FhZeroDownTrend.objects.filter(date=datetime.today(), status=FhZeroStatus.SOLD).annotate(
+    fhz = FhZeroDownTrend.objects.filter(date=datetime.today(), status=FhZeroStatus.PURCHASED).annotate(
         profit_loss=F("quantity") * (F("sell_price") - F("buy_price"))
     )
 

@@ -19,7 +19,7 @@
                 <th>Current PL</th>
             </tr>
             {% for item in items %}
-            <tr>
+            <tr onClick="parent.open('{% url 'fhz_downtrend_record' item.id %}')">
                 <td>{{ item.updated_date|date:'d-m-Y H:i:s' }}</td>
                 <td>{{ item.symbol }}</td>
                 <td>{{ item.quantity }}</td>

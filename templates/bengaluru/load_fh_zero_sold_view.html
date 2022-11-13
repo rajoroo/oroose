@@ -24,7 +24,7 @@
                 <th>Profit/Loss</th>
             </tr>
             {% for item in items %}
-            <tr>
+            <tr onClick="parent.open('{% url 'fhz_uptrend_record' item.id %}')">
                 <td>{{ item.updated_date|date:'d-m-Y H:i:s' }}</td>
                 <td>{{ item.symbol }}</td>
                 <td>{{ item.quantity }}</td>
@@ -39,7 +39,7 @@
             </tr>
         {% endfor %}
             <tr>
-                <td colspan="9"></td>
+                <td colspan="7"></td>
                 <td colspan="2">Total</td>
                 <td>{{ realized_amount|floatformat:2 }}</td>
             </tr>

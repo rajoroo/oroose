@@ -22,7 +22,7 @@
 
             </tr>
             {% for item in items %}
-            <tr>
+            <tr onClick="parent.open('{% url 'fhz_uptrend_record' item.id %}')">
                 <td>{{ item.updated_date|date:'d-m-Y H:i:s' }}</td>
                 <td>{{ item.symbol }}</td>
                 <td>{{ item.quantity }}</td>
@@ -34,7 +34,6 @@
                 <td>{{ item.status }}</td>
                 <td>{% if item.error %}{{ item.error }}{% endif %}</td>
                 <td>{% if item.error_message %}{{ item.error_message }}{% endif %}</td>
-
             </tr>
         {% endfor %}
         </table>
