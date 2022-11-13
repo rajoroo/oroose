@@ -6,7 +6,7 @@ from django.db.models import F, Max, Sum
 from django.http import HttpResponse
 from django.shortcuts import render
 
-from bengaluru.models import FhZeroUpTrend, FhZeroStatus, FiveHundred
+from bengaluru.models import FhZeroUpTrend, FhZeroDownTrend, FhZeroStatus, FiveHundred
 from core.models import DataLog, ParameterSettings
 
 from .evaluation import (
@@ -17,12 +17,6 @@ from .evaluation import (
 
 LOG_SCHEDULE_LIVE_500 = settings.LOG_SCHEDULE_LIVE_500
 SETTINGS_FH_LIVE_STOCKS_NSE = "SETTINGS_FH_LIVE_STOCKS_NSE"
-
-
-@login_required(login_url="/accounts/login/")
-def bengaluru_page(request):
-    context = {"active_page": "bengaluru"}
-    return render(request, "bengaluru/base_page.html", context)
 
 
 def load_fh_view(request):
@@ -46,7 +40,14 @@ def pull_fh_api(request):
     return HttpResponse(status=200)
 
 
-def load_fh_zero_view(request):
+# Uptrend
+@login_required(login_url="/accounts/login/")
+def bengaluru_page(request):
+    context = {"active_page": "bengaluru"}
+    return render(request, "bengaluru/base_page.html", context)
+
+
+def load_fhz_uptrend_view(request):
     """Load five hundred zero objects display in table view"""
     fhz = (
         FhZeroUpTrend.objects.filter(
@@ -62,7 +63,7 @@ def load_fh_zero_view(request):
     return render(request, "bengaluru/load_fh_zero_view.html", context=context)
 
 
-def load_fh_zero_error_view(request):
+def load_fhz_uptrend_error_view(request):
     """Load five hundred zero objects display in table view"""
     fhz = FhZeroUpTrend.objects.filter(
         date=datetime.today(),
@@ -76,7 +77,7 @@ def load_fh_zero_error_view(request):
     return render(request, "bengaluru/load_fh_zero_error_view.html", context=context)
 
 
-def load_fh_zero_sold_view(request):
+def load_fhz_uptrend_sold_view(request):
     """Load five hundred zero objects display in table view"""
     fhz = FhZeroUpTrend.objects.filter(date=datetime.today(), status=FhZeroStatus.SOLD).annotate(
         profit_loss=F("quantity") * (F("sell_price") - F("buy_price"))
@@ -89,12 +90,51 @@ def load_fh_zero_sold_view(request):
     return render(request, "bengaluru/load_fh_zero_sold_view.html", context=context)
 
 
-def evaluate_fh_zero(request):
-    if not trigger_fhz_up_trend():
-        return HttpResponse(status=404)
-    return HttpResponse(status=200)
+# Downtrend
+@login_required(login_url="/accounts/login/")
+def mysuru_page(request):
+    context = {"active_page": "mysuru"}
+    return render(request, "mysuru/base_page.html", context)
 
 
-def process_fh_zero_api(request):
-    process_five_hundred()
-    return HttpResponse(status=200)
+def load_fhz_downtrend_view(request):
+    """Load five hundred zero objects display in table view"""
+    fhz = (
+        FhZeroDownTrend.objects.filter(
+            date=datetime.today(),
+            status__in=[FhZeroStatus.TO_BUY, FhZeroStatus.PURCHASED, FhZeroStatus.TO_SELL],
+            error=False,
+        ).annotate(current_pl=F("quantity") * (F("current_price") - F("buy_price")))
+    ).order_by("-updated_date")
+
+    context = {
+        "items": list(fhz.values()),
+    }
+    return render(request, "mysuru/load_fh_zero_view.html", context=context)
+
+
+def load_fhz_downtrend_error_view(request):
+    """Load five hundred zero objects display in table view"""
+    fhz = FhZeroDownTrend.objects.filter(
+        date=datetime.today(),
+        status__in=[FhZeroStatus.TO_BUY, FhZeroStatus.PURCHASED, FhZeroStatus.TO_SELL],
+        error=True,
+    ).annotate(profit_loss=F("quantity") * (F("sell_price") - F("buy_price")))
+
+    context = {
+        "items": list(fhz.values()),
+    }
+    return render(request, "mysuru/load_fh_zero_error_view.html", context=context)
+
+
+def load_fhz_downtrend_sold_view(request):
+    """Load five hundred zero objects display in table view"""
+    fhz = FhZeroDownTrend.objects.filter(date=datetime.today(), status=FhZeroStatus.SOLD).annotate(
+        profit_loss=F("quantity") * (F("sell_price") - F("buy_price"))
+    )
+
+    context = {
+        "items": list(fhz.values()),
+        "realized_amount": fhz.aggregate(Sum('profit_loss'))["profit_loss__sum"]
+    }
+    return render(request, "mysuru/load_fh_zero_sold_view.html", context=context)

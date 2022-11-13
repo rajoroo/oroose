@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block title %}
-<title>Oroose - Bengaluru</title>
+<title>Oroose - Mysuru</title>
 {% endblock title %}
 
 {% block content %}
@@ -27,17 +27,17 @@
         </div>
         <div class="col-12 col-sm-12">
             <div class="card nifty-table">
-                <div id="show_fhz" trigger-url="{% url 'fhz_uptrend_view' %}"></div>
+                <div id="show_fhz" trigger-url="{% url 'fhz_downtrend_view' %}"></div>
             </div>
         </div>
         <div class="col-12 col-sm-12">
             <div class="card nifty-table">
-                <div id="show_error_fhz" trigger-url="{% url 'fhz_uptrend_error_view' %}"></div>
+                <div id="show_error_fhz" trigger-url="{% url 'fhz_downtrend_error_view' %}"></div>
             </div>
         </div>
         <div class="col-12 col-sm-12">
             <div class="card nifty-table">
-                <div id="show_sold_fhz" trigger-url="{% url 'fhz_uptrend_sold_view' %}"></div>
+                <div id="show_sold_fhz" trigger-url="{% url 'fhz_downtrend_sold_view' %}"></div>
             </div>
         </div>
     </div>
