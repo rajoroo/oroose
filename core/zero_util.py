@@ -46,11 +46,7 @@ def create_intraday_buy(symbol, quantity):
         error_message = str(e)
     logger.info(f"buy order is completed order:{order_id}")
 
-    return {
-        "order_id": order_id,
-        "error": error,
-        "error_message": error_message
-    }
+    return {"order_id": order_id, "error": error, "error_message": error_message}
 
 
 def create_intraday_sell(symbol, quantity):
@@ -74,11 +70,7 @@ def create_intraday_sell(symbol, quantity):
         error = True
         error_message = str(e)
     logger.info(f"sell order is completed order:{order_id}")
-    return {
-        "order_id": order_id,
-        "error": error,
-        "error_message": error_message
-    }
+    return {"order_id": order_id, "error": error, "error_message": error_message}
 
 
 def read_intraday_order(order_id):
@@ -126,11 +118,7 @@ def fetch_stock_ltp(symbol):
         error = True
         error_message = str(e)
     logger.info(f"last traded price is fetched, ltp:{last_trade_price}")
-    return {
-        "last_trade_price": last_trade_price,
-        "error": error,
-        "error_message": error_message
-    }
+    return {"last_trade_price": last_trade_price, "error": error, "error_message": error_message}
 
 
 def fhz_buy_stock(fhz_obj):

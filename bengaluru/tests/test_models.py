@@ -15,7 +15,8 @@ tz_info = ZoneInfo("Asia/Kolkata")
 
 @pytest.mark.usefixtures("generate_valid_ps")
 class FiveHundredTestCase(TestCase):
-    """FiveHundred model test """
+    """FiveHundred model test"""
+
     fh = None
 
     @classmethod
@@ -84,7 +85,8 @@ class FiveHundredTestCase(TestCase):
 
 @pytest.mark.usefixtures("generate_valid_ps")
 class FiveHundredBuyTestCase(TestCase):
-    """FiveHundred BUY test """
+    """FiveHundred BUY test"""
+
     fh = None
     fhz = None
 
@@ -238,7 +240,8 @@ class FiveHundredBuyTestCase(TestCase):
 
 @pytest.mark.usefixtures("generate_valid_ps")
 class FiveHundredSellTestCase(TestCase):
-    """FiveHundred SELL test """
+    """FiveHundred SELL test"""
+
     fh = None
 
     @classmethod
@@ -290,7 +293,8 @@ class FiveHundredSellTestCase(TestCase):
 
 @pytest.mark.usefixtures("generate_valid_ps")
 class FhZeroTestCase(TestCase):
-    """FHZero model testcase """
+    """FHZero model testcase"""
+
     fhz = None
 
     @classmethod

@@ -35,14 +35,14 @@ def fhz_downtrend_to_sell_condition(fhz_obj):
     before_min = datetime.now() - timedelta(minutes=20)
 
     if (
-            ps.status
-            and (fhz_obj.rank > FH_RANK_TILL)
-            and (FH_MIN_PRICE <= fhz_obj.last_price <= FH_MAX_PRICE)
-            and (fhz_obj.percentage_change <= FH_MAX_PERCENT)
-            and (fhz_obj.fhzerodowntrend_set.all().count() < FH_MAX_BUY_ORDER)
-            and (not fhz_obj.fhzerodowntrend_set.filter(status__in=["TO_BUY", "SOLD", "TO_SELL"]).exists())
-            and (start_time <= datetime.now() <= end_time)
-            and (datetime.today().weekday() < 5)
+        ps.status
+        and (fhz_obj.rank > FH_RANK_TILL)
+        and (FH_MIN_PRICE <= fhz_obj.last_price <= FH_MAX_PRICE)
+        and (fhz_obj.percentage_change <= FH_MAX_PERCENT)
+        and (fhz_obj.fhzerodowntrend_set.all().count() < FH_MAX_BUY_ORDER)
+        and (not fhz_obj.fhzerodowntrend_set.filter(status__in=["TO_BUY", "SOLD", "TO_SELL"]).exists())
+        and (start_time <= datetime.now() <= end_time)
+        and (datetime.today().weekday() < 5)
     ):
         result = True
 
@@ -58,9 +58,9 @@ def fhz_downtrend_to_buy_condition(fhz_obj):
     result = False
     ps = ParameterSettings.objects.get(name=SETTINGS_FH_ZERO)
     if (
-            ps.status
-            and fhz_obj.rank < FH_RANK_TILL
-            and fhz_obj.fhzerodowntrend_set.filter(status=FhZeroStatus.SOLD).exists()
+        ps.status
+        and fhz_obj.rank < FH_RANK_TILL
+        and fhz_obj.fhzerodowntrend_set.filter(status=FhZeroStatus.SOLD).exists()
     ):
         result = True
 
@@ -97,12 +97,10 @@ def trigger_fhz_downtrend():
 
 
 def process_fhz_downtrend():
-    fhz = (
-        FhZeroDownTrend.objects.filter(
-            date=datetime.today(),
-            error=False,
-            status__in=[FhZeroStatus.TO_BUY, FhZeroStatus.TO_SELL, FhZeroStatus.SOLD],
-        )
+    fhz = FhZeroDownTrend.objects.filter(
+        date=datetime.today(),
+        error=False,
+        status__in=[FhZeroStatus.TO_BUY, FhZeroStatus.TO_SELL, FhZeroStatus.SOLD],
     )
 
     if not fhz:

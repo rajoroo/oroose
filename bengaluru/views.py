@@ -84,10 +84,7 @@ def load_fhz_uptrend_sold_view(request):
         profit_loss=F("quantity") * (F("sell_price") - F("buy_price"))
     )
 
-    context = {
-        "items": list(fhz.values()),
-        "realized_amount": fhz.aggregate(Sum('profit_loss'))["profit_loss__sum"]
-    }
+    context = {"items": list(fhz.values()), "realized_amount": fhz.aggregate(Sum("profit_loss"))["profit_loss__sum"]}
     return render(request, "bengaluru/load_fh_zero_sold_view.html", context=context)
 
 
@@ -134,27 +131,23 @@ def load_fhz_downtrend_purchased_view(request):
         profit_loss=F("quantity") * (F("sell_price") - F("buy_price"))
     )
 
-    context = {
-        "items": list(fhz.values()),
-        "realized_amount": fhz.aggregate(Sum('profit_loss'))["profit_loss__sum"]
-    }
+    context = {"items": list(fhz.values()), "realized_amount": fhz.aggregate(Sum("profit_loss"))["profit_loss__sum"]}
     return render(request, "mysuru/load_fh_zero_sold_view.html", context=context)
 
 
 class EditFhzUptrend(UpdateView):
     model = FhZeroUpTrend
-    template_name = 'trend_view/fhz_uptrend.html'
-    fields = '__all__'
+    template_name = "trend_view/fhz_uptrend.html"
+    fields = "__all__"
 
     def get_success_url(self):
-        return reverse('fhz_uptrend_record', kwargs={'pk': self.object.id})
+        return reverse("fhz_uptrend_record", kwargs={"pk": self.object.id})
 
 
 class EditFhzDowntrend(UpdateView):
     model = FhZeroDownTrend
-    template_name = 'trend_view/fhz_downtrend.html'
-    fields = '__all__'
+    template_name = "trend_view/fhz_downtrend.html"
+    fields = "__all__"
 
     def get_success_url(self):
-        return reverse('fhz_downtrend_record', kwargs={'pk': self.object.id})
-
+        return reverse("fhz_downtrend_record", kwargs={"pk": self.object.id})
