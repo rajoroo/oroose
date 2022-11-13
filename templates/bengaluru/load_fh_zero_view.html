@@ -13,9 +13,7 @@
                 <th>Quantity</th>
                 <th>Last Price</th>
                 <th>Buy ID</th>
-                <th>SL ID</th>
                 <th>Buy Price</th>
-                <th>SL Price</th>
                 <th>Current Price</th>
                 <th>Status</th>
                 <th>Current PL</th>
@@ -27,12 +25,10 @@
                 <td>{{ item.quantity }}</td>
                 <td>{{ item.last_price }}</td>
                 <td>{{ item.buy_id|default_if_none:"" }}</td>
-                <td>{{ item.stop_loss_id|default_if_none:"" }}</td>
                 <td>{{ item.buy_price }}</td>
-                <td>{{ item.stop_loss_price }}</td>
                 <td>{{ item.current_price }}</td>
                 <td>{{ item.status }}</td>
-                <td>{% if item.sell_price == 0 %}{{ item.current_pl|floatformat:2 }}{% endif %}</td>
+                <td>{{ item.current_pl|floatformat:2 }}</td>
             </tr>
         {% endfor %}
         </table>

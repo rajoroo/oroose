@@ -104,7 +104,7 @@ def load_fhz_downtrend_view(request):
             date=datetime.today(),
             status__in=[FhZeroStatus.TO_BUY, FhZeroStatus.PURCHASED, FhZeroStatus.TO_SELL],
             error=False,
-        ).annotate(current_pl=F("quantity") * (F("current_price") - F("buy_price")))
+        ).annotate(current_pl=F("quantity") * (F("sell_price") - F("current_price")))
     ).order_by("-updated_date")
 
     context = {
