@@ -18,6 +18,8 @@ LOG_SCHEDULE_LIVE_500 = settings.LOG_SCHEDULE_LIVE_500
 LOG_SCHEDULE_ZERO_500 = settings.LOG_SCHEDULE_ZERO_500
 FH_STOCK_LIVE_START = settings.FH_STOCK_LIVE_START
 FH_STOCK_LIVE_END = settings.FH_STOCK_LIVE_END
+FH_ZERO_START = settings.FH_ZERO_START
+FH_ZERO_END = settings.FH_ZERO_END
 
 SETTINGS_FH_LIVE_STOCKS_NSE = "SETTINGS_FH_LIVE_STOCKS_NSE"
 SETTINGS_FH_ZERO = "SETTINGS_FH_ZERO"
@@ -57,8 +59,8 @@ def schedule_live_stocks_five_hundred():
 
 def condition_schedule_zero_fh():
     ps = ParameterSettings.objects.get(name=SETTINGS_FH_ZERO)
-    start = datetime.strptime(FH_STOCK_LIVE_START, "%H%M").time()
-    end = datetime.strptime(FH_STOCK_LIVE_END, "%H%M").time()
+    start = datetime.strptime(FH_ZERO_START, "%H%M").time()
+    end = datetime.strptime(FH_ZERO_END, "%H%M").time()
     start_time = datetime.combine(datetime.today(), start)
     end_time = datetime.combine(datetime.today(), end)
 
