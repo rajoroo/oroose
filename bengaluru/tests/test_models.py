@@ -104,7 +104,7 @@ class FiveHundredBuyTestCase(TestCase):
             last_price=250,
             percentage_change=4,
         )
-        cls.fhz = FhZero.objects.create(
+        cls.fhz = FhZeroUpTrend.objects.create(
             date=datetime.today(),
             time=datetime.now(),
             updated_date=datetime.now() - timedelta(minutes=30),
@@ -177,7 +177,7 @@ class FiveHundredBuyTestCase(TestCase):
         Test invalid order exists
         condition: status not in "TO_BUY", "PURCHASED", "TO_SELL"
         """
-        FhZero.objects.create(
+        FhZeroUpTrend.objects.create(
             date=datetime.today(),
             time=datetime.now(),
             updated_date=datetime.now(),
@@ -257,7 +257,7 @@ class FiveHundredSellTestCase(TestCase):
             percentage_change=4,
         )
 
-        cls.fhz = FhZero.objects.create(
+        cls.fhz = FhZeroUpTrend.objects.create(
             date=datetime.today(),
             time=datetime.now(),
             updated_date=datetime.now(),
@@ -332,7 +332,7 @@ class FhZeroTestCase(TestCase):
             percentage_change=4,
         )
 
-        cls.fhz = FhZero.objects.create(
+        cls.fhz = FhZeroUpTrend.objects.create(
             date=datetime.today(),
             time=datetime.now(),
             updated_date=datetime.now(),
@@ -346,7 +346,7 @@ class FhZeroTestCase(TestCase):
 
     def test_ordering(self):
         """Test FHZero ordering by symbol ascending"""
-        FhZero.objects.create(
+        FhZeroUpTrend.objects.create(
             date=datetime.today(),
             time=datetime.now(),
             updated_date=datetime.now(),
@@ -357,7 +357,7 @@ class FhZeroTestCase(TestCase):
             quantity=4,
             last_price=200,
         )
-        FhZero.objects.create(
+        FhZeroUpTrend.objects.create(
             date=datetime.today(),
             time=datetime.now(),
             updated_date=datetime.now(),
@@ -369,7 +369,7 @@ class FhZeroTestCase(TestCase):
             last_price=200,
         )
 
-        fhz_obj = FhZero.objects.all()
+        fhz_obj = FhZeroUpTrend.objects.all()
         self.assertEqual(fhz_obj.count(), 3)
         self.assertEqual(fhz_obj[0].symbol, "KUTIP1")
         self.assertEqual(fhz_obj[1].symbol, "MAXIM1")

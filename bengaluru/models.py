@@ -92,6 +92,7 @@ class FhZeroStatus(models.TextChoices):
 class FhZeroUpTrend(models.Model):
     date = models.DateField(verbose_name="Date")
     time = models.DateTimeField(verbose_name="Time")
+    updated_date = models.DateTimeField(verbose_name="Updated Date", auto_now_add=True)
     five_hundred = models.ForeignKey(
         FiveHundred,
         on_delete=models.SET_NULL,
@@ -121,3 +122,7 @@ class FhZeroUpTrend(models.Model):
 
     class Meta:
         ordering = ["symbol"]
+
+    def save(self, *args, **kwargs):
+        self.updated_date = datetime.now()
+        super(FhZeroUpTrend, self).save(*args, **kwargs)
