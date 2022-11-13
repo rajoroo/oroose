@@ -1,19 +1,20 @@
 from datetime import datetime
+from django.contrib import messages
 
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.db.models import F, Max, Sum
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect, reverse
 
 from bengaluru.models import FhZeroUpTrend, FhZeroDownTrend, FhZeroStatus, FiveHundred
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from core.models import DataLog, ParameterSettings
 
-from .stock_monitor import (
-    trigger_fhz_up_trend,
-    polling_live_stocks_five_hundred,
-    process_five_hundred,
-)
+from .stock_monitor import polling_live_stocks_five_hundred
+from bengaluru.forms import FhZeroDownTrendForm
+
+from django.shortcuts import render, get_object_or_404
 
 LOG_SCHEDULE_LIVE_500 = settings.LOG_SCHEDULE_LIVE_500
 SETTINGS_FH_LIVE_STOCKS_NSE = "SETTINGS_FH_LIVE_STOCKS_NSE"
@@ -138,3 +139,22 @@ def load_fhz_downtrend_sold_view(request):
         "realized_amount": fhz.aggregate(Sum('profit_loss'))["profit_loss__sum"]
     }
     return render(request, "mysuru/load_fh_zero_sold_view.html", context=context)
+
+
+class EditFhzUptrend(UpdateView):
+    model = FhZeroUpTrend
+    template_name = 'trend_view/fhz_uptrend.html'
+    fields = '__all__'
+
+    def get_success_url(self):
+        return reverse('fhz_uptrend_record', kwargs={'pk': self.object.id})
+
+
+class EditFhzDowntrend(UpdateView):
+    model = FhZeroDownTrend
+    template_name = 'trend_view/fhz_downtrend.html'
+    fields = '__all__'
+
+    def get_success_url(self):
+        return reverse('fhz_downtrend_record', kwargs={'pk': self.object.id})
+
