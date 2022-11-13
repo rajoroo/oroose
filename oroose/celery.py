@@ -34,14 +34,19 @@ def debug_task(self):
 
 
 app.conf.beat_schedule = {
-    "schedule-live-stocks-five-hundred-ten-minutes": {
+    "schedule-live-stocks": {
         "task": "bengaluru.tasks.schedule_live_stocks_five_hundred",
         "schedule": 300.0,  # schedule every 10 minutes
         "args": (),
     },
-    "schedule-zero-five-hundred-two-minutes": {
-        "task": "bengaluru.tasks.schedule_zero_five_hundred",
-        "schedule": 60.0,  # schedule every 2 minutes
+    "schedule-fhz-uptrend-minutes": {
+        "task": "bengaluru.tasks.schedule_fhz_uptrend",
+        "schedule": 60.0,  # schedule every 1 minutes
+        "args": (),
+    },
+    "schedule-fhz-downtrend-minutes": {
+        "task": "bengaluru.tasks.schedule_fhz_downtrend",
+        "schedule": 60.0,  # schedule every 1 minutes
         "args": (),
     },
 }

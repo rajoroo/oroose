@@ -9,7 +9,7 @@ from django.shortcuts import render
 from bengaluru.models import FhZeroUpTrend, FhZeroDownTrend, FhZeroStatus, FiveHundred
 from core.models import DataLog, ParameterSettings
 
-from .evaluation import (
+from .stock_monitor import (
     trigger_fhz_up_trend,
     polling_live_stocks_five_hundred,
     process_five_hundred,

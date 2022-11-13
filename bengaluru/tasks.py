@@ -7,12 +7,9 @@ from core.configuration import only_one
 from core.models import DataLog, ParameterSettings
 from oroose.celery import app
 
-from .evaluation import (
-    trigger_fhz_uptrend,
-    trigger_fhz_downtrend,
-    polling_live_stocks_five_hundred,
-    process_five_hundred,
-)
+from .stock_monitor import polling_live_stocks_five_hundred
+from .up_trend import trigger_fhz_uptrend, process_fhz_uptrend
+from .down_trend import trigger_fhz_downtrend, process_fhz_downtrend
 
 logger = logging.getLogger("celery")
 
@@ -71,10 +68,10 @@ def condition_schedule_zero_fh():
     return False
 
 
-@app.task(name="bengaluru.tasks.schedule_zero_five_hundred")
+@app.task(name="bengaluru.tasks.schedule_fhz_uptrend")
 @only_one(key="SingleTask", timeout=60 * 5)
-def schedule_zero_five_hundred():
-    logger.info("ZERO started")
+def schedule_fhz_uptrend():
+    logger.info("ZERO uptrend started")
     obj = DataLog(
         date=datetime.now(),
         start_time=datetime.now(),
@@ -82,7 +79,24 @@ def schedule_zero_five_hundred():
     )
     obj.save()
     if condition_schedule_zero_fh():
-        process_five_hundred()
-    logger.info("ZERO end")
+        process_fhz_uptrend()
+    logger.info("ZERO uptrend end")
+    obj.end_time = datetime.now()
+    obj.save()
+
+
+@app.task(name="bengaluru.tasks.schedule_fhz_downtrend")
+@only_one(key="SingleTask", timeout=60 * 5)
+def schedule_fhz_downtrend():
+    logger.info("ZERO downtrend started")
+    obj = DataLog(
+        date=datetime.now(),
+        start_time=datetime.now(),
+        name=LOG_SCHEDULE_ZERO_500,
+    )
+    obj.save()
+    if condition_schedule_zero_fh():
+        process_fhz_downtrend()
+    logger.info("ZERO downtrend end")
     obj.end_time = datetime.now()
     obj.save()

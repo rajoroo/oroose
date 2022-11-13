@@ -188,7 +188,16 @@ def fhz_sell_stock(fhz_obj):
     fhz_obj.save()
 
 
-def fhz_maintain_stock(fhz_obj):
+def fhz_maintain_stock_uptrend(fhz_obj):
+    """
+    FHZ maintain uptrend
+
+    Sell condition
+    1. uptrend is more than 2 percentage sell order executes
+    2. uptrend stop loss is 0.5 percentage for rank greater than 3
+    2. uptrend stop loss is 1 percentage for rank equal to 3
+
+    """
     symbol = fhz_obj.symbol
     price = fhz_obj.buy_price
     buy_price_2p = price + (price * 0.02)
@@ -200,6 +209,31 @@ def fhz_maintain_stock(fhz_obj):
         fhz_sell_stock(fhz_obj)
     elif result["last_trade_price"] <= lower_circuit:
         fhz_sell_stock(fhz_obj)
+
+    fhz_obj.current_price = result.get("last_trade_price")
+    fhz_obj.save()
+
+
+def fhz_maintain_stock_downtrend(fhz_obj):
+    """
+    FHZ maintain downtrend
+
+    Buy condition
+    1. downtrend is more than 2 percentage buy order executes
+    2. downtrend stop loss is 0.5 percentage
+
+    """
+    symbol = fhz_obj.symbol
+    price = fhz_obj.buy_price
+    sell_price_2p = price - (price * 0.02)
+    lower_circuit = price + (price * 0.005)
+
+    result = fetch_stock_ltp(symbol)
+    logger.info(f"buy_price: {price}, sell_price_2p: {sell_price_2p}, ltp: {result['last_trade_price']}")
+    if result["last_trade_price"] <= sell_price_2p:
+        fhz_buy_stock(fhz_obj)
+    elif result["last_trade_price"] >= lower_circuit:
+        fhz_buy_stock(fhz_obj)
 
     fhz_obj.current_price = result.get("last_trade_price")
     fhz_obj.save()
