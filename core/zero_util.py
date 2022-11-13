@@ -7,6 +7,17 @@ from bengaluru.models import FhZeroStatus
 logger = logging.getLogger("celery")
 
 
+def rank_validation_uptrend(rank, price):
+    if (rank >= 1) and (rank <= 2):
+        lower_circuit = price + (price * 0.03)
+    elif rank == 3:
+        lower_circuit = price - (price * 0.01)
+    else:
+        lower_circuit = price - (price * 0.005)
+
+    return lower_circuit
+
+
 def get_kite():
     kite = KiteConnect(api_key=settings.ZERO_API_KEY)
     kite.set_access_token(settings.ZERO_ACCESS_TOKEN)
@@ -180,11 +191,14 @@ def fhz_sell_stock(fhz_obj):
 def fhz_maintain_stock(fhz_obj):
     symbol = fhz_obj.symbol
     price = fhz_obj.buy_price
-    buy_price_2p = price + (price * 0.015)
+    buy_price_2p = price + (price * 0.02)
+    lower_circuit = rank_validation_uptrend(fhz_obj.rank, fhz_obj.buy_price)
 
     result = fetch_stock_ltp(symbol)
     logger.info(f"buy_price: {price}, buy_price_2p: {buy_price_2p}, ltp: {result['last_trade_price']}")
     if result["last_trade_price"] >= buy_price_2p:
+        fhz_sell_stock(fhz_obj)
+    elif result["last_trade_price"] <= lower_circuit:
         fhz_sell_stock(fhz_obj)
 
     fhz_obj.current_price = result.get("last_trade_price")
