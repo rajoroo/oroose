@@ -9,7 +9,7 @@ logger = logging.getLogger("celery")
 
 def rank_validation_uptrend(rank, price):
     if (rank >= 1) and (rank <= 2):
-        lower_circuit = price + (price * 0.03)
+        lower_circuit = price - (price * 0.03)
     elif rank == 3:
         lower_circuit = price - (price * 0.01)
     else:
@@ -44,7 +44,7 @@ def create_intraday_buy(symbol, quantity):
     except Exception as e:
         error = True
         error_message = str(e)
-    logger.info(f"buy order is completed order:{order_id}")
+    logger.info(f"buy order is completed order {symbol}:{order_id}")
 
     return {"order_id": order_id, "error": error, "error_message": error_message}
 
@@ -69,7 +69,7 @@ def create_intraday_sell(symbol, quantity):
     except Exception as e:
         error = True
         error_message = str(e)
-    logger.info(f"sell order is completed order:{order_id}")
+    logger.info(f"sell order is completed order {symbol}:{order_id}")
     return {"order_id": order_id, "error": error, "error_message": error_message}
 
 
@@ -117,7 +117,7 @@ def fetch_stock_ltp(symbol):
     except Exception as e:
         error = True
         error_message = str(e)
-    logger.info(f"last traded price is fetched, ltp:{last_trade_price}")
+    logger.info(f"last traded price is fetched, ltp {symbol}:{last_trade_price}")
     return {"last_trade_price": last_trade_price, "error": error, "error_message": error_message}
 
 
@@ -189,14 +189,16 @@ def fhz_maintain_stock_uptrend(fhz_obj):
     symbol = fhz_obj.symbol
     price = fhz_obj.buy_price
     buy_price_2p = price + (price * 0.02)
-    lower_circuit = rank_validation_uptrend(fhz_obj.rank, fhz_obj.buy_price)
+    lower_circuit = rank_validation_uptrend(fhz_obj.five_hundred.rank, fhz_obj.buy_price)
 
     result = fetch_stock_ltp(symbol)
     logger.info(f"buy_price: {price}, buy_price_2p: {buy_price_2p}, ltp: {result['last_trade_price']}")
     if result["last_trade_price"] >= buy_price_2p:
         fhz_sell_stock(fhz_obj)
+        logger.info(f"sell initiated for buy_price_2p {symbol}:{buy_price_2p}")
     elif result["last_trade_price"] <= lower_circuit:
         fhz_sell_stock(fhz_obj)
+        logger.info(f"sell initiated for lower circuit {symbol}:{lower_circuit}")
 
     fhz_obj.current_price = result.get("last_trade_price")
     fhz_obj.save()

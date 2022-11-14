@@ -20,7 +20,7 @@ FH_MAX_BUY_ORDER = settings.FH_MAX_BUY_ORDER  # 2
 
 FH_ZERO_START = settings.FH_ZERO_START
 FH_ZERO_END = settings.FH_ZERO_END
-SETTINGS_FH_ZERO = "SETTINGS_FH_ZERO"
+SETTINGS_FH_ZERO = "SETTINGS_FHZ_UPTREND"
 
 
 def fhz_uptrend_to_buy_condition(fhz_obj):
@@ -79,8 +79,8 @@ def trigger_fhz_uptrend():
                 isin=rec.isin,
                 five_hundred=rec,
                 status=FhZeroStatus.TO_BUY,
-                quantity=int(FH_MAX_TOTAL_PRICE / rec.last_price),
-                # quantity=5,
+                # quantity=int(FH_MAX_TOTAL_PRICE / rec.last_price),
+                quantity=1,
                 last_price=rec.last_price,
             )
             five_hundred_zero.save()

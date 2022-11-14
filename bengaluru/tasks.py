@@ -103,8 +103,9 @@ def condition_schedule_fhz_downtrend():
 
 
 @app.task(name="bengaluru.tasks.schedule_fhz_downtrend")
-@only_one(key="SingleTask", timeout=60 * 5)
+@only_one(key="SecondTask", timeout=60 * 5)
 def schedule_fhz_downtrend():
+    print("Down trend started-----------")
     logger.info("ZERO downtrend started")
     obj = DataLog(
         date=datetime.now(),
