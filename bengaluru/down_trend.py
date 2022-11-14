@@ -36,7 +36,7 @@ def fhz_downtrend_to_sell_condition(fhz_obj):
 
     if (
         ps.status
-        and (fhz_obj.rank > FH_RANK_TILL)
+        and (fhz_obj.rank > FH_RANK_TILL + FH_GRACE_RANK)
         and (FH_MIN_PRICE <= fhz_obj.last_price <= FH_MAX_PRICE)
         and (fhz_obj.percentage_change <= FH_MAX_PERCENT)
         and (fhz_obj.fhzerodowntrend_set.all().count() < FH_MAX_BUY_ORDER)
