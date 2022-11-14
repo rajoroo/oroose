@@ -188,7 +188,7 @@ def fhz_maintain_stock_uptrend(fhz_obj):
     """
     symbol = fhz_obj.symbol
     price = fhz_obj.buy_price
-    buy_price_2p = price + (price * 0.02)
+    buy_price_2p = price + (price * 0.01)
     lower_circuit = rank_validation_uptrend(fhz_obj.five_hundred.rank, fhz_obj.buy_price)
 
     result = fetch_stock_ltp(symbol)
@@ -215,7 +215,7 @@ def fhz_maintain_stock_downtrend(fhz_obj):
     """
     symbol = fhz_obj.symbol
     price = fhz_obj.sell_price
-    sell_price_2p = price - (price * 0.02)
+    sell_price_2p = price - (price * 0.01)
     lower_circuit = price + (price * 0.005)
 
     result = fetch_stock_ltp(symbol)
