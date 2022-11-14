@@ -214,7 +214,7 @@ def fhz_maintain_stock_downtrend(fhz_obj):
 
     """
     symbol = fhz_obj.symbol
-    price = fhz_obj.buy_price
+    price = fhz_obj.sell_price
     sell_price_2p = price - (price * 0.02)
     lower_circuit = price + (price * 0.005)
 
@@ -222,8 +222,10 @@ def fhz_maintain_stock_downtrend(fhz_obj):
     logger.info(f"buy_price: {price}, sell_price_2p: {sell_price_2p}, ltp: {result['last_trade_price']}")
     if result["last_trade_price"] <= sell_price_2p:
         fhz_buy_stock(fhz_obj)
+        logger.info(f"Buy initiated for sell_price_2p {symbol}:{sell_price_2p}")
     elif result["last_trade_price"] >= lower_circuit:
         fhz_buy_stock(fhz_obj)
+        logger.info(f"Buy initiated for lower circuit {symbol}:{lower_circuit}")
 
     fhz_obj.current_price = result.get("last_trade_price")
     fhz_obj.save()
