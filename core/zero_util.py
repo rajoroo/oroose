@@ -7,17 +7,6 @@ from bengaluru.models import FhZeroStatus
 logger = logging.getLogger("celery")
 
 
-def rank_validation_uptrend(rank, price):
-    if (rank >= 1) and (rank <= 2):
-        lower_circuit = price - (price * 0.03)
-    elif rank == 3:
-        lower_circuit = price - (price * 0.01)
-    else:
-        lower_circuit = price - (price * 0.005)
-
-    return lower_circuit
-
-
 def get_kite():
     kite = KiteConnect(api_key=settings.ZERO_API_KEY)
     kite.set_access_token(settings.ZERO_ACCESS_TOKEN)
@@ -101,7 +90,7 @@ def read_intraday_order(order_id):
             result_data["error"] = True
             result_data["error_message"] = f"Read Failed status: {status}"
             break
-    logger.info(f"Read is completed count:{count} times, data:{result_data}")
+    # logger.info(f"Read is completed count:{count} times, data:{result_data}")
     return result_data
 
 
@@ -117,7 +106,7 @@ def fetch_stock_ltp(symbol):
     except Exception as e:
         error = True
         error_message = str(e)
-    logger.info(f"last traded price is fetched, ltp {symbol}:{last_trade_price}")
+    # logger.info(f"last traded price is fetched, ltp {symbol}:{last_trade_price}")
     return {"last_trade_price": last_trade_price, "error": error, "error_message": error_message}
 
 
@@ -188,11 +177,12 @@ def fhz_maintain_stock_uptrend(fhz_obj):
     """
     symbol = fhz_obj.symbol
     price = fhz_obj.buy_price
-    buy_price_2p = price + (price * 0.01)
-    lower_circuit = rank_validation_uptrend(fhz_obj.five_hundred.rank, fhz_obj.buy_price)
+    buy_price_2p = price + (price * 0.015)
+    lower_circuit = price - (price * 0.01)
 
     result = fetch_stock_ltp(symbol)
-    logger.info(f"buy_price: {price}, buy_price_2p: {buy_price_2p}, ltp: {result['last_trade_price']}")
+    message = f"stock: {symbol}, buy_price: {price}, buy_price_2p: {buy_price_2p}, lower_circuit: {lower_circuit}, ltp: {result['last_trade_price']}"
+    logger.info(message)
     if result["last_trade_price"] >= buy_price_2p:
         fhz_sell_stock(fhz_obj)
         logger.info(f"sell initiated for buy_price_2p {symbol}:{buy_price_2p}")
@@ -215,17 +205,29 @@ def fhz_maintain_stock_downtrend(fhz_obj):
     """
     symbol = fhz_obj.symbol
     price = fhz_obj.sell_price
-    sell_price_2p = price - (price * 0.01)
-    lower_circuit = price + (price * 0.005)
+    sell_price_2p = price - (price * 0.015)
+    lower_circuit = price + (price * 0.01)
+    rank_diff = fhz_obj.five_hundred.previous_rank - fhz_obj.five_hundred.rank
+    rank = fhz_obj.five_hundred.rank
 
     result = fetch_stock_ltp(symbol)
-    logger.info(f"buy_price: {price}, sell_price_2p: {sell_price_2p}, ltp: {result['last_trade_price']}")
+    message = f"stock: {symbol}, buy_price: {price}, sell_price_2p: {sell_price_2p}, lower_circuit: {lower_circuit}, ltp: {result['last_trade_price']}, rank_diff: {rank_diff}, previous_rank: {fhz_obj.five_hundred.previous_rank}, current_rank: {fhz_obj.five_hundred.rank}"
+    logger.info(message)
     if result["last_trade_price"] <= sell_price_2p:
         fhz_buy_stock(fhz_obj)
         logger.info(f"Buy initiated for sell_price_2p {symbol}:{sell_price_2p}")
     elif result["last_trade_price"] >= lower_circuit:
         fhz_buy_stock(fhz_obj)
         logger.info(f"Buy initiated for lower circuit {symbol}:{lower_circuit}")
+    elif (rank <= 8) and (rank_diff > 1):
+        fhz_buy_stock(fhz_obj)
+        logger.info(f"Buy initiated for rank {symbol}:{lower_circuit}")
+    elif (rank >= 9) and (rank <= 10) and (rank_diff > 2):
+        fhz_buy_stock(fhz_obj)
+        logger.info(f"Buy initiated for rank {symbol}:{lower_circuit}")
+    elif (rank >= 11) and (rank <= 30) and (rank_diff > 5):
+        fhz_buy_stock(fhz_obj)
+        logger.info(f"Buy initiated for rank {symbol}:{lower_circuit}")
 
     fhz_obj.current_price = result.get("last_trade_price")
     fhz_obj.save()

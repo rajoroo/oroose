@@ -17,9 +17,13 @@ def update_five_hundred(data):
             obj = items[0]
             obj.date = datetime.strptime(row["lastUpdateTime"], "%d-%b-%Y %H:%M:%S")
             obj.time = datetime.strptime(row["lastUpdateTime"], "%d-%b-%Y %H:%M:%S")
+            obj.previous_rank = obj.rank if row["index"] != obj.rank else obj.previous_rank
             obj.rank = row["index"]
             obj.last_price = row["lastPrice"]
             obj.percentage_change = row["pChange"]
+            obj.highest_rank = row["index"] if row["index"] < obj.highest_rank else obj.highest_rank
+            obj.lowest_rank = row["index"] if row["index"] > obj.lowest_rank else obj.lowest_rank
+
             obj.save()
         else:
             obj = FiveHundred(
@@ -32,6 +36,9 @@ def update_five_hundred(data):
                 isin=row["meta.isin"],
                 company_name=row["meta.companyName"],
                 rank=row["index"],
+                highest_rank=row["index"],
+                lowest_rank=row["index"],
+                previous_rank=row["index"],
             )
             obj.save()
 

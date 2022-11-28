@@ -1,5 +1,7 @@
 import pandas as pd
 from requests import Session
+from datetime import datetime
+import json
 
 headers = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36",  # noqa: E501
@@ -22,15 +24,20 @@ class LiveStocks:
         """
         base_response = self.session.get(self.base_url)
         response = self.session.get(self.url, cookies=base_response.cookies)
-        print(response, "----json response")
-        print(response.content, "----json response")
-        print(response.json(), "----json response")
         return response.json()
+
+    def save_stock_data(self, stock_data):
+        now = datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
+        filename = f"/home/proton/Documents/stock_data/stock_{now}.json"
+        with open(filename, 'w') as f:
+            json.dump(stock_data, f)
 
     def filter_stock_list(self, nos=5):
         stock_data = self.get_live_data()
+        self.save_stock_data(stock_data)
         # json_file = open('/home/ramesh/Desktop/equity-stockIndices.json')
         # stock_data = json.load(json_file)
+
 
         df1 = pd.json_normalize(stock_data["data"])
         df2 = df1.loc[df1["priority"] == 0]

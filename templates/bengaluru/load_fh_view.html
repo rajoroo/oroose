@@ -8,6 +8,9 @@
         {% if items %}
         <table class="green-table">
             <tr>
+                <th>Highest Rank</th>
+                <th>Lowest Rank</th>
+                <th>Previous Rank</th>
                 <th>Rank</th>
                 <th>Date</th>
                 <th>Time</th>
@@ -20,6 +23,9 @@
             </tr>
             {% for item in items %}
             <tr>
+                <td>{% if item.highest_rank %}{{ item.highest_rank }}{% endif %}</td>
+                <td>{% if item.lowest_rank %}{{ item.lowest_rank }}{% endif %}</td>
+                <td>{% if item.previous_rank %}{{ item.previous_rank }}{% endif %}</td>
                 <td>{% if item.rank %}{{ item.rank }}{% endif %}</td>
                 <td>{{ item.date }}</td>
                 <td>{{ item.time|date:'d-m-Y H:i:s' }}</td>
