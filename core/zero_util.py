@@ -110,9 +110,35 @@ def fetch_stock_ltp(symbol):
     return {"last_trade_price": last_trade_price, "error": error, "error_message": error_message}
 
 
+def is_valid_stock(fhz_obj):
+    symbol = fhz_obj.symbol
+    kite = get_kite()
+    result = False
+    instrument = f"NSE:{symbol}"
+    quote_response = kite.quote(instrument)
+    lower_circuit = quote_response[instrument]["lower_circuit_limit"]
+    upper_circuit = quote_response[instrument]["upper_circuit_limit"]
+    last_price = quote_response[instrument]["last_price"]
+
+    price_lower = last_price - (last_price * 0.05)
+    price_upper = last_price + (last_price * 0.05)
+
+    print(lower_circuit, price_lower, price_upper, upper_circuit)
+    if lower_circuit < price_lower < price_upper < upper_circuit:
+        result = True
+
+    return result
+
+
 def fhz_buy_stock(fhz_obj):
     symbol = fhz_obj.symbol
     quantity = fhz_obj.quantity
+
+    if not is_valid_stock(fhz_obj):
+        fhz_obj.error = True
+        fhz_obj.error_message = "Stock is not valid"
+        fhz_obj.save()
+        return None
 
     order = create_intraday_buy(symbol=symbol, quantity=quantity)
     order_id = order["order_id"]
@@ -141,6 +167,12 @@ def fhz_buy_stock(fhz_obj):
 def fhz_sell_stock(fhz_obj):
     symbol = fhz_obj.symbol
     quantity = fhz_obj.quantity
+
+    if not is_valid_stock(fhz_obj):
+        fhz_obj.error = True
+        fhz_obj.error_message = "Stock is not valid"
+        fhz_obj.save()
+        return None
 
     order = create_intraday_sell(symbol=symbol, quantity=quantity)
     order_id = order["order_id"]
@@ -208,6 +240,7 @@ def fhz_maintain_stock_downtrend(fhz_obj):
     sell_price_2p = price - (price * 0.015)
     lower_circuit = price + (price * 0.01)
     rank_diff = fhz_obj.five_hundred.previous_rank - fhz_obj.five_hundred.rank
+    rank_low_diff = fhz_obj.five_hundred.lowest_rank - fhz_obj.five_hundred.rank
     rank = fhz_obj.five_hundred.rank
 
     result = fetch_stock_ltp(symbol)
@@ -226,6 +259,9 @@ def fhz_maintain_stock_downtrend(fhz_obj):
         fhz_buy_stock(fhz_obj)
         logger.info(f"Buy initiated for rank {symbol}:{lower_circuit}")
     elif (rank >= 11) and (rank <= 30) and (rank_diff > 5):
+        fhz_buy_stock(fhz_obj)
+        logger.info(f"Buy initiated for rank {symbol}:{lower_circuit}")
+    elif (rank <= 30) and (rank_low_diff > 6):
         fhz_buy_stock(fhz_obj)
         logger.info(f"Buy initiated for rank {symbol}:{lower_circuit}")
 
