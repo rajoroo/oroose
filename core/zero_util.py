@@ -252,18 +252,18 @@ def fhz_maintain_stock_downtrend(fhz_obj):
     elif result["last_trade_price"] >= lower_circuit:
         fhz_buy_stock(fhz_obj)
         logger.info(f"Buy initiated for lower circuit {symbol}:{lower_circuit}")
-    elif (rank <= 8) and (rank_diff > 1):
+    elif (rank <= 8) and (rank_diff > 2):
         fhz_buy_stock(fhz_obj)
         logger.info(f"Buy initiated for rank {symbol}:{lower_circuit}")
-    elif (rank >= 9) and (rank <= 10) and (rank_diff > 2):
-        fhz_buy_stock(fhz_obj)
-        logger.info(f"Buy initiated for rank {symbol}:{lower_circuit}")
-    elif (rank >= 11) and (rank <= 30) and (rank_diff > 5):
-        fhz_buy_stock(fhz_obj)
-        logger.info(f"Buy initiated for rank {symbol}:{lower_circuit}")
-    elif (rank <= 30) and (rank_low_diff > 6):
-        fhz_buy_stock(fhz_obj)
-        logger.info(f"Buy initiated for rank {symbol}:{lower_circuit}")
+    # elif (rank >= 9) and (rank <= 10) and (rank_diff > 2):
+    #     fhz_buy_stock(fhz_obj)
+    #     logger.info(f"Buy initiated for rank {symbol}:{lower_circuit}")
+    # elif (rank >= 11) and (rank <= 30) and (rank_diff > 5):
+    #     fhz_buy_stock(fhz_obj)
+    #     logger.info(f"Buy initiated for rank {symbol}:{lower_circuit}")
+    # elif (rank <= 30) and (rank_low_diff > 6):
+    #     fhz_buy_stock(fhz_obj)
+    #     logger.info(f"Buy initiated for rank {symbol}:{lower_circuit}")
 
     fhz_obj.current_price = result.get("last_trade_price")
     fhz_obj.save()

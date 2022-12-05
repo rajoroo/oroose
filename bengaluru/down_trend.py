@@ -33,19 +33,17 @@ def fhz_downtrend_to_sell_condition(fhz_obj):
     start_time = datetime.combine(datetime.today(), start)
     end_time = datetime.combine(datetime.today(), end)
     before_min = datetime.now() - timedelta(minutes=20)
-    rank_diff = fhz_obj.rank - fhz_obj.previous_rank
 
     if (
         ps.status
-        and (fhz_obj.rank > FH_RANK_TILL + FH_GRACE_RANK + 2)
+        and (fhz_obj.rank > FH_RANK_TILL - 1)
         and (FH_MIN_PRICE <= fhz_obj.last_price <= FH_MAX_PRICE)
         and (fhz_obj.percentage_change <= FH_MAX_PERCENT)
         and (fhz_obj.fhzerodowntrend_set.all().count() < FH_MAX_BUY_ORDER)
         and (not fhz_obj.fhzerodowntrend_set.filter(status__in=["TO_BUY", "SOLD", "TO_SELL"]).exists())
         and (start_time <= datetime.now() <= end_time)
         and (datetime.today().weekday() < 5)
-        # and (0 < rank_diff < 8)
-        and (fhz_obj.previous_rank < fhz_obj.rank)
+        and (fhz_obj.rank > fhz_obj.previous_rank)
     ):
         result = True
 
