@@ -5,6 +5,7 @@ from django.db import models
 class FiveHundred(models.Model):
     date = models.DateField(verbose_name="Date")
     time = models.DateTimeField(verbose_name="Time")
+    created_date = models.DateTimeField(verbose_name="Created Date")
     rank = models.IntegerField(verbose_name="Rank")
     highest_rank = models.IntegerField(verbose_name="Highest Rank", null=True, blank=True)
     lowest_rank = models.IntegerField(verbose_name="Lowest Rank", null=True, blank=True)
@@ -15,6 +16,7 @@ class FiveHundred(models.Model):
     isin = models.CharField(max_length=100, verbose_name="Isin")
     last_price = models.FloatField(verbose_name="Price")
     percentage_change = models.FloatField(verbose_name="Percentage")
+    bar = models.CharField(verbose_name="Bar", null=True, blank=True, max_length=200, default="level0")
 
     objects = models.Manager()
 

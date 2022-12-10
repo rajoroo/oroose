@@ -36,7 +36,7 @@ def fhz_downtrend_to_sell_condition(fhz_obj):
 
     if (
         ps.status
-        and (fhz_obj.rank > FH_RANK_TILL - 1)
+        and (fhz_obj.rank > FH_RANK_TILL - 2)
         and (FH_MIN_PRICE <= fhz_obj.last_price <= FH_MAX_PRICE)
         and (fhz_obj.percentage_change <= FH_MAX_PERCENT)
         and (fhz_obj.fhzerodowntrend_set.all().count() < FH_MAX_BUY_ORDER)
@@ -44,6 +44,7 @@ def fhz_downtrend_to_sell_condition(fhz_obj):
         and (start_time <= datetime.now() <= end_time)
         and (datetime.today().weekday() < 5)
         and (fhz_obj.rank > fhz_obj.previous_rank)
+        and (fhz_obj.created_date + timedelta(minutes=18) <= datetime.now())
     ):
         result = True
 
@@ -60,7 +61,7 @@ def fhz_downtrend_to_buy_condition(fhz_obj):
     ps = ParameterSettings.objects.get(name=SETTINGS_FH_ZERO)
     if (
         ps.status
-        and fhz_obj.rank < FH_RANK_TILL
+        and fhz_obj.rank < FH_RANK_TILL - 2
         and fhz_obj.fhzerodowntrend_set.filter(status=FhZeroStatus.SOLD).exists()
     ):
         result = True

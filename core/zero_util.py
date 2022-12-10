@@ -238,7 +238,7 @@ def fhz_maintain_stock_downtrend(fhz_obj):
     symbol = fhz_obj.symbol
     price = fhz_obj.sell_price
     sell_price_2p = price - (price * 0.015)
-    lower_circuit = price + (price * 0.01)
+    lower_circuit = price + (price * 0.008)
     rank_diff = fhz_obj.five_hundred.previous_rank - fhz_obj.five_hundred.rank
     rank_low_diff = fhz_obj.five_hundred.lowest_rank - fhz_obj.five_hundred.rank
     rank = fhz_obj.five_hundred.rank
@@ -252,9 +252,13 @@ def fhz_maintain_stock_downtrend(fhz_obj):
     elif result["last_trade_price"] >= lower_circuit:
         fhz_buy_stock(fhz_obj)
         logger.info(f"Buy initiated for lower circuit {symbol}:{lower_circuit}")
-    elif (rank <= 8) and (rank_diff > 2):
-        fhz_buy_stock(fhz_obj)
-        logger.info(f"Buy initiated for rank {symbol}:{lower_circuit}")
+    # elif (rank <= 6) and (rank_diff > 2):
+    #     fhz_buy_stock(fhz_obj)
+    #     logger.info(f"Buy initiated for rank {symbol}:{lower_circuit}")
+    # elif (rank <= 8) and (rank_low_diff > 3):
+    #     fhz_buy_stock(fhz_obj)
+    #     logger.info(f"Buy initiated for rank {symbol}:{lower_circuit}")
+
     # elif (rank >= 9) and (rank <= 10) and (rank_diff > 2):
     #     fhz_buy_stock(fhz_obj)
     #     logger.info(f"Buy initiated for rank {symbol}:{lower_circuit}")

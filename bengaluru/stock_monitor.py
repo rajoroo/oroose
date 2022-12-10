@@ -29,6 +29,7 @@ def update_five_hundred(data):
             obj = FiveHundred(
                 date=datetime.strptime(row["lastUpdateTime"], "%d-%b-%Y %H:%M:%S"),
                 time=datetime.strptime(row["lastUpdateTime"], "%d-%b-%Y %H:%M:%S"),
+                created_date=datetime.now(),
                 symbol=row["symbol"],
                 identifier=row["identifier"],
                 last_price=row["lastPrice"],
@@ -39,6 +40,7 @@ def update_five_hundred(data):
                 highest_rank=row["index"],
                 lowest_rank=row["index"],
                 previous_rank=row["index"],
+                bar="level0",
             )
             obj.save()
 
