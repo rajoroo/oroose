@@ -1,5 +1,12 @@
 from datetime import datetime
 from django.db import models
+from django.utils.translation import gettext_lazy as _
+
+
+class PlStatus(models.TextChoices):
+    WINNER = 'WR', _('Winner')
+    RUNNER = 'RR', _('Runner')
+    INPROG = 'IP', _('In-Progress')
 
 
 class FiveHundred(models.Model):
@@ -101,6 +108,11 @@ class FhZeroDownTrend(models.Model):
     current_price = models.FloatField(verbose_name="Current Price", default=0.0)
     error = models.BooleanField(default=False, verbose_name="Error")
     error_message = models.TextField(verbose_name="Error Message", null=True, blank=True)
+    pl_status = models.CharField(
+        max_length=2,
+        choices=PlStatus.choices,
+        default=PlStatus.INPROG,
+    )
 
     objects = models.Manager()
 

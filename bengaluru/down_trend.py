@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 
 from django.conf import settings
 
-from bengaluru.models import FhZeroDownTrend, FhZeroStatus, FiveHundred
+from bengaluru.models import FhZeroDownTrend, FhZeroStatus, FiveHundred, PlStatus
 from core.zero_util import fhz_buy_stock, fhz_maintain_stock_downtrend, fhz_sell_stock
 
 from core.models import ParameterSettings
@@ -32,6 +32,7 @@ def fhz_downtrend_to_sell_condition(fhz_obj):
     end = datetime.strptime(FH_ZERO_END, "%H%M").time()
     start_time = datetime.combine(datetime.today(), start)
     end_time = datetime.combine(datetime.today(), end)
+    start_10min = start_time + timedelta(minutes=10)
     before_min = datetime.now() - timedelta(minutes=20)
 
     if (
@@ -39,12 +40,14 @@ def fhz_downtrend_to_sell_condition(fhz_obj):
         and (fhz_obj.rank > FH_RANK_TILL - 2)
         and (FH_MIN_PRICE <= fhz_obj.last_price <= FH_MAX_PRICE)
         and (fhz_obj.percentage_change <= FH_MAX_PERCENT)
-        and (fhz_obj.fhzerodowntrend_set.all().count() < FH_MAX_BUY_ORDER)
+        and (fhz_obj.fhzerodowntrend_set.all().count() <= FH_MAX_BUY_ORDER)
         and (not fhz_obj.fhzerodowntrend_set.filter(status__in=["TO_BUY", "SOLD", "TO_SELL"]).exists())
+        and (not fhz_obj.fhzerodowntrend_set.filter(pl_status__in=[PlStatus.WINNER, PlStatus.INPROG]).exists())
+        and (not fhz_obj.fhzerodowntrend_set.filter(error=True).exists())
         and (start_time <= datetime.now() <= end_time)
         and (datetime.today().weekday() < 5)
         and (fhz_obj.rank > fhz_obj.previous_rank)
-        and (fhz_obj.created_date + timedelta(minutes=18) <= datetime.now())
+        and ((fhz_obj.created_date <= before_min) or (fhz_obj.created_date <= start_10min))
     ):
         result = True
 
@@ -85,6 +88,7 @@ def trigger_fhz_downtrend():
                 quantity=int(FH_MAX_TOTAL_PRICE / rec.last_price),
                 # quantity=1,
                 last_price=rec.last_price,
+                pl_status=PlStatus.INPROG,
             )
             five_hundred_zero.save()
 

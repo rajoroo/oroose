@@ -2,7 +2,7 @@ import time
 import logging
 from django.conf import settings
 from kiteconnect import KiteConnect
-from bengaluru.models import FhZeroStatus
+from bengaluru.models import FhZeroStatus, PlStatus
 
 logger = logging.getLogger("celery")
 
@@ -238,9 +238,8 @@ def fhz_maintain_stock_downtrend(fhz_obj):
     symbol = fhz_obj.symbol
     price = fhz_obj.sell_price
     sell_price_2p = price - (price * 0.015)
-    lower_circuit = price + (price * 0.01)
+    lower_circuit = price + (price * 0.005)
     rank_diff = fhz_obj.five_hundred.previous_rank - fhz_obj.five_hundred.rank
-    rank_low_diff = fhz_obj.five_hundred.lowest_rank - fhz_obj.five_hundred.rank
     rank = fhz_obj.five_hundred.rank
 
     result = fetch_stock_ltp(symbol)
@@ -248,26 +247,16 @@ def fhz_maintain_stock_downtrend(fhz_obj):
     logger.info(message)
     if result["last_trade_price"] <= sell_price_2p:
         fhz_buy_stock(fhz_obj)
+        fhz_obj.pl_status = PlStatus.WINNER
         logger.info(f"Buy initiated for sell_price_2p {symbol}:{sell_price_2p}")
     elif result["last_trade_price"] >= lower_circuit:
         fhz_buy_stock(fhz_obj)
+        fhz_obj.pl_status = PlStatus.RUNNER
         logger.info(f"Buy initiated for lower circuit {symbol}:{lower_circuit}")
-    # elif (rank <= 6) and (rank_diff > 2):
-    #     fhz_buy_stock(fhz_obj)
-    #     logger.info(f"Buy initiated for rank {symbol}:{lower_circuit}")
-    # elif (rank <= 8) and (rank_low_diff > 3):
-    #     fhz_buy_stock(fhz_obj)
-    #     logger.info(f"Buy initiated for rank {symbol}:{lower_circuit}")
-
-    # elif (rank >= 9) and (rank <= 10) and (rank_diff > 2):
-    #     fhz_buy_stock(fhz_obj)
-    #     logger.info(f"Buy initiated for rank {symbol}:{lower_circuit}")
-    # elif (rank >= 11) and (rank <= 30) and (rank_diff > 5):
-    #     fhz_buy_stock(fhz_obj)
-    #     logger.info(f"Buy initiated for rank {symbol}:{lower_circuit}")
-    # elif (rank <= 30) and (rank_low_diff > 6):
-    #     fhz_buy_stock(fhz_obj)
-    #     logger.info(f"Buy initiated for rank {symbol}:{lower_circuit}")
+    elif (rank <= 7) and (rank_diff >= 1):
+        fhz_buy_stock(fhz_obj)
+        fhz_obj.pl_status = PlStatus.RUNNER
+        logger.info(f"Buy initiated for rank {symbol}:{lower_circuit}")
 
     fhz_obj.current_price = result.get("last_trade_price")
     fhz_obj.save()
