@@ -19,3 +19,6 @@ def generate_valid_ps(request):
 
     ps_fhz = ParameterSettings(name="SETTINGS_FH_ZERO", status=True)
     ps_fhz.save()
+
+    ps_fhz = ParameterSettings(name="SETTINGS_FHZ_DOWNTREND", status=True)
+    ps_fhz.save()
