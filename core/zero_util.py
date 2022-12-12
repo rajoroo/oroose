@@ -238,7 +238,7 @@ def fhz_maintain_stock_downtrend(fhz_obj):
     symbol = fhz_obj.symbol
     price = fhz_obj.sell_price
     sell_price_2p = price - (price * 0.015)
-    lower_circuit = price + (price * 0.008)
+    lower_circuit = price + (price * 0.01)
     rank_diff = fhz_obj.five_hundred.previous_rank - fhz_obj.five_hundred.rank
     rank_low_diff = fhz_obj.five_hundred.lowest_rank - fhz_obj.five_hundred.rank
     rank = fhz_obj.five_hundred.rank
