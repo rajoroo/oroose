@@ -124,3 +124,20 @@ def process_fhz_downtrend():
         elif rec.status == FhZeroStatus.TO_SELL:
             print("TO SELL Started")
             fhz_sell_stock(fhz_obj=rec)
+
+
+def downtrend_panic_pull():
+    fhz = (
+        FhZeroDownTrend.objects.filter(
+            date=datetime.today(),
+            status__in=[FhZeroStatus.SOLD, FhZeroStatus.TO_BUY],
+            error=False,
+        )
+    )
+    if not fhz:
+        return None
+
+    for rec in fhz:
+        fhz_buy_stock(fhz_obj=rec)
+
+    return True

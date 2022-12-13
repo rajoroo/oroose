@@ -6,8 +6,10 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import F, Max, Sum
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, reverse
+from django.http import HttpResponseRedirect
 
 from bengaluru.models import FhZeroUpTrend, FhZeroDownTrend, FhZeroStatus, FiveHundred
+from bengaluru.down_trend import downtrend_panic_pull
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from core.models import DataLog, ParameterSettings
 
@@ -15,6 +17,7 @@ from .stock_monitor import polling_live_stocks_five_hundred
 from bengaluru.forms import FhZeroDownTrendForm
 
 from django.shortcuts import render, get_object_or_404
+from django.contrib import messages
 
 LOG_SCHEDULE_LIVE_500 = settings.LOG_SCHEDULE_LIVE_500
 SETTINGS_FH_LIVE_STOCKS_NSE = "SETTINGS_FH_LIVE_STOCKS_NSE"
@@ -90,7 +93,7 @@ def load_fhz_uptrend_sold_view(request):
 
 # Downtrend
 @login_required(login_url="/accounts/login/")
-def mysuru_page(request):
+def mysuru_page(request, *args, **kwargs):
     context = {"active_page": "mysuru"}
     return render(request, "mysuru/base_page.html", context)
 
@@ -133,6 +136,11 @@ def load_fhz_downtrend_purc_view(request):
 
     context = {"items": list(fhz.values()), "realized_amount": fhz.aggregate(Sum("profit_loss"))["profit_loss__sum"]}
     return render(request, "mysuru/load_fh_zero_sold_view.html", context=context)
+
+
+def trigger_downtrend_panic_pull(request):
+    downtrend_panic_pull()
+    return HttpResponse(status=200)
 
 
 class EditFhzUptrend(UpdateView):
