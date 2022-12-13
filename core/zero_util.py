@@ -134,12 +134,6 @@ def fhz_buy_stock(fhz_obj):
     symbol = fhz_obj.symbol
     quantity = fhz_obj.quantity
 
-    if not is_valid_stock(fhz_obj):
-        fhz_obj.error = True
-        fhz_obj.error_message = "Stock is not valid"
-        fhz_obj.save()
-        return None
-
     order = create_intraday_buy(symbol=symbol, quantity=quantity)
     order_id = order["order_id"]
     if order["error"]:

@@ -22,6 +22,7 @@
                 <th>Sell Price</th>
                 <th>Status</th>
                 <th>Profit/Loss</th>
+                <th>PL Status</th>
             </tr>
             {% for item in items %}
             <tr onClick="parent.open('{% url 'fhz_downtrend_record' item.id %}')">
@@ -35,7 +36,7 @@
                 <td>{{ item.sell_price }}</td>
                 <td>{{ item.status }}</td>
                 <td>{{ item.profit_loss|floatformat:2 }}</td>
-
+                <td>{{ item.pl_status }}</td>
             </tr>
         {% endfor %}
             <tr>
