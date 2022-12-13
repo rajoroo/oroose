@@ -17,5 +17,5 @@ urlpatterns = [
     path("load_fhz_downtrend_purc_view/", views.load_fhz_downtrend_purc_view, name="fhz_downtrend_purc_view"),
     path("trigger_downtrend_panic_pull/", views.trigger_downtrend_panic_pull, name="trigger_downtrend_panic_pull"),
     path("", views.bengaluru_page, name="bengaluru"),
-    path("mysuru/", views.mysuru_page, kwargs={}, name="mysuru"),
+    path("mysuru/", views.mysuru_page, name="mysuru"),
 ]

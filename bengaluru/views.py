@@ -93,7 +93,7 @@ def load_fhz_uptrend_sold_view(request):
 
 # Downtrend
 @login_required(login_url="/accounts/login/")
-def mysuru_page(request, *args, **kwargs):
+def mysuru_page(request):
     context = {"active_page": "mysuru"}
     return render(request, "mysuru/base_page.html", context)
 
