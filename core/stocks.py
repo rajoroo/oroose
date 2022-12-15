@@ -28,7 +28,7 @@ class LiveStocks:
 
     def save_stock_data(self, stock_data):
         now = datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
-        filename = f"/home/proton/Documents/stock_data/stock_{now}.json"
+        filename = f"/home/electron/Documents/stock_data/stock_{now}.json"
         with open(filename, 'w') as f:
             json.dump(stock_data, f)
 

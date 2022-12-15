@@ -33,7 +33,8 @@ def fhz_downtrend_to_sell_condition(fhz_obj):
     start_time = datetime.combine(datetime.today(), start)
     end_time = datetime.combine(datetime.today(), end)
     start_10min = start_time + timedelta(minutes=10)
-    before_min = datetime.now() - timedelta(minutes=20)
+    before_20_min = datetime.now() - timedelta(minutes=20)
+    before_40_min = datetime.now() - timedelta(minutes=40)
 
     if (
         ps.status
@@ -47,13 +48,13 @@ def fhz_downtrend_to_sell_condition(fhz_obj):
         and (start_time <= datetime.now() <= end_time)
         and (datetime.today().weekday() < 5)
         and (fhz_obj.rank > fhz_obj.previous_rank)
-        and ((fhz_obj.created_date <= before_min) or (fhz_obj.created_date <= start_10min))
+        and ((fhz_obj.created_date <= before_20_min) or (fhz_obj.created_date <= start_10min))
     ):
         result = True
 
     if result and fhz_obj.fhzerodowntrend_set.all():
         latest_fhz = fhz_obj.fhzerodowntrend_set.latest("updated_date")
-        if latest_fhz.updated_date > before_min:
+        if latest_fhz.updated_date > before_40_min:
             result = False
 
     return result
