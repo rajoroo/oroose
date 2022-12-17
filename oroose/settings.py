@@ -51,6 +51,8 @@ INSTALLED_APPS = [
     "core",
     "home",
     "bengaluru",
+    "mysuru",
+    "stockwatch",
 ]
 
 MIDDLEWARE = [
@@ -192,25 +194,9 @@ CELERY_TASK_TRACK_STARTED = True
 LIVE_INDEX_URL = os.environ.get("LIVE_INDEX_URL")
 LIVE_INDEX_500_URL = os.environ.get("LIVE_INDEX_500_URL")
 
-# FHZ Configuration
-FH_RANK_FROM = int(os.environ.get("FH_RANK_FROM"))
-FH_RANK_TILL = int(os.environ.get("FH_RANK_TILL"))
-FH_GRACE_RANK = int(os.environ.get("FH_GRACE_RANK"))
-FH_MIN_PRICE = float(os.environ.get("FH_MIN_PRICE"))
-FH_MAX_PRICE = float(os.environ.get("FH_MAX_PRICE"))
-FH_MAX_TOTAL_PRICE = float(os.environ.get("FH_MAX_TOTAL_PRICE"))
-FH_MAX_PERCENT = float(os.environ.get("FH_MAX_PERCENT"))
-FH_MAX_BUY_ORDER = int(os.environ.get("FH_MAX_BUY_ORDER"))
-
-# Logger
-LOG_SCHEDULE_LIVE_500 = os.environ.get("LOG_SCHEDULE_LIVE_500")
-LOG_SCHEDULE_ZERO_500 = os.environ.get("LOG_SCHEDULE_ZERO_500")
-
 # Timing
 FH_STOCK_LIVE_START = os.environ.get("FH_STOCK_LIVE_START")
 FH_STOCK_LIVE_END = os.environ.get("FH_STOCK_LIVE_END")
-FH_ZERO_START = os.environ.get("FH_ZERO_START")
-FH_ZERO_END = os.environ.get("FH_ZERO_END")
 
 # API Config
 ZERO_API_KEY = os.environ.get("ZERO_API_KEY")

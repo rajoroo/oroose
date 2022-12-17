@@ -23,6 +23,7 @@ urlpatterns = [
     path("accounts/", include("django.contrib.auth.urls")),
     path("", views.home_page, name="home"),
     path("bengaluru/", include("bengaluru.urls")),
+    path("mysuru/", include("mysuru.urls")),
     path("configuration_page/", views.configuration_page, name="configuration"),
     path("params_update/<int:config_id>/", views.params_update, name="params_update"),
     path("data_log_page/", views.data_log_page, name="data_log"),

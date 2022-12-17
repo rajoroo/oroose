@@ -7,8 +7,9 @@
 
 {% block content %}
 
-    <div class="card-columns">
+    <div class="container">
         {% for conf_key, conf_value in param_configs.items %}
+        <div class="row">
             <div class="card configure-settings">
                 <div class="card-header border-bottom">
                     <h3 class="card-title mb-0">{{ conf_value.display_name }}</h3>
@@ -30,7 +31,9 @@
                     </div>
                 </div>
             </div>
+        </div>
         {% endfor %}
+        <div class="row">
             <div class="card configure-settings">
                 <div class="card-header border-bottom">
                     <h3 class="card-title mb-0">Parameter Settings</h3>
@@ -61,6 +64,7 @@
                     </div>
                 </div>
             </div>
+        </div>
     </div>
 
 {% endblock content %}
