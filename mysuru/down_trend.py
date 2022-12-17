@@ -1,35 +1,33 @@
 from datetime import datetime, timedelta
 
-from django.conf import settings
-
-from bengaluru.models import FhZeroDownTrend, FhZeroStatus, FiveHundred, PlStatus
+from mysuru.models import FhZeroDownTrend
+from stockwatch.models import FiveHundred
+from core.choice import FhZeroStatus, PlStatus
 from core.zero_util import fhz_buy_stock, fhz_maintain_stock_downtrend, fhz_sell_stock
+from core.constant import SETTINGS_FHZ_DOWNTREND
+from mysuru.constant import (
+    # FH_RANK_FROM,
+    FH_RANK_TILL,
+    # FH_GRACE_RANK,
+    FH_MIN_PRICE,
+    FH_MAX_PRICE,
+    FH_MAX_TOTAL_PRICE,
+    FH_MAX_PERCENT,
+    FH_MAX_BUY_ORDER,
+    MYSURU_START,
+    MYSURU_END
+)
+
 
 from core.models import ParameterSettings
-
-LIVE_INDEX_URL = settings.LIVE_INDEX_URL
-LIVE_INDEX_500_URL = settings.LIVE_INDEX_500_URL
-FH_MAX_TOTAL_PRICE = settings.FH_MAX_TOTAL_PRICE  # 20000
-
-FH_RANK_FROM = settings.FH_RANK_FROM  # 1
-FH_RANK_TILL = settings.FH_RANK_TILL  # 5
-FH_GRACE_RANK = settings.FH_GRACE_RANK  # 2
-FH_MIN_PRICE = settings.FH_MIN_PRICE  # 20
-FH_MAX_PRICE = settings.FH_MAX_PRICE  # 4500
-FH_MAX_PERCENT = settings.FH_MAX_PERCENT  # 11
-FH_MAX_BUY_ORDER = settings.FH_MAX_BUY_ORDER  # 2
-
-FH_ZERO_START = settings.FH_ZERO_START
-FH_ZERO_END = settings.FH_ZERO_END
-SETTINGS_FH_ZERO = "SETTINGS_FHZ_DOWNTREND"
 
 
 def fhz_downtrend_to_sell_condition(fhz_obj):
     result = False
 
-    ps = ParameterSettings.objects.get(name=SETTINGS_FH_ZERO)
-    start = datetime.strptime(FH_ZERO_START, "%H%M").time()
-    end = datetime.strptime(FH_ZERO_END, "%H%M").time()
+    ps = ParameterSettings.objects.get(name=SETTINGS_FHZ_DOWNTREND)
+    start = datetime.strptime(MYSURU_START, "%H%M").time()
+    end = datetime.strptime(MYSURU_END, "%H%M").time()
     start_time = datetime.combine(datetime.today(), start)
     end_time = datetime.combine(datetime.today(), end)
     start_10min = start_time + timedelta(minutes=10)
@@ -62,7 +60,7 @@ def fhz_downtrend_to_sell_condition(fhz_obj):
 
 def fhz_downtrend_to_buy_condition(fhz_obj):
     result = False
-    ps = ParameterSettings.objects.get(name=SETTINGS_FH_ZERO)
+    ps = ParameterSettings.objects.get(name=SETTINGS_FHZ_DOWNTREND)
     if (
         ps.status
         and fhz_obj.rank < FH_RANK_TILL - 2

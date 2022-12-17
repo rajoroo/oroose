@@ -2,12 +2,10 @@ from datetime import datetime, timedelta
 
 import pytest
 import time_machine
-from django.db.utils import IntegrityError
 from django.test import TestCase
 
-from bengaluru.models import FhZeroDownTrend, FhZeroStatus, FiveHundred, PlStatus
-from bengaluru.down_trend import fhz_downtrend_to_sell_condition
-from core.models import ParameterSettings
+from bengaluru.models import FhZeroDownTrend, FhZeroStatus, FiveHundred
+from mysuru.down_trend import fhz_downtrend_to_sell_condition
 from oroose.conftest import generate_valid_ps  # noqa: F401
 
 

@@ -1,36 +1,33 @@
 import logging
 from datetime import datetime
 
-from django.conf import settings
-
 from core.configuration import only_one
 from core.models import DataLog, ParameterSettings
 from oroose.celery import app
 
-from .stock_monitor import polling_live_stocks_five_hundred
-from .up_trend import trigger_fhz_uptrend, process_fhz_uptrend
-from .down_trend import trigger_fhz_downtrend, process_fhz_downtrend
+from stockwatch.stock_monitor import polling_live_stocks_five_hundred
+from bengaluru.up_trend import trigger_fhz_uptrend, process_fhz_uptrend
+from mysuru.down_trend import trigger_fhz_downtrend, process_fhz_downtrend
+from core.constant import (
+    LIVE_START,
+    LIVE_END,
+    SETTINGS_FH_LIVE_STOCKS_NSE,
+    SETTINGS_FHZ_UPTREND,
+    SETTINGS_FHZ_DOWNTREND,
+    LOG_SCHEDULE_LIVE_500,
+    LOG_SCHEDULE_ZERO_500
+)
+from bengaluru.constant import BENGALURU_START, BENGALURU_END
+from mysuru.constant import MYSURU_START, MYSURU_END
 
 logger = logging.getLogger("celery")
-
-
-LOG_SCHEDULE_LIVE_500 = settings.LOG_SCHEDULE_LIVE_500
-LOG_SCHEDULE_ZERO_500 = settings.LOG_SCHEDULE_ZERO_500
-FH_STOCK_LIVE_START = settings.FH_STOCK_LIVE_START
-FH_STOCK_LIVE_END = settings.FH_STOCK_LIVE_END
-FH_ZERO_START = settings.FH_ZERO_START
-FH_ZERO_END = settings.FH_ZERO_END
-
-SETTINGS_FH_LIVE_STOCKS_NSE = "SETTINGS_FH_LIVE_STOCKS_NSE"
-SETTINGS_FHZ_UPTREND = "SETTINGS_FHZ_UPTREND"
-SETTINGS_FHZ_DOWNTREND = "SETTINGS_FHZ_DOWNTREND"
 
 
 def condition_schedule_live_stocks_fh():
     print("i call")
     ps = ParameterSettings.objects.get(name=SETTINGS_FH_LIVE_STOCKS_NSE)
-    start = datetime.strptime(FH_STOCK_LIVE_START, "%H%M").time()
-    end = datetime.strptime(FH_STOCK_LIVE_END, "%H%M").time()
+    start = datetime.strptime(LIVE_START, "%H%M").time()
+    end = datetime.strptime(LIVE_END, "%H%M").time()
     start_time = datetime.combine(datetime.today(), start)
     end_time = datetime.combine(datetime.today(), end)
 
@@ -61,8 +58,8 @@ def schedule_live_stocks_five_hundred():
 
 def condition_schedule_fhz_uptrend():
     ps = ParameterSettings.objects.get(name=SETTINGS_FHZ_UPTREND)
-    start = datetime.strptime(FH_ZERO_START, "%H%M").time()
-    end = datetime.strptime(FH_ZERO_END, "%H%M").time()
+    start = datetime.strptime(BENGALURU_START, "%H%M").time()
+    end = datetime.strptime(BENGALURU_END, "%H%M").time()
     start_time = datetime.combine(datetime.today(), start)
     end_time = datetime.combine(datetime.today(), end)
 
@@ -91,8 +88,8 @@ def schedule_fhz_uptrend():
 
 def condition_schedule_fhz_downtrend():
     ps = ParameterSettings.objects.get(name=SETTINGS_FHZ_DOWNTREND)
-    start = datetime.strptime(FH_ZERO_START, "%H%M").time()
-    end = datetime.strptime(FH_ZERO_END, "%H%M").time()
+    start = datetime.strptime(MYSURU_START, "%H%M").time()
+    end = datetime.strptime(MYSURU_END, "%H%M").time()
     start_time = datetime.combine(datetime.today(), start)
     end_time = datetime.combine(datetime.today(), end)
 

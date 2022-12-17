@@ -1,11 +1,7 @@
 from django.core.management.base import BaseCommand
+from core.constant import SETTINGS_FH_LIVE_STOCKS_NSE, SETTINGS_FHZ_UPTREND, SETTINGS_FHZ_DOWNTREND
 
 from core.models import ParameterSettings
-
-configs = [
-    "SETTINGS_FH_LIVE_STOCKS_NSE",
-    "SETTINGS_FH_ZERO",
-]
 
 
 class Command(BaseCommand):
@@ -16,6 +12,6 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         ParameterSettings.objects.all().delete()
 
-        ParameterSettings.objects.create(name="SETTINGS_FH_LIVE_STOCKS_NSE")
-        ParameterSettings.objects.create(name="SETTINGS_FHZ_UPTREND")
-        ParameterSettings.objects.create(name="SETTINGS_FHZ_DOWNTREND")
+        ParameterSettings.objects.create(name=SETTINGS_FH_LIVE_STOCKS_NSE)
+        ParameterSettings.objects.create(name=SETTINGS_FHZ_UPTREND)
+        ParameterSettings.objects.create(name=SETTINGS_FHZ_DOWNTREND)

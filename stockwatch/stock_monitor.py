@@ -1,13 +1,8 @@
 from datetime import datetime
 
-from django.conf import settings
-
-from bengaluru.models import FiveHundred
-from core.stocks import LiveStocks
-
-LIVE_INDEX_URL = settings.LIVE_INDEX_URL
-LIVE_INDEX_500_URL = settings.LIVE_INDEX_500_URL
-FH_MAX_TOTAL_PRICE = settings.FH_MAX_TOTAL_PRICE  # 20000
+from stockwatch.models import FiveHundred
+from stockwatch.stocks import LiveStocks
+from stockwatch.constant import LIVE_INDEX_URL, LIVE_INDEX_500_URL
 
 
 def update_five_hundred(data):

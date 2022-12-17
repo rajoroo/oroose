@@ -2,7 +2,7 @@ import time
 import logging
 from django.conf import settings
 from kiteconnect import KiteConnect
-from bengaluru.models import FhZeroStatus, PlStatus
+from core.choice import FhZeroStatus, PlStatus
 
 logger = logging.getLogger("celery")
 

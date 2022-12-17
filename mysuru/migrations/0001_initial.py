@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='FhZeroUpTrend',
+            name='FhZeroDownTrend',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('date', models.DateField(verbose_name='Date')),
@@ -32,6 +32,7 @@ class Migration(migrations.Migration):
                 ('current_price', models.FloatField(default=0.0, verbose_name='Current Price')),
                 ('error', models.BooleanField(default=False, verbose_name='Error')),
                 ('error_message', models.TextField(blank=True, null=True, verbose_name='Error Message')),
+                ('pl_status', models.CharField(choices=[('WR', 'Winner'), ('RR', 'Runner'), ('IP', 'In-Progress')], default='IP', max_length=2)),
                 ('five_hundred', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='stockwatch.fivehundred', verbose_name='Five Hundred')),
             ],
             options={

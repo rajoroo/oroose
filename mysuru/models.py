@@ -1,10 +1,10 @@
 from datetime import datetime
 from django.db import models
-from stockwatch.models import FiveHundred
-from core.choice import FhZeroStatus
+from core.choice import FhZeroStatus, PlStatus
+from bengaluru.models import FiveHundred
 
 
-class FhZeroUpTrend(models.Model):
+class FhZeroDownTrend(models.Model):
     date = models.DateField(verbose_name="Date")
     time = models.DateTimeField(verbose_name="Time")
     updated_date = models.DateTimeField(verbose_name="Updated Date", auto_now_add=True)
@@ -32,6 +32,11 @@ class FhZeroUpTrend(models.Model):
     current_price = models.FloatField(verbose_name="Current Price", default=0.0)
     error = models.BooleanField(default=False, verbose_name="Error")
     error_message = models.TextField(verbose_name="Error Message", null=True, blank=True)
+    pl_status = models.CharField(
+        max_length=2,
+        choices=PlStatus.choices,
+        default=PlStatus.INPROG,
+    )
 
     objects = models.Manager()
 
@@ -40,4 +45,4 @@ class FhZeroUpTrend(models.Model):
 
     def save(self, *args, **kwargs):
         self.updated_date = datetime.now()
-        super(FhZeroUpTrend, self).save(*args, **kwargs)
+        super(FhZeroDownTrend, self).save(*args, **kwargs)
