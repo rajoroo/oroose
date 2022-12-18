@@ -88,6 +88,9 @@ def trigger_fhz_downtrend():
                 # quantity=1,
                 last_price=rec.last_price,
                 pl_status=PlStatus.INPROG,
+                rank=rec.rank,
+                previous_rank=rec.previous_rank,
+                previous_price=rec.previous_price,
             )
             five_hundred_zero.save()
 
