@@ -19,29 +19,8 @@
             </div>
         </div>
     </div>
-    <div class="row">
-        <div class="col-12 col-sm-12">
-            <div class="card nifty-table">
-                <div id="show_fh" trigger-url="{% url 'load_fh_view' %}"></div>
-            </div>
-        </div>
-        <div class="col-12 col-sm-12">
-            <div class="card nifty-table">
-                <div id="show_fhz" trigger-url="{% url 'fhz_uptrend_view' %}"></div>
-            </div>
-        </div>
-        <div class="col-12 col-sm-12">
-            <div class="card nifty-table">
-                <div id="show_error_fhz" trigger-url="{% url 'fhz_uptrend_error_view' %}"></div>
-            </div>
-        </div>
-        <div class="col-12 col-sm-12">
-            <div class="card nifty-table">
-                <div id="show_sold_fhz" trigger-url="{% url 'fhz_uptrend_sold_view' %}"></div>
-            </div>
-        </div>
-    </div>
-
+    <div id="ajax-content" trigger-url="{% url 'bengaluru_content' %}"></div>
+    <div id="show_content"></div>
 {% endblock content %}
 
 {% block js_scripts %}
