@@ -18,12 +18,12 @@
                     <div id="parameter_{{ conf_key }}">
                         <table class="green-table">
                             <tr>
-                                <th>Name</th>
+                                <th style="width:300px">Name</th>
                                 <th>Value</th>
                             </tr>
                             {% for key, value in conf_value.value.items %}
                             <tr>
-                                <td>{{ key }}</td>
+                                <td style="width:300px">{{ key }}</td>
                                 <td>{{ value }}</td>
                             </tr>
                             {% endfor %}
@@ -42,12 +42,12 @@
                     <div id="parameter_settings">
                         <table class="green-table">
                             <tr>
-                                <th>Name</th>
+                                <th style="width:300px">Name</th>
                                 <th>Value</th>
                             </tr>
                             {% for item in param_settings %}
                             <tr>
-                                <td>{{ item.name }}</td>
+                                <td style="width:300px">{{ item.name }}</td>
                                 <td class="text-center">
                                     <div class="form-check">
                                         <input class="form-check-input"

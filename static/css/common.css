@@ -54,3 +54,40 @@ table td.value {
     margin-left: 30px;
 }
 
+
+:root {
+  --loader-color: #def37a;
+  --time: 3s;
+  --size: 3px;
+}
+
+.loader {
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0; left: 0;
+    display: none;
+    align-content: center;
+    justify-content: flex-start;
+    z-index: 100000;
+}
+
+.loader__element {
+	height: var(--size);
+	width: 100%;
+
+}
+
+.loader__element:before {
+	content: '';
+	display: block;
+	background-color: var(--loader-color);
+	height: var(--size);
+	width: 0;
+    animation: getWidth var(--time) ease-in infinite;
+}
+
+@keyframes getWidth {
+	100% { width: 100%; }
+}

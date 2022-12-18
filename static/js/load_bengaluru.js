@@ -1,12 +1,20 @@
 function reload_data() {
-    fh_url = $('#show_fh').attr('trigger-url');
-    $('#show_fh').load(fh_url);
-    fhz_url = $('#show_fhz').attr('trigger-url');
-    $('#show_fhz').load(fhz_url);
-    fhz_url = $('#show_error_fhz').attr('trigger-url');
-    $('#show_error_fhz').load(fhz_url);
-    fhz_url = $('#show_sold_fhz').attr('trigger-url');
-    $('#show_sold_fhz').load(fhz_url);
+    $.ajax({
+      type: 'GET',
+      url: $("#ajax-content").attr('trigger-url'),
+      beforeSend: function( xhr ) {
+        $('.loader').css('display', 'flex');
+      },
+      success: function(data){
+        $("#show_content").empty().append(data);
+      },
+      complete: function(data){
+        setTimeout(function(){
+            $('.loader').css('display', 'none');
+            console.log("fone")
+        }, 1000 * 5)
+      }
+    })
 }
 
 /* --------Start Auto reload--------- */
@@ -29,13 +37,28 @@ $("#load_data").click(function(){
 
 // On button click trigger url
 $(".ser_act").click(function(){
-    url = $(this).attr('trigger-url');
-    $.get(url);
+    //url = $(this).attr('trigger-url');
+    //$.get(url);
+
+    $.ajax({
+      type: 'GET',
+      url: $(this).attr('trigger-url'),
+      beforeSend: function( xhr ) {
+        $('.ajax-loader').css("visibility", "show");
+      },
+      success: function(data){
+        $("#resultarea").text(data);
+      },
+      complete: function(data){
+        $('.ajax-loader').css("visibility", "hidden");
+      }
+    })
+
+
+
 });
 
 /* --------End Button action--------- */
-
-
 
 $(document).ready(function(){
 

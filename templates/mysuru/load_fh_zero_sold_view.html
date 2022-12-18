@@ -9,7 +9,7 @@
 </div>
 <div class="card-body">
     <div class="table-responsive">
-        {% if items %}
+        {% if purchased_data %}
         <table id="fhzero" class="green-table">
             <tr>
                 <th>Update Date</th>
@@ -24,7 +24,7 @@
                 <th>Profit/Loss</th>
                 <th>PL Status</th>
             </tr>
-            {% for item in items %}
+            {% for item in purchased_data %}
             <tr onClick="parent.open('{% url 'fhz_downtrend_record' item.id %}')">
                 <td>{{ item.updated_date|date:'d-m-Y H:i:s' }}</td>
                 <td>{{ item.symbol }}</td>
