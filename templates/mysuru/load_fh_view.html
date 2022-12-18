@@ -5,7 +5,7 @@
 </div>
 <div class="card-body">
     <div class="table-responsive">
-        {% if items %}
+        {% if live_500 %}
         <table class="green-table">
             <tr>
                 <th>Highest Rank</th>
@@ -21,7 +21,7 @@
                 <th>Percentage</th>
                 <th>Status</th>
             </tr>
-            {% for item in items %}
+            {% for item in live_500 %}
             <tr>
                 <td>{% if item.highest_rank %}{{ item.highest_rank }}{% endif %}</td>
                 <td>{% if item.lowest_rank %}{{ item.lowest_rank }}{% endif %}</td>
@@ -45,8 +45,8 @@
         {% endif %}
 
         <div class="pt-3 txt-rt">
-            <span class="badge {% if polling_status %} bg-primary {% else %} bg-danger {% endif %}">Polling Status</span>
-            | {{ last_pull_time|naturaltime }} | Last Updated on {% now "d-m-Y H:i:s" %}
+            <span class="badge {% if live_polling_status %} bg-primary {% else %} bg-danger {% endif %}">Polling Status</span>
+            | {{ live_pull_on|naturaltime }} | Last Updated on {% now "d-m-Y H:i:s" %}
         </div>
     </div>
 </div>
