@@ -30,7 +30,7 @@ class LiveStocks:
         return True
 
     def get_feed_data(self) -> bool:
-        json_file = open(f"{settings.STOCK_DATA_PATH_DUMMY}/equity_data.json")
+        json_file = open(settings.STOCK_DATA_PATH_DUMMY)
         stock_data = json.load(json_file)
         self.stock_json = stock_data
         return True

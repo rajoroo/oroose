@@ -1,6 +1,6 @@
 FH_RANK_FROM: int = 1  # 1
-FH_RANK_TILL: int = 5  # 5
-FH_GRACE_RANK: int = 2  # 2
+FH_RANK_TILL: int = 4  # 5
+FH_GRACE_RANK: int = 1  # 2
 FH_MIN_PRICE: int = 20  # 20
 FH_MAX_PRICE: int = 4500  # 4500
 FH_MAX_TOTAL_PRICE = 5000  # 20000

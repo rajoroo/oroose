@@ -75,9 +75,11 @@ def polling_live_stocks_five_hundred():
     """Polling live stocks 500 and update the bengaluru with top 5 stocks"""
     symbols = FiveHundred.objects.filter(date=datetime.now()).values_list("symbol", flat=True)
     obj = LiveStocks(base_url=settings.LIVE_INDEX_URL, url=settings.LIVE_INDEX_500_URL, symbols=symbols)
-    # obj.get_live_data()
-    obj.get_feed_data()
-    # obj.save_stock_data()
+
+    # Get live data, feed data, save data
+    obj.get_live_data()
+    # obj.get_feed_data()
+    obj.save_stock_data()
 
     # Bengaluru/ Mysuru
     df_1 = obj.filter_stock_list()
