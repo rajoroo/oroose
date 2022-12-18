@@ -9,14 +9,13 @@ from stockwatch.stock_monitor import polling_live_stocks_five_hundred
 from bengaluru.up_trend import trigger_fhz_uptrend, process_fhz_uptrend
 from mysuru.down_trend import trigger_fhz_downtrend, process_fhz_downtrend
 from core.constant import (
-    LIVE_START,
-    LIVE_END,
     SETTINGS_FH_LIVE_STOCKS_NSE,
     SETTINGS_FHZ_UPTREND,
     SETTINGS_FHZ_DOWNTREND,
     LOG_SCHEDULE_LIVE_500,
     LOG_SCHEDULE_ZERO_500,
 )
+from stockwatch.constant import LIVE_START, LIVE_END
 from bengaluru.constant import BENGALURU_START, BENGALURU_END
 from mysuru.constant import MYSURU_START, MYSURU_END
 
