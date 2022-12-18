@@ -59,7 +59,7 @@ def load_bengaluru_content(request):
         "progress": list(progress.values()),
         "errors": list(errors.values()),
         "purchased_data": list(sold_data.values()),
-        "realized_amount": sold_data.aggregate(Sum("profit_loss"))["profit_loss__sum"]
+        "realized_amount": sold_data.aggregate(Sum("profit_loss"))["profit_loss__sum"],
     }
 
     return render(request, "bengaluru/bengaluru_content.html", context=context)

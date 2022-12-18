@@ -207,7 +207,13 @@ def fhz_maintain_stock_uptrend(fhz_obj):
     lower_circuit = price - (price * 0.01)
 
     result = fetch_stock_ltp(symbol)
-    message = f"stock: {symbol}, buy_price: {price}, buy_price_2p: {buy_price_2p}, lower_circuit: {lower_circuit}, ltp: {result['last_trade_price']}"
+    message = (
+        f"stock: {symbol}, "
+        f"buy_price: {price}, "
+        f"buy_price_2p: {buy_price_2p}, "
+        f"lower_circuit: {lower_circuit}, "
+        f"ltp: {result['last_trade_price']}"
+    )
     logger.info(message)
     if result["last_trade_price"] >= buy_price_2p:
         fhz_sell_stock(fhz_obj)
@@ -237,7 +243,16 @@ def fhz_maintain_stock_downtrend(fhz_obj):
     rank = fhz_obj.five_hundred.rank
 
     result = fetch_stock_ltp(symbol)
-    message = f"stock: {symbol}, buy_price: {price}, sell_price_2p: {sell_price_2p}, lower_circuit: {lower_circuit}, ltp: {result['last_trade_price']}, rank_diff: {rank_diff}, previous_rank: {fhz_obj.five_hundred.previous_rank}, current_rank: {fhz_obj.five_hundred.rank}"
+    message = (
+        f"stock: {symbol}, "
+        f"buy_price: {price}, "
+        f"sell_price_2p: {sell_price_2p}, "
+        f"lower_circuit: {lower_circuit}, "
+        f"ltp: {result['last_trade_price']}, "
+        f"rank_diff: {rank_diff}, "
+        f"previous_rank: {fhz_obj.five_hundred.previous_rank}, "
+        f"current_rank: {fhz_obj.five_hundred.rank}"
+    )
     logger.info(message)
     if result["last_trade_price"] <= sell_price_2p:
         fhz_buy_stock(fhz_obj)

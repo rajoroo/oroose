@@ -14,7 +14,7 @@ from bengaluru.constant import (
     FH_MAX_PERCENT,
     FH_MAX_BUY_ORDER,
     BENGALURU_START,
-    BENGALURU_END
+    BENGALURU_END,
 )
 
 

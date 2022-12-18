@@ -7,35 +7,36 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='FiveHundred',
+            name="FiveHundred",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('date', models.DateField(verbose_name='Date')),
-                ('time', models.DateTimeField(verbose_name='Time')),
-                ('created_date', models.DateTimeField(verbose_name='Created Date')),
-                ('rank', models.IntegerField(verbose_name='Rank')),
-                ('highest_rank', models.IntegerField(blank=True, null=True, verbose_name='Highest Rank')),
-                ('lowest_rank', models.IntegerField(blank=True, null=True, verbose_name='Lowest Rank')),
-                ('previous_rank', models.IntegerField(blank=True, null=True, verbose_name='Previous Rank')),
-                ('symbol', models.CharField(max_length=200, verbose_name='Symbol')),
-                ('identifier', models.CharField(max_length=200, verbose_name='Identifier')),
-                ('company_name', models.CharField(max_length=500, verbose_name='Company Name')),
-                ('isin', models.CharField(max_length=100, verbose_name='Isin')),
-                ('last_price', models.FloatField(verbose_name='Price')),
-                ('percentage_change', models.FloatField(verbose_name='Percentage')),
-                ('bar', models.CharField(blank=True, default='level0', max_length=200, null=True, verbose_name='Bar')),
+                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                ("date", models.DateField(verbose_name="Date")),
+                ("time", models.DateTimeField(verbose_name="Time")),
+                ("created_date", models.DateTimeField(verbose_name="Created Date")),
+                ("rank", models.IntegerField(verbose_name="Rank")),
+                ("highest_rank", models.IntegerField(blank=True, null=True, verbose_name="Highest Rank")),
+                ("lowest_rank", models.IntegerField(blank=True, null=True, verbose_name="Lowest Rank")),
+                ("previous_rank", models.IntegerField(blank=True, null=True, verbose_name="Previous Rank")),
+                ("symbol", models.CharField(max_length=200, verbose_name="Symbol")),
+                ("identifier", models.CharField(max_length=200, verbose_name="Identifier")),
+                ("company_name", models.CharField(max_length=500, verbose_name="Company Name")),
+                ("isin", models.CharField(max_length=100, verbose_name="Isin")),
+                ("last_price", models.FloatField(verbose_name="Price")),
+                ("percentage_change", models.FloatField(verbose_name="Percentage")),
+                ("bar", models.CharField(blank=True, default="level0", max_length=200, null=True, verbose_name="Bar")),
             ],
             options={
-                'ordering': ['-date', 'rank'],
+                "ordering": ["-date", "rank"],
             },
         ),
         migrations.AddConstraint(
-            model_name='fivehundred',
-            constraint=models.UniqueConstraint(fields=('date', 'symbol'), name='stockwatch_fivehundred_unique_five_hundred'),
+            model_name="fivehundred",
+            constraint=models.UniqueConstraint(
+                fields=("date", "symbol"), name="stockwatch_fivehundred_unique_five_hundred"
+            ),
         ),
     ]

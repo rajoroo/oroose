@@ -55,5 +55,4 @@ class FiveHundredDownTrendSellTestCase(TestCase):
         fhz_obj = self.fh
         print(k)
 
-
         assert False

@@ -15,7 +15,7 @@ from mysuru.constant import (
     FH_MAX_PERCENT,
     FH_MAX_BUY_ORDER,
     MYSURU_START,
-    MYSURU_END
+    MYSURU_END,
 )
 
 
@@ -126,12 +126,10 @@ def process_fhz_downtrend():
 
 
 def downtrend_panic_pull():
-    fhz = (
-        FhZeroDownTrend.objects.filter(
-            date=datetime.today(),
-            status__in=[FhZeroStatus.SOLD, FhZeroStatus.TO_BUY],
-            error=False,
-        )
+    fhz = FhZeroDownTrend.objects.filter(
+        date=datetime.today(),
+        status__in=[FhZeroStatus.SOLD, FhZeroStatus.TO_BUY],
+        error=False,
     )
     if not fhz:
         return None

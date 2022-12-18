@@ -2,5 +2,5 @@ from django.apps import AppConfig
 
 
 class StockwatchConfig(AppConfig):
-    default_auto_field = 'django.db.models.BigAutoField'
-    name = 'stockwatch'
+    default_auto_field = "django.db.models.BigAutoField"
+    name = "stockwatch"

@@ -15,7 +15,7 @@ from core.constant import (
     SETTINGS_FHZ_UPTREND,
     SETTINGS_FHZ_DOWNTREND,
     LOG_SCHEDULE_LIVE_500,
-    LOG_SCHEDULE_ZERO_500
+    LOG_SCHEDULE_ZERO_500,
 )
 from bengaluru.constant import BENGALURU_START, BENGALURU_END
 from mysuru.constant import MYSURU_START, MYSURU_END

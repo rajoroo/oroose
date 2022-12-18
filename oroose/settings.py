@@ -137,9 +137,9 @@ LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
     "formatters": {
-        'simple': {
-            'format': '[{asctime}] {levelname} {module} {message}',
-            'style': '{',
+        "simple": {
+            "format": "[{asctime}] {levelname} {module} {message}",
+            "style": "{",
         },
     },
     "handlers": {

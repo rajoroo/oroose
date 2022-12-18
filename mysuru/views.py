@@ -1,6 +1,5 @@
 from datetime import datetime
 
-from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.db.models import F, Sum
 from django.http import HttpResponse
@@ -69,7 +68,7 @@ def load_mysuru_content(request):
         "progress": list(progress.values()),
         "errors": list(errors.values()),
         "purchased_data": list(purchased_data.values()),
-        "realized_amount": purchased_data.aggregate(Sum("profit_loss"))["profit_loss__sum"]
+        "realized_amount": purchased_data.aggregate(Sum("profit_loss"))["profit_loss__sum"],
     }
 
     return render(request, "mysuru/mysuru_content.html", context=context)
