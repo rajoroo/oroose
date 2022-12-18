@@ -46,7 +46,7 @@ def update_five_hundred(data):
 
 def update_stock_watch_fh(data):
     uid = 1
-    last_uid = StockWatchFh.objects.aggregate(Max('uid'))["uid__max"]
+    last_uid = StockWatchFh.objects.aggregate(Max("uid"))["uid__max"]
     if last_uid:
         uid = last_uid + 1
 
