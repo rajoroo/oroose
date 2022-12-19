@@ -41,6 +41,7 @@ def fhz_downtrend_to_sell_condition(fhz_obj):
         and (fhz_obj.rank <= 10)
         and (FH_MIN_PRICE <= fhz_obj.last_price <= FH_MAX_PRICE)
         and (price > fhz_obj.last_price)
+        and (price > fhz_obj.previous_price)
         and (fhz_obj.percentage_change <= FH_MAX_PERCENT)
         and (fhz_obj.fhzerodowntrend_set.all().count() <= FH_MAX_BUY_ORDER)
         and (not fhz_obj.fhzerodowntrend_set.filter(status__in=["TO_BUY", "SOLD", "TO_SELL"]).exists())

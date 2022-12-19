@@ -1,5 +1,6 @@
 from django.db import models
 from datetime import datetime, timedelta
+from stockwatch.choice import SignalStatus
 
 
 class StockWatchFh(models.Model):
@@ -25,6 +26,11 @@ class FiveHundred(models.Model):
     previous_price = models.FloatField(verbose_name="Previous Price")
     previous_price_20min = models.FloatField(verbose_name="Previous Price 20min", default=0.0)
     percentage_change = models.FloatField(verbose_name="Percentage")
+    signal_status = models.CharField(
+        max_length=5,
+        choices=SignalStatus.choices,
+        default=SignalStatus.INPROG,
+    )
 
     objects = models.Manager()
 
@@ -47,5 +53,18 @@ class FiveHundred(models.Model):
 
         stock_watch = obj.stock_data.get(self.symbol)
         return stock_watch["last_price"]
+
+    def get_signal_status(self, time_obj):
+        signal_status = SignalStatus.INPROG
+        before_20_intervals = time_obj - timedelta(hours=1, minutes=40)
+        before_22_intervals = time_obj - timedelta(hours=1, minutes=50)
+        obj = StockWatchFh.objects.filter(
+            created_date__range=(before_22_intervals, before_20_intervals)
+        )
+
+        if (not obj) and (obj.count() < 18):
+            return signal_status
+
+        return signal_status
 
 
