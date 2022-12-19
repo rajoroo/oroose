@@ -15,6 +15,7 @@
                 <th>Time</th>
                 <th>Symbol</th>
                 <th>Company</th>
+                <th>PP20</th>
                 <th>PP</th>
                 <th>Last Price</th>
                 <th>Percentage</th>
@@ -29,6 +30,7 @@
                 <td>{{ item.time|date:'d-m-Y H:i:s' }}</td>
                 <td>{{ item.symbol }}</td>
                 <td>{{ item.company_name }}</td>
+                <td class="value">{{ item.previous_price_20min }}</td>
                 <td class="value">{{ item.previous_price }}</td>
                 <td class="value">{{ item.last_price }}</td>
                 <td class="value">{{ item.percentage_change }}</td>

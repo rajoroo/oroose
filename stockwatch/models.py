@@ -1,4 +1,12 @@
 from django.db import models
+from datetime import datetime, timedelta
+
+
+class StockWatchFh(models.Model):
+    date = models.DateField(verbose_name="Date")
+    created_date = models.DateTimeField(verbose_name="Created Date")
+    stock_data = models.JSONField(verbose_name="Stock Data", null=True, blank=True)
+    objects = models.Manager()
 
 
 class FiveHundred(models.Model):
@@ -15,8 +23,8 @@ class FiveHundred(models.Model):
     isin = models.CharField(max_length=100, verbose_name="Isin")
     last_price = models.FloatField(verbose_name="Price")
     previous_price = models.FloatField(verbose_name="Previous Price")
+    previous_price_20min = models.FloatField(verbose_name="Previous Price 20min", default=0.0)
     percentage_change = models.FloatField(verbose_name="Percentage")
-    bar = models.CharField(verbose_name="Bar", null=True, blank=True, max_length=200, default="level0")
 
     objects = models.Manager()
 
@@ -26,18 +34,18 @@ class FiveHundred(models.Model):
             models.UniqueConstraint(fields=["date", "symbol"], name="%(app_label)s_%(class)s_unique_five_hundred")
         ]
 
+    def get_previous_20_min(self, time_obj):
+        stock_watch = 0.0
+        before_20_min = time_obj - timedelta(minutes=20)
+        before_30_min = time_obj - timedelta(minutes=30)
+        obj = StockWatchFh.objects.filter(
+            created_date__range=(before_30_min, before_20_min)
+        ).order_by("-id").first()
 
-class StockWatchFh(models.Model):
-    date = models.DateField(verbose_name="Date")
-    time = models.DateTimeField(verbose_name="Time")
-    created_date = models.DateTimeField(verbose_name="Created Date")
-    uid = models.IntegerField(verbose_name="UID")
-    rank = models.IntegerField(verbose_name="Rank")
-    symbol = models.CharField(max_length=200, verbose_name="Symbol")
-    identifier = models.CharField(max_length=200, verbose_name="Identifier")
-    company_name = models.CharField(max_length=500, verbose_name="Company Name")
-    isin = models.CharField(max_length=100, verbose_name="Isin")
-    last_price = models.FloatField(verbose_name="Price")
-    percentage_change = models.FloatField(verbose_name="Percentage")
+        if (not obj) and (not hasattr(obj, 'stock_data')):
+            return stock_watch
 
-    objects = models.Manager()
+        stock_watch = obj.stock_data.get(self.symbol)
+        return stock_watch["last_price"]
+
+

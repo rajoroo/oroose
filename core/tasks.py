@@ -5,7 +5,7 @@ from core.configuration import only_one
 from core.models import DataLog, ParameterSettings
 from oroose.celery import app
 
-from stockwatch.stock_monitor import polling_live_stocks_five_hundred
+from stockwatch.stock_monitor import polling_live_stocks_five_hundred, polling_stocks
 from bengaluru.up_trend import trigger_fhz_uptrend, process_fhz_uptrend
 from mysuru.down_trend import trigger_fhz_downtrend, process_fhz_downtrend
 from core.constant import (
@@ -15,7 +15,7 @@ from core.constant import (
     LOG_SCHEDULE_LIVE_500,
     LOG_SCHEDULE_ZERO_500,
 )
-from stockwatch.constant import LIVE_START, LIVE_END
+from stockwatch.constant import LIVE_START, LIVE_END, FIVEHUNDRED_START, FIVEHUNDRED_END
 from bengaluru.constant import BENGALURU_START, BENGALURU_END
 from mysuru.constant import MYSURU_START, MYSURU_END
 
@@ -27,6 +27,19 @@ def condition_schedule_live_stocks_fh():
     ps = ParameterSettings.objects.get(name=SETTINGS_FH_LIVE_STOCKS_NSE)
     start = datetime.strptime(LIVE_START, "%H%M").time()
     end = datetime.strptime(LIVE_END, "%H%M").time()
+    start_time = datetime.combine(datetime.today(), start)
+    end_time = datetime.combine(datetime.today(), end)
+
+    if ps.status and (start_time <= datetime.now() <= end_time) and (datetime.today().weekday() < 5):
+        return True
+
+    return False
+
+
+def condition_schedule_fh_stocks():
+    ps = ParameterSettings.objects.get(name=SETTINGS_FH_LIVE_STOCKS_NSE)
+    start = datetime.strptime(FIVEHUNDRED_START, "%H%M").time()
+    end = datetime.strptime(FIVEHUNDRED_END, "%H%M").time()
     start_time = datetime.combine(datetime.today(), start)
     end_time = datetime.combine(datetime.today(), end)
 
@@ -48,8 +61,12 @@ def schedule_live_stocks_five_hundred():
     obj.save()
     if condition_schedule_live_stocks_fh():
         polling_live_stocks_five_hundred()
+
+    if condition_schedule_fh_stocks():
+        polling_stocks()
         trigger_fhz_uptrend()
         trigger_fhz_downtrend()
+
     logger.info("FH end")
     obj.end_time = datetime.now()
     obj.save()
