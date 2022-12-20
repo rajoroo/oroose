@@ -2,6 +2,7 @@ from datetime import datetime
 
 from stockwatch.models import FiveHundred, StockWatchFh
 from stockwatch.stocks import LiveStocks
+from stockwatch.choice import SignalStatus
 from django.conf import settings
 
 
@@ -21,6 +22,7 @@ def update_five_hundred(data):
             obj.lowest_rank = value["rank"] if value["rank"] > obj.lowest_rank else obj.lowest_rank
             obj.previous_price = obj.last_price
             obj.previous_price_20min = obj.get_previous_20_min(time_obj=time_obj)
+            obj.signal_status = obj.get_signal_status(time_obj=time_obj, price=value["last_price"])
             obj.save()
         else:
             FiveHundred.objects.create(
@@ -38,6 +40,7 @@ def update_five_hundred(data):
                 highest_rank=value["rank"],
                 lowest_rank=value["rank"],
                 previous_rank=value["rank"],
+                signal_status=SignalStatus.INPROG,
             )
 
     return True

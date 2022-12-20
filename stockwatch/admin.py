@@ -9,4 +9,4 @@ class FiveHundredAdmin(admin.ModelAdmin):
 
 @admin.register(StockWatchFh)
 class StockWatchFhAdmin(admin.ModelAdmin):
-    pass
+    list_display = ('date', 'created_date')

@@ -198,9 +198,6 @@ STOCK_DATA_PATH_DUMMY = os.environ.get("STOCK_DATA_PATH_DUMMY")
 LIVE_INDEX_URL = os.environ.get("LIVE_INDEX_URL")
 LIVE_INDEX_500_URL = os.environ.get("LIVE_INDEX_500_URL")
 
-# Timing
-FH_STOCK_LIVE_START = os.environ.get("FH_STOCK_LIVE_START")
-FH_STOCK_LIVE_END = os.environ.get("FH_STOCK_LIVE_END")
 
 # API Config
 ZERO_API_KEY = os.environ.get("ZERO_API_KEY")

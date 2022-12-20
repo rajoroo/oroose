@@ -3,7 +3,7 @@ from django.conf import settings
 from bengaluru.constant import BENGALURU_CONFIGURATION, BENGALURU_START, BENGALURU_END
 from mysuru.constant import MYSURU_CONFIGURATION, MYSURU_START, MYSURU_END
 from core.constant import LOG_SCHEDULE_ZERO_500, LOG_SCHEDULE_LIVE_500
-from stockwatch.constant import LIVE_START, LIVE_END
+from stockwatch.constant import LIVE_START, LIVE_END, FIVEHUNDRED_START, FIVEHUNDRED_END
 
 REDIS_CLIENT = redis.Redis.from_url(settings.CELERY_BROKER_URL)
 
@@ -23,6 +23,8 @@ parameter_store = {
         "value": {
             "LIVE_START": LIVE_START,
             "LIVE_END": LIVE_END,
+            "FIVEHUNDRED_START": FIVEHUNDRED_START,
+            "FIVEHUNDRED_END": FIVEHUNDRED_END,
             "BENGALURU_START": BENGALURU_START,
             "BENGALURU_END": BENGALURU_END,
             "MYSURU_START": MYSURU_START,

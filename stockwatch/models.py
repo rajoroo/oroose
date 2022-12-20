@@ -1,6 +1,7 @@
 from django.db import models
 from datetime import datetime, timedelta
 from stockwatch.choice import SignalStatus
+import numpy as np
 
 
 class StockWatchFh(models.Model):
@@ -54,17 +55,22 @@ class FiveHundred(models.Model):
         stock_watch = obj.stock_data.get(self.symbol)
         return stock_watch["last_price"]
 
-    def get_signal_status(self, time_obj):
+    def get_signal_status(self, time_obj, price):
         signal_status = SignalStatus.INPROG
         before_20_intervals = time_obj - timedelta(hours=1, minutes=40)
-        before_22_intervals = time_obj - timedelta(hours=1, minutes=50)
         obj = StockWatchFh.objects.filter(
-            created_date__range=(before_22_intervals, before_20_intervals)
+            created_date__range=(before_20_intervals, time_obj)
         )
 
-        if (not obj) and (obj.count() < 18):
+        if (not obj) or (obj.count() < 18):
             return signal_status
 
+        data = []
+        for rec in obj:
+            if hasattr(rec, 'stock_data'):
+                data.append(rec.stock_data.get(self.symbol)["last_price"])
+
+        result = np.mean(data)
+
+        signal_status = SignalStatus.BUY if price > result else SignalStatus.SELL
         return signal_status
-
-

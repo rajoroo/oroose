@@ -19,6 +19,7 @@
                 <th>PP</th>
                 <th>Last Price</th>
                 <th>Percentage</th>
+                <th>SS</th>
                 <th>Status</th>
             </tr>
             {% for item in live_500 %}
@@ -34,6 +35,7 @@
                 <td class="value">{{ item.previous_price }}</td>
                 <td class="value">{{ item.last_price }}</td>
                 <td class="value">{{ item.percentage_change }}</td>
+                <td>{{ item.signal_status }}</td>
                 <td class="text-center">
                     <span class="badge {% if item.rank <= 5 %} bg-primary {% else %} bg-danger {% endif %}">
                         {% if item.rank <= 5 %} Winner {% else %} Runner {% endif %}
