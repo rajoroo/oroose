@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 
 from mysuru.models import FhZeroDownTrend
+from stockwatch.choice import SignalStatus
 from stockwatch.models import FiveHundred
 from core.choice import FhZeroStatus, PlStatus
 from core.zero_util import fhz_buy_stock, fhz_maintain_stock_downtrend, fhz_sell_stock
@@ -40,8 +41,9 @@ def fhz_downtrend_to_sell_condition(fhz_obj):
         and (fhz_obj.rank > FH_RANK_TILL - 2)
         and (fhz_obj.rank <= 10)
         and (FH_MIN_PRICE <= fhz_obj.last_price <= FH_MAX_PRICE)
-        and (price > fhz_obj.last_price)
-        and (price > fhz_obj.previous_price)
+        and (fhz_obj.signal_status == SignalStatus.SELL)
+        # and (price > fhz_obj.last_price)
+        # and (price > fhz_obj.previous_price)
         and (fhz_obj.percentage_change <= FH_MAX_PERCENT)
         and (fhz_obj.fhzerodowntrend_set.all().count() <= FH_MAX_BUY_ORDER)
         and (not fhz_obj.fhzerodowntrend_set.filter(status__in=["TO_BUY", "SOLD", "TO_SELL"]).exists())
@@ -49,7 +51,7 @@ def fhz_downtrend_to_sell_condition(fhz_obj):
         and (not fhz_obj.fhzerodowntrend_set.filter(error=True).exists())
         and (start_time <= datetime.now() <= end_time)
         and (datetime.today().weekday() < 5)
-        and (fhz_obj.rank > fhz_obj.previous_rank)
+        # and (fhz_obj.rank > fhz_obj.previous_rank)
         and ((fhz_obj.created_date <= before_20_min) or (fhz_obj.created_date <= start_10min))
     ):
         result = True
