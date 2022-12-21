@@ -38,8 +38,8 @@ def fhz_downtrend_to_sell_condition(fhz_obj):
 
     if (
         ps.status
-        and (fhz_obj.rank > FH_RANK_TILL - 2)
-        and (fhz_obj.rank <= 10)
+        # and (fhz_obj.rank > FH_RANK_TILL - 2)
+        and (fhz_obj.rank <= 6)
         and (FH_MIN_PRICE <= fhz_obj.last_price <= FH_MAX_PRICE)
         and (fhz_obj.signal_status == SignalStatus.SELL)
         # and (price > fhz_obj.last_price)
@@ -67,9 +67,13 @@ def fhz_downtrend_to_sell_condition(fhz_obj):
 def fhz_downtrend_to_buy_condition(fhz_obj):
     result = False
     ps = ParameterSettings.objects.get(name=SETTINGS_FHZ_DOWNTREND)
+    pre_signal_status = fhz_obj.get_signal_status(fhz_obj.time, fhz_obj.previous_price)
+    signal_status = fhz_obj.get_signal_status(fhz_obj.time, fhz_obj.last_price)
+
     if (
         ps.status
-        and fhz_obj.rank < FH_RANK_TILL - 2
+        # and fhz_obj.rank < FH_RANK_TILL - 2
+        and (pre_signal_status == signal_status == SignalStatus.BUY)
         and fhz_obj.fhzerodowntrend_set.filter(status=FhZeroStatus.SOLD).exists()
     ):
         result = True

@@ -263,14 +263,6 @@ def fhz_maintain_stock_downtrend(fhz_obj):
         fhz_buy_stock(fhz_obj)
         fhz_obj.pl_status = PlStatus.RUNNER
         logger.info(f"Buy initiated for lower circuit {symbol}:{lower_circuit}")
-    elif fhz_obj.five_hundred.signal_status == SignalStatus.BUY:
-        fhz_buy_stock(fhz_obj)
-        fhz_obj.pl_status = PlStatus.RUNNER
-        logger.info(f"Buy initiated for signal change {symbol}:{lower_circuit}")
-    # elif (rank <= 7) and (rank_diff >= 1):
-    #     fhz_buy_stock(fhz_obj)
-    #     fhz_obj.pl_status = PlStatus.RUNNER
-    #     logger.info(f"Buy initiated for rank {symbol}:{lower_circuit}")
 
     fhz_obj.current_price = result.get("last_trade_price")
     fhz_obj.save()
