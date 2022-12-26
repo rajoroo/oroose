@@ -5,35 +5,37 @@
 </div>
 <div class="card-body">
     <div class="table-responsive">
-        {% if items %}
+        {% if live_500 %}
         <table class="green-table">
             <tr>
-                <th>Highest Rank</th>
-                <th>Lowest Rank</th>
-                <th>Previous Rank</th>
+                <th>HR</th>
+                <th>LR</th>
+                <th>PR</th>
                 <th>Rank</th>
-                <th>Date</th>
                 <th>Time</th>
-                <th>Isin</th>
                 <th>Symbol</th>
                 <th>Company</th>
+                <th>PP20</th>
+                <th>PP</th>
                 <th>Last Price</th>
                 <th>Percentage</th>
+                <th>SS</th>
                 <th>Status</th>
             </tr>
-            {% for item in items %}
+            {% for item in live_500 %}
             <tr>
                 <td>{% if item.highest_rank %}{{ item.highest_rank }}{% endif %}</td>
                 <td>{% if item.lowest_rank %}{{ item.lowest_rank }}{% endif %}</td>
                 <td>{% if item.previous_rank %}{{ item.previous_rank }}{% endif %}</td>
                 <td>{% if item.rank %}{{ item.rank }}{% endif %}</td>
-                <td>{{ item.date }}</td>
                 <td>{{ item.time|date:'d-m-Y H:i:s' }}</td>
-                <td>{{ item.isin }}</td>
                 <td>{{ item.symbol }}</td>
                 <td>{{ item.company_name }}</td>
+                <td class="value">{{ item.previous_price_20min }}</td>
+                <td class="value">{{ item.previous_price }}</td>
                 <td class="value">{{ item.last_price }}</td>
                 <td class="value">{{ item.percentage_change }}</td>
+                <td>{{ item.signal_status }}</td>
                 <td class="text-center">
                     <span class="badge {% if item.rank <= 5 %} bg-primary {% else %} bg-danger {% endif %}">
                         {% if item.rank <= 5 %} Winner {% else %} Runner {% endif %}
@@ -45,8 +47,8 @@
         {% endif %}
 
         <div class="pt-3 txt-rt">
-            <span class="badge {% if polling_status %} bg-primary {% else %} bg-danger {% endif %}">Polling Status</span>
-            | {{ last_pull_time|naturaltime }} | Last Updated on {% now "d-m-Y H:i:s" %}
+            <span class="badge {% if live_polling_status %} bg-primary {% else %} bg-danger {% endif %}">Polling Status</span>
+            | {{ live_pull_on|naturaltime }} | Last Updated on {% now "d-m-Y H:i:s" %}
         </div>
     </div>
 </div>

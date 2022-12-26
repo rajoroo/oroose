@@ -13,15 +13,12 @@
                 <th>Quantity</th>
                 <th>Last Price</th>
                 <th>Buy ID</th>
-                <th>SL ID</th>
                 <th>Sell ID</th>
                 <th>Buy Price</th>
-                <th>SL Price</th>
                 <th>Sell Price</th>
                 <th>Status</th>
                 <th>Error</th>
                 <th>Error msg</th>
-
             </tr>
             {% for item in errors %}
             <tr onClick="parent.open('{% url 'fhz_downtrend_record' item.id %}')">
@@ -30,15 +27,12 @@
                 <td>{{ item.quantity }}</td>
                 <td>{{ item.last_price }}</td>
                 <td>{{ item.buy_id|default_if_none:"" }}</td>
-                <td>{{ item.stop_loss_id|default_if_none:"" }}</td>
                 <td>{{ item.sell_id|default_if_none:"" }}</td>
                 <td>{{ item.buy_price }}</td>
-                <td>{{ item.stop_loss_price }}</td>
                 <td>{{ item.sell_price }}</td>
                 <td>{{ item.status }}</td>
                 <td>{% if item.error %}{{ item.error }}{% endif %}</td>
                 <td>{% if item.error_message %}{{ item.error_message }}{% endif %}</td>
-
             </tr>
         {% endfor %}
         </table>

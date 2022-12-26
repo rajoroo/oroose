@@ -5,12 +5,13 @@
 </div>
 <div class="card-body">
     <div class="table-responsive">
-        {% if items %}
+        {% if progress %}
         <table id="fhzero" class="green-table">
             <tr>
-                <th>Update Date</th>
                 <th>Symbol</th>
                 <th>Quantity</th>
+                <th>Rank</th>
+                <th>PP</th>
                 <th>Last Price</th>
                 <th>Buy ID</th>
                 <th>Buy Price</th>
@@ -18,17 +19,18 @@
                 <th>Status</th>
                 <th>Current PL</th>
             </tr>
-            {% for item in items %}
-            <tr onClick="parent.open('{% url 'fhz_uptrend_record' item.id %}')">
-                <td>{{ item.updated_date|date:'d-m-Y H:i:s' }}</td>
+            {% for item in progress %}
+            <tr onClick="parent.open('{% url 'fhz_downtrend_record' item.id %}')">
                 <td>{{ item.symbol }}</td>
                 <td>{{ item.quantity }}</td>
-                <td>{{ item.last_price }}</td>
+                <td>{% if item.rank %}{{ item.rank }}{% endif %}</td>
+                <td class="value">{{ item.previous_price }}</td>
+                <td class="value">{{ item.last_price }}</td>
                 <td>{{ item.buy_id|default_if_none:"" }}</td>
-                <td>{{ item.buy_price }}</td>
-                <td>{{ item.current_price }}</td>
+                <td class="value">{{ item.buy_price }}</td>
+                <td class="value">{{ item.current_price }}</td>
                 <td>{{ item.status }}</td>
-                <td>{{ item.current_pl|floatformat:2 }}</td>
+                <td class="value">{{ item.current_pl|floatformat:2 }}</td>
             </tr>
         {% endfor %}
         </table>

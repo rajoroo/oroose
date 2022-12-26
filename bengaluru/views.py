@@ -2,12 +2,14 @@ from datetime import datetime
 
 from django.contrib.auth.decorators import login_required
 from django.db.models import F, Max, Sum
+from django.http import HttpResponse
 from django.shortcuts import render, reverse
 from django.views.generic.edit import UpdateView
 
 from bengaluru.models import FhZeroStatus, FhZeroUpTrend
 from core.constant import LOG_SCHEDULE_LIVE_500, SETTINGS_FH_LIVE_STOCKS_NSE
 from core.models import DataLog, ParameterSettings
+from bengaluru.up_trend import uptrend_panic_pull
 from stockwatch.models import FiveHundred
 
 
@@ -16,6 +18,11 @@ from stockwatch.models import FiveHundred
 def bengaluru_page(request):
     context = {"active_page": "bengaluru"}
     return render(request, "bengaluru/base_page.html", context)
+
+
+def trigger_uptrend_panic_pull(request):
+    uptrend_panic_pull()
+    return HttpResponse(status=200)
 
 
 class EditFhzUptrend(UpdateView):
