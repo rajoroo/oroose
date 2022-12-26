@@ -2,7 +2,7 @@ from datetime import datetime
 
 from django.db import models
 
-from core.choice import FhZeroStatus
+from core.choice import FhZeroStatus, PlStatus
 from stockwatch.models import FiveHundred
 
 
@@ -26,7 +26,9 @@ class FhZeroUpTrend(models.Model):
     )
     buy_id = models.CharField(max_length=100, verbose_name="Buy ID", null=True, blank=True)
     sell_id = models.CharField(max_length=100, verbose_name="Sell ID", null=True, blank=True)
-
+    rank = models.IntegerField(verbose_name="Rank")
+    previous_rank = models.IntegerField(verbose_name="Previous Rank", null=True, blank=True)
+    previous_price = models.FloatField(verbose_name="Previous Price")
     quantity = models.IntegerField(verbose_name="Quantity")
     last_price = models.FloatField(verbose_name="Last Price")
     buy_price = models.FloatField(verbose_name="Buy Price", default=0.0)
@@ -34,6 +36,11 @@ class FhZeroUpTrend(models.Model):
     current_price = models.FloatField(verbose_name="Current Price", default=0.0)
     error = models.BooleanField(default=False, verbose_name="Error")
     error_message = models.TextField(verbose_name="Error Message", null=True, blank=True)
+    pl_status = models.CharField(
+        max_length=2,
+        choices=PlStatus.choices,
+        default=PlStatus.INPROG,
+    )
 
     objects = models.Manager()
 
