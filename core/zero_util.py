@@ -1,9 +1,10 @@
-import time
 import logging
+import time
+
 from django.conf import settings
 from kiteconnect import KiteConnect
+
 from core.choice import FhZeroStatus, PlStatus
-from stockwatch.choice import SignalStatus
 
 logger = logging.getLogger("celery")
 
@@ -121,8 +122,8 @@ def is_valid_stock(fhz_obj):
     upper_circuit = quote_response[instrument]["upper_circuit_limit"]
     last_price = quote_response[instrument]["last_price"]
 
-    price_lower = last_price - (last_price * 0.05)
-    price_upper = last_price + (last_price * 0.05)
+    price_lower = last_price - (last_price * 0.03)
+    price_upper = last_price + (last_price * 0.03)
 
     print(lower_circuit, price_lower, price_upper, upper_circuit)
     if lower_circuit < price_lower < price_upper < upper_circuit:
@@ -131,9 +132,15 @@ def is_valid_stock(fhz_obj):
     return result
 
 
-def fhz_buy_stock(fhz_obj):
+def fhz_buy_stock(fhz_obj, check_valid=True):
     symbol = fhz_obj.symbol
     quantity = fhz_obj.quantity
+
+    if check_valid and (not is_valid_stock(fhz_obj)):
+        fhz_obj.error = True
+        fhz_obj.error_message = "Stock is not valid"
+        fhz_obj.save()
+        return None
 
     order = create_intraday_buy(symbol=symbol, quantity=quantity)
     order_id = order["order_id"]
@@ -159,11 +166,11 @@ def fhz_buy_stock(fhz_obj):
     fhz_obj.save()
 
 
-def fhz_sell_stock(fhz_obj):
+def fhz_sell_stock(fhz_obj, check_valid=True):
     symbol = fhz_obj.symbol
     quantity = fhz_obj.quantity
 
-    if not is_valid_stock(fhz_obj):
+    if check_valid and (not is_valid_stock(fhz_obj)):
         fhz_obj.error = True
         fhz_obj.error_message = "Stock is not valid"
         fhz_obj.save()
@@ -204,8 +211,8 @@ def fhz_maintain_stock_uptrend(fhz_obj):
     """
     symbol = fhz_obj.symbol
     price = fhz_obj.buy_price
-    buy_price_2p = price + (price * 0.015)
-    lower_circuit = price - (price * 0.01)
+    buy_price_2p = price + (price * 0.02)
+    lower_circuit = price - (price * 0.005)
 
     result = fetch_stock_ltp(symbol)
     message = (
@@ -218,9 +225,11 @@ def fhz_maintain_stock_uptrend(fhz_obj):
     logger.info(message)
     if result["last_trade_price"] >= buy_price_2p:
         fhz_sell_stock(fhz_obj)
+        fhz_obj.pl_status = PlStatus.WINNER
         logger.info(f"sell initiated for buy_price_2p {symbol}:{buy_price_2p}")
     elif result["last_trade_price"] <= lower_circuit:
         fhz_sell_stock(fhz_obj)
+        fhz_obj.pl_status = PlStatus.RUNNER
         logger.info(f"sell initiated for lower circuit {symbol}:{lower_circuit}")
 
     fhz_obj.current_price = result.get("last_trade_price")
@@ -241,7 +250,7 @@ def fhz_maintain_stock_downtrend(fhz_obj):
     sell_price_2p = price - (price * 0.015)
     lower_circuit = price + (price * 0.005)
     rank_diff = fhz_obj.five_hundred.previous_rank - fhz_obj.five_hundred.rank
-    rank = fhz_obj.five_hundred.rank
+    # rank = fhz_obj.five_hundred.rank
 
     result = fetch_stock_ltp(symbol)
     message = (

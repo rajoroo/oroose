@@ -4,8 +4,8 @@ import pytest
 import time_machine
 from django.test import TestCase
 
-from mysuru.models import FhZeroDownTrend, FhZeroStatus, FiveHundred
 from mysuru.down_trend import fhz_downtrend_to_sell_condition
+from mysuru.models import FhZeroDownTrend, FhZeroStatus, FiveHundred
 from oroose.conftest import generate_valid_ps  # noqa: F401
 
 
@@ -52,7 +52,7 @@ class FiveHundredDownTrendSellTestCase(TestCase):
     def test_valid(self):
         self.fhz.delete()
         k = fhz_downtrend_to_sell_condition(self.fh)
-        fhz_obj = self.fh
+        # fhz_obj = self.fh
         print(k)
 
         assert False

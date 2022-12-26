@@ -1,9 +1,10 @@
 from datetime import datetime
 
+from django.conf import settings
+
+from stockwatch.choice import SignalStatus
 from stockwatch.models import FiveHundred, StockWatchFh
 from stockwatch.stocks import LiveStocks
-from stockwatch.choice import SignalStatus
-from django.conf import settings
 
 
 def update_five_hundred(data):
@@ -104,6 +105,3 @@ def polling_stocks():
     }
     update_five_hundred(data=stocks)
     return True
-
-
-

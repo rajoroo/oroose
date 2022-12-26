@@ -1,8 +1,9 @@
-import pandas as pd
-from requests import Session
-from datetime import datetime
 import json
+from datetime import datetime
+
+import pandas as pd
 from django.conf import settings
+from requests import Session
 
 headers = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36",  # noqa: E501

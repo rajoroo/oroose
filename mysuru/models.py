@@ -1,7 +1,9 @@
 from datetime import datetime
+
 from django.db import models
-from core.choice import FhZeroStatus, PlStatus
+
 from bengaluru.models import FiveHundred
+from core.choice import FhZeroStatus, PlStatus
 
 
 class FhZeroDownTrend(models.Model):

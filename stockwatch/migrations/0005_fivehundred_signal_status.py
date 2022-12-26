@@ -13,6 +13,10 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='fivehundred',
             name='signal_status',
-            field=models.CharField(choices=[('BUY', 'Buy'), ('SELL', 'Sell'), ('IP', 'In-Progress')], default='IP', max_length=5),
+            field=models.CharField(choices=[
+                ('BUY', 'Buy'),
+                ('SELL', 'Sell'),
+                ('IP', 'In-Progress')
+            ], default='IP', max_length=5),
         ),
     ]

@@ -1,6 +1,10 @@
 from django.core.management.base import BaseCommand
-from core.constant import SETTINGS_FH_LIVE_STOCKS_NSE, SETTINGS_FHZ_UPTREND, SETTINGS_FHZ_DOWNTREND
 
+from core.constant import (
+    SETTINGS_FH_LIVE_STOCKS_NSE,
+    SETTINGS_FHZ_DOWNTREND,
+    SETTINGS_FHZ_UPTREND,
+)
 from core.models import ParameterSettings
 
 

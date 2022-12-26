@@ -1,16 +1,14 @@
 from datetime import datetime
 
 from django.contrib.auth.decorators import login_required
-from django.db.models import F, Sum
-from django.shortcuts import reverse
-
-from bengaluru.models import FhZeroUpTrend, FhZeroStatus
+from django.db.models import F, Max, Sum
+from django.shortcuts import render, reverse
 from django.views.generic.edit import UpdateView
-from django.shortcuts import render
-from django.db.models import Max
+
+from bengaluru.models import FhZeroStatus, FhZeroUpTrend
+from core.constant import LOG_SCHEDULE_LIVE_500, SETTINGS_FH_LIVE_STOCKS_NSE
 from core.models import DataLog, ParameterSettings
 from stockwatch.models import FiveHundred
-from core.constant import SETTINGS_FH_LIVE_STOCKS_NSE, LOG_SCHEDULE_LIVE_500
 
 
 # Uptrend

@@ -1,7 +1,9 @@
 from datetime import datetime
+
 from django.db import models
-from stockwatch.models import FiveHundred
+
 from core.choice import FhZeroStatus
+from stockwatch.models import FiveHundred
 
 
 class FhZeroUpTrend(models.Model):

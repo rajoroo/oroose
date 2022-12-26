@@ -1,11 +1,13 @@
 from datetime import datetime
-from django.shortcuts import render
-from stockwatch.models import FiveHundred
-from django.http import HttpResponse
-from core.models import DataLog, ParameterSettings
-from stockwatch.stock_monitor import polling_live_stocks_five_hundred
+
 from django.db.models import Max
-from core.constant import SETTINGS_FH_LIVE_STOCKS_NSE, LOG_SCHEDULE_LIVE_500
+from django.http import HttpResponse
+from django.shortcuts import render
+
+from core.constant import LOG_SCHEDULE_LIVE_500, SETTINGS_FH_LIVE_STOCKS_NSE
+from core.models import DataLog, ParameterSettings
+from stockwatch.models import FiveHundred
+from stockwatch.stock_monitor import polling_live_stocks_five_hundred
 
 
 def load_fh_view(request):

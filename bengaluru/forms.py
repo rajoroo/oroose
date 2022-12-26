@@ -1,5 +1,6 @@
 from django.forms import ModelForm
-from bengaluru.models import FhZeroUpTrend, FhZeroDownTrend
+
+from bengaluru.models import FhZeroDownTrend, FhZeroUpTrend
 
 
 # Create the form class.

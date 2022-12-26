@@ -1,26 +1,21 @@
 from datetime import datetime, timedelta
 
+from core.choice import FhZeroStatus, PlStatus
+from core.constant import SETTINGS_FHZ_DOWNTREND
+from core.models import ParameterSettings
+from core.zero_util import fhz_buy_stock, fhz_maintain_stock_downtrend, fhz_sell_stock
+from mysuru.constant import (  # FH_RANK_FROM,; FH_RANK_TILL,; FH_GRACE_RANK,
+    FH_MAX_BUY_ORDER,
+    FH_MAX_PERCENT,
+    FH_MAX_PRICE,
+    FH_MAX_TOTAL_PRICE,
+    FH_MIN_PRICE,
+    MYSURU_END,
+    MYSURU_START,
+)
 from mysuru.models import FhZeroDownTrend
 from stockwatch.choice import SignalStatus
 from stockwatch.models import FiveHundred
-from core.choice import FhZeroStatus, PlStatus
-from core.zero_util import fhz_buy_stock, fhz_maintain_stock_downtrend, fhz_sell_stock
-from core.constant import SETTINGS_FHZ_DOWNTREND
-from mysuru.constant import (
-    # FH_RANK_FROM,
-    FH_RANK_TILL,
-    # FH_GRACE_RANK,
-    FH_MIN_PRICE,
-    FH_MAX_PRICE,
-    FH_MAX_TOTAL_PRICE,
-    FH_MAX_PERCENT,
-    FH_MAX_BUY_ORDER,
-    MYSURU_START,
-    MYSURU_END,
-)
-
-
-from core.models import ParameterSettings
 
 
 def fhz_downtrend_to_sell_condition(fhz_obj):
@@ -34,7 +29,7 @@ def fhz_downtrend_to_sell_condition(fhz_obj):
     start_10min = start_time + timedelta(minutes=10)
     before_20_min = datetime.now() - timedelta(minutes=20)
     before_40_min = datetime.now() - timedelta(minutes=40)
-    price = fhz_obj.previous_price_20min - (fhz_obj.previous_price_20min * 0.005)
+    # price = fhz_obj.previous_price_20min - (fhz_obj.previous_price_20min * 0.005)
 
     if (
         ps.status
@@ -127,7 +122,7 @@ def process_fhz_downtrend():
     for rec in fhz:
         if rec.status == FhZeroStatus.TO_BUY:
             print("TO BUY Started")
-            fhz_buy_stock(fhz_obj=rec)
+            fhz_buy_stock(fhz_obj=rec, check_valid=False)
 
         elif rec.status == FhZeroStatus.SOLD:
             print("PURCHASED Started")

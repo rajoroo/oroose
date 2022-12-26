@@ -1,23 +1,22 @@
 import logging
 from datetime import datetime
 
+from bengaluru.constant import BENGALURU_END, BENGALURU_START
+from bengaluru.up_trend import process_fhz_uptrend, trigger_fhz_uptrend
 from core.configuration import only_one
-from core.models import DataLog, ParameterSettings
-from oroose.celery import app
-
-from stockwatch.stock_monitor import polling_live_stocks_five_hundred, polling_stocks
-from bengaluru.up_trend import trigger_fhz_uptrend, process_fhz_uptrend
-from mysuru.down_trend import trigger_fhz_downtrend, process_fhz_downtrend
 from core.constant import (
-    SETTINGS_FH_LIVE_STOCKS_NSE,
-    SETTINGS_FHZ_UPTREND,
-    SETTINGS_FHZ_DOWNTREND,
     LOG_SCHEDULE_LIVE_500,
     LOG_SCHEDULE_ZERO_500,
+    SETTINGS_FH_LIVE_STOCKS_NSE,
+    SETTINGS_FHZ_DOWNTREND,
+    SETTINGS_FHZ_UPTREND,
 )
-from stockwatch.constant import LIVE_START, LIVE_END, FIVEHUNDRED_START, FIVEHUNDRED_END
-from bengaluru.constant import BENGALURU_START, BENGALURU_END
-from mysuru.constant import MYSURU_START, MYSURU_END
+from core.models import DataLog, ParameterSettings
+from mysuru.constant import MYSURU_END, MYSURU_START
+from mysuru.down_trend import process_fhz_downtrend, trigger_fhz_downtrend
+from oroose.celery import app
+from stockwatch.constant import FIVEHUNDRED_END, FIVEHUNDRED_START, LIVE_END, LIVE_START
+from stockwatch.stock_monitor import polling_live_stocks_five_hundred, polling_stocks
 
 logger = logging.getLogger("celery")
 

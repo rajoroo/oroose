@@ -1,7 +1,9 @@
-from django.db import models
-from datetime import datetime, timedelta
-from stockwatch.choice import SignalStatus
+from datetime import timedelta
+
 import numpy as np
+from django.db import models
+
+from stockwatch.choice import SignalStatus
 
 
 class StockWatchFh(models.Model):
