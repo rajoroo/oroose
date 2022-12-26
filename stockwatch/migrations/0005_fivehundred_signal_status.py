@@ -6,17 +6,15 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('stockwatch', '0004_alter_fivehundred_previous_price_20min'),
+        ("stockwatch", "0004_alter_fivehundred_previous_price_20min"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='fivehundred',
-            name='signal_status',
-            field=models.CharField(choices=[
-                ('BUY', 'Buy'),
-                ('SELL', 'Sell'),
-                ('IP', 'In-Progress')
-            ], default='IP', max_length=5),
+            model_name="fivehundred",
+            name="signal_status",
+            field=models.CharField(
+                choices=[("BUY", "Buy"), ("SELL", "Sell"), ("IP", "In-Progress")], default="IP", max_length=5
+            ),
         ),
     ]

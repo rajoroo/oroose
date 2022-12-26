@@ -47,11 +47,9 @@ class FiveHundred(models.Model):
         stock_watch = 0.0
         before_20_min = time_obj - timedelta(minutes=20)
         before_30_min = time_obj - timedelta(minutes=30)
-        obj = StockWatchFh.objects.filter(
-            created_date__range=(before_30_min, before_20_min)
-        ).order_by("-id").first()
+        obj = StockWatchFh.objects.filter(created_date__range=(before_30_min, before_20_min)).order_by("-id").first()
 
-        if (not obj) and (not hasattr(obj, 'stock_data')):
+        if (not obj) and (not hasattr(obj, "stock_data")):
             return stock_watch
 
         stock_watch = obj.stock_data.get(self.symbol)
@@ -60,16 +58,14 @@ class FiveHundred(models.Model):
     def get_signal_status(self, time_obj, price):
         signal_status = SignalStatus.INPROG
         before_20_intervals = time_obj - timedelta(hours=1, minutes=40)
-        obj = StockWatchFh.objects.filter(
-            created_date__range=(before_20_intervals, time_obj)
-        )
+        obj = StockWatchFh.objects.filter(created_date__range=(before_20_intervals, time_obj))
 
         if (not obj) or (obj.count() < 18):
             return signal_status
 
         data = []
         for rec in obj:
-            if hasattr(rec, 'stock_data'):
+            if hasattr(rec, "stock_data"):
                 data.append(rec.stock_data.get(self.symbol)["last_price"])
 
         result = np.mean(data)

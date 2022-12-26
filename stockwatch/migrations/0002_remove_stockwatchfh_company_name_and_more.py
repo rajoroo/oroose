@@ -6,49 +6,49 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('stockwatch', '0001_initial'),
+        ("stockwatch", "0001_initial"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='stockwatchfh',
-            name='company_name',
+            model_name="stockwatchfh",
+            name="company_name",
         ),
         migrations.RemoveField(
-            model_name='stockwatchfh',
-            name='identifier',
+            model_name="stockwatchfh",
+            name="identifier",
         ),
         migrations.RemoveField(
-            model_name='stockwatchfh',
-            name='isin',
+            model_name="stockwatchfh",
+            name="isin",
         ),
         migrations.RemoveField(
-            model_name='stockwatchfh',
-            name='last_price',
+            model_name="stockwatchfh",
+            name="last_price",
         ),
         migrations.RemoveField(
-            model_name='stockwatchfh',
-            name='percentage_change',
+            model_name="stockwatchfh",
+            name="percentage_change",
         ),
         migrations.RemoveField(
-            model_name='stockwatchfh',
-            name='rank',
+            model_name="stockwatchfh",
+            name="rank",
         ),
         migrations.RemoveField(
-            model_name='stockwatchfh',
-            name='symbol',
+            model_name="stockwatchfh",
+            name="symbol",
         ),
         migrations.RemoveField(
-            model_name='stockwatchfh',
-            name='time',
+            model_name="stockwatchfh",
+            name="time",
         ),
         migrations.RemoveField(
-            model_name='stockwatchfh',
-            name='uid',
+            model_name="stockwatchfh",
+            name="uid",
         ),
         migrations.AddField(
-            model_name='stockwatchfh',
-            name='stock_data',
-            field=models.JSONField(blank=True, null=True, verbose_name='Stock Data'),
+            model_name="stockwatchfh",
+            name="stock_data",
+            field=models.JSONField(blank=True, null=True, verbose_name="Stock Data"),
         ),
     ]

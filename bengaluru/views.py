@@ -7,9 +7,9 @@ from django.shortcuts import render, reverse
 from django.views.generic.edit import UpdateView
 
 from bengaluru.models import FhZeroStatus, FhZeroUpTrend
+from bengaluru.up_trend import uptrend_panic_pull
 from core.constant import LOG_SCHEDULE_LIVE_500, SETTINGS_FH_LIVE_STOCKS_NSE
 from core.models import DataLog, ParameterSettings
-from bengaluru.up_trend import uptrend_panic_pull
 from stockwatch.models import FiveHundred
 
 

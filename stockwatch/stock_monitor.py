@@ -95,13 +95,9 @@ def polling_live_stocks_five_hundred():
 def polling_stocks():
     symbols = FiveHundred.objects.filter(date=datetime.now()).values_list("symbol", flat=True)
     obj = StockWatchFh.objects.all().order_by("-id").first()
-    if (not obj) and (not hasattr(obj, 'stock_data')):
+    if (not obj) and (not hasattr(obj, "stock_data")):
         return False
 
-    stocks = {
-        key: value
-        for key, value in obj.stock_data.items()
-        if (value["rank"] <= 5) or (key in symbols)
-    }
+    stocks = {key: value for key, value in obj.stock_data.items() if (value["rank"] <= 5) or (key in symbols)}
     update_five_hundred(data=stocks)
     return True

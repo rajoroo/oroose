@@ -6,17 +6,17 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('stockwatch', '0002_remove_stockwatchfh_company_name_and_more'),
+        ("stockwatch", "0002_remove_stockwatchfh_company_name_and_more"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='fivehundred',
-            name='bar',
+            model_name="fivehundred",
+            name="bar",
         ),
         migrations.AddField(
-            model_name='fivehundred',
-            name='previous_price_20min',
-            field=models.FloatField(blank=True, null=True, verbose_name='Previous Price 20min'),
+            model_name="fivehundred",
+            name="previous_price_20min",
+            field=models.FloatField(blank=True, null=True, verbose_name="Previous Price 20min"),
         ),
     ]

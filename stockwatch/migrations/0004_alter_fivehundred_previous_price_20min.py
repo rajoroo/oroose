@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('stockwatch', '0003_remove_fivehundred_bar_and_more'),
+        ("stockwatch", "0003_remove_fivehundred_bar_and_more"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='fivehundred',
-            name='previous_price_20min',
-            field=models.FloatField(default=0.0, verbose_name='Previous Price 20min'),
+            model_name="fivehundred",
+            name="previous_price_20min",
+            field=models.FloatField(default=0.0, verbose_name="Previous Price 20min"),
         ),
     ]
