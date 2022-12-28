@@ -35,12 +35,12 @@ def fhz_uptrend_to_buy_condition(fhz_obj):
 
     if (
         ps.status
-        and (FH_RANK_FROM <= fhz_obj.rank <= FH_RANK_TILL)
+        and (FH_RANK_FROM <= fhz_obj.rank <= FH_RANK_TILL + 2)
         and (FH_MIN_PRICE <= fhz_obj.last_price <= FH_MAX_PRICE)
         and (fhz_obj.signal_status == SignalStatus.BUY)
         and (fhz_obj.percentage_change <= FH_MAX_PERCENT)
         and (fhz_obj.fhzerouptrend_set.all().count() < FH_MAX_BUY_ORDER)
-        and (not fhz_obj.fhzerouptrend_set.filter(status__in=["TO_BUY", "SOLD", "TO_SELL"]).exists())
+        and (not fhz_obj.fhzerouptrend_set.filter(status__in=["TO_BUY", "PURCHASED", "TO_SELL"]).exists())
         and (not fhz_obj.fhzerouptrend_set.filter(pl_status__in=[PlStatus.WINNER, PlStatus.INPROG]).exists())
         and (not fhz_obj.fhzerouptrend_set.filter(error=True).exists())
         and (start_time <= datetime.now() <= end_time)
