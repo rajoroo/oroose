@@ -22,7 +22,6 @@ logger = logging.getLogger("celery")
 
 
 def condition_schedule_live_stocks_fh():
-    print("i call")
     ps = ParameterSettings.objects.get(name=SETTINGS_FH_LIVE_STOCKS_NSE)
     start = datetime.strptime(LIVE_START, "%H%M").time()
     end = datetime.strptime(LIVE_END, "%H%M").time()
@@ -117,7 +116,6 @@ def condition_schedule_fhz_downtrend():
 @app.task(name="bengaluru.tasks.schedule_fhz_downtrend")
 @only_one(key="SecondTask", timeout=60 * 5)
 def schedule_fhz_downtrend():
-    print("Down trend started-----------")
     logger.info("ZERO downtrend started")
     obj = DataLog(
         date=datetime.now(),
