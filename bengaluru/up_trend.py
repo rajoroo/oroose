@@ -31,6 +31,8 @@ def fhz_uptrend_to_buy_condition(fhz_obj):
     start_10min = start_time + timedelta(minutes=10)
     before_20_min = datetime.now() - timedelta(minutes=20)
     before_40_min = datetime.now() - timedelta(minutes=40)
+    fhz_status = [FhZeroStatus.TO_BUY, FhZeroStatus.PURCHASED, FhZeroStatus.TO_SELL]
+    pl_status = [PlStatus.WINNER, PlStatus.INPROG]
     # price = fhz_obj.previous_price_20min - (fhz_obj.previous_price_20min * 0.005)
 
     if (
@@ -40,8 +42,8 @@ def fhz_uptrend_to_buy_condition(fhz_obj):
         and (fhz_obj.signal_status == SignalStatus.BUY)
         and (fhz_obj.percentage_change <= FH_MAX_PERCENT)
         and (fhz_obj.fhzerouptrend_set.all().count() < FH_MAX_BUY_ORDER)
-        and (not fhz_obj.fhzerouptrend_set.filter(status__in=["TO_BUY", "PURCHASED", "TO_SELL"]).exists())
-        and (not fhz_obj.fhzerouptrend_set.filter(pl_status__in=[PlStatus.WINNER, PlStatus.INPROG]).exists())
+        and (not fhz_obj.fhzerouptrend_set.filter(status__in=fhz_status).exists())
+        and (not fhz_obj.fhzerouptrend_set.filter(pl_status__in=pl_status).exists())
         and (not fhz_obj.fhzerouptrend_set.filter(error=True).exists())
         and (start_time <= datetime.now() <= end_time)
         and (datetime.today().weekday() < 5)
@@ -119,16 +121,15 @@ def process_fhz_uptrend():
 
     for rec in fhz:
         if rec.status == FhZeroStatus.TO_BUY:
-            print("TO BUY Started")
             fhz_buy_stock(fhz_obj=rec)
 
         elif rec.status == FhZeroStatus.PURCHASED:
-            print("PURCHASED Started")
             fhz_maintain_stock_uptrend(fhz_obj=rec)
 
         elif rec.status == FhZeroStatus.TO_SELL:
-            print("TO SELL Started")
             fhz_sell_stock(fhz_obj=rec, check_valid=False)
+            rec.pl_status = PlStatus.RUNNER
+            rec.save()
 
 
 def uptrend_panic_pull():

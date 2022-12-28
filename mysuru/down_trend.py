@@ -30,6 +30,8 @@ def fhz_downtrend_to_sell_condition(fhz_obj):
     before_20_min = datetime.now() - timedelta(minutes=20)
     before_40_min = datetime.now() - timedelta(minutes=40)
     # price = fhz_obj.previous_price_20min - (fhz_obj.previous_price_20min * 0.005)
+    fhz_status = [FhZeroStatus.TO_BUY,FhZeroStatus.SOLD,FhZeroStatus.TO_SELL]
+    pl_status = [PlStatus.WINNER, PlStatus.INPROG]
 
     if (
         ps.status
@@ -41,8 +43,8 @@ def fhz_downtrend_to_sell_condition(fhz_obj):
         # and (price > fhz_obj.previous_price)
         and (fhz_obj.percentage_change <= FH_MAX_PERCENT)
         and (fhz_obj.fhzerodowntrend_set.all().count() <= FH_MAX_BUY_ORDER)
-        and (not fhz_obj.fhzerodowntrend_set.filter(status__in=["TO_BUY", "SOLD", "TO_SELL"]).exists())
-        and (not fhz_obj.fhzerodowntrend_set.filter(pl_status__in=[PlStatus.WINNER, PlStatus.INPROG]).exists())
+        and (not fhz_obj.fhzerodowntrend_set.filter(status__in=fhz_status).exists())
+        and (not fhz_obj.fhzerodowntrend_set.filter(pl_status__in=pl_status).exists())
         and (not fhz_obj.fhzerodowntrend_set.filter(error=True).exists())
         and (start_time <= datetime.now() <= end_time)
         and (datetime.today().weekday() < 5)
@@ -120,17 +122,16 @@ def process_fhz_downtrend():
         return None
 
     for rec in fhz:
-        if rec.status == FhZeroStatus.TO_BUY:
-            print("TO BUY Started")
-            fhz_buy_stock(fhz_obj=rec, check_valid=False)
+        if rec.status == FhZeroStatus.TO_SELL:
+            fhz_sell_stock(fhz_obj=rec)
 
         elif rec.status == FhZeroStatus.SOLD:
-            print("PURCHASED Started")
             fhz_maintain_stock_downtrend(fhz_obj=rec)
 
-        elif rec.status == FhZeroStatus.TO_SELL:
-            print("TO SELL Started")
-            fhz_sell_stock(fhz_obj=rec)
+        elif rec.status == FhZeroStatus.TO_BUY:
+            fhz_buy_stock(fhz_obj=rec, check_valid=False)
+            rec.pl_status = PlStatus.RUNNER
+            rec.save()
 
 
 def downtrend_panic_pull():
