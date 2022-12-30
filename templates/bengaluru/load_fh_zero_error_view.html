@@ -5,7 +5,7 @@
 </div>
 <div class="card-body">
     <div class="table-responsive">
-        {% if items %}
+        {% if errors %}
         <table id="fhzero" class="green-table">
             <tr>
                 <th>Update Date</th>
@@ -21,7 +21,7 @@
                 <th>Error msg</th>
 
             </tr>
-            {% for item in items %}
+            {% for item in errors %}
             <tr onClick="parent.open('{% url 'fhz_uptrend_record' item.id %}')">
                 <td>{{ item.updated_date|date:'d-m-Y H:i:s' }}</td>
                 <td>{{ item.symbol }}</td>
