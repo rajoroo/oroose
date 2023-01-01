@@ -85,4 +85,6 @@ class FiveHundred(models.Model):
         df['rs'] = df['avg_gain'] / df['avg_loss']
         df['rsi'] = 100 - (100 / (1 + df['rs']))
 
-        return df['rsi'].iloc[-3], df['rsi'].iloc[-2]
+        print(df)
+
+        return df['rsi'].iloc[-2], df['rsi'].iloc[-1]

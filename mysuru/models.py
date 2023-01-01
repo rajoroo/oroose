@@ -27,8 +27,6 @@ class FhZeroDownTrend(models.Model):
     buy_id = models.CharField(max_length=100, verbose_name="Buy ID", null=True, blank=True)
     sell_id = models.CharField(max_length=100, verbose_name="Sell ID", null=True, blank=True)
     rank = models.IntegerField(verbose_name="Rank")
-    previous_rank = models.IntegerField(verbose_name="Previous Rank", null=True, blank=True)
-    previous_price = models.FloatField(verbose_name="Previous Price")
     quantity = models.IntegerField(verbose_name="Quantity")
     last_price = models.FloatField(verbose_name="Last Price")
     buy_price = models.FloatField(verbose_name="Buy Price", default=0.0)

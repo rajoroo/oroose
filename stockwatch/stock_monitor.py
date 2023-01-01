@@ -12,11 +12,10 @@ logger = logging.getLogger("celery")
 
 def update_five_hundred(data):
     for key, value in data.items():
-        items = FiveHundred.objects.filter(date=datetime.now(), symbol=value["symbol"])
-        time_obj = datetime.strptime(value["time"], "%d-%b-%Y %H:%M:%S")
+        items = FiveHundred.objects.filter(date=datetime.today(), symbol=value["symbol"])
+        time_obj = datetime.now()
         if items:
             obj = items[0]
-            obj.date = datetime.today()
             obj.rank = value["rank"]
             obj.last_price = value["last_price"]
             obj.percentage_change = value["percentage_change"]
@@ -28,11 +27,11 @@ def update_five_hundred(data):
                 created_date=datetime.now(),
                 symbol=value["symbol"],
                 identifier=value["identifier"],
-                last_price=value["last_price"],
-                percentage_change=value["percentage_change"],
                 isin=value["isin"],
                 company_name=value["company_name"],
                 rank=value["rank"],
+                last_price=value["last_price"],
+                percentage_change=value["percentage_change"],
                 signal_status=SignalStatus.INPROG,
             )
 
@@ -72,8 +71,8 @@ def polling_live_stocks_five_hundred():
 
         # Get live data, feed data, save data
         obj.get_live_data()
-        # obj.get_feed_data()
         obj.save_stock_data()
+        # obj.get_feed_data()
 
         # Raw data
         df = obj.get_live_stock_list()

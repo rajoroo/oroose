@@ -32,9 +32,7 @@ def get_history_five_min(symbol, from_date, to_date):
         )
 
         df = pd.DataFrame(history_response)
-        df['avg'] = df[['open', 'close']].mean(axis=1)
-
-        result = list(df["avg"])
+        result = list(df["close"])
         return result
     except:
         logger.info(f"History 5 min {symbol} is not working")
