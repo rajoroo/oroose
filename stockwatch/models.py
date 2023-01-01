@@ -44,7 +44,7 @@ class FiveHundred(models.Model):
         from_date = time_obj - timedelta(hours=1, minutes=40)
         current_list = get_history_five_min(symbol=self.symbol, from_date=from_date, to_date=time_obj)
 
-        if current_list:
+        if current_list and len(current_list) > 14:
             df = pd.DataFrame({'close': current_list})
             pre_result, result = self.calculate_rsi(df=df)
 
