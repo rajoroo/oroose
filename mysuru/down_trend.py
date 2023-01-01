@@ -4,7 +4,7 @@ from core.choice import FhZeroStatus, PlStatus
 from core.constant import SETTINGS_FHZ_DOWNTREND
 from core.models import ParameterSettings
 from core.zero_util import fhz_buy_stock, fhz_maintain_stock_downtrend, fhz_sell_stock
-from mysuru.constant import (  # FH_RANK_FROM,; FH_RANK_TILL,; FH_GRACE_RANK,
+from mysuru.constant import (
     FH_MAX_BUY_ORDER,
     FH_MAX_PERCENT,
     FH_MAX_PRICE,
@@ -26,23 +26,15 @@ def fhz_downtrend_to_sell_condition(fhz_obj):
     end = datetime.strptime(MYSURU_END, "%H%M").time()
     start_time = datetime.combine(datetime.today(), start)
     end_time = datetime.combine(datetime.today(), end)
-    start_10min = start_time + timedelta(minutes=10)
     before_20_min = datetime.now() - timedelta(minutes=20)
-    before_40_min = datetime.now() - timedelta(minutes=40)
-    # price = fhz_obj.previous_price_20min - (fhz_obj.previous_price_20min * 0.005)
-    fhz_status = [FhZeroStatus.TO_BUY,FhZeroStatus.SOLD,FhZeroStatus.TO_SELL]
+    fhz_status = [FhZeroStatus.TO_BUY, FhZeroStatus.SOLD, FhZeroStatus.TO_SELL]
     pl_status = [PlStatus.WINNER, PlStatus.INPROG]
-    signal_status = fhz_obj.get_rsi_status(fhz_obj.time)
 
     if (
         ps.status
-        and (signal_status == SignalStatus.SELL)
-        # and (fhz_obj.rank > FH_RANK_TILL - 2)
+        and (fhz_obj.signal_status == SignalStatus.SELL)
         and (fhz_obj.rank <= 9)
         and (FH_MIN_PRICE <= fhz_obj.last_price <= FH_MAX_PRICE)
-        # and (fhz_obj.signal_status == SignalStatus.SELL)
-        # and (price > fhz_obj.last_price)
-        # and (price > fhz_obj.previous_price)
         and (fhz_obj.percentage_change <= FH_MAX_PERCENT)
         and (fhz_obj.fhzerodowntrend_set.all().count() <= FH_MAX_BUY_ORDER)
         and (not fhz_obj.fhzerodowntrend_set.filter(status__in=fhz_status).exists())
@@ -50,14 +42,12 @@ def fhz_downtrend_to_sell_condition(fhz_obj):
         and (not fhz_obj.fhzerodowntrend_set.filter(error=True).exists())
         and (start_time <= datetime.now() <= end_time)
         and (datetime.today().weekday() < 5)
-        # and (fhz_obj.rank > fhz_obj.previous_rank)
-        and ((fhz_obj.created_date <= before_20_min) or (fhz_obj.created_date <= start_10min))
     ):
         result = True
 
     if result and fhz_obj.fhzerodowntrend_set.all():
         latest_fhz = fhz_obj.fhzerodowntrend_set.latest("updated_date")
-        if latest_fhz.updated_date > before_40_min:
+        if latest_fhz.updated_date > before_20_min:
             result = False
 
     return result
@@ -66,12 +56,10 @@ def fhz_downtrend_to_sell_condition(fhz_obj):
 def fhz_downtrend_to_buy_condition(fhz_obj):
     result = False
     ps = ParameterSettings.objects.get(name=SETTINGS_FHZ_DOWNTREND)
-    signal_status = fhz_obj.get_rsi_status(fhz_obj.time)
 
     if (
         ps.status
-        # and fhz_obj.rank < FH_RANK_TILL - 2
-        and (signal_status == SignalStatus.BUY)
+        and (fhz_obj.signal_status == SignalStatus.BUY)
         and fhz_obj.fhzerodowntrend_set.filter(status=FhZeroStatus.SOLD).exists()
     ):
         result = True
@@ -87,7 +75,7 @@ def trigger_fhz_downtrend():
         if fhz_downtrend_to_sell_condition(fhz_obj=rec):
             five_hundred_zero = FhZeroDownTrend(
                 date=datetime.now(),
-                time=datetime.now(),
+                created_date=datetime.now(),
                 symbol=rec.symbol,
                 isin=rec.isin,
                 five_hundred=rec,

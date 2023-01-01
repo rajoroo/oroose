@@ -14,33 +14,22 @@ def update_five_hundred(data):
         if items:
             obj = items[0]
             obj.date = datetime.today()
-            obj.time = time_obj
-            obj.previous_rank = obj.rank if value["rank"] != obj.rank else obj.previous_rank
             obj.rank = value["rank"]
             obj.last_price = value["last_price"]
             obj.percentage_change = value["percentage_change"]
-            obj.highest_rank = value["rank"] if value["rank"] < obj.highest_rank else obj.highest_rank
-            obj.lowest_rank = value["rank"] if value["rank"] > obj.lowest_rank else obj.lowest_rank
-            obj.previous_price = obj.last_price
-            obj.previous_price_20min = obj.get_previous_20_min(time_obj=time_obj)
-            obj.signal_status = obj.get_signal_status(time_obj=time_obj, price=value["last_price"])
+            obj.signal_status = obj.get_signal_status(time_obj=time_obj)
             obj.save()
         else:
             FiveHundred.objects.create(
                 date=datetime.today(),
-                time=time_obj,
                 created_date=datetime.now(),
                 symbol=value["symbol"],
                 identifier=value["identifier"],
                 last_price=value["last_price"],
-                previous_price=value["last_price"],
                 percentage_change=value["percentage_change"],
                 isin=value["isin"],
                 company_name=value["company_name"],
                 rank=value["rank"],
-                highest_rank=value["rank"],
-                lowest_rank=value["rank"],
-                previous_rank=value["rank"],
                 signal_status=SignalStatus.INPROG,
             )
 

@@ -1,5 +1,6 @@
 import logging
 import time
+import pandas as pd
 
 from django.conf import settings
 from kiteconnect import KiteConnect
@@ -13,6 +14,32 @@ def get_kite():
     kite = KiteConnect(api_key=settings.ZERO_API_KEY)
     kite.set_access_token(settings.ZERO_ACCESS_TOKEN)
     return kite
+
+
+def get_history_five_min(symbol, from_date, to_date):
+    kite = get_kite()
+
+    try:
+        instrument = f"NSE:{symbol}"
+        quote_response = kite.ltp(instrument)
+        instrument_token = quote_response[instrument]["instrument_token"]
+
+        history_response = kite.historical_data(
+            instrument_token=instrument_token,
+            interval="5minute",
+            from_date=from_date,
+            to_date=to_date
+        )
+
+        df = pd.DataFrame(history_response)
+        df['avg'] = df[['open', 'close']].mean(axis=1)
+
+        result = list(df["avg"])
+        return result
+    except:
+        logger.info(f"History 5 min {symbol} is not working")
+
+    return None
 
 
 def create_intraday_buy(symbol, quantity):
