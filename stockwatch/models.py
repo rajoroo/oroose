@@ -39,41 +39,6 @@ class FiveHundred(models.Model):
             models.UniqueConstraint(fields=["date", "symbol"], name="%(app_label)s_%(class)s_unique_five_hundred")
         ]
 
-    # def get_rsi_status(self, time_obj):
-    #     signal_status = SignalStatus.INPROG
-    #     before_20_intervals = time_obj - timedelta(hours=1, minutes=40)
-    #     obj = StockWatchFh.objects.filter(created_date__range=(before_20_intervals, time_obj)).order_by("-id")
-    #
-    #     if (not obj) or (obj.count() < 16):
-    #         return signal_status
-    #     # print(obj.values("id", "created_date"))
-    #     data = []
-    #     for rec in obj:
-    #         if hasattr(rec, "stock_data"):
-    #             if rec.stock_data.get(self.symbol):
-    #                 data.append(rec.stock_data.get(self.symbol)["last_price"])
-    #
-    #     current_list = data[0:15]
-    #     previous_list = data[1:16]
-    #
-    #     current_list.reverse()
-    #     previous_list.reverse()
-    #     # print(current_list)
-    #     # print(previous_list)
-    #
-    #     df_current = pd.DataFrame({'close': current_list})
-    #     df_previous = pd.DataFrame({'close': previous_list})
-    #     # print(df_current, df_previous)
-    #     result = self.calculate_rsi(df_current)
-    #     pre_result = self.calculate_rsi(df_previous)
-    #
-    #     if result < 70 < pre_result:
-    #         signal_status = SignalStatus.SELL
-    #     elif result > 70 > pre_result:
-    #         signal_status = SignalStatus.BUY
-    #     print(result, pre_result, signal_status, self.symbol)
-    #     return signal_status
-
     def get_signal_status(self, time_obj):
         signal_status = SignalStatus.INPROG
         from_date = time_obj - timedelta(hours=1, minutes=40)

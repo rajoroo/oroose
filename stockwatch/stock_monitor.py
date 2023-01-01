@@ -1,3 +1,4 @@
+import logging
 from datetime import datetime
 
 from django.conf import settings
@@ -5,6 +6,8 @@ from django.conf import settings
 from stockwatch.choice import SignalStatus
 from stockwatch.models import FiveHundred, StockWatchFh
 from stockwatch.stocks import LiveStocks
+
+logger = logging.getLogger("celery")
 
 
 def update_five_hundred(data):
@@ -64,20 +67,20 @@ def update_stock_watch_fh(data):
 def polling_live_stocks_five_hundred():
     """Polling live stocks 500 and update the bengaluru with top 5 stocks"""
     symbols = FiveHundred.objects.filter(date=datetime.now()).values_list("symbol", flat=True)
-    obj = LiveStocks(base_url=settings.LIVE_INDEX_URL, url=settings.LIVE_INDEX_500_URL, symbols=symbols)
+    try:
+        obj = LiveStocks(base_url=settings.LIVE_INDEX_URL, url=settings.LIVE_INDEX_500_URL, symbols=symbols)
 
-    # Get live data, feed data, save data
-    obj.get_live_data()
-    # obj.get_feed_data()
-    obj.save_stock_data()
+        # Get live data, feed data, save data
+        obj.get_live_data()
+        # obj.get_feed_data()
+        obj.save_stock_data()
 
-    # Bengaluru/ Mysuru
-    # df_1 = obj.filter_stock_list()
-    # update_five_hundred(data=df_1)
+        # Raw data
+        df = obj.get_live_stock_list()
+        update_stock_watch_fh(data=df)
+    except:
+        logger.info(f"Live stock NSE not working")
 
-    # Raw data
-    df_2 = obj.get_live_stock_list()
-    update_stock_watch_fh(data=df_2)
     return True
 
 
