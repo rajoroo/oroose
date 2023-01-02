@@ -16,31 +16,39 @@ def get_kite():
     return kite
 
 
-def get_history_five_min(symbol, from_date, to_date):
+def get_token(symbol):
     kite = get_kite()
-
+    token = None
+    open_price = None
     try:
         instrument = f"NSE:{symbol}"
         quote_response = kite.quote(instrument)
-        instrument_token = quote_response[instrument]["instrument_token"]
+        token = quote_response[instrument]["instrument_token"]
+        open_price = quote_response[instrument]["ohlc"]["open"]
+    except:
+        logger.info(f"Token {symbol} is not working")
 
+    return open_price, token
+
+
+def get_history_five_min(token, open_price, from_date, to_date):
+    kite = get_kite()
+    result = None
+    try:
         history_response = kite.historical_data(
-            instrument_token=instrument_token,
+            instrument_token=token,
             interval="5minute",
             from_date=from_date,
             to_date=to_date
         )
 
-        today_open = quote_response[instrument]["ohlc"]["open"]
-        print(today_open)
         df = pd.DataFrame(history_response)
         result = list(df["close"])
-        result.insert(0, today_open)
-        return result
+        result.insert(0, open_price)
     except:
-        logger.info(f"History 5 min {symbol} is not working")
+        logger.info(f"History 5 min {token} is not working")
 
-    return None
+    return result
 
 
 def create_intraday_buy(symbol, quantity):

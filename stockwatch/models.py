@@ -1,9 +1,10 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, time
 
 import numpy as np
 from django.db import models
 import pandas as pd
 from core.zero_util import get_history_five_min
+from core.choice import PlStatus
 
 from stockwatch.choice import SignalStatus
 
@@ -20,10 +21,12 @@ class FiveHundred(models.Model):
     created_date = models.DateTimeField(verbose_name="Created Date")
     rank = models.IntegerField(verbose_name="Rank")
     symbol = models.CharField(max_length=200, verbose_name="Symbol")
+    token = models.CharField(max_length=50, verbose_name="Token", null=True, blank=True)
     identifier = models.CharField(max_length=200, verbose_name="Identifier")
     company_name = models.CharField(max_length=500, verbose_name="Company Name")
     isin = models.CharField(max_length=100, verbose_name="Isin")
     last_price = models.FloatField(verbose_name="Price")
+    open_price = models.FloatField(verbose_name="Open Price", null=True, blank=True)
     percentage_change = models.FloatField(verbose_name="Percentage")
     signal_status = models.CharField(
         max_length=5,
@@ -41,10 +44,16 @@ class FiveHundred(models.Model):
 
     def get_signal_status(self, time_obj):
         signal_status = SignalStatus.INPROG
-        # from_date = time_obj - timedelta(hours=1, minutes=40)
-        from_date = datetime(2023, 1, 2, 9, 15)
-        current_list = get_history_five_min(symbol=self.symbol, from_date=from_date, to_date=time_obj)
+        today = datetime.today()
+        exact_time = time(hour=9, minute=15)
+        from_date = datetime.combine(today, exact_time)
+
+        if self.fhzerodowntrend_set.filter(status=PlStatus.WINNER).exists():
+            return signal_status
+
         print("*********************************************")
+
+        current_list = get_history_five_min(token=self.token, open_price=self.open_price, from_date=from_date, to_date=time_obj)
         print(current_list)
         if current_list and len(current_list) > 16:
             df = pd.DataFrame({'close': current_list})
@@ -87,6 +96,6 @@ class FiveHundred(models.Model):
         df['rs'] = df['avg_gain'] / df['avg_loss']
         df['rsi'] = 100 - (100 / (1 + df['rs']))
 
-        print(df)
+        print(list(df["rsi"]))
 
         return df['rsi'].iloc[-2], df['rsi'].iloc[-1]

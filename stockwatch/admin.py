@@ -5,7 +5,17 @@ from stockwatch.models import FiveHundred, StockWatchFh
 
 @admin.register(FiveHundred)
 class FiveHundredAdmin(admin.ModelAdmin):
-    list_display = ("symbol", "rank", "date", "created_date", "company_name", "isin", "last_price", "signal_status")
+    list_display = (
+        "symbol",
+        "token", "rank",
+        "date",
+        "created_date",
+        "company_name",
+        "isin",
+        "open_price",
+        "last_price",
+        "signal_status"
+    )
     date_hierarchy = "date"
 
 

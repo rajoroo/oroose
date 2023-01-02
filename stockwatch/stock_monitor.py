@@ -6,6 +6,7 @@ from django.conf import settings
 from stockwatch.choice import SignalStatus
 from stockwatch.models import FiveHundred, StockWatchFh
 from stockwatch.stocks import LiveStocks
+from core.zero_util import get_token
 
 logger = logging.getLogger("celery")
 
@@ -22,15 +23,20 @@ def update_five_hundred(data):
             obj.signal_status = obj.get_signal_status(time_obj=time_obj)
             obj.save()
         else:
+            open_price, token = get_token(symbol=value["symbol"])
+            if not open_price or not token:
+                return True
             FiveHundred.objects.create(
                 date=datetime.today(),
                 created_date=datetime.now(),
                 symbol=value["symbol"],
+                token=token,
                 identifier=value["identifier"],
                 isin=value["isin"],
                 company_name=value["company_name"],
                 rank=value["rank"],
                 last_price=value["last_price"],
+                open_price=open_price,
                 percentage_change=value["percentage_change"],
                 signal_status=SignalStatus.INPROG,
             )
@@ -70,9 +76,9 @@ def polling_live_stocks_five_hundred():
         obj = LiveStocks(base_url=settings.LIVE_INDEX_URL, url=settings.LIVE_INDEX_500_URL, symbols=symbols)
 
         # Get live data, feed data, save data
-        obj.get_live_data()
-        obj.save_stock_data()
-        # obj.get_feed_data()
+        # obj.get_live_data()
+        # obj.save_stock_data()
+        obj.get_feed_data()
 
         # Raw data
         df = obj.get_live_stock_list()
