@@ -21,7 +21,7 @@ def get_history_five_min(symbol, from_date, to_date):
 
     try:
         instrument = f"NSE:{symbol}"
-        quote_response = kite.ltp(instrument)
+        quote_response = kite.quote(instrument)
         instrument_token = quote_response[instrument]["instrument_token"]
 
         history_response = kite.historical_data(
@@ -31,8 +31,11 @@ def get_history_five_min(symbol, from_date, to_date):
             to_date=to_date
         )
 
+        today_open = quote_response[instrument]["ohlc"]["open"]
+        print(today_open)
         df = pd.DataFrame(history_response)
         result = list(df["close"])
+        result.insert(0, today_open)
         return result
     except:
         logger.info(f"History 5 min {symbol} is not working")
@@ -274,8 +277,6 @@ def fhz_maintain_stock_downtrend(fhz_obj):
     price = fhz_obj.sell_price
     sell_price_2p = price - (price * 0.015)
     lower_circuit = price + (price * 0.005)
-    rank_diff = fhz_obj.five_hundred.previous_rank - fhz_obj.five_hundred.rank
-    # rank = fhz_obj.five_hundred.rank
 
     result = fetch_stock_ltp(symbol)
     message = (
@@ -284,8 +285,6 @@ def fhz_maintain_stock_downtrend(fhz_obj):
         f"sell_price_2p: {sell_price_2p}, "
         f"lower_circuit: {lower_circuit}, "
         f"ltp: {result['last_trade_price']}, "
-        f"rank_diff: {rank_diff}, "
-        f"previous_rank: {fhz_obj.five_hundred.previous_rank}, "
         f"current_rank: {fhz_obj.five_hundred.rank}"
     )
     logger.info(message)

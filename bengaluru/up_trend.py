@@ -63,7 +63,7 @@ def fhz_uptrend_to_buy_condition(fhz_obj):
 def fhz_uptrend_to_sell_condition(fhz_obj):
     result = False
     ps = ParameterSettings.objects.get(name=SETTINGS_FHZ_UPTREND)
-    pre_signal_status = fhz_obj.get_signal_status(fhz_obj.time, fhz_obj.previous_price)
+    pre_signal_status = fhz_obj.get_signal_status(fhz_obj.created_date, fhz_obj.previous_price)
     signal_status = fhz_obj.get_signal_status(fhz_obj.time, fhz_obj.last_price)
     if (
         ps.status

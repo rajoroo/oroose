@@ -62,7 +62,7 @@ def schedule_live_stocks_five_hundred():
 
     if condition_schedule_fh_stocks():
         polling_stocks()
-        trigger_fhz_uptrend()
+        # trigger_fhz_uptrend()
         trigger_fhz_downtrend()
 
     logger.info("FH end")
