@@ -57,9 +57,9 @@ class FiveHundred(models.Model):
             df = pd.DataFrame({'close': current_list})
             pre_result, result = self.calculate_rsi(df=df)
 
-            if result < 70 < pre_result:
+            if result < 69 < pre_result:
                 signal_status = SignalStatus.SELL
-            elif result > 70 > pre_result:
+            elif result > 69 > pre_result:
                 signal_status = SignalStatus.BUY
             print(pre_result, result, signal_status, self.symbol)
         return signal_status
