@@ -44,14 +44,12 @@ class FiveHundred(models.Model):
 
     def get_signal_status(self, time_obj):
         signal_status = SignalStatus.INPROG
-        today = datetime.today()
-        exact_time = time(hour=9, minute=15)
+        today = datetime.today() - timedelta(days=1)
+        exact_time = time(hour=9, minute=10)
         from_date = datetime.combine(today, exact_time)
 
         if self.fhzerodowntrend_set.filter(status=PlStatus.WINNER).exists():
             return signal_status
-
-        print("*********************************************")
 
         current_list = get_history_five_min(token=self.token, open_price=self.open_price, from_date=from_date, to_date=time_obj)
         print(current_list)

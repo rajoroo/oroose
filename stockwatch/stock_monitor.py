@@ -76,9 +76,9 @@ def polling_live_stocks_five_hundred():
         obj = LiveStocks(base_url=settings.LIVE_INDEX_URL, url=settings.LIVE_INDEX_500_URL, symbols=symbols)
 
         # Get live data, feed data, save data
-        # obj.get_live_data()
-        # obj.save_stock_data()
-        obj.get_feed_data()
+        obj.get_live_data()
+        obj.save_stock_data()
+        # obj.get_feed_data()
 
         # Raw data
         df = obj.get_live_stock_list()

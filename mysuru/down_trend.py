@@ -26,6 +26,7 @@ def fhz_downtrend_to_sell_condition(fhz_obj):
     end = datetime.strptime(MYSURU_END, "%H%M").time()
     start_time = datetime.combine(datetime.today(), start)
     end_time = datetime.combine(datetime.today(), end)
+    before_40_min = datetime.now() - timedelta(minutes=40)
     fhz_status = [FhZeroStatus.TO_BUY, FhZeroStatus.SOLD, FhZeroStatus.TO_SELL]
     pl_status = [PlStatus.WINNER, PlStatus.INPROG]
 
@@ -43,6 +44,11 @@ def fhz_downtrend_to_sell_condition(fhz_obj):
         and (datetime.today().weekday() < 5)
     ):
         result = True
+
+    if result and fhz_obj.fhzerodowntrend_set.all():
+        latest_fhz = fhz_obj.fhzerodowntrend_set.latest("updated_date")
+        if latest_fhz.updated_date > before_40_min:
+            result = False
 
     return result
 

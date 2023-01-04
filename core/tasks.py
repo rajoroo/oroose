@@ -65,6 +65,7 @@ def schedule_live_stocks_five_hundred():
         # trigger_fhz_uptrend()
         trigger_fhz_downtrend()
 
+    print("*********************************************")
     logger.info("FH end")
     obj.end_time = datetime.now()
     obj.save()
