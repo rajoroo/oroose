@@ -1,6 +1,7 @@
 import logging
 import time
 import pandas as pd
+from datetime import datetime, timedelta
 
 from django.conf import settings
 from kiteconnect import KiteConnect
@@ -285,6 +286,7 @@ def fhz_maintain_stock_downtrend(fhz_obj):
     price = fhz_obj.sell_price
     sell_price_2p = price - (price * 0.015)
     lower_circuit = price + (price * 0.005)
+    after_90_min = fhz_obj.created_date + timedelta(minutes=90)
 
     result = fetch_stock_ltp(symbol)
     message = (
@@ -293,7 +295,8 @@ def fhz_maintain_stock_downtrend(fhz_obj):
         f"sell_price_2p: {sell_price_2p}, "
         f"lower_circuit: {lower_circuit}, "
         f"ltp: {result['last_trade_price']}, "
-        f"current_rank: {fhz_obj.five_hundred.rank}"
+        f"current_rank: {fhz_obj.five_hundred.rank}, "
+        f"max_time: {after_90_min}"
     )
     logger.info(message)
     if result["last_trade_price"] <= sell_price_2p:
@@ -304,6 +307,10 @@ def fhz_maintain_stock_downtrend(fhz_obj):
         fhz_buy_stock(fhz_obj)
         fhz_obj.pl_status = PlStatus.RUNNER
         logger.info(f"Buy initiated for lower circuit {symbol}:{lower_circuit}")
+    elif datetime.now() > after_90_min:
+        fhz_buy_stock(fhz_obj)
+        fhz_obj.pl_status = PlStatus.RUNNER
+        logger.info(f"Buy initiated for time limit exceeds {symbol}:{lower_circuit}")
 
     fhz_obj.current_price = result.get("last_trade_price")
     fhz_obj.save()
