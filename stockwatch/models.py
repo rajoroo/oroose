@@ -48,7 +48,7 @@ class FiveHundred(models.Model):
         exact_time = time(hour=9, minute=10)
         from_date = datetime.combine(today, exact_time)
 
-        if self.fhzerodowntrend_set.filter(status=PlStatus.WINNER).exists():
+        if self.fhzerodowntrend_set.filter(pl_status=PlStatus.WINNER).exists():
             return signal_status
 
         current_list = get_history_five_min(token=self.token, open_price=self.open_price, from_date=from_date, to_date=time_obj)
