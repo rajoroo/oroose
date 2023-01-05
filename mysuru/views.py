@@ -45,18 +45,16 @@ def load_mysuru_content(request):
             date=datetime.today(),
             status__in=[FhZeroStatus.TO_BUY, FhZeroStatus.SOLD, FhZeroStatus.TO_SELL],
             error=False,
-        ).annotate(current_pl=F("quantity") * (F("sell_price") - F("current_price")))
+        )
     ).order_by("-updated_date")
 
     errors = FhZeroDownTrend.objects.filter(
         date=datetime.today(),
         status__in=[FhZeroStatus.TO_BUY, FhZeroStatus.SOLD, FhZeroStatus.TO_SELL],
         error=True,
-    ).annotate(profit_loss=F("quantity") * (F("sell_price") - F("buy_price")))
-
-    purchased_data = FhZeroDownTrend.objects.filter(date=datetime.today(), status=FhZeroStatus.PURCHASED).annotate(
-        profit_loss=F("quantity") * (F("sell_price") - F("buy_price"))
     )
+
+    purchased_data = FhZeroDownTrend.objects.filter(date=datetime.today(), status=FhZeroStatus.PURCHASED)
 
     context = {
         "live_500": list(live_500.values()),
@@ -64,8 +62,9 @@ def load_mysuru_content(request):
         "live_polling_status": ps.status,
         "progress": list(progress.values()),
         "errors": list(errors.values()),
+        "progress_data_realized": progress.aggregate(Sum("pl_price"))["pl_price__sum"],
         "purchased_data": list(purchased_data.values()),
-        "realized_amount": purchased_data.aggregate(Sum("profit_loss"))["profit_loss__sum"],
+        "purchased_data_realized": purchased_data.aggregate(Sum("pl_price"))["pl_price__sum"],
     }
 
     return render(request, "mysuru/mysuru_content.html", context=context)

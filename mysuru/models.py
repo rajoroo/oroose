@@ -43,9 +43,19 @@ class FhZeroDownTrend(models.Model):
 
     objects = models.Manager()
 
+    def get_pl_price(self):
+        result = 0.0
+        if self.sell_price > 0.0 and self.buy_price > 0.0:
+            result = self.sell_price - self.buy_price
+        elif self.sell_price and self.current_price > 0.0:
+            result = self.sell_price - self.current_price
+
+        return self.quantity * result
+
     class Meta:
         ordering = ["symbol"]
 
     def save(self, *args, **kwargs):
         self.updated_date = datetime.now()
+        self.pl_price = self.get_pl_price()
         super(FhZeroDownTrend, self).save(*args, **kwargs)

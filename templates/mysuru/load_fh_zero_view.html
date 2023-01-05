@@ -30,9 +30,14 @@
                 <td class="value">{{ item.sell_price }}</td>
                 <td class="value">{{ item.current_price }}</td>
                 <td>{{ item.status }}</td>
-                <td class="value">{{ item.current_pl|floatformat:2 }}</td>
+                <td class="value">{{ item.pl_price|floatformat:2 }}</td>
             </tr>
         {% endfor %}
+            <tr>
+                <td colspan="7"></td>
+                <td colspan="2">Total</td>
+                <td class="value">{{ progress_data_realized|floatformat:2 }}</td>
+            </tr>
         </table>
         {% endif %}
 

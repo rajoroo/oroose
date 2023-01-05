@@ -38,13 +38,13 @@
                 <td class="value">{{ item.sell_price }}</td>
                 <td>{{ item.status }}</td>
                 <td>{{ item.pl_status }}</td>
-                <td class="value">{{ item.profit_loss|floatformat:2 }}</td>
+                <td class="value">{{ item.pl_price|floatformat:2 }}</td>
             </tr>
         {% endfor %}
             <tr>
                 <td colspan="9"></td>
                 <td colspan="2">Total</td>
-                <td class="value">{{ realized_amount|floatformat:2 }}</td>
+                <td class="value">{{ purchased_data_realized|floatformat:2 }}</td>
             </tr>
         </table>
         {% endif %}
