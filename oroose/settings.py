@@ -133,6 +133,7 @@ USE_L10N = True
 
 USE_TZ = False
 
+
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
@@ -141,19 +142,22 @@ LOGGING = {
             "format": "[{asctime}] {levelname} {module} {message}",
             "style": "{",
         },
+        "json": {
+            "()": "core.jsonlogger.CeleryLogger",
+        }
     },
     "handlers": {
         "file": {
             "level": "DEBUG",
             "class": "logging.FileHandler",
             "filename": os.environ.get("LOG_FILE_WEB"),
-            "formatter": "simple",
+            "formatter": "json",
         },
         "celery": {
             "level": "INFO",
             "class": "logging.handlers.RotatingFileHandler",
             "filename": os.environ.get("LOG_FILE_SCHEDULER"),
-            "formatter": "simple",
+            "formatter": "json",
         },
     },
     "loggers": {
