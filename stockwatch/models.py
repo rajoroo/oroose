@@ -48,7 +48,11 @@ class FiveHundred(models.Model):
         exact_time = time(hour=9, minute=10)
         from_date = datetime.combine(today, exact_time)
 
-        if self.fhzerodowntrend_set.filter(pl_status=PlStatus.WINNER).exists():
+        if (
+                self.fhzerodowntrend_set.filter(pl_status=PlStatus.WINNER).exists()
+                or self.rank > 9
+                or self.rank < 2
+        ):
             return signal_status
 
         current_list = get_history_five_min(token=self.token, open_price=self.open_price, from_date=from_date, to_date=time_obj)
@@ -57,9 +61,9 @@ class FiveHundred(models.Model):
             df = pd.DataFrame({'close': current_list})
             pre_result, result = self.calculate_rsi(df=df)
 
-            if result < 69 < pre_result:
+            if result < 72 < pre_result:
                 signal_status = SignalStatus.SELL
-            elif result > 69 > pre_result:
+            elif result > 72 > pre_result:
                 signal_status = SignalStatus.BUY
             print(pre_result, result, signal_status, self.symbol)
         return signal_status

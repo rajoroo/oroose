@@ -33,7 +33,7 @@ def fhz_downtrend_to_sell_condition(fhz_obj):
     if (
         ps.status
         and (fhz_obj.signal_status == SignalStatus.SELL)
-        and (fhz_obj.rank <= 9)
+        and (2 <= fhz_obj.rank <= 9)
         and (FH_MIN_PRICE <= fhz_obj.last_price <= FH_MAX_PRICE)
         and (fhz_obj.percentage_change <= FH_MAX_PERCENT)
         and (fhz_obj.fhzerodowntrend_set.all().count() <= FH_MAX_BUY_ORDER)
@@ -45,10 +45,10 @@ def fhz_downtrend_to_sell_condition(fhz_obj):
     ):
         result = True
 
-    if result and fhz_obj.fhzerodowntrend_set.all():
-        latest_fhz = fhz_obj.fhzerodowntrend_set.latest("updated_date")
-        if latest_fhz.updated_date > before_20_min:
-            result = False
+    # if result and fhz_obj.fhzerodowntrend_set.all():
+    #     latest_fhz = fhz_obj.fhzerodowntrend_set.latest("updated_date")
+    #     if latest_fhz.updated_date > before_20_min:
+    #         result = False
 
     return result
 
