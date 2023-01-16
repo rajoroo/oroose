@@ -69,14 +69,13 @@ class FiveHundred(models.Model):
 
     def get_signal_status(self, time_obj):
         signal_status = SignalStatus.INPROG
-        today = datetime.today() - timedelta(days=4)
+        today = datetime.today() - timedelta(days=7)
         exact_time = time(hour=9, minute=10)
         from_date = datetime.combine(today, exact_time)
 
         if (
-                self.fhzerodowntrend_set.filter(pl_status=PlStatus.WINNER).exists()
-                or self.rank > 9
-
+            self.fhzerodowntrend_set.filter(pl_status=PlStatus.WINNER).exists()
+            or self.rank > 9
         ):
             return signal_status
 
@@ -126,7 +125,5 @@ class FiveHundred(models.Model):
         # calculate rs and rsi
         df['rs'] = df['avg_gain'] / df['avg_loss']
         df['rsi'] = 100 - (100 / (1 + df['rs']))
-
-        print(list(df["rsi"]))
 
         return df['rsi'].iloc[-3], df['rsi'].iloc[-2], df['rsi'].iloc[-1]
