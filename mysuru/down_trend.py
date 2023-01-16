@@ -33,7 +33,9 @@ def fhz_downtrend_to_sell_condition(fhz_obj):
     if (
         ps.status
         and fhz_obj.is_valid is True
-        and (fhz_obj.signal_status == SignalStatus.SELL)
+        and (fhz_obj.pp1 < 70 < fhz_obj.pp2)
+        and (fhz_obj.pp < 70 < fhz_obj.pp2)
+        # and (fhz_obj.signal_status == SignalStatus.SELL)
         and (fhz_obj.rank <= 9)
         and (FH_MIN_PRICE <= fhz_obj.last_price <= FH_MAX_PRICE)
         and (fhz_obj.percentage_change <= FH_MAX_PERCENT)
@@ -60,8 +62,21 @@ def fhz_downtrend_to_buy_condition(fhz_obj):
 
     if (
         ps.status
-        and (fhz_obj.signal_status == SignalStatus.BUY)
+        and (fhz_obj.pp1 > 70 > fhz_obj.pp2)
+        and (fhz_obj.pp > 70 > fhz_obj.pp2)
+        # and (fhz_obj.signal_status == SignalStatus.BUY)
         and fhz_obj.fhzerodowntrend_set.filter(status=FhZeroStatus.SOLD).exists()
+    ):
+        result = True
+
+    sold_obj = fhz_obj.fhzerodowntrend_set.filter(status=FhZeroStatus.SOLD, error=False)
+    sold_fhz = sold_obj.first()
+    price = sold_fhz.sell_price
+    lower_circuit = price + (price * 0.003)
+
+    if (
+        sold_fhz is not None
+        and sold_fhz.current_price >= lower_circuit
     ):
         result = True
 
@@ -91,7 +106,7 @@ def trigger_fhz_downtrend():
 
         #  Buy condition check
         if fhz_downtrend_to_buy_condition(fhz_obj=rec):
-            sold_obj = rec.fhzerodowntrend_set.filter(status=FhZeroStatus.SOLD)
+            sold_obj = rec.fhzerodowntrend_set.filter(status=FhZeroStatus.SOLD, error=False)
             fhz_obj = sold_obj.first()
             fhz_obj.status = FhZeroStatus.TO_BUY
             fhz_obj.save()

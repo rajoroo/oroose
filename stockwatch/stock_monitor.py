@@ -21,6 +21,7 @@ def update_five_hundred(data):
             obj.last_price = value["last_price"]
             obj.percentage_change = value["percentage_change"]
             obj.signal_status = obj.get_signal_status(time_obj=time_obj)
+            obj.is_valid_stock()
             obj.save()
         else:
             open_price, token = get_token(symbol=value["symbol"])

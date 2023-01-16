@@ -16,10 +16,12 @@
                 <th>Percentage</th>
                 <th>Signal</th>
                 <th>Status</th>
-                <th>Is Valid</th>
+                <th>PP2</th>
+                <th>PP1</th>
+                <th>PP0</th>
             </tr>
             {% for item in live_500 %}
-            <tr>
+            <tr class="{% if item.is_valid == False %} bg-danger {% else %} valid {% endif %}">
                 <td>{% if item.rank %}{{ item.rank }}{% endif %}</td>
                 <td>{{ item.created_date|date:'d-m-Y H:i:s' }}</td>
                 <td>{{ item.symbol }}</td>
@@ -32,7 +34,9 @@
                         {% if item.rank <= 5 %} Winner {% else %} Runner {% endif %}
                     </span>
                 </td>
-                <td>{{ item.is_valid }}</td>
+                <td>{% if item.pp2 %}{{ item.pp2|floatformat:2 }}{% endif %}</td>
+                <td>{% if item.pp1 %}{{ item.pp1|floatformat:2 }}{% endif %}</td>
+                <td>{% if item.pp %}{{ item.pp|floatformat:2 }}{% endif %}</td>
             </tr>
             {% endfor %}
         </table>
