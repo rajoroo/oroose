@@ -70,15 +70,14 @@ def fhz_downtrend_to_buy_condition(fhz_obj):
         result = True
 
     sold_obj = fhz_obj.fhzerodowntrend_set.filter(status=FhZeroStatus.SOLD, error=False)
-    sold_fhz = sold_obj.first()
-    price = sold_fhz.sell_price
-    lower_circuit = price + (price * 0.003)
 
-    if (
-        sold_fhz is not None
-        and sold_fhz.current_price >= lower_circuit
-    ):
-        result = True
+    if sold_obj:
+        sold_fhz = sold_obj.first()
+        price = sold_fhz.sell_price
+        lower_circuit = price + (price * 0.003)
+
+        if sold_fhz.current_price >= lower_circuit:
+            result = True
 
     return result
 
