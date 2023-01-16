@@ -169,15 +169,9 @@ def is_valid_stock(fhz_obj):
     return result
 
 
-def fhz_buy_stock(fhz_obj, check_valid=True):
+def fhz_buy_stock(fhz_obj):
     symbol = fhz_obj.symbol
     quantity = fhz_obj.quantity
-
-    if check_valid and (not is_valid_stock(fhz_obj)):
-        fhz_obj.error = True
-        fhz_obj.error_message = "Stock is not valid"
-        fhz_obj.save()
-        return None
 
     order = create_intraday_buy(symbol=symbol, quantity=quantity)
     order_id = order["order_id"]
@@ -203,15 +197,9 @@ def fhz_buy_stock(fhz_obj, check_valid=True):
     fhz_obj.save()
 
 
-def fhz_sell_stock(fhz_obj, check_valid=True):
+def fhz_sell_stock(fhz_obj):
     symbol = fhz_obj.symbol
     quantity = fhz_obj.quantity
-
-    if check_valid and (not is_valid_stock(fhz_obj)):
-        fhz_obj.error = True
-        fhz_obj.error_message = "Stock is not valid"
-        fhz_obj.save()
-        return None
 
     order = create_intraday_sell(symbol=symbol, quantity=quantity)
     order_id = order["order_id"]
