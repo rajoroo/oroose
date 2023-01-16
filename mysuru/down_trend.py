@@ -69,16 +69,6 @@ def fhz_downtrend_to_buy_condition(fhz_obj):
     ):
         result = True
 
-    sold_obj = fhz_obj.fhzerodowntrend_set.filter(status=FhZeroStatus.SOLD, error=False)
-
-    if sold_obj:
-        sold_fhz = sold_obj.first()
-        price = sold_fhz.sell_price
-        lower_circuit = price + (price * 0.003)
-
-        if sold_fhz.current_price >= lower_circuit:
-            result = True
-
     return result
 
 
@@ -133,6 +123,23 @@ def process_fhz_downtrend():
         elif rec.status == FhZeroStatus.TO_BUY:
             fhz_buy_stock(fhz_obj=rec)
             rec.pl_status = PlStatus.RUNNER
+            rec.save()
+
+
+def process_downtrend_five_min():
+    fhz = FhZeroDownTrend.objects.filter(
+        date=datetime.today(),
+        error=False,
+        status__in=[FhZeroStatus.TO_BUY, FhZeroStatus.TO_SELL, FhZeroStatus.SOLD],
+    )
+    if not fhz:
+        return None
+
+    for rec in fhz:
+        price = rec.sell_price
+        lower_circuit = price + (price * 0.003)
+        if rec.current_price >= lower_circuit:
+            rec.status = FhZeroStatus.TO_BUY
             rec.save()
 
 

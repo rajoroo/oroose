@@ -13,7 +13,7 @@ from core.constant import (
 )
 from core.models import DataLog, ParameterSettings
 from mysuru.constant import MYSURU_END, MYSURU_START
-from mysuru.down_trend import process_fhz_downtrend, trigger_fhz_downtrend
+from mysuru.down_trend import process_fhz_downtrend, trigger_fhz_downtrend, process_downtrend_five_min
 from oroose.celery import app
 from stockwatch.constant import FIVEHUNDRED_END, FIVEHUNDRED_START, LIVE_END, LIVE_START
 from stockwatch.stock_monitor import polling_live_stocks_five_hundred, polling_stocks
@@ -64,6 +64,7 @@ def schedule_live_stocks_five_hundred():
         polling_stocks()
         # trigger_fhz_uptrend()
         trigger_fhz_downtrend()
+        process_downtrend_five_min()
 
     print("*********************************************")
     logger.info("FH end")
