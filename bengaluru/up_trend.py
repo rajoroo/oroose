@@ -127,7 +127,7 @@ def process_fhz_uptrend():
             fhz_maintain_stock_uptrend(fhz_obj=rec)
 
         elif rec.status == FhZeroStatus.TO_SELL:
-            fhz_sell_stock(fhz_obj=rec, check_valid=False)
+            fhz_sell_stock(fhz_obj=rec)
             rec.pl_status = PlStatus.RUNNER
             rec.save()
 

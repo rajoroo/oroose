@@ -32,8 +32,9 @@ def fhz_downtrend_to_sell_condition(fhz_obj):
 
     if (
         ps.status
+        and fhz_obj.is_valid is True
         and (fhz_obj.signal_status == SignalStatus.SELL)
-        and (2 <= fhz_obj.rank <= 9)
+        and (fhz_obj.rank <= 9)
         and (FH_MIN_PRICE <= fhz_obj.last_price <= FH_MAX_PRICE)
         and (fhz_obj.percentage_change <= FH_MAX_PERCENT)
         and (fhz_obj.fhzerodowntrend_set.all().count() <= FH_MAX_BUY_ORDER)
@@ -116,7 +117,7 @@ def process_fhz_downtrend():
             fhz_maintain_stock_downtrend(fhz_obj=rec)
 
         elif rec.status == FhZeroStatus.TO_BUY:
-            fhz_buy_stock(fhz_obj=rec, check_valid=False)
+            fhz_buy_stock(fhz_obj=rec)
             rec.pl_status = PlStatus.RUNNER
             rec.save()
 

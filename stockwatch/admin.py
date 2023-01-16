@@ -14,7 +14,11 @@ class FiveHundredAdmin(admin.ModelAdmin):
         "isin",
         "open_price",
         "last_price",
-        "signal_status"
+        "signal_status",
+        "is_valid",
+        "pp2",
+        "pp1",
+        "pp",
     )
     date_hierarchy = "date"
 

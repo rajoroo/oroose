@@ -26,7 +26,7 @@ def update_five_hundred(data):
             open_price, token = get_token(symbol=value["symbol"])
             if not open_price or not token:
                 return True
-            FiveHundred.objects.create(
+            fh = FiveHundred.objects.create(
                 date=datetime.today(),
                 created_date=datetime.now(),
                 symbol=value["symbol"],
@@ -40,6 +40,7 @@ def update_five_hundred(data):
                 percentage_change=value["percentage_change"],
                 signal_status=SignalStatus.INPROG,
             )
+            fh.is_valid_stock()
 
     return True
 

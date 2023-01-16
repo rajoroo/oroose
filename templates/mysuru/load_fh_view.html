@@ -16,6 +16,7 @@
                 <th>Percentage</th>
                 <th>Signal</th>
                 <th>Status</th>
+                <th>Is Valid</th>
             </tr>
             {% for item in live_500 %}
             <tr>
@@ -31,6 +32,7 @@
                         {% if item.rank <= 5 %} Winner {% else %} Runner {% endif %}
                     </span>
                 </td>
+                <td>{{ item.is_valid }}</td>
             </tr>
             {% endfor %}
         </table>
