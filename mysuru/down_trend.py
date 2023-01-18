@@ -130,7 +130,7 @@ def process_downtrend_five_min():
     fhz = FhZeroDownTrend.objects.filter(
         date=datetime.today(),
         error=False,
-        status__in=[FhZeroStatus.TO_BUY, FhZeroStatus.TO_SELL, FhZeroStatus.SOLD],
+        status__in=[FhZeroStatus.SOLD],
     )
     if not fhz:
         return None
@@ -138,7 +138,7 @@ def process_downtrend_five_min():
     for rec in fhz:
         price = rec.sell_price
         lower_circuit = price + (price * 0.003)
-        if rec.current_price >= lower_circuit:
+        if (price > 0) and (rec.current_price >= lower_circuit):
             rec.status = FhZeroStatus.TO_BUY
             rec.save()
 
