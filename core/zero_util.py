@@ -236,7 +236,7 @@ def fhz_maintain_stock_uptrend(fhz_obj):
     """
     symbol = fhz_obj.symbol
     price = fhz_obj.buy_price
-    buy_price_2p = price + (price * 0.02)
+    buy_price_2p = price + (price * 0.015)
     lower_circuit = price - (price * 0.005)
 
     result = fetch_stock_ltp(symbol)

@@ -37,9 +37,12 @@ def fhz_uptrend_to_buy_condition(fhz_obj):
 
     if (
         ps.status
+        and fhz_obj.is_valid is True
+        and (fhz_obj.pp1 > 70 > fhz_obj.pp2)
+        and (fhz_obj.pp > 70 > fhz_obj.pp2)
         and (fhz_obj.rank <= 9)
         and (FH_MIN_PRICE <= fhz_obj.last_price <= FH_MAX_PRICE)
-        and (fhz_obj.signal_status == SignalStatus.BUY)
+        # and (fhz_obj.signal_status == SignalStatus.BUY)
         and (fhz_obj.percentage_change <= FH_MAX_PERCENT)
         and (fhz_obj.fhzerouptrend_set.all().count() < FH_MAX_BUY_ORDER)
         and (not fhz_obj.fhzerouptrend_set.filter(status__in=fhz_status).exists())
@@ -48,10 +51,10 @@ def fhz_uptrend_to_buy_condition(fhz_obj):
         and (start_time <= datetime.now() <= end_time)
         and (datetime.today().weekday() < 5)
         # and (fhz_obj.previous_rank > fhz_obj.rank)
-        and ((fhz_obj.created_date <= before_20_min) or (fhz_obj.created_date <= start_10min))
     ):
         result = True
 
+    print(result, fhz_obj.symbol)
     if result and fhz_obj.fhzerouptrend_set.all():
         latest_fhz = fhz_obj.fhzerouptrend_set.latest("updated_date")
         if latest_fhz.updated_date > before_40_min:
@@ -63,12 +66,12 @@ def fhz_uptrend_to_buy_condition(fhz_obj):
 def fhz_uptrend_to_sell_condition(fhz_obj):
     result = False
     ps = ParameterSettings.objects.get(name=SETTINGS_FHZ_UPTREND)
-    pre_signal_status = fhz_obj.get_signal_status(fhz_obj.created_date, fhz_obj.previous_price)
-    signal_status = fhz_obj.get_signal_status(fhz_obj.time, fhz_obj.last_price)
     if (
         ps.status
+        and (fhz_obj.pp1 < 70 < fhz_obj.pp2)
+        and (fhz_obj.pp < 70 < fhz_obj.pp2)
         # and fhz_obj.rank > FH_RANK_TILL + FH_GRACE_RANK
-        and (pre_signal_status == signal_status == SignalStatus.SELL)
+        # and (pre_signal_status == signal_status == SignalStatus.SELL)
         and fhz_obj.fhzerouptrend_set.filter(status=FhZeroStatus.PURCHASED).exists()
     ):
         result = True
@@ -94,8 +97,6 @@ def trigger_fhz_uptrend():
                 last_price=rec.last_price,
                 pl_status=PlStatus.INPROG,
                 rank=rec.rank,
-                previous_rank=rec.previous_rank,
-                previous_price=rec.previous_price,
             )
             five_hundred_zero.save()
 

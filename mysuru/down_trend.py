@@ -48,10 +48,10 @@ def fhz_downtrend_to_sell_condition(fhz_obj):
     ):
         result = True
 
-    # if result and fhz_obj.fhzerodowntrend_set.all():
-    #     latest_fhz = fhz_obj.fhzerodowntrend_set.latest("updated_date")
-    #     if latest_fhz.updated_date > before_20_min:
-    #         result = False
+    if result and fhz_obj.fhzerodowntrend_set.all():
+        latest_fhz = fhz_obj.fhzerodowntrend_set.latest("updated_date")
+        if latest_fhz.updated_date > before_20_min:
+            result = False
 
     return result
 

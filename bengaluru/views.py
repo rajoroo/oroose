@@ -44,18 +44,16 @@ def load_bengaluru_content(request):
             date=datetime.today(),
             status__in=[FhZeroStatus.TO_BUY, FhZeroStatus.PURCHASED, FhZeroStatus.TO_SELL],
             error=False,
-        ).annotate(current_pl=F("quantity") * (F("current_price") - F("buy_price")))
+        )
     ).order_by("-updated_date")
 
     errors = FhZeroUpTrend.objects.filter(
         date=datetime.today(),
         status__in=[FhZeroStatus.TO_BUY, FhZeroStatus.PURCHASED, FhZeroStatus.TO_SELL],
         error=True,
-    ).annotate(profit_loss=F("quantity") * (F("sell_price") - F("buy_price")))
-
-    sold_data = FhZeroUpTrend.objects.filter(date=datetime.today(), status=FhZeroStatus.SOLD).annotate(
-        profit_loss=F("quantity") * (F("sell_price") - F("buy_price"))
     )
+
+    sold_data = FhZeroUpTrend.objects.filter(date=datetime.today(), status=FhZeroStatus.SOLD)
 
     context = {
         "live_500": list(live_500.values()),
@@ -63,8 +61,9 @@ def load_bengaluru_content(request):
         "live_polling_status": ps.status,
         "progress": list(progress.values()),
         "errors": list(errors.values()),
-        "purchased_data": list(sold_data.values()),
-        "realized_amount": sold_data.aggregate(Sum("profit_loss"))["profit_loss__sum"],
+        "progress_data_realized": progress.aggregate(Sum("pl_price"))["pl_price__sum"],
+        "sold_data": list(sold_data.values()),
+        "sold_data_realized": sold_data.aggregate(Sum("pl_price"))["pl_price__sum"],
     }
 
     return render(request, "bengaluru/bengaluru_content.html", context=context)

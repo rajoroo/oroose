@@ -8,31 +8,24 @@
         {% if live_500 %}
         <table class="green-table">
             <tr>
-                <th>HR</th>
-                <th>LR</th>
-                <th>PR</th>
                 <th>Rank</th>
                 <th>Time</th>
                 <th>Symbol</th>
                 <th>Company</th>
-                <th>PP20</th>
-                <th>PP</th>
                 <th>Last Price</th>
                 <th>Percentage</th>
-                <th>SS</th>
+                <th>Signal</th>
                 <th>Status</th>
+                <th>PP2</th>
+                <th>PP1</th>
+                <th>PP0</th>
             </tr>
             {% for item in live_500 %}
-            <tr>
-                <td>{% if item.highest_rank %}{{ item.highest_rank }}{% endif %}</td>
-                <td>{% if item.lowest_rank %}{{ item.lowest_rank }}{% endif %}</td>
-                <td>{% if item.previous_rank %}{{ item.previous_rank }}{% endif %}</td>
+            <tr class="{% if item.is_valid == False %} bg-danger {% else %} valid {% endif %}">
                 <td>{% if item.rank %}{{ item.rank }}{% endif %}</td>
-                <td>{{ item.time|date:'d-m-Y H:i:s' }}</td>
+                <td>{{ item.created_date|date:'d-m-Y H:i:s' }}</td>
                 <td>{{ item.symbol }}</td>
                 <td>{{ item.company_name }}</td>
-                <td class="value">{{ item.previous_price_20min }}</td>
-                <td class="value">{{ item.previous_price }}</td>
                 <td class="value">{{ item.last_price }}</td>
                 <td class="value">{{ item.percentage_change }}</td>
                 <td>{{ item.signal_status }}</td>
@@ -41,6 +34,9 @@
                         {% if item.rank <= 5 %} Winner {% else %} Runner {% endif %}
                     </span>
                 </td>
+                <td>{% if item.pp2 %}{{ item.pp2|floatformat:2 }}{% endif %}</td>
+                <td>{% if item.pp1 %}{{ item.pp1|floatformat:2 }}{% endif %}</td>
+                <td>{% if item.pp %}{{ item.pp|floatformat:2 }}{% endif %}</td>
             </tr>
             {% endfor %}
         </table>

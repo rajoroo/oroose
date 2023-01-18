@@ -30,7 +30,7 @@
                 <td class="value">{{ item.buy_price }}</td>
                 <td class="value">{{ item.current_price }}</td>
                 <td>{{ item.status }}</td>
-                <td class="value">{{ item.current_pl|floatformat:2 }}</td>
+                <td class="value">{{ item.pl_price|floatformat:2 }}</td>
             </tr>
         {% endfor %}
         </table>

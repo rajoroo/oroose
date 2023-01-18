@@ -19,7 +19,6 @@
                 <th>Status</th>
                 <th>Error</th>
                 <th>Error msg</th>
-
             </tr>
             {% for item in errors %}
             <tr onClick="parent.open('{% url 'fhz_uptrend_record' item.id %}')">
