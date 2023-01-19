@@ -50,11 +50,9 @@ def fhz_uptrend_to_buy_condition(fhz_obj):
         and (not fhz_obj.fhzerouptrend_set.filter(error=True).exists())
         and (start_time <= datetime.now() <= end_time)
         and (datetime.today().weekday() < 5)
-        # and (fhz_obj.previous_rank > fhz_obj.rank)
     ):
         result = True
 
-    print(result, fhz_obj.symbol)
     if result and fhz_obj.fhzerouptrend_set.all():
         latest_fhz = fhz_obj.fhzerouptrend_set.latest("updated_date")
         if latest_fhz.updated_date > before_40_min:
@@ -70,7 +68,6 @@ def fhz_uptrend_to_sell_condition(fhz_obj):
         ps.status
         and (fhz_obj.pp1 < 70 < fhz_obj.pp2)
         and (fhz_obj.pp < 70 < fhz_obj.pp2)
-        # and fhz_obj.rank > FH_RANK_TILL + FH_GRACE_RANK
         # and (pre_signal_status == signal_status == SignalStatus.SELL)
         and fhz_obj.fhzerouptrend_set.filter(status=FhZeroStatus.PURCHASED).exists()
     ):
@@ -87,7 +84,7 @@ def trigger_fhz_uptrend():
         if fhz_uptrend_to_buy_condition(fhz_obj=rec):
             five_hundred_zero = FhZeroUpTrend(
                 date=datetime.now(),
-                time=datetime.now(),
+                created_date=datetime.now(),
                 symbol=rec.symbol,
                 isin=rec.isin,
                 five_hundred=rec,

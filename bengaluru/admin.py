@@ -9,7 +9,7 @@ class FhZeroUpTrendAdmin(admin.ModelAdmin):
         "rank",
         "date",
         "updated_date",
-        "time",
+        "created_date",
         "isin",
         "last_price",
         "pl_price",

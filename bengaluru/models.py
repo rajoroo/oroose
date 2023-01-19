@@ -8,7 +8,7 @@ from stockwatch.models import FiveHundred
 
 class FhZeroUpTrend(models.Model):
     date = models.DateField(verbose_name="Date")
-    time = models.DateTimeField(verbose_name="Time")
+    created_date = models.DateTimeField(verbose_name="Created Date")
     updated_date = models.DateTimeField(verbose_name="Updated Date", auto_now_add=True)
     five_hundred = models.ForeignKey(
         FiveHundred,
