@@ -3,7 +3,7 @@ from datetime import datetime, timedelta, time
 import numpy as np
 from django.db import models
 import pandas as pd
-from core.zero_util import get_history_five_min, get_kite
+from core.zero_util import get_history_five_min, get_kite, get_history_day
 from core.choice import PlStatus
 
 
@@ -127,3 +127,20 @@ class FiveHundred(models.Model):
         df['rsi'] = 100 - (100 / (1 + df['rs']))
 
         return df['rsi'].iloc[-3], df['rsi'].iloc[-2], df['rsi'].iloc[-1]
+
+    def calculate_macd(self, time_obj):
+        from_date = datetime.today() - timedelta(days=60)
+        current_list = get_history_day(
+            token=self.token,
+            open_price=self.open_price,
+            from_date=from_date,
+            to_date=time_obj
+        )
+        df = pd.DataFrame({'close': current_list})
+        df['MA FAST'] = df['close'].ewm(span=12, min_periods=12).mean()
+        df['MA SLOW'] = df['close'].ewm(span=26, min_periods=26).mean()
+        df['MACD'] = df['MA FAST'] - df['MA SLOW']
+        df['Signal'] = df['MACD'].ewm(span=9, min_periods=9).mean()
+        df.dropna(inplace=True)
+        print(df, "---macd")
+        return df

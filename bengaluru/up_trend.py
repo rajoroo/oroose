@@ -38,6 +38,8 @@ def fhz_uptrend_to_buy_condition(fhz_obj):
     if (
         ps.status
         and fhz_obj.is_valid is True
+        and fhz_obj.pp
+        and fhz_obj.pp1
         and (fhz_obj.pp1 > 70 > fhz_obj.pp2)
         and (fhz_obj.pp > 70 > fhz_obj.pp2)
         and (fhz_obj.rank <= 9)
@@ -66,7 +68,10 @@ def fhz_uptrend_to_sell_condition(fhz_obj):
     ps = ParameterSettings.objects.get(name=SETTINGS_FHZ_UPTREND)
     if (
         ps.status
-        and (fhz_obj.pp1 < 70 < fhz_obj.pp2)
+            and fhz_obj.pp
+            and fhz_obj.pp1
+            and fhz_obj.pp2
+            and (fhz_obj.pp1 < 70 < fhz_obj.pp2)
         and (fhz_obj.pp < 70 < fhz_obj.pp2)
         # and (pre_signal_status == signal_status == SignalStatus.SELL)
         and fhz_obj.fhzerouptrend_set.filter(status=FhZeroStatus.PURCHASED).exists()

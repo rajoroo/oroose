@@ -43,6 +43,7 @@ def update_five_hundred(data):
             )
             fh.is_valid_stock()
             fh.get_signal_status(time_obj=time_obj)
+            fh.calculate_macd(time_obj=time_obj)
 
     return True
 
@@ -98,6 +99,6 @@ def polling_stocks():
     if (not obj) and (not hasattr(obj, "stock_data")):
         return False
 
-    stocks = {key: value for key, value in obj.stock_data.items() if (value["rank"] <= 5) or (key in symbols)}
+    stocks = {key: value for key, value in obj.stock_data.items() if (value["rank"] <= 10) or (key in symbols)}
     update_five_hundred(data=stocks)
     return True

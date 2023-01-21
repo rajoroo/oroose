@@ -52,6 +52,26 @@ def get_history_five_min(token, open_price, from_date, to_date):
     return result
 
 
+def get_history_day(token, open_price, from_date, to_date):
+    kite = get_kite()
+    result = None
+    try:
+        history_response = kite.historical_data(
+            instrument_token=token,
+            interval="day",
+            from_date=from_date,
+            to_date=to_date
+        )
+
+        df = pd.DataFrame(history_response)
+        result = list(df["close"])
+        result.insert(0, open_price)
+    except:
+        logger.info(f"History day {token} is not working")
+
+    return result
+
+
 def create_intraday_buy(symbol, quantity):
     kite = get_kite()
     order_id = None
@@ -236,7 +256,7 @@ def fhz_maintain_stock_uptrend(fhz_obj):
     """
     symbol = fhz_obj.symbol
     price = fhz_obj.buy_price
-    buy_price_2p = price + (price * 0.015)
+    buy_price_2p = price + (price * 0.03)
     lower_circuit = price - (price * 0.005)
 
     result = fetch_stock_ltp(symbol)
