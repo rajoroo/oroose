@@ -129,18 +129,51 @@ class FiveHundred(models.Model):
         return df['rsi'].iloc[-3], df['rsi'].iloc[-2], df['rsi'].iloc[-1]
 
     def calculate_macd(self, time_obj):
-        from_date = datetime.today() - timedelta(days=60)
-        current_list = get_history_day(
+        # from_date = datetime.today() - timedelta(days=60)
+        from_date = datetime(2022, 1, 20)
+        time_obj = datetime(2023, 1, 21)
+        df = get_history_day(
             token=self.token,
             open_price=self.open_price,
             from_date=from_date,
             to_date=time_obj
         )
-        df = pd.DataFrame({'close': current_list})
-        df['MA FAST'] = df['close'].ewm(span=12, min_periods=12).mean()
-        df['MA SLOW'] = df['close'].ewm(span=26, min_periods=26).mean()
-        df['MACD'] = df['MA FAST'] - df['MA SLOW']
-        df['Signal'] = df['MACD'].ewm(span=9, min_periods=9).mean()
-        df.dropna(inplace=True)
-        print(df, "---macd")
+        k = df['close'].ewm(span=12, adjust=False, min_periods=12).mean()
+        d = df['close'].ewm(span=26, adjust=False, min_periods=26).mean()
+        macd = k - d
+        macd_s = macd.ewm(span=9, adjust=False, min_periods=9).mean()
+        macd_h = macd - macd_s
+        df['macd'] = df.index.map(macd)
+        df['macd_h'] = df.index.map(macd_h)
+        df['macd_s'] = df.index.map(macd_s)
+        signal = self.generate_signals(df)
+        df['buy_sig'] = signal[0]
+        df['sell_sig'] = signal[1]
+        print(df)
         return df
+
+    def generate_signals(self, df):
+        buy_list = []
+        sell_list = []
+        flag = -1
+
+        for i in range(0, len(df)):
+            if df['macd'][i] > df['macd_s'][i]:  # first occurence of MACD crossing above signal oine
+                sell_list.append(np.nan)  # so first flip above means buy
+                if flag != 1:  # after first occurence I record flip to ignore
+                    buy_list.append(df['close'][i])  # from here onwards
+                    flag = 1
+                else:
+                    buy_list.append(np.nan)
+            elif df['macd'][i] < df['macd_s'][i]:
+                buy_list.append(np.nan)
+                if flag != 0:
+                    sell_list.append(df['close'][i])
+                    flag = 0
+                else:
+                    sell_list.append(np.nan)
+            else:
+                buy_list.append(np.nan)
+                sell_list.append(np.nan)
+
+        return (buy_list, sell_list)

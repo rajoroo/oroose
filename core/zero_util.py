@@ -64,8 +64,7 @@ def get_history_day(token, open_price, from_date, to_date):
         )
 
         df = pd.DataFrame(history_response)
-        result = list(df["close"])
-        result.insert(0, open_price)
+        result = df
     except:
         logger.info(f"History day {token} is not working")
 
