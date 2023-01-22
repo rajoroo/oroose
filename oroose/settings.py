@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     "home",
     "bengaluru",
     "mysuru",
+    "udipi",
     "stockwatch",
 ]
 

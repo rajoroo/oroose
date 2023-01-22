@@ -52,7 +52,7 @@ def get_history_five_min(token, open_price, from_date, to_date):
     return result
 
 
-def get_history_day(token, open_price, from_date, to_date):
+def get_history_day(token, from_date, to_date):
     kite = get_kite()
     result = None
     try:
@@ -67,6 +67,21 @@ def get_history_day(token, open_price, from_date, to_date):
         result = df
     except:
         logger.info(f"History day {token} is not working")
+
+    return result
+
+
+def get_instrument_nse():
+    kite = get_kite()
+    result = None
+    try:
+        instrument_response = kite.instruments(
+            exchange="NSE"
+        )
+        df = pd.DataFrame(instrument_response)
+        result = df
+    except:
+        logger.info("Instruments fetch is not working")
 
     return result
 

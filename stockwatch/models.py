@@ -134,7 +134,6 @@ class FiveHundred(models.Model):
         time_obj = datetime(2023, 1, 21)
         df = get_history_day(
             token=self.token,
-            open_price=self.open_price,
             from_date=from_date,
             to_date=time_obj
         )
