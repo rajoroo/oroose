@@ -1,6 +1,7 @@
 import logging
 import pandas as pd
 from datetime import datetime
+import time
 
 from django.conf import settings
 from stockwatch.stocks import LiveStocks
@@ -61,9 +62,15 @@ def generate_stock_master():
 
 
 def generate_stock_macd():
-    stocks = StockMaster.objects.all()[:10]
+    stocks = StockMaster.objects.filter(is_processed=False, is_error=False)[:100]
     for stock in stocks:
+        time.sleep(1)
         df = stock.calculate_macd()
+
+        if df is None:
+            stock.is_error = True
+            stock.save()
+            continue
 
         stock_macd = [
             StockMacd(
@@ -83,3 +90,11 @@ def generate_stock_macd():
             for i, row in df.iterrows()]
         StockMacd.objects.filter(stock=stock).delete()
         StockMacd.objects.bulk_create(stock_macd)
+
+        stock.is_processed = True
+        stock.save()
+
+
+def reset_processed():
+    stocks = StockMaster.objects.all()
+    stocks.update(is_processed=False)

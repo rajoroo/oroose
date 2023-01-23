@@ -12,6 +12,8 @@ class StockMaster(models.Model):
     identifier = models.CharField(max_length=200, verbose_name="Identifier")
     company_name = models.CharField(max_length=500, verbose_name="Company Name")
     isin = models.CharField(max_length=100, verbose_name="Isin")
+    is_processed = models.BooleanField(verbose_name="Is Processed", default=False)
+    is_error = models.BooleanField(verbose_name="Is Error", default=False)
 
     objects = models.Manager()
 
@@ -22,14 +24,16 @@ class StockMaster(models.Model):
         return self.symbol
 
     def calculate_macd(self):
-        # from_date = datetime.today() - timedelta(days=60)
-        from_date = datetime.now()
-        to_date = datetime(from_date.year - 1, from_date.month, from_date.day - 1)
+        to_date = datetime.now()
+        from_date = datetime(to_date.year - 1, to_date.month, to_date.day - 1)
         df = get_history_day(
             token=self.token,
             from_date=from_date,
             to_date=to_date
         )
+
+        if df is None:
+            return None
 
         k = df['close'].ewm(span=12, adjust=False, min_periods=12).mean()
         d = df['close'].ewm(span=26, adjust=False, min_periods=26).mean()

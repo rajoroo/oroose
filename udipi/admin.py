@@ -12,6 +12,8 @@ class StockMasterAdmin(admin.ModelAdmin):
         "identifier",
         "company_name",
         "isin",
+        "is_processed",
+        "is_error",
     )
 
 
