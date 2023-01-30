@@ -12,6 +12,8 @@ class FhZeroDownTrendAdmin(admin.ModelAdmin):
         "created_date",
         "isin",
         "last_price",
+        "high_price",
+        "trigger_price",
         "pl_price",
         "error",
         "pl_status"

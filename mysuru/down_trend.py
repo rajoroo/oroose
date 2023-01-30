@@ -93,6 +93,8 @@ def trigger_fhz_downtrend():
                 quantity=int(FH_MAX_TOTAL_PRICE / rec.last_price),
                 # quantity=1,
                 last_price=rec.last_price,
+                high_price=rec.last_price,
+                trigger_price=rec.last_price,
                 pl_status=PlStatus.INPROG,
                 rank=rec.rank,
             )

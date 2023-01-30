@@ -16,6 +16,8 @@
                 <th>Sell ID</th>
                 <th>Sell Price</th>
                 <th>Current Price</th>
+                <th>High</th>
+                <th>Trigger</th>
                 <th>Status</th>
                 <th>Current PL</th>
             </tr>
@@ -29,6 +31,8 @@
                 <td>{{ item.sell_id|default_if_none:"" }}</td>
                 <td class="value">{{ item.sell_price }}</td>
                 <td class="value">{{ item.current_price }}</td>
+                <td class="value">{{ item.high_price }}</td>
+                <td class="value">{{ item.trigger_price }}</td>
                 <td>{{ item.status }}</td>
                 <td class="value">{{ item.pl_price|floatformat:2 }}</td>
             </tr>
