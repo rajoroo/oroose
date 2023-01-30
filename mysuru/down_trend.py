@@ -33,8 +33,11 @@ def fhz_downtrend_to_sell_condition(fhz_obj):
     if (
         ps.status
         and fhz_obj.is_valid is True
-        and (fhz_obj.pp1 < 70 < fhz_obj.pp2)
-        and (fhz_obj.pp < 70 < fhz_obj.pp2)
+        and fhz_obj.pp
+        and fhz_obj.pp1
+        and fhz_obj.pp2
+        and (fhz_obj.pp1 < 65 < fhz_obj.pp2)
+        and (fhz_obj.pp < fhz_obj.pp1 < 65 < fhz_obj.pp2)
         # and (fhz_obj.signal_status == SignalStatus.SELL)
         and (fhz_obj.rank <= 9)
         and (FH_MIN_PRICE <= fhz_obj.last_price <= FH_MAX_PRICE)
@@ -62,8 +65,10 @@ def fhz_downtrend_to_buy_condition(fhz_obj):
 
     if (
         ps.status
-        and (fhz_obj.pp1 > 70 > fhz_obj.pp2)
-        and (fhz_obj.pp > 70 > fhz_obj.pp2)
+        and fhz_obj.pp
+        and fhz_obj.pp1
+        and fhz_obj.pp2
+        and ((fhz_obj.pp1 > 65) or (fhz_obj.pp > 65))
         # and (fhz_obj.signal_status == SignalStatus.BUY)
         and fhz_obj.fhzerodowntrend_set.filter(status=FhZeroStatus.SOLD).exists()
     ):

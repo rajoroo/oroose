@@ -40,7 +40,8 @@ def fhz_uptrend_to_buy_condition(fhz_obj):
         and fhz_obj.is_valid is True
         and fhz_obj.pp
         and fhz_obj.pp1
-        and (fhz_obj.pp > fhz_obj.pp1 > 60 > fhz_obj.pp2)
+        and fhz_obj.pp2
+        and (fhz_obj.pp > fhz_obj.pp1 > 65 > fhz_obj.pp2)
         # and (fhz_obj.pp > 60 > fhz_obj.pp2)
         and (fhz_obj.rank <= 9)
         and (FH_MIN_PRICE <= fhz_obj.last_price <= FH_MAX_PRICE)
@@ -71,7 +72,7 @@ def fhz_uptrend_to_sell_condition(fhz_obj):
         and fhz_obj.pp
         and fhz_obj.pp1
         and fhz_obj.pp2
-        and ((fhz_obj.pp1 < 60) or (fhz_obj.pp < 60))
+        and ((fhz_obj.pp1 < 65) or (fhz_obj.pp < 65))
         # and (pre_signal_status == signal_status == SignalStatus.SELL)
         and fhz_obj.fhzerouptrend_set.filter(status=FhZeroStatus.PURCHASED).exists()
     ):
