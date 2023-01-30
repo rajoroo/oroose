@@ -32,6 +32,8 @@ class FhZeroUpTrend(models.Model):
     buy_price = models.FloatField(verbose_name="Buy Price", default=0.0)
     sell_price = models.FloatField(verbose_name="Sell Price", default=0.0)
     current_price = models.FloatField(verbose_name="Current Price", default=0.0)
+    high_price = models.FloatField(verbose_name="Current Price", default=0.0)
+    trigger_price = models.FloatField(verbose_name="Current Price", default=0.0)
     pl_price = models.FloatField(verbose_name="PL Price", default=0.0)
     error = models.BooleanField(default=False, verbose_name="Error")
     error_message = models.TextField(verbose_name="Error Message", null=True, blank=True)

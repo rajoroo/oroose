@@ -40,8 +40,8 @@ def fhz_uptrend_to_buy_condition(fhz_obj):
         and fhz_obj.is_valid is True
         and fhz_obj.pp
         and fhz_obj.pp1
-        and (fhz_obj.pp1 > 70 > fhz_obj.pp2)
-        and (fhz_obj.pp > 70 > fhz_obj.pp2)
+        and (fhz_obj.pp > fhz_obj.pp1 > 60 > fhz_obj.pp2)
+        # and (fhz_obj.pp > 60 > fhz_obj.pp2)
         and (fhz_obj.rank <= 9)
         and (FH_MIN_PRICE <= fhz_obj.last_price <= FH_MAX_PRICE)
         # and (fhz_obj.signal_status == SignalStatus.BUY)
@@ -68,11 +68,10 @@ def fhz_uptrend_to_sell_condition(fhz_obj):
     ps = ParameterSettings.objects.get(name=SETTINGS_FHZ_UPTREND)
     if (
         ps.status
-            and fhz_obj.pp
-            and fhz_obj.pp1
-            and fhz_obj.pp2
-            and (fhz_obj.pp1 < 70 < fhz_obj.pp2)
-        and (fhz_obj.pp < 70 < fhz_obj.pp2)
+        and fhz_obj.pp
+        and fhz_obj.pp1
+        and fhz_obj.pp2
+        and ((fhz_obj.pp1 < 60) or (fhz_obj.pp < 60))
         # and (pre_signal_status == signal_status == SignalStatus.SELL)
         and fhz_obj.fhzerouptrend_set.filter(status=FhZeroStatus.PURCHASED).exists()
     ):
@@ -97,6 +96,8 @@ def trigger_fhz_uptrend():
                 quantity=int(FH_MAX_TOTAL_PRICE / rec.last_price),
                 # quantity=1,
                 last_price=rec.last_price,
+                high_price=rec.last_price,
+                trigger_price=rec.last_price,
                 pl_status=PlStatus.INPROG,
                 rank=rec.rank,
             )

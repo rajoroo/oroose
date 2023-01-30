@@ -4,7 +4,6 @@ import numpy as np
 from django.db import models
 import pandas as pd
 from core.zero_util import get_history_five_min, get_kite, get_history_day
-from core.choice import PlStatus
 
 
 from stockwatch.choice import SignalStatus
@@ -69,15 +68,9 @@ class FiveHundred(models.Model):
 
     def get_signal_status(self, time_obj):
         signal_status = SignalStatus.INPROG
-        today = datetime.today() - timedelta(days=7)
+        today = datetime.today() - timedelta(days=31)
         exact_time = time(hour=9, minute=10)
         from_date = datetime.combine(today, exact_time)
-
-        if (
-            self.fhzerodowntrend_set.filter(pl_status=PlStatus.WINNER).exists()
-            or self.rank > 9
-        ):
-            return signal_status
 
         current_list = get_history_five_min(token=self.token, open_price=self.open_price, from_date=from_date, to_date=time_obj)
 
@@ -85,9 +78,9 @@ class FiveHundred(models.Model):
             df = pd.DataFrame({'close': current_list})
             result_2, result_1, result = self.calculate_rsi(df=df)
 
-            if (result_1 < 70 < result_2) and (result < 70 < result_2):
+            if (result_1 < 60 < result_2) and (result < 60 < result_2):
                 signal_status = SignalStatus.SELL
-            elif (result_1 > 70 > result_2) and (result > 70 > result_2):
+            elif (result_1 > 60 > result_2) and (result > 60 > result_2):
                 signal_status = SignalStatus.BUY
             print(result_2, result_1, result, signal_status, self.symbol)
             self.pp2 = result_2
