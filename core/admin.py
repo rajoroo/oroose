@@ -1,3 +1,12 @@
-# from django.contrib import admin
+from django.contrib import admin
+from core.models import ParameterConfig
 
-# Register your models here.
+
+@admin.register(ParameterConfig)
+class ParameterConfigAdmin(admin.ModelAdmin):
+    list_display = (
+        "name",
+        "nick_name",
+        "tag",
+        "content"
+    )

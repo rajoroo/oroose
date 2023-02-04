@@ -26,3 +26,22 @@ class ParameterSettings(models.Model):
                 fields=["name", "status"], name="%(app_label)s_%(class)s_unique_parameter_settings"
             )
         ]
+
+
+class ParameterConfig(models.Model):
+    name = models.CharField(max_length=200, verbose_name="Name")
+    nick_name = models.CharField(max_length=200, verbose_name="Nick Name")
+    tag = models.CharField(max_length=200, verbose_name="Tag")
+    description = models.TextField(blank=True, null=True, verbose_name="Description")
+    comment = models.TextField(blank=True, null=True, verbose_name="Comment")
+    content = models.CharField(max_length=200, verbose_name="Content")
+
+    objects = models.Manager()
+
+    class Meta:
+        ordering = ["name"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["nick_name"], name="%(app_label)s_%(class)s_unique_parameter_configs"
+            )
+        ]
