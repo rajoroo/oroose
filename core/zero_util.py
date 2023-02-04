@@ -221,6 +221,8 @@ def fhz_buy_stock(fhz_obj):
     fhz_obj.buy_id = result.get("order_id")
     fhz_obj.buy_price = result.get("average_price", 0.0)
     fhz_obj.current_price = result.get("average_price", 0.0)
+    fhz_obj.high_price = result.get("average_price", 0.0)
+    fhz_obj.trigger_price = result.get("average_price", 0.0)
     fhz_obj.error = result.get("error")
     fhz_obj.error_message = result.get("error_message")
 
@@ -248,6 +250,8 @@ def fhz_sell_stock(fhz_obj):
     # Orders
     fhz_obj.sell_id = result.get("order_id")
     fhz_obj.sell_price = result.get("average_price", 0.0)
+    fhz_obj.high_price = result.get("average_price", 0.0)
+    fhz_obj.trigger_price = result.get("average_price", 0.0)
     fhz_obj.error = result.get("error")
     fhz_obj.error_message = result.get("error_message")
 
@@ -272,6 +276,7 @@ def fhz_maintain_stock_uptrend(fhz_obj):
     price = fhz_obj.buy_price
     buy_price_2p = price + (price * 0.03)
     lower_circuit = price - (price * 0.003)
+    lower_bound = price + (price * 0.003)
 
     result = fetch_stock_ltp(symbol)
     message = (
@@ -290,7 +295,7 @@ def fhz_maintain_stock_uptrend(fhz_obj):
         fhz_sell_stock(fhz_obj)
         fhz_obj.pl_status = PlStatus.RUNNER
         logger.info(f"sell initiated for lower circuit {symbol}:{lower_circuit}")
-    elif result["last_trade_price"] < fhz_obj.trigger_price:
+    elif (result["last_trade_price"] < fhz_obj.trigger_price) and (lower_bound < result["last_trade_price"]):
         fhz_sell_stock(fhz_obj)
         fhz_obj.pl_status = PlStatus.RUNNER
         logger.info(f"Sell initiated for average price {symbol}:{lower_circuit}")
@@ -316,7 +321,8 @@ def fhz_maintain_stock_downtrend(fhz_obj):
     symbol = fhz_obj.symbol
     price = fhz_obj.sell_price
     sell_price_2p = price - (price * 0.015)
-    lower_circuit = price + (price * 0.005)
+    lower_circuit = price + (price * 0.003)
+    lower_bound = price - (price * 0.003)
     after_90_min = fhz_obj.created_date + timedelta(minutes=90)
 
     result = fetch_stock_ltp(symbol)
@@ -342,7 +348,7 @@ def fhz_maintain_stock_downtrend(fhz_obj):
         fhz_buy_stock(fhz_obj)
         fhz_obj.pl_status = PlStatus.RUNNER
         logger.info(f"Buy initiated for time limit exceeds {symbol}:{lower_circuit}")
-    elif result["last_trade_price"] > fhz_obj.trigger_price:
+    elif (result["last_trade_price"] > fhz_obj.trigger_price) and (lower_bound > result["last_trade_price"]):
         fhz_buy_stock(fhz_obj)
         fhz_obj.pl_status = PlStatus.RUNNER
         logger.info(f"Buy initiated for average price {symbol}:{lower_circuit}")
