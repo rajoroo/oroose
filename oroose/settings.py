@@ -207,3 +207,6 @@ LIVE_INDEX_500_URL = os.environ.get("LIVE_INDEX_500_URL")
 # API Config
 ZERO_API_KEY = os.environ.get("ZERO_API_KEY")
 ZERO_ACCESS_TOKEN = os.environ.get("ZERO_ACCESS_TOKEN")
+
+
+SMART_MASTER = "https://margincalculator.angelbroking.com/OpenAPI_File/files/OpenAPIScripMaster.json"
