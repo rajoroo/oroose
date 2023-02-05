@@ -28,4 +28,7 @@ urlpatterns = [
     path("configuration_page/", views.configuration_page, name="configuration"),
     path("params_update/<int:config_id>/", views.params_update, name="params_update"),
     path("data_log_page/", views.data_log_page, name="data_log"),
+    path("config_file_upload/", views.upload_config_file, name="upload_config_file"),
+
+    path("generate_smart_token/", views.generate_smart_token, name="generate_smart_token"),
 ]

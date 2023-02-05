@@ -1,0 +1,33 @@
+{% load humanize %}
+
+<div class="row">
+    <div class="col-12 col-sm-12">
+        <div class="card configuration-table">
+            <div class="card-header border-bottom">
+                <h3 class="card-title mb-0">Configuration</h3>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    {% if configs %}
+                    <table id="configs" class="green-table">
+                        <tr>
+                            <th>Name</th>
+                            <th>Nick Name</th>
+                            <th>Tag</th>
+                            <th>Content</th>
+                        </tr>
+                        {% for item in configs %}
+                        <tr>
+                            <td>{{ item.name }}</td>
+                            <td>{{ item.nick_name }}</td>
+                            <td>{{ item.tag }}</td>
+                            <td>{{ item.content }}</td>
+                        </tr>
+                    {% endfor %}
+                    </table>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -5,7 +5,12 @@ from django.db.models import F
 from django.shortcuts import HttpResponse, render
 
 from core.configuration import parameter_store
-from core.models import DataLog, ParameterSettings
+from core.models import DataLog, ParameterSettings, ParameterConfig
+
+from django.http import HttpResponseRedirect
+from home.forms import UploadFileForm
+from core.tools import handle_config_file
+from django.urls import reverse
 
 
 @login_required(login_url="/accounts/login/")
@@ -17,8 +22,9 @@ def home_page(request):
 @login_required(login_url="/accounts/login/")
 def configuration_page(request):
     param_settings = ParameterSettings.objects.all()
-    context = {"param_configs": parameter_store, "param_settings": param_settings, "active_page": "configuration"}
-    return render(request, "base/configure_settings.html", context=context)
+    configs = ParameterConfig.objects.all()
+    context = {"param_configs": parameter_store, "param_settings": param_settings, "active_page": "configuration", "configs": configs}
+    return render(request, "configuration/configure_settings.html", context=context)
 
 
 @login_required(login_url="/accounts/login/")
@@ -35,4 +41,21 @@ def params_update(request, config_id):
     obj = ParameterSettings.objects.get(id=config_id)
     obj.status = True if status == "true" else False
     obj.save()
+    return HttpResponse(status=200)
+
+
+def upload_config_file(request):
+    if request.method == 'POST':
+        form = UploadFileForm(request.POST, request.FILES)
+        if form.is_valid():
+            handle_config_file(request.FILES['file'])
+            return HttpResponseRedirect(reverse("home"))
+    else:
+        form = UploadFileForm()
+    return render(request, 'base/file_upload.html', {'form': form})
+
+
+def generate_smart_token(request):
+    """Pull the five hundred data from stock api"""
+
     return HttpResponse(status=200)

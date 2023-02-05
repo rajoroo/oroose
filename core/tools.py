@@ -1,5 +1,8 @@
 from core.models import ParameterConfig
 import numpy as np
+import csv
+import pandas as pd
+import io
 
 
 def get_param_config_tag(tag):
@@ -9,6 +12,23 @@ def get_param_config_tag(tag):
         return None
 
     return {rec.name: rec.content for rec in recs}
+
+
+def handle_config_file(csv_file):
+    df = pd.read_csv(io.StringIO(csv_file.read().decode('utf-8')), delimiter=',')
+    ParameterConfig.objects.all().delete()
+
+    configs = [
+        ParameterConfig(
+            name=row.name,
+            nick_name=row.nick_name,
+            tag=row.tag,
+            description=row.description,
+            comment=row.comment,
+            content=row.content,
+        ) for row in df.itertuples()
+    ]
+    ParameterConfig.objects.bulk_create(configs)
 
 
 def calculate_rsi(df):

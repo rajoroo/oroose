@@ -210,3 +210,7 @@ ZERO_ACCESS_TOKEN = os.environ.get("ZERO_ACCESS_TOKEN")
 
 
 SMART_MASTER = "https://margincalculator.angelbroking.com/OpenAPI_File/files/OpenAPIScripMaster.json"
+
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

@@ -7,6 +7,21 @@
 
 {% block content %}
 
+    <div class="row">
+        <div class="col-12 col-sm-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="btn-list">
+                        <button type="button" class="btn btn-primary ser_act" id="pull_fh" trigger-url="{% url 'generate_smart_token' %}">Generate Smart Token</button>
+                        <button type="button" class="btn btn-primary ser_act" id="uptrend_panic_pull" trigger-url="{% url 'upload_configuration_api' %}">Upload Configuration</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% include "base/configuration_table.html" %}
+
     <div class="container">
         {% for conf_key, conf_value in param_configs.items %}
         <div class="row">
@@ -70,5 +85,6 @@
 {% endblock content %}
 
 {% block js_scripts %}
+<script src="{% static 'js/load_bengaluru.js' %}" crossorigin="anonymous"></script>
 <script src="{% static 'js/configure_settings.js' %}" crossorigin="anonymous"></script>
 {% endblock js_scripts %}
