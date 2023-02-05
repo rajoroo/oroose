@@ -27,44 +27,20 @@ class SmartTool:
         self.refresh_token = obj['data']['refreshToken']
         self.feed_token = self.smart.getfeedToken()
 
-    def manage_token(self):
-        if (not self.jwt_token) or (not self.refresh_token) or (not self.feed_token):
-            return False
-
-        self.smart.setAccessToken(self.jwt_token)
-        self.smart.setRefreshToken(self.refresh_token)
-        self.smart.setFeedToken(self.feed_token)
-        self.smart.setUserId(self.client_code)
-
-        return True
-
-    def validate_token(self):
-        """ Token os validated by time"""
-        if not isinstance(self.date, datetime):
-            return False
-
-        duration = datetime.now() - self.date
-        duration_seconds = duration.total_seconds()
-        hours = divmod(duration_seconds, 3600)[0]
-
-        if hours > 6:
-            return False
-
-        return True
-
-    def get_object(self):
-        if (not self.manage_token()) and (not self.validate_token()):
-            print(self.validate_token(), "---Validate Token")
-            print(self.manage_token(), "---Manage Token")
-            self.generate_token()
-
         return {
-            "smart": self.smart,
             "client_code": self.client_code,
             "jwt_token": self.jwt_token,
             "refresh_token": self.refresh_token,
             "feed_token": self.feed_token,
         }
+
+    def get_object(self):
+        self.smart.setAccessToken(self.jwt_token)
+        self.smart.setRefreshToken(self.refresh_token)
+        self.smart.setFeedToken(self.feed_token)
+        self.smart.setUserId(self.client_code)
+
+        return self.smart
 
     def get_historical_data(self, exchange, symboltoken, interval, fromdate, todate):
         result = None

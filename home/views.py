@@ -2,14 +2,15 @@ from datetime import datetime
 
 from django.contrib.auth.decorators import login_required
 from django.db.models import F
-from django.shortcuts import HttpResponse, render
+from django.shortcuts import HttpResponse, render, redirect
 
 from core.configuration import parameter_store
 from core.models import DataLog, ParameterSettings, ParameterConfig
 
 from django.http import HttpResponseRedirect
 from home.forms import UploadFileForm
-from core.tools import handle_config_file
+from core.tools import handle_config_file, get_param_config_tag, save_param_config_tag
+from core.smart_util import SmartTool
 from django.urls import reverse
 
 
@@ -49,13 +50,28 @@ def upload_config_file(request):
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
             handle_config_file(request.FILES['file'])
-            return HttpResponseRedirect(reverse("home"))
+            return HttpResponseRedirect(reverse("configuration"))
     else:
         form = UploadFileForm()
-    return render(request, 'base/file_upload.html', {'form': form})
+    return render(request, 'configuration/file_upload.html', {'form': form})
 
 
 def generate_smart_token(request):
     """Pull the five hundred data from stock api"""
 
+    config = get_param_config_tag(tag="SMART")
+
+    obj = SmartTool(
+        api_key=config["api_key"],
+        client_code=config["client_code"],
+        password=config["password"],
+        totp=config["totp"],
+    )
+    params = obj.generate_token()
+    save_param_config_tag(params=params, tag="SMART")
     return HttpResponse(status=200)
+
+
+def upload_configuration(request):
+    """Pull the five hundred data from stock api"""
+    return redirect(reverse("upload_config_file"))

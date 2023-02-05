@@ -3,30 +3,44 @@ import numpy as np
 import csv
 import pandas as pd
 import io
+from datetime import datetime
 
 
 def get_param_config_tag(tag):
     """ Get all param configs related to the tag"""
-    recs = ParameterConfig.objects.filter(tag=tag)
+    recs = ParameterConfig.objects.filter(tag=tag, date=datetime.today())
     if not recs:
         return None
 
     return {rec.name: rec.content for rec in recs}
 
 
+def save_param_config_tag(params, tag):
+    for key, value in params.items():
+        rec = ParameterConfig.objects.get(name=key, tag=tag)
+        rec.content = value
+        rec.save()
+
+    return True
+
+
 def handle_config_file(csv_file):
-    df = pd.read_csv(io.StringIO(csv_file.read().decode('utf-8')), delimiter=',')
+    csv_data = io.StringIO(csv_file.read().decode('utf-8'))
+    df = pd.read_csv(csv_data, delimiter=',')
+    df = df.dropna(subset=['name', 'content'])
     ParameterConfig.objects.all().delete()
 
     configs = [
         ParameterConfig(
-            name=row.name,
-            nick_name=row.nick_name,
-            tag=row.tag,
-            description=row.description,
-            comment=row.comment,
-            content=row.content,
-        ) for row in df.itertuples()
+            date=datetime.now(),
+            name=row["name"],
+            nick_name=row["nick_name"],
+            tag=row["tag"],
+            description=row["description"],
+            comment=row["comment"],
+            content=row["content"],
+        )
+        for index, row in df.iterrows()
     ]
     ParameterConfig.objects.bulk_create(configs)
 

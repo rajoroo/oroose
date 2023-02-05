@@ -29,12 +29,13 @@ class ParameterSettings(models.Model):
 
 
 class ParameterConfig(models.Model):
+    date = models.DateField(verbose_name="Date")
     name = models.CharField(max_length=200, verbose_name="Name")
     nick_name = models.CharField(max_length=200, verbose_name="Nick Name")
     tag = models.CharField(max_length=200, verbose_name="Tag")
     description = models.TextField(blank=True, null=True, verbose_name="Description")
     comment = models.TextField(blank=True, null=True, verbose_name="Comment")
-    content = models.CharField(max_length=200, verbose_name="Content")
+    content = models.CharField(max_length=300, verbose_name="Content")
 
     objects = models.Manager()
 
