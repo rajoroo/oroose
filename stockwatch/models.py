@@ -5,7 +5,8 @@ from django.db import models
 import pandas as pd
 from core.zero_util import get_history_five_min, get_kite, get_history_day
 from core.choice import FhZeroStatus, PlStatus
-from core.tools import calculate_rsi
+from core.tools import calculate_rsi, get_param_config_tag
+from core.smart_util import SmartInstrument, SmartTool
 from dateutil.relativedelta import relativedelta
 
 
@@ -56,25 +57,50 @@ class FiveHundred(models.Model):
         from_date = datetime.combine(last_month_same_date, exact_time)
         return from_date, to_date
 
-    def is_valid_stock(self):
-        symbol = self.symbol
-        kite = get_kite()
-        result = False
-        instrument = f"NSE:{symbol}"
-        quote_response = kite.quote(instrument)
-
-        lower_circuit = quote_response[instrument]["lower_circuit_limit"]
-        upper_circuit = quote_response[instrument]["upper_circuit_limit"]
-
-        last_price = quote_response[instrument]["ohlc"]["close"]
-        price_lower = last_price - (last_price * 0.09)
-        price_upper = last_price + (last_price * 0.09)
-
-        if lower_circuit < price_lower < price_upper < upper_circuit:
-            result = True
-
-        self.is_valid = result
+    def get_smart_token(self):
+        obj = SmartInstrument(instrument=self.symbol)
+        result = obj.get_instrument()
+        self.token = result.get("token")
         self.save()
+
+    def is_valid_stock(self):
+        result = False
+
+        config = get_param_config_tag(tag="SMART")
+        obj = SmartTool(
+            api_key=config["api_key"],
+            client_code=config["client_code"],
+            password=config["password"],
+            totp=config["totp"],
+            jwt_token=config["jwt_token"],
+            refresh_token=config["refresh_token"],
+            feed_token=config["feed_token"],
+        )
+        obj.get_object()
+        data = obj.get_ltp_data("NSE", self.symbol, self.token)
+        print(data)
+
+        #
+        #
+        #
+        #
+        # kite = get_kite()
+        #
+        # instrument = f"NSE:{symbol}"
+        # quote_response = kite.quote(instrument)
+        #
+        # lower_circuit = quote_response[instrument]["lower_circuit_limit"]
+        # upper_circuit = quote_response[instrument]["upper_circuit_limit"]
+        #
+        # last_price = quote_response[instrument]["ohlc"]["close"]
+        # price_lower = last_price - (last_price * 0.09)
+        # price_upper = last_price + (last_price * 0.09)
+        #
+        # if lower_circuit < price_lower < price_upper < upper_circuit:
+        #     result = True
+        #
+        # self.is_valid = result
+        # self.save()
 
     def get_signal_status(self, time_obj):
         signal_status = SignalStatus.INPROG

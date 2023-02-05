@@ -7,7 +7,7 @@ import os
 
 
 class SmartTool:
-    def __init__(self, api_key, client_code, password, totp, jwt_token=None, refresh_token=None, feed_token=None, date=None):
+    def __init__(self, api_key, client_code, password, totp, jwt_token=None, refresh_token=None, feed_token=None):
         self.smart = SmartConnect(api_key=api_key)
         self.api_key = api_key
         self.client_code = client_code
@@ -16,7 +16,6 @@ class SmartTool:
         self.jwt_token = jwt_token
         self.refresh_token = refresh_token
         self.feed_token = feed_token
-        self.date = date
 
     def generate_token(self):
         """ Generate token for first time"""
@@ -59,6 +58,12 @@ class SmartTool:
         return result
 
     def get_ltp_data(self, exchange, tradingsymbol, symboltoken):
+        """
+        eg:
+            exchage: NSE
+            tradingsymbol: ITC
+            symboltoken: 1660
+        """
         result = None
         try:
             result = self.smart.ltpData(exchange, tradingsymbol, symboltoken)
@@ -74,7 +79,8 @@ class SmartInstrument:
 
     def get_filename(self):
         today = datetime.today().strftime("%Y_%m_%d")
-        filename = f"{settings.STOCK_DATA_PATH}/angel_one_{today}.json"
+        # filename = f"{settings.STOCK_DATA_PATH}/angel_one_{today}.json"
+        filename = f"/home/gamma/Documents/stock_data/angel_one_2023_02_04.json"
         return filename
 
     def download_instrument(self):

@@ -24,20 +24,15 @@ def update_five_hundred(data):
             obj.is_valid_stock()
             obj.save()
         else:
-            open_price, token = get_token(symbol=value["symbol"])
-            if not open_price or not token:
-                return True
             fh = FiveHundred.objects.create(
                 date=datetime.today(),
                 created_date=datetime.now(),
                 symbol=value["symbol"],
-                token=token,
                 identifier=value["identifier"],
                 isin=value["isin"],
                 company_name=value["company_name"],
                 rank=value["rank"],
                 last_price=value["last_price"],
-                open_price=open_price,
                 percentage_change=value["percentage_change"],
                 signal_status=SignalStatus.INPROG,
             )
