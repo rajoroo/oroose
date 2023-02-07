@@ -79,31 +79,29 @@ class SmartInstrument:
 
     def get_filename(self):
         today = datetime.today().strftime("%Y_%m_%d")
-        # filename = f"{settings.STOCK_DATA_PATH}/angel_one_{today}.json"
-        filename = f"/home/gamma/Documents/stock_data/angel_one_2023_02_04.json"
+        filename = f"{settings.STOCK_DATA_PATH}/angel_one_{today}.json"
+        # filename = f"/home/gamma/Documents/stock_data/angel_one_2023_02_04.json"
         return filename
 
-    def download_instrument(self):
+    def download_instrument(self, filename):
         df = pd.read_json(settings.SMART_MASTER)
         df = df.loc[df['exch_seg'] == "NSE"]
         df = df[df['symbol'].str.endswith('EQ')]
-        filename = self.get_filename()
         df.to_json(filename)
         return df
 
-    def check_valid_instrument(self):
-        filename = self.get_filename()
+    def check_valid_instrument(self, filename):
         return True if os.path.isfile(filename) else False
 
-    def load_data(self):
-        filename = self.get_filename()
+    def load_data(self, filename):
         df = pd.read_json(filename)
         return df
 
     def get_instrument(self):
-        if self.check_valid_instrument():
-            df = self.load_data()
+        filename = self.get_filename()
+        if self.check_valid_instrument(filename):
+            df = self.load_data(filename)
         else:
-            df = self.download_instrument()
+            df = self.download_instrument(filename)
 
         return df[df.symbol == self.instrument].iloc[0]
