@@ -1,9 +1,10 @@
 import json
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import pandas as pd
 from django.conf import settings
 from requests import Session
+import os
 
 headers = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36",  # noqa: E501
@@ -81,3 +82,41 @@ class LiveStocks:
             ]
         ]
         return df
+
+
+class PriceBand:
+    def __init__(self, instrument):
+        self.instrument = instrument
+
+    def get_filename(self):
+        yesterday = (datetime.today() - timedelta(days=1)).strftime("%d%m%Y")
+        filename = f"{settings.STOCK_DATA_PATH}/sec_list_{yesterday}.csv"
+        # filename = f"/home/gamma/Documents/stock_data/angel_one_2023_02_04.json"
+        return filename
+
+    def download_instrument(self, filename):
+        # url = "https://archives.nseindia.com/content/equities/sec_list_06022023.csv"
+        yesterday = (datetime.today() - timedelta(days=1)).strftime("%d%m%Y")
+        url = settings.BAND_MASTER.format(yesterday=yesterday)
+        df = pd.read_csv(url)
+        df = df.loc[df['Series'] == "EQ"]
+        df.to_csv(filename)
+        return df
+
+    def check_valid_instrument(self, filename):
+        return True if os.path.isfile(filename) else False
+
+    def load_data(self, filename):
+        df = pd.read_csv(filename)
+        return df
+
+    def get_valid_instrument(self):
+        filename = self.get_filename()
+        if self.check_valid_instrument(filename):
+            df = self.load_data(filename)
+        else:
+            df = self.download_instrument(filename)
+
+        df = df.loc[df["Symbol"] == self.instrument]
+        df = df[df["Band"].isin(["10", "20", "No Band"])]
+        return False if df.empty else True

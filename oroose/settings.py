@@ -210,6 +210,7 @@ ZERO_ACCESS_TOKEN = os.environ.get("ZERO_ACCESS_TOKEN")
 
 
 SMART_MASTER = "https://margincalculator.angelbroking.com/OpenAPI_File/files/OpenAPIScripMaster.json"
+BAND_MASTER = "https://archives.nseindia.com/content/equities/sec_list_{yesterday}.csv"
 
 
 MEDIA_URL = '/media/'

@@ -37,8 +37,8 @@ def update_five_hundred(data):
                 signal_status=SignalStatus.INPROG,
             )
             fh.is_valid_stock()
-            fh.get_signal_status(time_obj=time_obj)
-            fh.calculate_macd(time_obj=time_obj)
+            # fh.get_signal_status(time_obj=time_obj)
+            # fh.calculate_macd(time_obj=time_obj)
 
     return True
 

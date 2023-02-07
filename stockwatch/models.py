@@ -8,6 +8,7 @@ from core.choice import FhZeroStatus, PlStatus
 from core.tools import calculate_rsi, get_param_config_tag
 from core.smart_util import SmartInstrument, SmartTool
 from dateutil.relativedelta import relativedelta
+from stockwatch.stocks import PriceBand
 
 
 from stockwatch.choice import SignalStatus
@@ -50,7 +51,7 @@ class FiveHundred(models.Model):
             models.UniqueConstraint(fields=["date", "symbol"], name="%(app_label)s_%(class)s_unique_five_hundred")
         ]
 
-    def get_date_diffetence(self):
+    def get_date_difference(self):
         to_date = datetime.today()
         last_month_same_date = to_date - relativedelta(months=1, days=1)
         exact_time = time(hour=9, minute=10)
@@ -64,49 +65,13 @@ class FiveHundred(models.Model):
         self.save()
 
     def is_valid_stock(self):
-        result = False
-
-        config = get_param_config_tag(tag="SMART")
-        obj = SmartTool(
-            api_key=config["api_key"],
-            client_code=config["client_code"],
-            password=config["password"],
-            totp=config["totp"],
-            jwt_token=config["jwt_token"],
-            refresh_token=config["refresh_token"],
-            feed_token=config["feed_token"],
-        )
-        obj.get_object()
-        data = obj.get_ltp_data("NSE", self.symbol, self.token)
-        print(data)
-
-        #
-        #
-        #
-        #
-        # kite = get_kite()
-        #
-        # instrument = f"NSE:{symbol}"
-        # quote_response = kite.quote(instrument)
-        #
-        # lower_circuit = quote_response[instrument]["lower_circuit_limit"]
-        # upper_circuit = quote_response[instrument]["upper_circuit_limit"]
-        #
-        # last_price = quote_response[instrument]["ohlc"]["close"]
-        # price_lower = last_price - (last_price * 0.09)
-        # price_upper = last_price + (last_price * 0.09)
-        #
-        # if lower_circuit < price_lower < price_upper < upper_circuit:
-        #     result = True
-        #
-        # self.is_valid = result
-        # self.save()
+        band = PriceBand(instrument=self.symbol)
+        self.is_valid = band.get_valid_instrument()
+        self.save()
 
     def get_signal_status(self, time_obj):
         signal_status = SignalStatus.INPROG
-        today = datetime.today() - timedelta(days=31)
-        exact_time = time(hour=9, minute=10)
-        from_date = datetime.combine(today, exact_time)
+        from_date, to_date = self.get_date_difference()
 
         # if not (
         #         (self.fhzerodowntrend_set.filter(pl_status=PlStatus.INPROG).exists()
