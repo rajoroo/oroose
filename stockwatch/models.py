@@ -61,7 +61,7 @@ class FiveHundred(models.Model):
     def get_smart_token(self):
         obj = SmartInstrument(instrument=self.symbol)
         result = obj.get_instrument()
-        self.token = result.get("token")
+        self.token = str(result.get("token"))
         self.save()
 
     def is_valid_stock(self):
@@ -69,7 +69,7 @@ class FiveHundred(models.Model):
         self.is_valid = band.get_valid_instrument()
         self.save()
 
-    def get_signal_status(self, time_obj):
+    def get_signal_status(self):
         signal_status = SignalStatus.INPROG
         from_date, to_date = self.get_date_difference()
 
@@ -81,7 +81,21 @@ class FiveHundred(models.Model):
         # ):
         #     return signal_status
 
-        current_list = get_history_five_min(token=self.token, open_price=self.open_price, from_date=from_date, to_date=time_obj)
+        tag_data = get_param_config_tag(tag="SMART")
+        smart = SmartTool(**tag_data)
+        smart.get_object()
+        history_data = smart.get_historical_data(
+            exchange="NSE",
+            symboltoken=self.token,
+            interval="FIVE_MINUTE",
+            fromdate=from_date.strftime("%Y-%m-%d %H:%M"),
+            todate=to_date.strftime("%Y-%m-%d %H:%M")
+        )
+
+        df = pd.DataFrame(history_data)
+        df[["date", "open", "high", "low", "close", "volume"]] = pd.DataFrame(df.data.tolist(), index=df.index)
+
+        current_list = df["close"].to_list()
 
         if current_list and len(current_list) > 16:
             df = pd.DataFrame({'close': current_list})

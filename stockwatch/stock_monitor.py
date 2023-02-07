@@ -20,9 +20,8 @@ def update_five_hundred(data):
             obj.rank = value["rank"]
             obj.last_price = value["last_price"]
             obj.percentage_change = value["percentage_change"]
-            obj.signal_status = obj.get_signal_status(time_obj=time_obj)
-            obj.is_valid_stock()
             obj.save()
+            obj.get_signal_status()
         else:
             fh = FiveHundred.objects.create(
                 date=datetime.today(),
@@ -37,7 +36,8 @@ def update_five_hundred(data):
                 signal_status=SignalStatus.INPROG,
             )
             fh.is_valid_stock()
-            # fh.get_signal_status(time_obj=time_obj)
+            fh.get_smart_token()
+            fh.get_signal_status()
             # fh.calculate_macd(time_obj=time_obj)
 
     return True

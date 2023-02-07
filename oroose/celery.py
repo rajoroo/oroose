@@ -36,7 +36,7 @@ def debug_task(self):
 app.conf.beat_schedule = {
     "schedule-live-stocks": {
         "task": "bengaluru.tasks.schedule_live_stocks_five_hundred",
-        "schedule": 300.0,  # schedule every 10 minutes
+        "schedule": 60.0,  # schedule every 10 minutes
         "args": (),
     },
     "schedule-fhz-uptrend-minutes": {

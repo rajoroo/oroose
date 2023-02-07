@@ -4,6 +4,7 @@ import pyotp
 import pandas as pd
 from django.conf import settings
 import os
+import time
 
 
 class SmartTool:
@@ -51,9 +52,12 @@ class SmartTool:
                 "fromdate": fromdate,
                 "todate": todate
             }
+            print(historicParam)
+            time.sleep(2)
             result = self.smart.getCandleData(historicParam)
+
         except Exception as e:
-            print("Historic Api failed: {}".format(e.message))
+            print("Historic Api failed: {}".format(e))
 
         return result
 
