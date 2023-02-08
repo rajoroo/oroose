@@ -52,7 +52,6 @@ class SmartTool:
                 "fromdate": fromdate,
                 "todate": todate
             }
-            print(historicParam)
             time.sleep(2)
             result = self.smart.getCandleData(historicParam)
 
