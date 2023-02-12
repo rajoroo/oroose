@@ -3,17 +3,11 @@ function reload_data() {
       type: 'GET',
       url: $("#ajax-content").attr('trigger-url'),
       beforeSend: function( xhr ) {
-        $('.loader').css('display', 'flex');
+        $(".loader").show(0).delay(5000).hide(0);
       },
       success: function(data){
         $("#show_content").empty().append(data);
       },
-      complete: function(data){
-        setTimeout(function(){
-            $('.loader').css('display', 'none');
-            console.log("fone")
-        }, 1000 * 5)
-      }
     })
 }
 

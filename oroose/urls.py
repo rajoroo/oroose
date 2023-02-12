@@ -31,5 +31,4 @@ urlpatterns = [
     path("config_file_upload/", views.upload_config_file, name="upload_config_file"),
 
     path("generate_smart_token/", views.generate_smart_token, name="generate_smart_token"),
-    path("upload_configuration/", views.upload_configuration, name="upload_configuration"),
 ]

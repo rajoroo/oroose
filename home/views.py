@@ -3,6 +3,10 @@ from datetime import datetime
 from django.contrib.auth.decorators import login_required
 from django.db.models import F
 from django.shortcuts import HttpResponse, render, redirect
+from django.template import Template, Context
+from django.template.loader import render_to_string
+from django.template.loader import get_template
+from django.views.decorators.csrf import requires_csrf_token, csrf_exempt
 
 from core.configuration import parameter_store
 from core.models import DataLog, ParameterSettings, ParameterConfig
@@ -45,6 +49,7 @@ def params_update(request, config_id):
     return HttpResponse(status=200)
 
 
+@csrf_exempt
 def upload_config_file(request):
     if request.method == 'POST':
         form = UploadFileForm(request.POST, request.FILES)
@@ -53,7 +58,9 @@ def upload_config_file(request):
             return HttpResponseRedirect(reverse("configuration"))
     else:
         form = UploadFileForm()
-    return render(request, 'configuration/file_upload.html', {'form': form})
+    rendered = render_to_string('configuration/file_upload.html', {'form': form, "title": "Upload Configs"})
+    response = HttpResponse(rendered)
+    return response
 
 
 def generate_smart_token(request):
@@ -70,8 +77,3 @@ def generate_smart_token(request):
     params = obj.generate_token()
     save_param_config_tag(params=params, tag="SMART")
     return HttpResponse(status=200)
-
-
-def upload_configuration(request):
-    """Pull the five hundred data from stock api"""
-    return redirect(reverse("upload_config_file"))

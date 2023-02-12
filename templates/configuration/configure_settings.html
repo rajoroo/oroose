@@ -13,14 +13,23 @@
                 <div class="card-body">
                     <div class="btn-list">
                         <button type="button" class="btn btn-primary ser_act" id="pull_fh" trigger-url="{% url 'generate_smart_token' %}">Generate Smart Token</button>
-                        <button type="button" class="btn btn-primary ser_act" id="uptrend_panic_pull" trigger-url="{% url 'upload_configuration' %}">Upload Configuration</button>
+                        <button type="button" class="btn btn-primary modal_act" trigger-url="{% url 'upload_config_file' %}" data-toggle="modal" data-target="#modal_popup_area">Upload config</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    {% include "configuration/configuration_table.html" %}
+
+<!-- Modal -->
+<div class="modal fade" id="modal_popup_area" tabindex="-3" role="dialog" aria-labelledby="modal_popup_location_label" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div id="modelresultarea" class="modal-content">
+        </div>
+    </div>
+</div>
+
+{% include "configuration/configuration_table.html" %}
 
     <div class="container">
         {% for conf_key, conf_value in param_configs.items %}
@@ -82,9 +91,32 @@
         </div>
     </div>
 
+
+
 {% endblock content %}
 
 {% block js_scripts %}
 <script src="{% static 'js/load_bengaluru.js' %}" crossorigin="anonymous"></script>
 <script src="{% static 'js/configure_settings.js' %}" crossorigin="anonymous"></script>
+<script>
+
+$( ".modal_act" ).click(function () {
+    $.ajax({
+      type: 'GET',
+      url: $(this).attr('trigger-url'),
+      beforeSend: function( xhr ) {
+        $('.ajax-loader').css("visibility", "show");
+      },
+      success: function(data){
+        $("#modelresultarea").html(data);
+      },
+      complete: function(data){
+        $('.ajax-loader').css("visibility", "hidden");
+      }
+    })
+});
+
+</script>
+
+
 {% endblock js_scripts %}
