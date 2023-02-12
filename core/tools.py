@@ -25,10 +25,21 @@ def save_param_config_tag(params, tag):
     return True
 
 
+def check_valid_configs(row, config_type):
+    """Todo: add other types"""
+    content = row["content"]
+    if row["config_type"].lower() == config_type:
+        if config_type in ["char", "text"] and not pd.isnull(content):
+            return content
+
+    return None
+
+
 def handle_config_file(csv_file):
     csv_data = io.StringIO(csv_file.read().decode('utf-8'))
     df = pd.read_csv(csv_data, delimiter=',')
-    df = df.dropna(subset=['name', 'content'])
+    df = df.dropna(subset=['nick_name'])
+    df['length'] = df['content'].astype(str).map(len)
     ParameterConfig.objects.all().delete()
 
     configs = [
@@ -40,11 +51,11 @@ def handle_config_file(csv_file):
             tag=row["tag"],
             description=row["description"],
             comment=row["comment"],
-            content_bool=row["content"] if row["config_type"].lower() == "bool" else None,
-            content_char=row["content"] if row["config_type"].lower() == "char" else None,
-            content_text=row["content"] if row["config_type"].lower() == "text" else None,
-            content_float=row["content"] if row["config_type"].lower() == "float" else None,
-            content_int=row["content"] if row["config_type"].lower() == "int" else None,
+            content_bool=check_valid_configs(row, "bool"),
+            content_char=check_valid_configs(row, "char"),
+            content_text=check_valid_configs(row, "text"),
+            content_float=check_valid_configs(row, "float"),
+            content_int=check_valid_configs(row, "int"),
         )
         for index, row in df.iterrows()
     ]

@@ -12,9 +12,10 @@ from core.configuration import parameter_store
 from core.models import DataLog, ParameterSettings, ParameterConfig
 
 from django.http import HttpResponseRedirect
-from home.forms import UploadFileForm
+from home.forms import UploadFileForm, OtpForm
 from core.tools import handle_config_file, get_param_config_tag, save_param_config_tag
 from core.smart_util import SmartTool
+from core.ks_util import KsTool
 from django.urls import reverse
 
 
@@ -77,3 +78,26 @@ def generate_smart_token(request):
     params = obj.generate_token()
     save_param_config_tag(params=params, tag="SMART")
     return HttpResponse(status=200)
+
+
+@csrf_exempt
+def generate_ksec_token(request):
+    if request.method == 'POST':
+        form = OtpForm(request.POST)
+        if form.is_valid():
+            otp = form.cleaned_data['otp']
+            config = get_param_config_tag(tag="KSEC")
+            obj = KsTool(**config)
+            params = obj.generate_session_token(otp=otp)
+            save_param_config_tag(params=params, tag="KSEC")
+            return HttpResponseRedirect(reverse("configuration"))
+
+    config = get_param_config_tag(tag="KSEC")
+    obj = KsTool(**config)
+    params = obj.generate_tokens()
+    save_param_config_tag(params=params, tag="KSEC")
+
+    form = OtpForm()
+    rendered = render_to_string('configuration/ksec_otp.html', {'form': form, "title": "Ksec OTP"})
+    response = HttpResponse(rendered)
+    return response
