@@ -8,5 +8,5 @@ class ParameterConfigAdmin(admin.ModelAdmin):
         "name",
         "nick_name",
         "tag",
-        "content"
+        "content",
     )

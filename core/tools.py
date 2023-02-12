@@ -8,7 +8,7 @@ from datetime import datetime
 
 def get_param_config_tag(tag):
     """ Get all param configs related to the tag"""
-    recs = ParameterConfig.objects.filter(tag=tag, date=datetime.today())
+    recs = ParameterConfig.objects.filter(tag=tag)
     if not recs:
         return None
 
@@ -18,7 +18,8 @@ def get_param_config_tag(tag):
 def save_param_config_tag(params, tag):
     for key, value in params.items():
         rec = ParameterConfig.objects.get(name=key, tag=tag)
-        rec.content = value
+        attr = f"content_{rec.config_type.lower()}"
+        setattr(rec, attr, value)
         rec.save()
 
     return True
@@ -35,10 +36,15 @@ def handle_config_file(csv_file):
             date=datetime.now(),
             name=row["name"],
             nick_name=row["nick_name"],
+            config_type=row["config_type"].upper(),
             tag=row["tag"],
             description=row["description"],
             comment=row["comment"],
-            content=row["content"],
+            content_bool=row["content"] if row["config_type"].lower() == "bool" else None,
+            content_char=row["content"] if row["config_type"].lower() == "char" else None,
+            content_text=row["content"] if row["config_type"].lower() == "text" else None,
+            content_float=row["content"] if row["config_type"].lower() == "float" else None,
+            content_int=row["content"] if row["config_type"].lower() == "int" else None,
         )
         for index, row in df.iterrows()
     ]
