@@ -3,6 +3,10 @@ import requests
 import json
 import jwt
 import time
+import pandas as pd
+from datetime import datetime, timedelta
+from django.conf import settings
+import os
 
 
 class KsTool:
@@ -145,4 +149,41 @@ class KsTool:
             "user_id": self.user_id,
             "sid": self.sid
         }
+
+
+class KsecInstrument:
+    def __init__(self, instrument):
+        self.instrument = f"{instrument}-EQ"
+
+    def get_filename(self):
+        yesterday = (datetime.today() - timedelta(days=1)).strftime("%Y_%m_%d")
+        filename = f"{settings.STOCK_DATA_PATH}/ksec_{yesterday}.json"
+        # filename = f"/home/gamma/Documents/stock_data/angel_one_2023_02_04.json"
+        return filename
+
+    def download_instrument(self, filename):
+        yesterday = (datetime.today() - timedelta(days=1)).strftime("%Y-%m-%d")
+        url = settings.KSEC_MASTER.format(yesterday=yesterday)
+        df = pd.read_csv(url)
+        df = df.loc[df['pGroup'] == "EQ"]
+        df = df[df['pTrdSymbol'].str.endswith('EQ')]
+        df.to_json(filename)
+        return df
+
+    def check_valid_instrument(self, filename):
+        return True if os.path.isfile(filename) else False
+
+    def load_data(self, filename):
+        df = pd.read_json(filename)
+        return df
+
+    def get_instrument(self):
+        filename = self.get_filename()
+        if self.check_valid_instrument(filename):
+            df = self.load_data(filename)
+        else:
+            df = self.download_instrument(filename)
+
+        return df[df.pTrdSymbol == self.instrument].iloc[0]
+
 

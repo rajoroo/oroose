@@ -6,7 +6,6 @@ from django.conf import settings
 from stockwatch.choice import SignalStatus
 from stockwatch.models import FiveHundred, StockWatchFh
 from stockwatch.stocks import LiveStocks
-from core.zero_util import get_token
 
 logger = logging.getLogger("celery")
 
@@ -14,7 +13,6 @@ logger = logging.getLogger("celery")
 def update_five_hundred(data):
     for key, value in data.items():
         items = FiveHundred.objects.filter(date=datetime.today(), symbol=value["symbol"])
-        time_obj = datetime.now()
         if items:
             obj = items[0]
             obj.rank = value["rank"]
@@ -37,6 +35,7 @@ def update_five_hundred(data):
             )
             fh.is_valid_stock()
             fh.get_smart_token()
+            fh.get_ksec_token()
             fh.get_signal_status()
             # fh.calculate_macd(time_obj=time_obj)
 

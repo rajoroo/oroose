@@ -7,6 +7,7 @@ from core.zero_util import get_history_five_min, get_kite, get_history_day
 from core.choice import FhZeroStatus, PlStatus
 from core.tools import calculate_rsi, get_param_config_tag
 from core.smart_util import SmartInstrument, SmartTool
+from core.ks_util import KsecInstrument, KsTool
 from dateutil.relativedelta import relativedelta
 from stockwatch.stocks import PriceBand
 
@@ -26,7 +27,8 @@ class FiveHundred(models.Model):
     created_date = models.DateTimeField(verbose_name="Created Date")
     rank = models.IntegerField(verbose_name="Rank")
     symbol = models.CharField(max_length=200, verbose_name="Symbol")
-    token = models.CharField(max_length=50, verbose_name="Token", null=True, blank=True)
+    smart_token = models.CharField(max_length=50, verbose_name="Smart Token", null=True, blank=True)
+    ksec_token = models.CharField(max_length=50, verbose_name="Ksec Token", null=True, blank=True)
     identifier = models.CharField(max_length=200, verbose_name="Identifier")
     company_name = models.CharField(max_length=500, verbose_name="Company Name")
     isin = models.CharField(max_length=100, verbose_name="Isin")
@@ -61,7 +63,13 @@ class FiveHundred(models.Model):
     def get_smart_token(self):
         obj = SmartInstrument(instrument=self.symbol)
         result = obj.get_instrument()
-        self.token = str(result.get("token"))
+        self.smart_token = str(result.get("token"))
+        self.save()
+
+    def get_ksec_token(self):
+        obj = KsecInstrument(instrument=self.symbol)
+        result = obj.get_instrument()
+        self.ksec_token = str(result.get("pSymbol"))
         self.save()
 
     def is_valid_stock(self):
@@ -86,7 +94,7 @@ class FiveHundred(models.Model):
         smart.get_object()
         history_data = smart.get_historical_data(
             exchange="NSE",
-            symboltoken=self.token,
+            symboltoken=self.smart_token,
             interval="FIVE_MINUTE",
             fromdate=from_date.strftime("%Y-%m-%d %H:%M"),
             todate=to_date.strftime("%Y-%m-%d %H:%M")

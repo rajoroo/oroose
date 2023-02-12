@@ -211,6 +211,7 @@ ZERO_ACCESS_TOKEN = os.environ.get("ZERO_ACCESS_TOKEN")
 
 SMART_MASTER = "https://margincalculator.angelbroking.com/OpenAPI_File/files/OpenAPIScripMaster.json"
 BAND_MASTER = "https://archives.nseindia.com/content/equities/sec_list_{yesterday}.csv"
+KSEC_MASTER = "https://lapi.kotaksecurities.com/wso2-scripmaster/v1/prod/{yesterday}/transformed/nse_cm.csv"
 
 
 MEDIA_URL = '/media/'

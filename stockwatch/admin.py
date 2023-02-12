@@ -7,7 +7,9 @@ from stockwatch.models import FiveHundred, StockWatchFh
 class FiveHundredAdmin(admin.ModelAdmin):
     list_display = (
         "symbol",
-        "token", "rank",
+        "ksec_token",
+        "smart_token",
+        "rank",
         "date",
         "created_date",
         "company_name",
