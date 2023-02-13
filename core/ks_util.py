@@ -16,21 +16,23 @@ class KsTool:
         "generate.otp": "https://gw-napi.kotaksecurities.com/login/1.0/login/otp/generate",
         "session.token": "https://gw-napi.kotaksecurities.com/login/1.0/login/v2/validate",
         "scrip.master": "https://gw-napi.kotaksecurities.com/Files/1.0/masterscrip/file-paths",
+        "buy.order": "https://gw-napi.kotaksecurities.com/Orders/2.0/quick/order/rule/ms/place?sId={server_id}"
     }
 
-    def __init__(self, api_key, api_value, api_user, api_pass, mobile_no, app_pass, access_token=None,
-                 jwt_token=None, user_id=None, sid=None, session_token=None):
+    def __init__(self, api_key, api_value, api_user, api_pass, pan, app_pass, access_token=None,
+                 jwt_token=None, user_id=None, sid=None, session_token=None, server_id=None):
         self.api_key = api_key
         self.api_value = api_value
         self.api_user = api_user
         self.api_pass = api_pass
-        self.mobile_no = mobile_no
+        self.pan = pan
         self.app_pass = app_pass
         self.access_token = access_token
         self.jwt_token = jwt_token
         self.session_token = session_token
         self.user_id = user_id
         self.sid = sid
+        self.server_id = server_id
 
     def encode_base64(self, value) -> str:
         encode_value = value.encode('ascii')
@@ -63,7 +65,7 @@ class KsTool:
     def generate_jwt_token(self) -> dict:
         jwt_dict = None
         data = {
-            "mobileNumber": self.mobile_no,
+            "pan": self.pan,
             "password": self.app_pass
         }
         headers = {
@@ -75,9 +77,11 @@ class KsTool:
 
         try:
             response = requests.post(url, headers=headers, data=json.dumps(data))
+            print(response.text)
             jwt_dict = response.json()
             self.jwt_token = jwt_dict["data"]["token"]
             self.sid = jwt_dict["data"]["sid"]
+            self.server_id = jwt_dict["data"]["hsServerId"]
             jwt_decode = jwt.decode(self.jwt_token, options={"verify_signature": False})
             self.user_id = jwt_decode["sub"]
         except:
@@ -147,8 +151,41 @@ class KsTool:
             "access_token": self.access_token,
             "jwt_token": self.jwt_token,
             "user_id": self.user_id,
-            "sid": self.sid
+            "sid": self.sid,
+            "server_id": self.server_id
         }
+
+    def generate_buy_order(self, symbol, quantity):
+        buy_dict = None
+
+        order_dict = '{"am": "NO", "dq": "0", "es": "nse_cm", "mp": "0", "pf": "N", "pr": "0", "tp": "0", ' \
+                     '"rt": "DAY", "pt": "MKT", "pc": "MIS", "qt": ' + f'"{quantity}"' +', "ts": '+ f'"{symbol}-EQ"' + ', "tt": "B"}'
+
+        data = {
+            'jData': str(order_dict)
+            }
+        headers = {
+            'accept': 'application/json',
+            'Auth': self.session_token,
+            'Sid': self.sid,
+            'neo-fin-key': 'neotradeapi',
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Authorization': f'Bearer {self.access_token}'
+        }
+        url = self._route["buy.order"]
+        url = url.format(server_id=self.server_id)
+
+        print(headers)
+        print(data)
+        print(url)
+        try:
+            response = requests.post(url, headers=headers, data=data)
+            print(response.text)
+            buy_dict = response.json()
+        except:
+            print(f"{symbol} BUY is not working")
+
+        return buy_dict
 
 
 class KsecInstrument:
@@ -156,14 +193,14 @@ class KsecInstrument:
         self.instrument = f"{instrument}-EQ"
 
     def get_filename(self):
-        yesterday = (datetime.today() - timedelta(days=1)).strftime("%Y_%m_%d")
-        filename = f"{settings.STOCK_DATA_PATH}/ksec_{yesterday}.json"
+        today = datetime.today().strftime("%Y-%m-%d")
+        filename = f"{settings.STOCK_DATA_PATH}/ksec_{today}.json"
         # filename = f"/home/gamma/Documents/stock_data/angel_one_2023_02_04.json"
         return filename
 
     def download_instrument(self, filename):
-        yesterday = (datetime.today() - timedelta(days=1)).strftime("%Y-%m-%d")
-        url = settings.KSEC_MASTER.format(yesterday=yesterday)
+        today = datetime.today().strftime("%Y-%m-%d")
+        url = settings.KSEC_MASTER.format(today=today)
         df = pd.read_csv(url)
         df = df.loc[df['pGroup'] == "EQ"]
         df = df[df['pTrdSymbol'].str.endswith('EQ')]

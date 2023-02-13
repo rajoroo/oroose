@@ -1,5 +1,6 @@
 import json
 from datetime import datetime, timedelta
+from dateutil.relativedelta import relativedelta, FR
 
 import pandas as pd
 from django.conf import settings
@@ -89,14 +90,22 @@ class PriceBand:
         self.instrument = instrument
 
     def get_filename(self):
-        yesterday = (datetime.today() - timedelta(days=1)).strftime("%d%m%Y")
+        yesterday = datetime.today() - timedelta(days=1)
+        if yesterday.weekday() > 4:
+            yesterday = datetime.now() + relativedelta(weekday=FR(-1))
+
+        yesterday = yesterday.strftime("%d%m%Y")
         filename = f"{settings.STOCK_DATA_PATH}/sec_list_{yesterday}.csv"
         # filename = f"/home/gamma/Documents/stock_data/angel_one_2023_02_04.json"
         return filename
 
     def download_instrument(self, filename):
         # url = "https://archives.nseindia.com/content/equities/sec_list_06022023.csv"
-        yesterday = (datetime.today() - timedelta(days=1)).strftime("%d%m%Y")
+        yesterday = datetime.today() - timedelta(days=1)
+        if yesterday.weekday() > 4:
+            yesterday = datetime.now() + relativedelta(weekday=FR(-1))
+
+        yesterday = yesterday.strftime("%d%m%Y")
         url = settings.BAND_MASTER.format(yesterday=yesterday)
         df = pd.read_csv(url)
         df = df.loc[df['Series'] == "EQ"]
