@@ -77,7 +77,6 @@ class KsTool:
 
         try:
             response = requests.post(url, headers=headers, data=json.dumps(data))
-            print(response.text)
             jwt_dict = response.json()
             self.jwt_token = jwt_dict["data"]["token"]
             self.sid = jwt_dict["data"]["sid"]
@@ -155,14 +154,17 @@ class KsTool:
             "server_id": self.server_id
         }
 
-    def generate_buy_order(self, symbol, quantity):
-        buy_dict = None
+    def generate_order(self, symbol, quantity, transaction_type):
+        order_response_dict = None
 
-        order_dict = '{"am": "NO", "dq": "0", "es": "nse_cm", "mp": "0", "pf": "N", "pr": "0", "tp": "0", ' \
-                     '"rt": "DAY", "pt": "MKT", "pc": "MIS", "qt": ' + f'"{quantity}"' +', "ts": '+ f'"{symbol}-EQ"' + ', "tt": "B"}'
+        order_dict = {"am": "NO", "dq": "0", "es": "nse_cm", "mp": "0", "pf": "N", "pr": "0", "tp": "0",
+                     "rt": "DAY", "pt": "MKT", "pc": "MIS",
+                      "qt": f"{quantity}",
+                      "ts": f"{symbol}-EQ",
+                      "tt": f"{transaction_type}"}
 
         data = {
-            'jData': str(order_dict)
+            'jData': json.dumps(order_dict)
             }
         headers = {
             'accept': 'application/json',
@@ -175,17 +177,13 @@ class KsTool:
         url = self._route["buy.order"]
         url = url.format(server_id=self.server_id)
 
-        print(headers)
-        print(data)
-        print(url)
         try:
             response = requests.post(url, headers=headers, data=data)
-            print(response.text)
-            buy_dict = response.json()
+            order_response_dict = response.json()
         except:
             print(f"{symbol} BUY is not working")
 
-        return buy_dict
+        return order_response_dict
 
 
 class KsecInstrument:
