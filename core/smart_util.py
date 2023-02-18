@@ -67,13 +67,15 @@ class SmartTool:
             tradingsymbol: ITC
             symboltoken: 1660
         """
-        result = None
+        ltp = None
         try:
             result = self.smart.ltpData(exchange, tradingsymbol, symboltoken)
+            print(result)
+            ltp = result["data"]["ltp"]
         except Exception as e:
             print("LTP Api failed: {}".format(e.message))
 
-        return result
+        return ltp
 
 
 class SmartInstrument:

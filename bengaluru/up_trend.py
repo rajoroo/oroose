@@ -96,20 +96,20 @@ def trigger_fhz_uptrend():
                 status=FhZeroStatus.TO_BUY,
                 quantity=int(FH_MAX_TOTAL_PRICE / rec.last_price),
                 # quantity=1,
-                last_price=rec.last_price,
-                high_price=rec.last_price,
-                trigger_price=rec.last_price,
+                # last_price=rec.last_price,
+                # high_price=rec.last_price,
+                # trigger_price=rec.last_price,
                 pl_status=PlStatus.INPROG,
                 rank=rec.rank,
             )
             five_hundred_zero.save()
 
         #  Sell condition check
-        if fhz_uptrend_to_sell_condition(fhz_obj=rec):
-            purchased_obj = rec.fhzerouptrend_set.filter(status=FhZeroStatus.PURCHASED)
-            fhz_obj = purchased_obj.first()
-            fhz_obj.status = FhZeroStatus.TO_SELL
-            fhz_obj.save()
+        # if fhz_uptrend_to_sell_condition(fhz_obj=rec):
+        #     purchased_obj = rec.fhzerouptrend_set.filter(status=FhZeroStatus.PURCHASED)
+        #     fhz_obj = purchased_obj.first()
+        #     fhz_obj.status = FhZeroStatus.TO_SELL
+        #     fhz_obj.save()
 
     return True
 

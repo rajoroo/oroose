@@ -185,6 +185,9 @@ class KsTool:
 
         return order_response_dict
 
+    def get_order_book(self, order_no):
+        pass
+
 
 class KsecInstrument:
     def __init__(self, instrument):
