@@ -44,6 +44,9 @@ class FiveHundred(models.Model):
     pp2 = models.FloatField(verbose_name="PP2", null=True, blank=True)
     pp1 = models.FloatField(verbose_name="PP1", null=True, blank=True)
     pp = models.FloatField(verbose_name="PP0", null=True, blank=True)
+    pp_price = models.FloatField(verbose_name="PP0 Price", null=True, blank=True)
+    pp1_price = models.FloatField(verbose_name="PP1 Price", null=True, blank=True)
+    pp2_price = models.FloatField(verbose_name="PP2 Price", null=True, blank=True)
 
     objects = models.Manager()
 
@@ -117,5 +120,8 @@ class FiveHundred(models.Model):
             self.pp2 = result_2
             self.pp1 = result_1
             self.pp = result
+            self.pp2_price = current_list[-3]
+            self.pp1_price = current_list[-2]
+            self.pp_price = current_list[-1]
             self.save()
         return signal_status

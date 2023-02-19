@@ -73,6 +73,8 @@ class FhZeroUpTrend(models.Model):
         if self.buy_id is not None and self.buy_price is None:
             result = obj.get_order_book(order_no=self.buy_id)
             self.buy_price = result.get("avgPrc")
+            self.high_price = result.get("avgPrc")
+            self.current_price = result.get("avgPrc")
             self.error = False if result.get("ordSt") == "complete" else True
             self.error_message = result.get("rejRsn")
             if result.get("ordSt") == "complete":
@@ -95,6 +97,7 @@ class FhZeroUpTrend(models.Model):
             self.error = False if result.get("ordSt") == "complete" else True
             self.error_message = result.get("rejRsn")
             if result.get("ordSt") == "complete":
+                self.pl_status = PlStatus.RUNNER
                 self.status = FhZeroStatus.SOLD
 
         elif self.sell_id is None and self.sell_price is None:
@@ -106,21 +109,21 @@ class FhZeroUpTrend(models.Model):
         self.save()
 
     def maintain_order(self):
-        price = self.high_price - (self.high_price * 0.003)
+        high_price = self.high_price - (self.high_price * 0.003)
 
-        tag_data = get_param_config_tag(tag="SMART")
+        tag_data = get_param_config_tag(tag="SMART_TRADE")
         smart = SmartTool(**tag_data)
+        smart.get_object()
         ltp_data = smart.get_ltp_data(
             exchange="NSE",
             tradingsymbol=self.symbol,
             symboltoken=self.five_hundred.smart_token
         )
-        ltp = ltp_data
 
-        if ltp_data < price:
+        if ltp_data < high_price:
             self.status = FhZeroStatus.TO_SELL
 
-        elif ltp_data > self.high_price:
+        if ltp_data > self.high_price:
             self.high_price = ltp_data
 
         self.current_price = ltp_data

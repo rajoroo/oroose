@@ -64,7 +64,7 @@ class ParameterConfig(models.Model):
         return getattr(self, attr)
 
     class Meta:
-        ordering = ["name"]
+        ordering = ["tag", "nick_name"]
         constraints = [
             models.UniqueConstraint(
                 fields=["nick_name"], name="%(app_label)s_%(class)s_unique_parameter_configs"
