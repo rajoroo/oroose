@@ -16,7 +16,8 @@ class KsTool:
         "generate.otp": "https://gw-napi.kotaksecurities.com/login/1.0/login/otp/generate",
         "session.token": "https://gw-napi.kotaksecurities.com/login/1.0/login/v2/validate",
         "scrip.master": "https://gw-napi.kotaksecurities.com/Files/1.0/masterscrip/file-paths",
-        "buy.order": "https://gw-napi.kotaksecurities.com/Orders/2.0/quick/order/rule/ms/place?sId={server_id}"
+        "buy.order": "https://gw-napi.kotaksecurities.com/Orders/2.0/quick/order/rule/ms/place?sId={server_id}",
+        "order.book": "https://gw-napi.kotaksecurities.com/Orders/2.0/quick/user/orders?sId={server_id}"
     }
 
     def __init__(self, api_key, api_value, api_user, api_pass, pan, app_pass, access_token=None,
@@ -155,7 +156,7 @@ class KsTool:
         }
 
     def generate_order(self, symbol, quantity, transaction_type):
-        order_response_dict = None
+        order_response_dict = {}
 
         order_dict = {"am": "NO", "dq": "0", "es": "nse_cm", "mp": "0", "pf": "N", "pr": "0", "tp": "0",
                      "rt": "DAY", "pt": "MKT", "pc": "MIS",
@@ -186,7 +187,31 @@ class KsTool:
         return order_response_dict
 
     def get_order_book(self, order_no):
-        pass
+        result = {}
+        payload = {}
+        headers = {
+            'accept': 'application/json',
+            'Sid': self.sid,
+            'Auth': self.session_token,
+            'neo-fin-key': 'neotradeapi',
+            'Authorization':  f'Bearer {self.access_token}'
+        }
+        url = self._route["order.book"]
+        url = url.format(server_id=self.server_id)
+
+        try:
+            response = requests.get(url, headers=headers, data=payload)
+            order_dict = response.json()
+            if order_dict["stat"] == "Ok":
+                recs = order_dict["data"]
+                for rec in recs:
+                    if rec["nOrdNo"] == order_no:
+                        result = rec
+                        break
+        except:
+            print(f"{order_no} fetch is not working")
+
+        return result
 
 
 class KsecInstrument:

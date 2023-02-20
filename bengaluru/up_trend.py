@@ -64,13 +64,16 @@ def fhz_uptrend_to_buy_condition(fhz_obj):
 
     if (
         (fhz_obj.pp > fhz_obj.pp1 > 65 > fhz_obj.pp2)
-        or (fhz_obj.pp_price > fhz_obj.pp1_price > fhz_obj.pp2_price)
+        or (
+            (fhz_obj.pp_price > fhz_obj.pp1_price > fhz_obj.pp2_price)
+            and (60 < fhz_obj.pp < 80)
+        )
     ):
         standard_requirement = True
 
     if basic_requirement and pre_order_requirement and standard_requirement:
         result = True
-
+    print(basic_requirement, pre_order_requirement, standard_requirement)
     return result
 
 
@@ -106,9 +109,7 @@ def trigger_fhz_uptrend():
                 status=FhZeroStatus.TO_BUY,
                 quantity=int(FH_MAX_TOTAL_PRICE / rec.last_price),
                 # quantity=1,
-                # last_price=rec.last_price,
-                # high_price=rec.last_price,
-                # trigger_price=rec.last_price,
+                last_price=rec.last_price,
                 pl_status=PlStatus.INPROG,
                 rank=rec.rank,
             )

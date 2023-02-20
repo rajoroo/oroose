@@ -21,6 +21,9 @@ class FiveHundredAdmin(admin.ModelAdmin):
         "pp2",
         "pp1",
         "pp",
+        "pp2_price",
+        "pp1_price",
+        "pp_price",
     )
     date_hierarchy = "date"
 

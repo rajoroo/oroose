@@ -3,7 +3,7 @@ FH_RANK_TILL: int = 5  # 5
 FH_GRACE_RANK: int = 2  # 2
 FH_MIN_PRICE: int = 20  # 20
 FH_MAX_PRICE: int = 4500  # 4500
-FH_MAX_TOTAL_PRICE: int = 50000  # 20000
+FH_MAX_TOTAL_PRICE: int = 1000  # 20000
 FH_MAX_PERCENT: int = 11  # 11
 FH_MAX_BUY_ORDER: int = 2  # 2
 

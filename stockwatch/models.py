@@ -57,9 +57,9 @@ class FiveHundred(models.Model):
         ]
 
     def get_date_difference(self):
-        to_date = datetime.today()
+        to_date = datetime.now()
         last_month_same_date = to_date - relativedelta(months=1, days=1)
-        exact_time = time(hour=9, minute=10)
+        exact_time = time(hour=9, minute=15)
         from_date = datetime.combine(last_month_same_date, exact_time)
         return from_date, to_date
 
@@ -84,13 +84,8 @@ class FiveHundred(models.Model):
         signal_status = SignalStatus.INPROG
         from_date, to_date = self.get_date_difference()
 
-        # if not (
-        #         (self.fhzerodowntrend_set.filter(pl_status=PlStatus.INPROG).exists()
-        #             or self.rank <= 9)
-        #         or (self.fhzerouptrend_set.filter(pl_status=PlStatus.INPROG).exists()
-        #              or self.rank <= 9)
-        # ):
-        #     return signal_status
+        if self.rank > 9 and (not self.fhzerouptrend_set.filter(pl_status=PlStatus.INPROG).exists()):
+            return signal_status
 
         tag_data = get_param_config_tag(tag="SMART")
         smart = SmartTool(**tag_data)
@@ -112,9 +107,9 @@ class FiveHundred(models.Model):
             df = pd.DataFrame({'close': current_list})
             result_df = calculate_rsi(df=df)
 
-            result_2 = result_df['rsi'].iloc[-3]
-            result_1 = result_df['rsi'].iloc[-2]
-            result = result_df['rsi'].iloc[-1]
+            result_2 = round(result_df['rsi'].iloc[-3], 2)
+            result_1 = round(result_df['rsi'].iloc[-2], 2)
+            result = round(result_df['rsi'].iloc[-1], 2)
 
             print(result_2, result_1, result, self.symbol)
             self.pp2 = result_2
