@@ -40,6 +40,19 @@ def check_valid_configs(row, config_type):
     return None
 
 
+def get_today_datetime(time_str):
+    """
+    Get today's time
+    Ex:
+        today = 2020-08-26
+        time_str = 1020
+        output is datetime.datetime(2020, 8, 26, 10, 20)
+    """
+    time_val = datetime.strptime(time_str, "%H%M").time()
+    time_obj = datetime.combine(datetime.today(), time_val)
+    return time_obj
+
+
 def handle_config_file(csv_file):
     csv_data = io.StringIO(csv_file.read().decode('utf-8'))
     df = pd.read_json(csv_data)

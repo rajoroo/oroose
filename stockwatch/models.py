@@ -3,11 +3,10 @@ from datetime import datetime, timedelta, time
 import numpy as np
 from django.db import models
 import pandas as pd
-from core.zero_util import get_history_five_min, get_kite, get_history_day
-from core.choice import FhZeroStatus, PlStatus
-from core.tools import calculate_rsi, get_param_config_tag
+from core.choice import PlStatus,FhZeroStatus
+from core.tools import calculate_rsi, get_param_config_tag, get_today_datetime
 from core.smart_util import SmartInstrument, SmartTool
-from core.ks_util import KsecInstrument, KsTool
+from core.ks_util import KsecInstrument
 from dateutil.relativedelta import relativedelta
 from stockwatch.stocks import PriceBand
 
@@ -81,14 +80,13 @@ class FiveHundred(models.Model):
         self.save()
 
     def get_signal_status(self):
-        signal_status = SignalStatus.INPROG
         from_date, to_date = self.get_date_difference()
 
         if not self.smart_token:
-            return signal_status
+            return True
 
         if self.rank > 9 and (not self.fhzerouptrend_set.filter(pl_status=PlStatus.INPROG).exists()):
-            return signal_status
+            return True
 
         tag_data = get_param_config_tag(tag="SMART_TRADE")
         smart = SmartTool(**tag_data)
@@ -122,4 +120,66 @@ class FiveHundred(models.Model):
             self.pp1_price = current_list[-2]
             self.pp_price = current_list[-1]
             self.save()
-        return signal_status
+        return True
+
+    def get_basic_requirement(self):
+        requirement = False
+
+        config = get_param_config_tag(tag="BENGALURU")
+        start_time = get_today_datetime(time_str=config.get("start_time"))
+        end_time = get_today_datetime(time_str=config.get("end_time"))
+        fhz_status = [FhZeroStatus.TO_BUY, FhZeroStatus.PURCHASED, FhZeroStatus.TO_SELL]
+        pl_status = [PlStatus.WINNER, PlStatus.INPROG]
+
+        if (
+            config.get("bengaluru_status")
+            and self.is_valid is True
+            and (self.rank <= 9)
+            and (config["min_price"] <= self.last_price <= config["max_price"])
+            and (self.percentage_change <= config["max_percentage"])
+            and (self.fhzerouptrend_set.all().count() < config["max_buy_order"])
+            and (not self.fhzerouptrend_set.filter(status__in=fhz_status).exists())
+            and (not self.fhzerouptrend_set.filter(pl_status__in=pl_status).exists())
+            and (not self.fhzerouptrend_set.filter(error=True).exists())
+            and (start_time <= datetime.now() <= end_time)
+            and (datetime.today().weekday() < 5)
+            and self.pp
+            and self.pp1
+            and self.pp2
+            and self.pp_price
+            and self.pp1_price
+            and self.pp2_price
+        ):
+            requirement = True
+
+        return requirement
+
+    def get_pre_order_requirement(self):
+        requirement = True
+        before_20_min = datetime.now() - timedelta(minutes=20)
+
+        if self.fhzerouptrend_set.all():
+            latest_fhz = self.fhzerouptrend_set.latest("updated_date")
+            if latest_fhz.updated_date > before_20_min:
+                requirement = False
+
+        return requirement
+
+    def get_standard_requirement(self):
+        requirement = False
+
+        # Return False is the condition didn't pass basic and pre-order requirement
+        if not (self.get_basic_requirement() and self.get_pre_order_requirement()):
+            return False
+
+        if (
+            (self.pp > self.pp1 > 65 > self.pp2)
+            or (
+                (self.rank <= 5)
+                and (self.pp_price > self.pp1_price > self.pp2_price)
+                and (60 < self.pp < 80)
+            )
+        ):
+            requirement = True
+
+        return requirement

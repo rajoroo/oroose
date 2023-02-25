@@ -44,9 +44,4 @@ app.conf.beat_schedule = {
         "schedule": 60.0,  # schedule every 1 minutes
         "args": (),
     },
-    "schedule-fhz-downtrend-minutes": {
-        "task": "bengaluru.tasks.schedule_fhz_downtrend",
-        "schedule": 60.0,  # schedule every 1 minutes
-        "args": (),
-    },
 }
