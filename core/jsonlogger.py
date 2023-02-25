@@ -1,6 +1,7 @@
 import logging
-import json_log_formatter
+
 import django
+import json_log_formatter
 
 
 class CeleryLogger(json_log_formatter.JSONFormatter):

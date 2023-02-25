@@ -1,17 +1,16 @@
-from datetime import datetime, timedelta, time
+from datetime import datetime, time, timedelta
 
 import numpy as np
-from django.db import models
 import pandas as pd
-from core.choice import PlStatus,FhZeroStatus
-from core.tools import calculate_rsi, get_param_config_tag, get_today_datetime
-from core.smart_util import SmartInstrument, SmartTool
-from core.ks_util import KsecInstrument
 from dateutil.relativedelta import relativedelta
-from stockwatch.stocks import PriceBand
+from django.db import models
 
-
+from core.choice import FhZeroStatus, PlStatus
+from core.ks_util import KsecInstrument
+from core.smart_util import SmartInstrument, SmartTool
+from core.tools import calculate_rsi, get_param_config_tag, get_today_datetime
 from stockwatch.choice import SignalStatus
+from stockwatch.stocks import PriceBand
 
 
 class StockWatchFh(models.Model):

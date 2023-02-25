@@ -10,8 +10,8 @@ from bengaluru.models import FhZeroStatus, FhZeroUpTrend
 from bengaluru.up_trend import uptrend_panic_pull
 from core.constant import LOG_SCHEDULE_LIVE_500
 from core.models import DataLog
-from stockwatch.models import FiveHundred
 from core.tools import get_param_config_tag
+from stockwatch.models import FiveHundred
 
 
 # Uptrend

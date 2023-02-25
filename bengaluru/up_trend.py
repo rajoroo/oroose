@@ -2,9 +2,8 @@ from datetime import datetime, timedelta
 
 from bengaluru.models import FhZeroUpTrend
 from core.choice import FhZeroStatus, PlStatus
-from stockwatch.models import FiveHundred
 from core.tools import get_param_config_tag, get_today_datetime
-
+from stockwatch.models import FiveHundred
 
 # def fhz_uptrend_to_buy_condition(fhz_obj):
 #     basic_requirement = False

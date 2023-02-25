@@ -1,12 +1,13 @@
 import logging
 from datetime import datetime
 
-from bengaluru.up_trend import process_fhz_uptrend, generate_bengaluru, maintain_bengaluru
-from core.configuration import only_one
-from core.constant import (
-    LOG_SCHEDULE_LIVE_500,
-    LOG_SCHEDULE_ZERO_500,
+from bengaluru.up_trend import (
+    generate_bengaluru,
+    maintain_bengaluru,
+    process_fhz_uptrend,
 )
+from core.configuration import only_one
+from core.constant import LOG_SCHEDULE_LIVE_500, LOG_SCHEDULE_ZERO_500
 from core.models import DataLog
 from core.tools import get_param_config_tag, get_today_datetime
 from oroose.celery import app

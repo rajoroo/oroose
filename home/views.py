@@ -1,20 +1,19 @@
-from datetime import datetime
 import time
+from datetime import datetime
 
 from django.contrib.auth.decorators import login_required
 from django.db.models import F
+from django.http import HttpResponseRedirect
 from django.shortcuts import HttpResponse, render
 from django.template.loader import render_to_string
+from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 
-from core.models import DataLog, ParameterConfig
-
-from django.http import HttpResponseRedirect
-from home.forms import UploadFileForm, OtpForm
-from core.tools import handle_config_file, get_param_config_tag, save_param_config_tag
-from core.smart_util import SmartTool
 from core.ks_util import KsTool
-from django.urls import reverse
+from core.models import DataLog, ParameterConfig
+from core.smart_util import SmartTool
+from core.tools import get_param_config_tag, handle_config_file, save_param_config_tag
+from home.forms import OtpForm, UploadFileForm
 
 
 @login_required(login_url="/accounts/login/")

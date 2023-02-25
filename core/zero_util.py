@@ -1,8 +1,8 @@
 import logging
 import time
-import pandas as pd
 from datetime import datetime, timedelta
 
+import pandas as pd
 from django.conf import settings
 from kiteconnect import KiteConnect
 

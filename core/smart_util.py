@@ -1,10 +1,11 @@
-from smartapi import SmartConnect
-from datetime import datetime
-import pyotp
-import pandas as pd
-from django.conf import settings
 import os
 import time
+from datetime import datetime
+
+import pandas as pd
+import pyotp
+from django.conf import settings
+from smartapi import SmartConnect
 
 
 class SmartTool:

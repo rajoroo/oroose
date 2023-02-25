@@ -3,10 +3,10 @@ from datetime import datetime
 from django.db import models
 
 from core.choice import FhZeroStatus, PlStatus
-from stockwatch.models import FiveHundred
-from core.tools import get_param_config_tag
 from core.ks_util import KsTool
 from core.smart_util import SmartTool
+from core.tools import get_param_config_tag
+from stockwatch.models import FiveHundred
 
 
 class FhZeroUpTrend(models.Model):
