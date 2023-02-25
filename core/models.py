@@ -24,6 +24,7 @@ class ConfigType(models.TextChoices):
 
 class ParameterConfig(models.Model):
     date = models.DateField(verbose_name="Date")
+    sequence = models.IntegerField(verbose_name="Sequence")
     name = models.CharField(max_length=100, verbose_name="Name")
     nick_name = models.CharField(max_length=100, verbose_name="Nick Name")
     tag = models.CharField(max_length=20, verbose_name="Tag")
@@ -49,7 +50,7 @@ class ParameterConfig(models.Model):
         return getattr(self, attr)
 
     class Meta:
-        ordering = ["tag", "nick_name"]
+        ordering = ["tag", "sequence"]
         constraints = [
             models.UniqueConstraint(
                 fields=["nick_name"], name="%(app_label)s_%(class)s_unique_parameter_configs"

@@ -66,6 +66,7 @@ def handle_config_file(csv_file):
     configs = [
         ParameterConfig(
             date=datetime.now(),
+            sequence=row["sequence"],
             name=row["name"],
             nick_name=row["nick_name"],
             config_type=row["config_type"].upper(),
