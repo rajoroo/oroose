@@ -8,9 +8,10 @@ from django.views.generic.edit import UpdateView
 
 from bengaluru.models import FhZeroStatus, FhZeroUpTrend
 from bengaluru.up_trend import uptrend_panic_pull
-from core.constant import LOG_SCHEDULE_LIVE_500, SETTINGS_FH_LIVE_STOCKS_NSE
+from core.constant import LOG_SCHEDULE_LIVE_500
 from core.models import DataLog, ParameterSettings
 from stockwatch.models import FiveHundred
+from core.tools import get_param_config_tag
 
 
 # Uptrend
@@ -37,7 +38,7 @@ class EditFhzUptrend(UpdateView):
 def load_bengaluru_content(request):
     live_500 = FiveHundred.objects.filter(date=datetime.today())
     live_pull_on = DataLog.objects.filter(name=LOG_SCHEDULE_LIVE_500).aggregate(Max("end_time"))["end_time__max"]
-    ps = ParameterSettings.objects.get(name=SETTINGS_FH_LIVE_STOCKS_NSE)
+    config = get_param_config_tag(tag="LIVE")
 
     progress = (
         FhZeroUpTrend.objects.filter(
@@ -58,7 +59,7 @@ def load_bengaluru_content(request):
     context = {
         "live_500": list(live_500.values()),
         "live_pull_on": live_pull_on,
-        "live_polling_status": ps.status,
+        "live_polling_status": config.get("live_status"),
         "progress": list(progress.values()),
         "errors": list(errors.values()),
         "progress_data_realized": progress.aggregate(Sum("pl_price"))["pl_price__sum"],

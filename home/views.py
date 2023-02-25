@@ -3,14 +3,11 @@ import time
 
 from django.contrib.auth.decorators import login_required
 from django.db.models import F
-from django.shortcuts import HttpResponse, render, redirect
-from django.template import Template, Context
+from django.shortcuts import HttpResponse, render
 from django.template.loader import render_to_string
-from django.template.loader import get_template
-from django.views.decorators.csrf import requires_csrf_token, csrf_exempt
+from django.views.decorators.csrf import csrf_exempt
 
-from core.configuration import parameter_store
-from core.models import DataLog, ParameterSettings, ParameterConfig
+from core.models import DataLog, ParameterConfig
 
 from django.http import HttpResponseRedirect
 from home.forms import UploadFileForm, OtpForm
@@ -28,9 +25,8 @@ def home_page(request):
 
 @login_required(login_url="/accounts/login/")
 def configuration_page(request):
-    param_settings = ParameterSettings.objects.all()
     configs = ParameterConfig.objects.all()
-    context = {"param_configs": parameter_store, "param_settings": param_settings, "active_page": "configuration", "configs": configs}
+    context = {"active_page": "configuration", "configs": configs}
     return render(request, "configuration/configure_settings.html", context=context)
 
 
@@ -41,14 +37,6 @@ def data_log_page(request):
 
     context = {"items": list(obj.values()), "active_page": "data_log"}
     return render(request, "base/data_log_view.html", context=context)
-
-
-def params_update(request, config_id):
-    status = request.GET.get("status", "false")
-    obj = ParameterSettings.objects.get(id=config_id)
-    obj.status = True if status == "true" else False
-    obj.save()
-    return HttpResponse(status=200)
 
 
 @csrf_exempt
