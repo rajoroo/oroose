@@ -1,45 +1,45 @@
 import logging
 from datetime import datetime
 
-from bengaluru.constant import BENGALURU_END, BENGALURU_START
 from bengaluru.up_trend import process_fhz_uptrend, generate_bengaluru, maintain_bengaluru
 from core.configuration import only_one
 from core.constant import (
     LOG_SCHEDULE_LIVE_500,
     LOG_SCHEDULE_ZERO_500,
-    SETTINGS_FH_LIVE_STOCKS_NSE,
-    SETTINGS_FHZ_DOWNTREND,
-    SETTINGS_FHZ_UPTREND,
 )
-from core.models import DataLog, ParameterSettings
+from core.models import DataLog
+from core.tools import get_param_config_tag, get_today_datetime
 from oroose.celery import app
-from stockwatch.constant import FIVEHUNDRED_END, FIVEHUNDRED_START, LIVE_END, LIVE_START
 from stockwatch.stock_monitor import polling_live_stocks_five_hundred, polling_stocks
 
 logger = logging.getLogger("celery")
 
 
 def condition_schedule_live_stocks_fh():
-    ps = ParameterSettings.objects.get(name=SETTINGS_FH_LIVE_STOCKS_NSE)
-    start = datetime.strptime(LIVE_START, "%H%M").time()
-    end = datetime.strptime(LIVE_END, "%H%M").time()
-    start_time = datetime.combine(datetime.today(), start)
-    end_time = datetime.combine(datetime.today(), end)
+    config = get_param_config_tag(tag="LIVE")
+    start_time = get_today_datetime(time_str=config.get("start_time"))
+    end_time = get_today_datetime(time_str=config.get("end_time"))
 
-    if ps.status and (start_time <= datetime.now() <= end_time) and (datetime.today().weekday() < 5):
+    if (
+        config.get("live_status")
+        and (start_time <= datetime.now() <= end_time)
+        and (datetime.today().weekday() < 5)
+    ):
         return True
 
     return False
 
 
-def condition_schedule_fh_stocks():
-    ps = ParameterSettings.objects.get(name=SETTINGS_FH_LIVE_STOCKS_NSE)
-    start = datetime.strptime(FIVEHUNDRED_START, "%H%M").time()
-    end = datetime.strptime(FIVEHUNDRED_END, "%H%M").time()
-    start_time = datetime.combine(datetime.today(), start)
-    end_time = datetime.combine(datetime.today(), end)
+def condition_schedule_bengaluru():
+    config = get_param_config_tag(tag="BENGALURU")
+    start_time = get_today_datetime(time_str=config.get("start_time"))
+    end_time = get_today_datetime(time_str=config.get("end_time"))
 
-    if ps.status and (start_time <= datetime.now() <= end_time) and (datetime.today().weekday() < 5):
+    if (
+        config.get("bengaluru_status")
+        and (start_time <= datetime.now() <= end_time)
+        and (datetime.today().weekday() < 5)
+    ):
         return True
 
     return False
@@ -61,7 +61,7 @@ def schedule_live_stocks_five_hundred():
         polling_live_stocks_five_hundred()
         polling_stocks()
 
-    if condition_schedule_fh_stocks():
+    if condition_schedule_bengaluru():
         generate_bengaluru()
         maintain_bengaluru()
 
@@ -69,19 +69,6 @@ def schedule_live_stocks_five_hundred():
     logger.info("FH end")
     obj.end_time = datetime.now()
     obj.save()
-
-
-def condition_schedule_fhz_uptrend():
-    ps = ParameterSettings.objects.get(name=SETTINGS_FHZ_UPTREND)
-    start = datetime.strptime(BENGALURU_START, "%H%M").time()
-    end = datetime.strptime(BENGALURU_END, "%H%M").time()
-    start_time = datetime.combine(datetime.today(), start)
-    end_time = datetime.combine(datetime.today(), end)
-
-    if ps.status and (start_time <= datetime.now() <= end_time) and (datetime.today().weekday() < 5):
-        return True
-
-    return False
 
 
 @app.task(name="bengaluru.tasks.schedule_fhz_uptrend")
@@ -94,7 +81,7 @@ def schedule_fhz_uptrend():
         name=LOG_SCHEDULE_ZERO_500,
     )
     obj.save()
-    if condition_schedule_fhz_uptrend():
+    if condition_schedule_bengaluru():
         process_fhz_uptrend()
     logger.info("ZERO uptrend end")
     obj.end_time = datetime.now()
