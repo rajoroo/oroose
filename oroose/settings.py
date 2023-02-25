@@ -143,7 +143,7 @@ LOGGING = {
         },
         "json": {
             "()": "core.jsonlogger.CeleryLogger",
-        }
+        },
     },
     "handlers": {
         "file": {
@@ -212,5 +212,5 @@ SMART_MASTER = "https://margincalculator.angelbroking.com/OpenAPI_File/files/Ope
 KSEC_MASTER = "https://lapi.kotaksecurities.com/wso2-scripmaster/v1/prod/{today}/transformed/nse_cm.csv"
 
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = "/media/"
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")

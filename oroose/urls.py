@@ -26,7 +26,6 @@ urlpatterns = [
     path("configuration_page/", views.configuration_page, name="configuration"),
     path("data_log_page/", views.data_log_page, name="data_log"),
     path("config_file_upload/", views.upload_config_file, name="upload_config_file"),
-
     path("generate_smart_token/", views.generate_smart_token, name="generate_smart_token"),
     path("generate_ksec_token/", views.generate_ksec_token, name="generate_ksec_token"),
 ]
