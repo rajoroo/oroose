@@ -84,10 +84,13 @@ class FiveHundred(models.Model):
         signal_status = SignalStatus.INPROG
         from_date, to_date = self.get_date_difference()
 
+        if not self.smart_token:
+            return signal_status
+
         if self.rank > 9 and (not self.fhzerouptrend_set.filter(pl_status=PlStatus.INPROG).exists()):
             return signal_status
 
-        tag_data = get_param_config_tag(tag="SMART")
+        tag_data = get_param_config_tag(tag="SMART_TRADE")
         smart = SmartTool(**tag_data)
         smart.get_object()
         history_data = smart.get_historical_data(

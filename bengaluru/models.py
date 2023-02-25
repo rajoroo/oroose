@@ -112,10 +112,10 @@ class FhZeroUpTrend(models.Model):
         self.save()
 
     def maintain_order(self):
-        high_price = self.high_price - (self.high_price * 0.005)
+        high_price = self.high_price - (self.high_price * 0.003)
         buy_price = self.buy_price - (self.buy_price * 0.003)
 
-        tag_data = get_param_config_tag(tag="SMART")
+        tag_data = get_param_config_tag(tag="SMART_TRADE")
         smart = SmartTool(**tag_data)
         smart.get_object()
         ltp_data = smart.get_ltp_data(
@@ -126,7 +126,7 @@ class FhZeroUpTrend(models.Model):
         print(ltp_data,"---LTP", high_price, "-----High", buy_price, "-----BUY")
         if (ltp_data < high_price) or (ltp_data < buy_price):
             self.status = FhZeroStatus.TO_SELL
-
+            self.sell_order()
         if ltp_data > self.high_price:
             self.high_price = ltp_data
 

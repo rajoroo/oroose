@@ -52,7 +52,7 @@ class SmartTool:
                 "fromdate": fromdate,
                 "todate": todate
             }
-            time.sleep(2)
+            time.sleep(3)
             result = self.smart.getCandleData(historicParam)
 
         except Exception as e:
@@ -69,6 +69,7 @@ class SmartTool:
         """
         ltp = None
         try:
+            time.sleep(3)
             result = self.smart.ltpData(exchange, tradingsymbol, symboltoken)
             print(result)
             ltp = result["data"]["ltp"]

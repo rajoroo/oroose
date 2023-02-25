@@ -1,4 +1,5 @@
 from datetime import datetime
+import time
 
 from django.contrib.auth.decorators import login_required
 from django.db.models import F
@@ -66,8 +67,8 @@ def upload_config_file(request):
 
 def generate_smart_token(request):
     """Pull the five hundred data from stock api"""
-
-    config = get_param_config_tag(tag="SMART")
+    # SMART Token
+    config = get_param_config_tag(tag="SMART_TRADE")
 
     obj = SmartTool(
         api_key=config["api_key"],
@@ -76,7 +77,19 @@ def generate_smart_token(request):
         totp=config["totp"],
     )
     params = obj.generate_token()
-    save_param_config_tag(params=params, tag="SMART")
+    save_param_config_tag(params=params, tag="SMART_TRADE")
+    time.sleep(20)
+    # SMART Token
+    config = get_param_config_tag(tag="SMART_HISTORY")
+
+    obj = SmartTool(
+        api_key=config["api_key"],
+        client_code=config["client_code"],
+        password=config["password"],
+        totp=config["totp"],
+    )
+    params = obj.generate_token()
+    save_param_config_tag(params=params, tag="SMART_HISTORY")
     return HttpResponse(status=200)
 
 

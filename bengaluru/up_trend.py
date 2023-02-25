@@ -38,12 +38,6 @@ def fhz_uptrend_to_buy_condition(fhz_obj):
     if (
         ps.status
         and fhz_obj.is_valid is True
-        and fhz_obj.pp
-        and fhz_obj.pp1
-        and fhz_obj.pp2
-        and fhz_obj.pp_price
-        and fhz_obj.pp1_price
-        and fhz_obj.pp2_price
         # and (fhz_obj.pp > fhz_obj.pp1 > 65 > fhz_obj.pp2)
         and (fhz_obj.rank <= 9)
         and (FH_MIN_PRICE <= fhz_obj.last_price <= FH_MAX_PRICE)
@@ -63,10 +57,19 @@ def fhz_uptrend_to_buy_condition(fhz_obj):
             pre_order_requirement = False
 
     if (
-        (fhz_obj.pp > fhz_obj.pp1 > 65 > fhz_obj.pp2)
-        or (
-            (fhz_obj.pp_price > fhz_obj.pp1_price > fhz_obj.pp2_price)
-            and (60 < fhz_obj.pp < 80)
+        fhz_obj.pp
+        and fhz_obj.pp1
+        and fhz_obj.pp2
+        and fhz_obj.pp_price
+        and fhz_obj.pp1_price
+        and fhz_obj.pp2_price
+        and (
+            (fhz_obj.pp > fhz_obj.pp1 > 65 > fhz_obj.pp2)
+            or (
+                (fhz_obj.rank <= 5)
+                and (fhz_obj.pp_price > fhz_obj.pp1_price > fhz_obj.pp2_price)
+                and (60 < fhz_obj.pp < 80)
+            )
         )
     ):
         standard_requirement = True
@@ -77,26 +80,33 @@ def fhz_uptrend_to_buy_condition(fhz_obj):
     return result
 
 
-def fhz_uptrend_to_sell_condition(fhz_obj):
-    result = False
+def fhz_uptrend_maintain_order(fhz_obj):
     ps = ParameterSettings.objects.get(name=SETTINGS_FHZ_UPTREND)
+    purchased_obj = fhz_obj.fhzerouptrend_set.filter(status=FhZeroStatus.PURCHASED).first()
     if (
         ps.status
-        and fhz_obj.pp
-        and fhz_obj.pp1
-        and fhz_obj.pp2
-        and ((fhz_obj.pp1 < 65) or (fhz_obj.pp < 65))
+        # and fhz_obj.pp
+        # and fhz_obj.pp1
+        # and fhz_obj.pp2
+        # and ((fhz_obj.pp1 < 65) or (fhz_obj.pp < 65))
         # and (pre_signal_status == signal_status == SignalStatus.SELL)
-        and fhz_obj.fhzerouptrend_set.filter(status=FhZeroStatus.PURCHASED).exists()
+        # and fhz_obj.fhzerouptrend_set.filter(status=FhZeroStatus.PURCHASED).exists()
+        and purchased_obj
     ):
-        result = True
+        purchased_obj.maintain_order()
 
-    return result
+    return True
 
 
 def trigger_fhz_uptrend():
     five_hundred = FiveHundred.objects.filter(date=datetime.today())
     for rec in five_hundred:
+
+        # Maintain Order
+        purchased_obj = rec.fhzerouptrend_set.filter(status=FhZeroStatus.PURCHASED).first()
+        if purchased_obj:
+            purchased_obj.maintain_order()
+            # return True
 
         #  Buy condition check
         if fhz_uptrend_to_buy_condition(fhz_obj=rec):
@@ -115,13 +125,6 @@ def trigger_fhz_uptrend():
             )
             five_hundred_zero.save()
 
-        #  Sell condition check
-        # if fhz_uptrend_to_sell_condition(fhz_obj=rec):
-        #     purchased_obj = rec.fhzerouptrend_set.filter(status=FhZeroStatus.PURCHASED)
-        #     fhz_obj = purchased_obj.first()
-        #     fhz_obj.status = FhZeroStatus.TO_SELL
-        #     fhz_obj.save()
-
     return True
 
 
@@ -139,8 +142,8 @@ def process_fhz_uptrend():
         if rec.status == FhZeroStatus.TO_BUY:
             rec.buy_order()
 
-        elif rec.status == FhZeroStatus.PURCHASED:
-            rec.maintain_order()
+        # elif rec.status == FhZeroStatus.PURCHASED:
+        #     rec.maintain_order()
 
         elif rec.status == FhZeroStatus.TO_SELL:
             rec.sell_order()
