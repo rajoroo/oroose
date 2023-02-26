@@ -1,5 +1,6 @@
 from datetime import datetime
-from mysuru.models import TopTen, MysuruTrend, PlStatus, TrendStatus
+from django.db.models import F
+from mysuru.models import TopTen, MysuruTrend, PlStatus, TrendStatus,DayStatus
 from stockwatch.models import StockWatchFh
 import random
 from core.tools import get_param_config_tag
@@ -18,39 +19,33 @@ def polling_top_ten_stocks():
             identifier=value["identifier"],
             isin=value["isin"],
             company_name=value["company_name"],
-            rank=value["rank"],
             last_price=value["last_price"],
             percentage_change=value["percentage_change"],
         )
-        tt.is_valid_stock()
         tt.get_smart_token()
+        tt.is_valid_stock()
     return True
 
 
 def process_top_ten_get_year_macd():
-    recs = TopTen.objects.filter(is_valid=True, ema_200__isnull=True)[:10]
+    recs = TopTen.objects.filter(is_valid=True, ema_200__isnull=True)[:50]
     for rec in recs:
         rec.get_year_macd()
+        rec.get_macd()
         rec.get_day_status()
 
 
 def process_top_ten_accepted():
-    config = get_param_config_tag(tag="MYSURU")
     accepted = TopTen.objects.filter(is_accepted=True).exists()
     if accepted:
         return True
 
-    recs = TopTen.objects.filter(
-        is_valid=True,
-        ema_200__isnull=False,
-        last_price__gt=config["min_price"],
-        last_price__lt=config["max_price"],
-        percentage_change__lt=config["max_percentage"],
-    )[:100]
-    vals = random.choices(recs, k=5)
+    recs = TopTen.objects.filter(day_status=DayStatus.YES).values_list('pk', flat=True)
+    vals = random.sample(list(recs), 5)
     for val in vals:
-        val.is_accepted = True
-        val.save()
+        obj = TopTen.objects.get(pk=val)
+        obj.is_accepted = True
+        obj.save()
 
 
 def trigger_accepted_top_ten():
@@ -59,6 +54,8 @@ def trigger_accepted_top_ten():
         process_top_ten_get_year_macd()
     else:
         process_top_ten_accepted()
+
+    return True
 
 
 def process_top_ten_get_macd():

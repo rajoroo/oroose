@@ -6,12 +6,10 @@ from django.http import HttpResponse
 from django.shortcuts import render, reverse
 
 from mysuru.models import MysuruTrend, TrendStatus, TopTen
-from bengaluru.up_trend import uptrend_panic_pull
 from core.constant import LOG_SCHEDULE_LIVE_500
 from core.models import DataLog
 from core.tools import get_param_config_tag
-from stockwatch.models import FiveHundred
-from mysuru.polling_top_ten import trigger_accepted_top_ten
+from mysuru.polling_top_ten import trigger_accepted_top_ten, mysuru_trend_panic_pull, polling_top_ten_stocks
 
 
 # Uptrend
@@ -21,13 +19,18 @@ def mysuru_page(request):
     return render(request, "mysuru/base_page.html", context)
 
 
+def mysuru_load_top_ten_api(request):
+    polling_top_ten_stocks()
+    return HttpResponse(status=200)
+
+
 def mysuru_get_accepted_api(request):
     trigger_accepted_top_ten()
     return HttpResponse(status=200)
 
 
-def trigger_uptrend_panic_pull(request):
-    uptrend_panic_pull()
+def mysuru_panic_pull(request):
+    mysuru_trend_panic_pull()
     return HttpResponse(status=200)
 
 

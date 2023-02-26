@@ -93,11 +93,27 @@ class TopTen(models.Model):
 
     def is_valid_stock(self):
         band = PriceBand(instrument=self.symbol)
-        self.is_valid = band.get_valid_instrument()
-        self.save()
+        if self.smart_token and band.get_valid_instrument():
+            self.is_valid = True
+            self.save()
 
     def get_day_status(self):
-        if (self.last_price > self.ema_200) and (self.day_macd > self.day_macd_signal):
+        config = get_param_config_tag(tag="MYSURU")
+        if (
+                self.is_valid
+                and self.last_price
+                and self.ema_200
+                and self.day_macd
+                and self.day_macd_signal
+                and self.macd
+                and self.macd_signal
+                and (self.last_price > config["min_price"])
+                and (self.last_price < config["max_price"])
+                and (self.percentage_change < config["max_percentage"])
+                and (self.last_price > self.ema_200)
+                and (self.day_macd > self.day_macd_signal)
+                and (self.macd_signal > self.macd)
+        ):
             self.day_status = DayStatus.YES
         else:
             self.day_status = DayStatus.NO
@@ -123,7 +139,7 @@ class TopTen(models.Model):
 
         current_list = df["close"].to_list()
 
-        df['ema_200'] = df['close'].ewm(span=200, adjust=False).mean()
+        df['ema_200'] = df['close'].rolling(window=200).mean()
         self.ema_200 = round(df["ema_200"].iloc[-1], 2)
 
         if current_list and len(current_list) > 16:
@@ -136,8 +152,10 @@ class TopTen(models.Model):
             self.save()
 
     def get_macd(self):
-        from_date, to_date = self.get_year_date_difference()
+        if not((self.last_price > self.ema_200) and (self.day_macd > self.day_macd_signal)):
+            return False
 
+        from_date, to_date = self.get_year_date_difference()
         tag_data = get_param_config_tag(tag="SMART_TRADE")
         smart = SmartTool(**tag_data)
         smart.get_object()
@@ -175,6 +193,7 @@ class TopTen(models.Model):
         if (
             config.get("mysuru_status")
             and self.is_valid is True
+            and self.day_status == DayStatus.YES
             and (self.mysurutrend_set.all().count() < config["max_buy_order"])
             and (not self.mysurutrend_set.filter(status__in=trend_status).exists())
             and (not self.mysurutrend_set.filter(pl_status__in=pl_status).exists())
