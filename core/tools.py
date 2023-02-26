@@ -118,3 +118,19 @@ def calculate_rsi(df):
 
     # return df['rsi'].iloc[-3], df['rsi'].iloc[-2], df['rsi'].iloc[-1]
     return df
+
+
+def calculate_macd(df):
+    k = df['close'].ewm(span=12, adjust=False, min_periods=12).mean()
+    d = df['close'].ewm(span=26, adjust=False, min_periods=26).mean()
+    macd = k - d
+    macd_s = macd.ewm(span=9, adjust=False, min_periods=9).mean()
+    macd_h = macd - macd_s
+    df['macd'] = df.index.map(macd)
+    df['macd_h'] = df.index.map(macd_h)
+    df['macd_s'] = df.index.map(macd_s)
+    # signal = self.generate_signals(df)
+    # df['buy_sig'] = signal[0]
+    # df['sell_sig'] = signal[1]
+    print(df)
+    return df

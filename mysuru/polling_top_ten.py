@@ -1,0 +1,137 @@
+from datetime import datetime
+from mysuru.models import TopTen, MysuruTrend, PlStatus, TrendStatus
+from stockwatch.models import StockWatchFh
+import random
+from core.tools import get_param_config_tag
+
+
+def polling_top_ten_stocks():
+    obj = StockWatchFh.objects.all().order_by("-id").first()
+    if (not obj) and (not hasattr(obj, "stock_data")):
+        return False
+
+    TopTen.objects.all().delete()
+    for key, value in obj.stock_data.items():
+        tt = TopTen.objects.create(
+            date=datetime.today(),
+            symbol=value["symbol"],
+            identifier=value["identifier"],
+            isin=value["isin"],
+            company_name=value["company_name"],
+            rank=value["rank"],
+            last_price=value["last_price"],
+            percentage_change=value["percentage_change"],
+        )
+        tt.is_valid_stock()
+        tt.get_smart_token()
+    return True
+
+
+def process_top_ten_get_year_macd():
+    recs = TopTen.objects.filter(is_valid=True, ema_200__isnull=True)[:10]
+    for rec in recs:
+        rec.get_year_macd()
+        rec.get_day_status()
+
+
+def process_top_ten_accepted():
+    config = get_param_config_tag(tag="MYSURU")
+    accepted = TopTen.objects.filter(is_accepted=True).exists()
+    if accepted:
+        return True
+
+    recs = TopTen.objects.filter(
+        is_valid=True,
+        ema_200__isnull=False,
+        last_price__gt=config["min_price"],
+        last_price__lt=config["max_price"],
+        percentage_change__lt=config["max_percentage"],
+    )[:100]
+    vals = random.choices(recs, k=5)
+    for val in vals:
+        val.is_accepted = True
+        val.save()
+
+
+def trigger_accepted_top_ten():
+    top_ten_exists = TopTen.objects.filter(is_valid=True, ema_200__isnull=True).exists()
+    if top_ten_exists:
+        process_top_ten_get_year_macd()
+    else:
+        process_top_ten_accepted()
+
+
+def process_top_ten_get_macd():
+    recs = TopTen.objects.filter(is_accepted=True)
+    for rec in recs:
+        rec.get_macd()
+
+
+def generate_mysuru():
+    top_ten = TopTen.objects.filter(is_accepted=True)
+    config = get_param_config_tag(tag="MYSURU")
+    for rec in top_ten:
+        #  Buy condition check
+        if rec.get_standard_requirement():
+            mysuru = MysuruTrend(
+                date=datetime.now(),
+                created_date=datetime.now(),
+                symbol=rec.symbol,
+                isin=rec.isin,
+                five_hundred=rec,
+                status=TrendStatus.TO_BUY,
+                quantity=int(config["max_total_price"] / rec.last_price),
+                # quantity=1,
+                last_price=rec.last_price,
+                pl_status=PlStatus.INPROG,
+                rank=rec.rank,
+            )
+            mysuru.save()
+
+    return True
+
+
+def maintain_mysuru():
+    """Maintain order happens with every 5 min"""
+    recs = MysuruTrend.objects.filter(
+        date=datetime.today(),
+        error=False,
+        status=TrendStatus.PURCHASED,
+    )
+    for rec in recs:
+        purchased_obj = rec.mysurutrend_set.filter(status=TrendStatus.PURCHASED).first()
+        if purchased_obj:
+            purchased_obj.maintain_order()
+
+
+def process_mysuru_trend():
+    mysuru = MysuruTrend.objects.filter(
+        date=datetime.today(),
+        error=False,
+        status__in=[TrendStatus.TO_BUY, TrendStatus.TO_SELL],
+    )
+
+    if not mysuru:
+        return None
+
+    for rec in mysuru:
+        if rec.status == TrendStatus.TO_BUY:
+            rec.buy_order()
+
+        elif rec.status == TrendStatus.TO_SELL:
+            rec.sell_order()
+
+
+def mysuru_trend_panic_pull():
+    mysuru = MysuruTrend.objects.filter(
+        date=datetime.today(),
+        status__in=[TrendStatus.PURCHASED, TrendStatus.TO_SELL],
+        error=False,
+    )
+    if not mysuru:
+        return None
+
+    for rec in mysuru:
+        rec.sell_order()
+
+    return True
