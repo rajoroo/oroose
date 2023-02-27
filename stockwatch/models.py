@@ -178,11 +178,9 @@ class FiveHundred(models.Model):
 
         if (
             (self.pp > self.pp1 > 65 > self.pp2)
-            or (
-                (self.rank <= 5)
-                and (self.pp_price > self.pp1_price > self.pp2_price)
-                and (60 < self.pp < 80)
-            )
+            or (self.pp > self.pp1 > 70 > self.pp2)
+            or (self.pp > self.pp1 > 75 > self.pp2)
+
         ):
             requirement = True
 

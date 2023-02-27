@@ -64,7 +64,6 @@ def schedule_live_stocks_five_hundred():
         polling_stocks()
 
     if condition_schedule_bengaluru():
-        maintain_bengaluru()
         generate_bengaluru()
 
     print("*********************************************")

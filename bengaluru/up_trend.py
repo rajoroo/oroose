@@ -84,17 +84,6 @@ def generate_bengaluru():
     return True
 
 
-def maintain_bengaluru():
-    """Maintain order happens with every 5 min"""
-    recs = FhZeroUpTrend.objects.filter(
-        date=datetime.today(),
-        error=False,
-        status=FhZeroStatus.PURCHASED,
-    )
-    for purchased_obj in recs:
-        purchased_obj.maintain_order()
-
-
 def process_fhz_uptrend():
     fhz = FhZeroUpTrend.objects.filter(
         date=datetime.today(),
@@ -109,8 +98,8 @@ def process_fhz_uptrend():
         if rec.status == FhZeroStatus.TO_BUY:
             rec.buy_order()
 
-        # elif rec.status == FhZeroStatus.PURCHASED:
-        #     rec.maintain_order()
+        elif rec.status == FhZeroStatus.PURCHASED:
+            rec.maintain_order()
 
         elif rec.status == FhZeroStatus.TO_SELL:
             rec.sell_order()
