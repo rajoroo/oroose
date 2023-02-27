@@ -6,7 +6,7 @@ from django.http import HttpResponse
 from django.shortcuts import render, reverse
 
 from mysuru.models import MysuruTrend, TrendStatus, TopTen
-from core.constant import LOG_SCHEDULE_LIVE_500
+from core.constant import LOG_SCHEDULE_MYSURU
 from core.models import DataLog
 from core.tools import get_param_config_tag
 from mysuru.polling_top_ten import trigger_accepted_top_ten, mysuru_trend_panic_pull, polling_top_ten_stocks
@@ -36,7 +36,7 @@ def mysuru_panic_pull(request):
 
 def load_mysuru_content(request):
     top_10 = TopTen.objects.filter(date=datetime.today(), is_accepted=True)
-    top_pull_on = DataLog.objects.filter(name=LOG_SCHEDULE_LIVE_500).aggregate(Max("end_time"))["end_time__max"]
+    top_pull_on = DataLog.objects.filter(name=LOG_SCHEDULE_MYSURU).aggregate(Max("end_time"))["end_time__max"]
     config = get_param_config_tag(tag="TOP_TEN")
 
     progress = (

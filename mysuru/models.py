@@ -63,13 +63,28 @@ class TopTen(models.Model):
         ]
 
     def get_year_date_difference(self):
-        to_date = datetime.now()
+        now = datetime.now()
+        if now.hour < 18:
+            now = datetime.now() - relativedelta(days=1)
+
+        to_date = now
         last_month_same_date = to_date - relativedelta(years=1, days=1)
         exact_time = time(hour=9, minute=15)
         from_date = datetime.combine(last_month_same_date, exact_time)
         return from_date, to_date
 
     def get_month_date_difference(self):
+        now = datetime.now()
+        if now.hour < 18:
+            now = datetime.now() - relativedelta(days=1)
+
+        to_date = now
+        last_month_same_date = to_date - relativedelta(months=1, days=1)
+        exact_time = time(hour=9, minute=15)
+        from_date = datetime.combine(last_month_same_date, exact_time)
+        return from_date, to_date
+
+    def get_date_difference(self):
         to_date = datetime.now()
         last_month_same_date = to_date - relativedelta(months=1, days=1)
         exact_time = time(hour=9, minute=15)
@@ -123,46 +138,51 @@ class TopTen(models.Model):
     def get_year_macd(self):
         from_date, to_date = self.get_year_date_difference()
 
-        tag_data = get_param_config_tag(tag="SMART_TRADE")
-        smart = SmartTool(**tag_data)
-        smart.get_object()
-        history_data = smart.get_historical_data(
-            exchange="NSE",
-            symboltoken=self.smart_token,
+        data = self.generate_macd(
             interval="ONE_DAY",
-            fromdate=from_date.strftime("%Y-%m-%d %H:%M"),
-            todate=to_date.strftime("%Y-%m-%d %H:%M")
+            from_date=from_date,
+            to_date=to_date
         )
+        self.day_macd = data[0]
+        self.day_macd_signal = data[1]
+        self.day_macd_histogram = data[2]
+        self.save()
 
-        df = pd.DataFrame(history_data)
-        df[["date", "open", "high", "low", "close", "volume"]] = pd.DataFrame(df.data.tolist(), index=df.index)
-
-        current_list = df["close"].to_list()
-
-        df['ema_200'] = df['close'].rolling(window=200).mean()
-        self.ema_200 = round(df["ema_200"].iloc[-1], 2)
-
-        if current_list and len(current_list) > 16:
-            df = pd.DataFrame({'close': current_list})
-            result_df = calculate_macd(df=df)
-
-            self.day_macd = round(result_df['macd'].iloc[-1], 2)
-            self.day_macd_signal = round(result_df['macd_s'].iloc[-1], 2)
-            self.day_macd_histogram = round(result_df['macd_h'].iloc[-1], 2)
-            self.save()
-
-    def get_macd(self):
+    def get_day_macd(self):
         if not((self.last_price > self.ema_200) and (self.day_macd > self.day_macd_signal)):
             return False
 
-        from_date, to_date = self.get_year_date_difference()
+        from_date, to_date = self.get_month_date_difference()
+        data = self.generate_macd(
+            interval="FIVE_MINUTE",
+            from_date=from_date,
+            to_date=to_date
+        )
+        self.macd = data[0]
+        self.macd_signal = data[1]
+        self.macd_histogram = data[2]
+        self.save()
+
+    def get_macd(self):
+        from_date, to_date = self.get_date_difference()
+        data = self.generate_macd(
+            interval="FIVE_MINUTE",
+            from_date=from_date,
+            to_date=to_date
+        )
+        self.macd = data[0]
+        self.macd_signal = data[1]
+        self.macd_histogram = data[2]
+        self.save()
+
+    def generate_macd(self, interval, from_date, to_date):
         tag_data = get_param_config_tag(tag="SMART_TRADE")
         smart = SmartTool(**tag_data)
         smart.get_object()
         history_data = smart.get_historical_data(
             exchange="NSE",
             symboltoken=self.smart_token,
-            interval="FIVE_MINUTE",
+            interval=interval,
             fromdate=from_date.strftime("%Y-%m-%d %H:%M"),
             todate=to_date.strftime("%Y-%m-%d %H:%M")
         )
@@ -176,10 +196,11 @@ class TopTen(models.Model):
             df = pd.DataFrame({'close': current_list})
             result_df = calculate_macd(df=df)
 
-            self.macd = round(result_df['macd'].iloc[-1], 2)
-            self.macd_signal = round(result_df['macd_s'].iloc[-1], 2)
-            self.macd_histogram = round(result_df['macd_h'].iloc[-1], 2)
-            self.save()
+            macd = round(result_df['macd'].iloc[-1], 2)
+            macd_signal = round(result_df['macd_s'].iloc[-1], 2)
+            macd_histogram = round(result_df['macd_h'].iloc[-1], 2)
+            return macd, macd_signal, macd_histogram
+        return None, None, None
 
     def get_basic_requirement(self):
         requirement = False

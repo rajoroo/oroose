@@ -31,7 +31,7 @@ def process_top_ten_get_year_macd():
     recs = TopTen.objects.filter(is_valid=True, ema_200__isnull=True)[:50]
     for rec in recs:
         rec.get_year_macd()
-        rec.get_macd()
+        rec.get_day_macd()
         rec.get_day_status()
 
 
@@ -77,8 +77,8 @@ def generate_mysuru():
                 isin=rec.isin,
                 five_hundred=rec,
                 status=TrendStatus.TO_BUY,
-                quantity=int(config["max_total_price"] / rec.last_price),
-                # quantity=1,
+                # quantity=int(config["max_total_price"] / rec.last_price),
+                quantity=1,
                 last_price=rec.last_price,
                 pl_status=PlStatus.INPROG,
                 rank=rec.rank,
