@@ -28,7 +28,7 @@
                 <th>Profit/Loss</th>
             </tr>
             {% for item in sold_data %}
-            <tr onClick="parent.open('{% url 'fhz_downtrend_record' item.id %}')">
+            <tr>
                 <td>{{ item.symbol }}</td>
                 <td>{{ item.quantity }}</td>
                 <td>{% if item.rank %}{{ item.rank }}{% endif %}</td>

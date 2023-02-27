@@ -33,9 +33,9 @@ def update_five_hundred(data):
                 percentage_change=value["percentage_change"],
                 signal_status=SignalStatus.INPROG,
             )
-            fh.is_valid_stock()
             fh.get_smart_token()
             # fh.get_ksec_token()
+            fh.is_valid_stock()
             fh.get_signal_status()
 
     return True

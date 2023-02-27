@@ -62,9 +62,12 @@ class FiveHundred(models.Model):
         return from_date, to_date
 
     def get_smart_token(self):
-        obj = SmartInstrument(instrument=self.symbol)
-        result = obj.get_instrument()
-        self.smart_token = str(result.get("token"))
+        try:
+            obj = SmartInstrument(instrument=self.symbol)
+            result = obj.get_instrument()
+            self.smart_token = str(result.get("token"))
+        except:
+            pass
         self.save()
 
     def get_ksec_token(self):
@@ -75,8 +78,9 @@ class FiveHundred(models.Model):
 
     def is_valid_stock(self):
         band = PriceBand(instrument=self.symbol)
-        self.is_valid = band.get_valid_instrument()
-        self.save()
+        if self.smart_token and band.get_valid_instrument():
+            self.is_valid = True
+            self.save()
 
     def get_signal_status(self):
         from_date, to_date = self.get_date_difference()
@@ -132,6 +136,7 @@ class FiveHundred(models.Model):
 
         if (
             config.get("bengaluru_status")
+            and self.smart_token
             and self.is_valid is True
             and (self.rank <= 9)
             and (config["min_price"] <= self.last_price <= config["max_price"])

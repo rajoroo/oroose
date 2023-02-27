@@ -64,8 +64,8 @@ def schedule_live_stocks_five_hundred():
         polling_stocks()
 
     if condition_schedule_bengaluru():
-        generate_bengaluru()
         maintain_bengaluru()
+        generate_bengaluru()
 
     print("*********************************************")
     logger.info("FH end")
@@ -118,8 +118,8 @@ def schedule_live_stocks_five_hundred():
 
     if condition_schedule_mysuru():
         pass
-        # generate_mysuru()
         # maintain_mysuru()
+        # generate_mysuru()
 
     print("*********************************************")
     logger.info("Mysuru end")

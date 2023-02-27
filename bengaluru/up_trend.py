@@ -91,17 +91,15 @@ def maintain_bengaluru():
         error=False,
         status=FhZeroStatus.PURCHASED,
     )
-    for rec in recs:
-        purchased_obj = rec.fhzerouptrend_set.filter(status=FhZeroStatus.PURCHASED).first()
-        if purchased_obj:
-            purchased_obj.maintain_order()
+    for purchased_obj in recs:
+        purchased_obj.maintain_order()
 
 
 def process_fhz_uptrend():
     fhz = FhZeroUpTrend.objects.filter(
         date=datetime.today(),
         error=False,
-        status__in=[FhZeroStatus.TO_BUY, FhZeroStatus.TO_SELL],
+        status__in=[FhZeroStatus.TO_BUY, FhZeroStatus.TO_SELL, FhZeroStatus.PURCHASED],
     )
 
     if not fhz:
@@ -110,6 +108,9 @@ def process_fhz_uptrend():
     for rec in fhz:
         if rec.status == FhZeroStatus.TO_BUY:
             rec.buy_order()
+
+        # elif rec.status == FhZeroStatus.PURCHASED:
+        #     rec.maintain_order()
 
         elif rec.status == FhZeroStatus.TO_SELL:
             rec.sell_order()

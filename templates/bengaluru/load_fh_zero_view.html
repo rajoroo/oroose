@@ -22,7 +22,7 @@
                 <th>Current PL</th>
             </tr>
             {% for item in progress %}
-            <tr onClick="parent.open('{% url 'fhz_downtrend_record' item.id %}')">
+            <tr>
                 <td>{{ item.symbol }}</td>
                 <td>{{ item.quantity }}</td>
                 <td>{% if item.rank %}{{ item.rank }}{% endif %}</td>
