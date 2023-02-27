@@ -180,7 +180,6 @@ class FiveHundred(models.Model):
             (self.pp > self.pp1 > 65 > self.pp2)
             or (self.pp > self.pp1 > 70 > self.pp2)
             or (self.pp > self.pp1 > 75 > self.pp2)
-
         ):
             requirement = True
 
