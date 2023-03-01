@@ -138,7 +138,7 @@ class FiveHundred(models.Model):
             config.get("bengaluru_status")
             and self.smart_token
             and self.is_valid is True
-            and (self.rank <= 9)
+            and (self.rank <= 5)
             and (config["min_price"] <= self.last_price <= config["max_price"])
             and (self.percentage_change <= config["max_percentage"])
             and (self.fhzerouptrend_set.all().count() < config["max_buy_order"])
@@ -176,11 +176,7 @@ class FiveHundred(models.Model):
         if not (self.get_basic_requirement() and self.get_pre_order_requirement()):
             return False
 
-        if (
-            (self.pp > self.pp1 > 65 > self.pp2)
-            or (self.pp > self.pp1 > 70 > self.pp2)
-            or (self.pp > self.pp1 > 75 > self.pp2)
-        ):
+        if (self.pp > self.pp1 > self.pp2) and (60 < self.pp < 80):
             requirement = True
 
         return requirement

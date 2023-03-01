@@ -7,14 +7,15 @@ from mysuru.models import TopTen
 class TopTenAdmin(admin.ModelAdmin):
     list_display = (
         "symbol",
-        "ksec_token",
-        "smart_token",
-        "date",
         "company_name",
-        "isin",
         "last_price",
         "is_valid",
         "ema_200",
+        "ema_50",
+        "yesterday_macd",
+        "yesterday_macd_signal",
+        "today_macd",
+        "today_macd_signal",
         "day_status",
         "is_accepted",
     )

@@ -41,18 +41,19 @@ class TopTen(models.Model):
     is_valid = models.BooleanField(default=False, verbose_name="Is Valid")
     is_accepted = models.BooleanField(default=False, verbose_name="Is Accepted")
     ema_200 = models.FloatField(verbose_name="Ema200", null=True, blank=True)
+    ema_50 = models.FloatField(verbose_name="Ema50", null=True, blank=True)
     last_close = models.FloatField(verbose_name="Last Close", null=True, blank=True)
-    day_macd = models.FloatField(verbose_name="MACD", null=True, blank=True)
-    day_macd_signal = models.FloatField(verbose_name="MACD Signal", null=True, blank=True)
-    day_macd_histogram = models.FloatField(verbose_name="MACD Histogram", null=True, blank=True)
+    yesterday_macd = models.FloatField(verbose_name="MACD", null=True, blank=True)
+    yesterday_macd_signal = models.FloatField(verbose_name="MACD Signal", null=True, blank=True)
+    yesterday_macd_histogram = models.FloatField(verbose_name="MACD Histogram", null=True, blank=True)
     day_status = models.CharField(
         max_length=5,
         choices=DayStatus.choices,
         default=DayStatus.NO,
     )
-    macd = models.FloatField(verbose_name="MACD", null=True, blank=True)
-    macd_signal = models.FloatField(verbose_name="MACD Signal", null=True, blank=True)
-    macd_histogram = models.FloatField(verbose_name="MACD Histogram", null=True, blank=True)
+    today_macd = models.FloatField(verbose_name="MACD", null=True, blank=True)
+    today_macd_signal = models.FloatField(verbose_name="MACD Signal", null=True, blank=True)
+    today_macd_histogram = models.FloatField(verbose_name="MACD Histogram", null=True, blank=True)
 
     objects = models.Manager()
 
@@ -62,31 +63,13 @@ class TopTen(models.Model):
             models.UniqueConstraint(fields=["date", "symbol"], name="%(app_label)s_%(class)s_unique_top_ten")
         ]
 
-    def get_year_date_difference(self):
+    def get_date_difference(self):
         now = datetime.now()
         if now.hour < 18:
             now = datetime.now() - relativedelta(days=1)
 
         to_date = now
         last_month_same_date = to_date - relativedelta(years=1, days=1)
-        exact_time = time(hour=9, minute=15)
-        from_date = datetime.combine(last_month_same_date, exact_time)
-        return from_date, to_date
-
-    def get_month_date_difference(self):
-        now = datetime.now()
-        if now.hour < 18:
-            now = datetime.now() - relativedelta(days=1)
-
-        to_date = now
-        last_month_same_date = to_date - relativedelta(months=1, days=1)
-        exact_time = time(hour=9, minute=15)
-        from_date = datetime.combine(last_month_same_date, exact_time)
-        return from_date, to_date
-
-    def get_date_difference(self):
-        to_date = datetime.now()
-        last_month_same_date = to_date - relativedelta(months=1, days=1)
         exact_time = time(hour=9, minute=15)
         from_date = datetime.combine(last_month_same_date, exact_time)
         return from_date, to_date
@@ -98,12 +81,6 @@ class TopTen(models.Model):
             self.smart_token = str(result.get("token"))
         except:
             pass
-        self.save()
-
-    def get_ksec_token(self):
-        obj = KsecInstrument(instrument=self.symbol)
-        result = obj.get_instrument()
-        self.ksec_token = str(result.get("pSymbol"))
         self.save()
 
     def is_valid_stock(self):
@@ -118,16 +95,17 @@ class TopTen(models.Model):
                 self.is_valid
                 and self.last_price
                 and self.ema_200
-                and self.day_macd
-                and self.day_macd_signal
-                and self.macd
-                and self.macd_signal
+                and self.ema_50
+                and self.today_macd
+                and self.today_macd_signal
+                and self.yesterday_macd
+                and self.yesterday_macd_signal
                 and (self.last_price > config["min_price"])
                 and (self.last_price < config["max_price"])
-                and (self.percentage_change < config["max_percentage"])
                 and (self.last_price > self.ema_200)
-                and (self.day_macd > self.day_macd_signal)
-                and (self.macd_signal > self.macd)
+                and (self.ema_50 > self.ema_200)
+                and (self.yesterday_macd_signal > self.yesterday_macd)
+                and (self.today_macd > self.today_macd_signal)
         ):
             self.day_status = DayStatus.YES
         else:
@@ -135,54 +113,15 @@ class TopTen(models.Model):
 
         self.save()
 
-    def get_year_macd(self):
-        from_date, to_date = self.get_year_date_difference()
-
-        data = self.generate_macd(
-            interval="ONE_DAY",
-            from_date=from_date,
-            to_date=to_date
-        )
-        self.day_macd = data[0]
-        self.day_macd_signal = data[1]
-        self.day_macd_histogram = data[2]
-        self.save()
-
-    def get_day_macd(self):
-        if not((self.last_price > self.ema_200) and (self.day_macd > self.day_macd_signal)):
-            return False
-
-        from_date, to_date = self.get_month_date_difference()
-        data = self.generate_macd(
-            interval="FIVE_MINUTE",
-            from_date=from_date,
-            to_date=to_date
-        )
-        self.macd = data[0]
-        self.macd_signal = data[1]
-        self.macd_histogram = data[2]
-        self.save()
-
-    def get_macd(self):
+    def generate_macd(self):
         from_date, to_date = self.get_date_difference()
-        data = self.generate_macd(
-            interval="FIVE_MINUTE",
-            from_date=from_date,
-            to_date=to_date
-        )
-        self.macd = data[0]
-        self.macd_signal = data[1]
-        self.macd_histogram = data[2]
-        self.save()
-
-    def generate_macd(self, interval, from_date, to_date):
         tag_data = get_param_config_tag(tag="SMART_TRADE")
         smart = SmartTool(**tag_data)
         smart.get_object()
         history_data = smart.get_historical_data(
             exchange="NSE",
             symboltoken=self.smart_token,
-            interval=interval,
+            interval="ONE_DAY",
             fromdate=from_date.strftime("%Y-%m-%d %H:%M"),
             todate=to_date.strftime("%Y-%m-%d %H:%M")
         )
@@ -192,62 +131,25 @@ class TopTen(models.Model):
 
         current_list = df["close"].to_list()
 
+        df['ema_200'] = df['close'].rolling(window=200).mean()
+        df['ema_50'] = df['close'].rolling(window=50).mean()
+        self.ema_200 = round(df["ema_200"].iloc[-1], 2)
+        self.ema_50 = round(df["ema_50"].iloc[-1], 2)
+
         if current_list and len(current_list) > 16:
             df = pd.DataFrame({'close': current_list})
             result_df = calculate_macd(df=df)
 
-            macd = round(result_df['macd'].iloc[-1], 2)
-            macd_signal = round(result_df['macd_s'].iloc[-1], 2)
-            macd_histogram = round(result_df['macd_h'].iloc[-1], 2)
-            return macd, macd_signal, macd_histogram
-        return None, None, None
+            self.yesterday_macd = round(result_df['macd'].iloc[-2], 2)
+            self.yesterday_macd_signal = round(result_df['macd_s'].iloc[-2], 2)
+            self.yesterday_macd_histogram = round(result_df['macd_h'].iloc[-2], 2)
 
-    def get_basic_requirement(self):
-        requirement = False
+            self.today_macd = round(result_df['macd'].iloc[-1], 2)
+            self.today_macd_signal = round(result_df['macd_s'].iloc[-1], 2)
+            self.today_macd_histogram = round(result_df['macd_h'].iloc[-1], 2)
 
-        config = get_param_config_tag(tag="MYSURU")
-        start_time = get_today_datetime(time_str=config.get("start_time"))
-        end_time = get_today_datetime(time_str=config.get("end_time"))
-        trend_status = [TrendStatus.TO_BUY, TrendStatus.PURCHASED, TrendStatus.TO_SELL]
-        pl_status = [PlStatus.WINNER, PlStatus.INPROG]
-
-        if (
-            config.get("mysuru_status")
-            and self.is_valid is True
-            and self.day_status == DayStatus.YES
-            and (self.mysurutrend_set.all().count() < config["max_buy_order"])
-            and (not self.mysurutrend_set.filter(status__in=trend_status).exists())
-            and (not self.mysurutrend_set.filter(pl_status__in=pl_status).exists())
-            and (not self.mysurutrend_set.filter(error=True).exists())
-            and (start_time <= datetime.now() <= end_time)
-            and (datetime.today().weekday() < 5)
-        ):
-            requirement = True
-
-        return requirement
-
-    def get_pre_order_requirement(self):
-        requirement = True
-        before_20_min = datetime.now() - timedelta(minutes=20)
-
-        if self.mysurutrend_set.all():
-            latest_fhz = self.mysurutrend_set.latest("updated_date")
-            if latest_fhz.updated_date > before_20_min:
-                requirement = False
-
-        return requirement
-
-    def get_standard_requirement(self):
-        requirement = False
-
-        # Return False is the condition didn't pass basic and pre-order requirement
-        if not (self.get_basic_requirement() and self.get_pre_order_requirement()):
-            return False
-
-        if self.macd > self.macd_signal:
-            requirement = True
-
-        return requirement
+            self.save()
+        return True
 
 
 class MysuruTrend(models.Model):

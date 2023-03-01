@@ -44,9 +44,4 @@ app.conf.beat_schedule = {
         "schedule": 60.0,  # schedule every 1 minutes
         "args": (),
     },
-    "schedule-mysuru-five-minutes": {
-        "task": "mysuru.tasks.schedule_mysuru_trend",
-        "schedule": 300.0,  # schedule every 10 minutes
-        "args": (),
-    },
 }

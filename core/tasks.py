@@ -3,10 +3,8 @@ from datetime import datetime
 
 from bengaluru.up_trend import (
     generate_bengaluru,
-    maintain_bengaluru,
     process_fhz_uptrend,
 )
-from mysuru.polling_top_ten import generate_mysuru, maintain_mysuru
 from core.configuration import only_one
 from core.constant import LOG_SCHEDULE_LIVE_500, LOG_SCHEDULE_BENGALURU, LOG_SCHEDULE_MYSURU
 from core.models import DataLog
@@ -85,42 +83,5 @@ def schedule_fhz_uptrend():
     if condition_schedule_bengaluru():
         process_fhz_uptrend()
     logger.info("Bengaluru end")
-    obj.end_time = datetime.now()
-    obj.save()
-
-
-def condition_schedule_mysuru():
-    config = get_param_config_tag(tag="MYSURU")
-    start_time = get_today_datetime(time_str=config.get("start_time"))
-    end_time = get_today_datetime(time_str=config.get("end_time"))
-
-    if (
-        config.get("mysuru_status")
-        and (start_time <= datetime.now() <= end_time)
-        and (datetime.today().weekday() < 5)
-    ):
-        return True
-
-    return False
-
-
-@app.task(name="mysuru.tasks.schedule_mysuru_trend")
-@only_one(key="MysuruTask", timeout=60 * 15)
-def schedule_live_stocks_five_hundred():
-    logger.info("Mysuru Started")
-    obj = DataLog(
-        date=datetime.now(),
-        start_time=datetime.now(),
-        name=LOG_SCHEDULE_MYSURU,
-    )
-    obj.save()
-
-    if condition_schedule_mysuru():
-        pass
-        # maintain_mysuru()
-        # generate_mysuru()
-
-    print("*********************************************")
-    logger.info("Mysuru end")
     obj.end_time = datetime.now()
     obj.save()
