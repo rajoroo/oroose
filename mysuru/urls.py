@@ -5,8 +5,7 @@ from . import views
 
 urlpatterns = [
     path("", views.mysuru_page, name="mysuru"),
-    path("content/", views.load_mysuru_content, name="mysuru_content"),
-    path("mysuru_load_top_ten_api/", views.mysuru_load_top_ten_api, name="mysuru_load_top_ten_api"),
-    path("mysuru_get_accepted_api/", views.mysuru_get_accepted_api, name="mysuru_get_accepted_api"),
-    path("mysuru_panic_pull/", views.mysuru_panic_pull, name="mysuru_panic_pull"),
+    path("mysuru_load_top_ten/", views.mysuru_load_top_ten, name="mysuru_load_top_ten"),
+    path("mysuru_calculate_top_ten/", views.mysuru_calculate_top_ten, name="mysuru_calculate_top_ten"),
+    path("mysuru_validate_top_ten/", views.mysuru_validate_top_ten, name="mysuru_validate_top_ten"),
 ]

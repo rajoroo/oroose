@@ -1,69 +1,34 @@
 from datetime import datetime
 
 from django.contrib.auth.decorators import login_required
-from django.db.models import Max, Sum
 from django.http import HttpResponse
-from django.shortcuts import render, reverse
+from django.shortcuts import render
 
-from mysuru.models import MysuruTrend, TrendStatus, TopTen
-from core.constant import LOG_SCHEDULE_MYSURU
-from core.models import DataLog
-from core.tools import get_param_config_tag
-from mysuru.polling_top_ten import trigger_accepted_top_ten, polling_top_ten_stocks
+from mysuru.models import TopTen
+from mysuru.polling_top_ten import polling_top_ten_stocks, trigger_calculate_top_ten, trigger_validate_top_ten
 
 
 # Uptrend
 @login_required(login_url="/accounts/login/")
 def mysuru_page(request):
-    context = {"active_page": "mysuru"}
+    top_10 = TopTen.objects.filter(date=datetime.today(), is_accepted=True)
+    context = {
+        "active_page": "mysuru",
+        "top_10": list(top_10.values()),
+    }
     return render(request, "mysuru/base_page.html", context)
 
 
-def mysuru_load_top_ten_api(request):
+def mysuru_load_top_ten(request):
     polling_top_ten_stocks()
     return HttpResponse(status=200)
 
 
-def mysuru_get_accepted_api(request):
-    trigger_accepted_top_ten()
+def mysuru_calculate_top_ten(request):
+    trigger_calculate_top_ten()
     return HttpResponse(status=200)
 
 
-def mysuru_panic_pull(request):
-    pass
+def mysuru_validate_top_ten(request):
+    trigger_validate_top_ten()
     return HttpResponse(status=200)
-
-
-def load_mysuru_content(request):
-    top_10 = TopTen.objects.filter(date=datetime.today(), is_accepted=True)
-    top_pull_on = DataLog.objects.filter(name=LOG_SCHEDULE_MYSURU).aggregate(Max("end_time"))["end_time__max"]
-    config = get_param_config_tag(tag="TOP_TEN")
-
-    progress = (
-        MysuruTrend.objects.filter(
-            date=datetime.today(),
-            status__in=[TrendStatus.TO_BUY, TrendStatus.PURCHASED, TrendStatus.TO_SELL],
-            error=False,
-        )
-    ).order_by("-updated_date")
-
-    errors = MysuruTrend.objects.filter(
-        date=datetime.today(),
-        status__in=[TrendStatus.TO_BUY, TrendStatus.PURCHASED, TrendStatus.TO_SELL],
-        error=True,
-    )
-
-    sold_data = MysuruTrend.objects.filter(date=datetime.today(), status=TrendStatus.SOLD)
-
-    context = {
-        "live_500": list(top_10.values()),
-        "live_pull_on": top_pull_on,
-        "live_polling_status": config.get("top_ten_status"),
-        "progress": list(progress.values()),
-        "errors": list(errors.values()),
-        "progress_data_realized": progress.aggregate(Sum("pl_price"))["pl_price__sum"],
-        "sold_data": list(sold_data.values()),
-        "sold_data_realized": sold_data.aggregate(Sum("pl_price"))["pl_price__sum"],
-    }
-
-    return render(request, "bengaluru/bengaluru_content.html", context=context)

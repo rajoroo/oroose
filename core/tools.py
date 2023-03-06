@@ -134,3 +134,13 @@ def calculate_macd(df):
     # df['sell_sig'] = signal[1]
     print(df)
     return df
+
+
+def calculate_osc(df):
+    df['14-high'] = df['high'].rolling(14).max()
+    df['14-low'] = df['low'].rolling(14).min()
+    df['k'] = (df['close'] - df['14-low']) * 100 / (df['14-high'] - df['14-low'])
+    df['d'] = df['k'].rolling(3).mean()
+    df['k_smooth'] = df['d'].rolling(3).mean()
+    print(df)
+    return df

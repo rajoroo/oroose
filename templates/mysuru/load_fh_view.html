@@ -1,11 +1,11 @@
 {% load humanize %}
 
 <div class="card-header border-bottom">
-    <h3 class="card-title mb-0">Nifty 500</h3>
+    <h3 class="card-title mb-0">TOP 10</h3>
 </div>
 <div class="card-body">
     <div class="table-responsive">
-        {% if live_500 %}
+        {% if top_10 %}
         <table class="green-table">
             <tr>
                 <th>Rank</th>
@@ -20,7 +20,7 @@
                 <th>PP1</th>
                 <th>PP0</th>
             </tr>
-            {% for item in live_500 %}
+            {% for item in top_10 %}
             <tr class="{% if item.is_valid == False %} bg-danger {% else %} valid {% endif %}">
                 <td>{% if item.rank %}{{ item.rank }}{% endif %}</td>
                 <td>{{ item.created_date|date:'d-m-Y H:i:s' }}</td>
@@ -41,10 +41,5 @@
             {% endfor %}
         </table>
         {% endif %}
-
-        <div class="pt-3 txt-rt">
-            <span class="badge {% if live_polling_status %} bg-primary {% else %} bg-danger {% endif %}">Polling Status</span>
-            | {{ live_pull_on|naturaltime }} | Last Updated on {% now "d-m-Y H:i:s" %}
-        </div>
     </div>
 </div>

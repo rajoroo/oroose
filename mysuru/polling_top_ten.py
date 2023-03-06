@@ -3,6 +3,7 @@ from mysuru.models import TopTen, DayStatus
 from stockwatch.models import StockWatchFh
 import random
 
+
 def polling_top_ten_stocks():
     obj = StockWatchFh.objects.all().order_by("-id").first()
     if (not obj) and (not hasattr(obj, "stock_data")):
@@ -24,12 +25,15 @@ def polling_top_ten_stocks():
     return True
 
 
-def trigger_accepted_top_ten():
+def trigger_calculate_top_ten():
     recs = TopTen.objects.filter(is_valid=True, ema_200__isnull=True)[:100]
     for rec in recs:
-        rec.generate_macd()
+        rec.generate_osc()
         rec.get_day_status()
+    return True
 
+
+def trigger_validate_top_ten():
     is_crawl_not_completed = TopTen.objects.filter(is_valid=True, ema_200__isnull=True).exists()
     if is_crawl_not_completed:
         return True
