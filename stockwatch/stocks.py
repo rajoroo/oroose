@@ -89,23 +89,24 @@ class PriceBand:
     def __init__(self, instrument):
         self.instrument = instrument
 
-    def get_filename(self):
+    def get_yesterday(self):
         yesterday = datetime.today() - timedelta(days=1)
         if yesterday.weekday() > 4:
             yesterday = datetime.now() + relativedelta(weekday=FR(-1))
 
         yesterday = yesterday.strftime("%d%m%Y")
+        # yesterday = "06032023"
+        return yesterday
+
+    def get_filename(self):
+        yesterday = self.get_yesterday()
         filename = f"{settings.STOCK_DATA_PATH}/sec_list_{yesterday}.csv"
         # filename = f"/home/gamma/Documents/stock_data/angel_one_2023_02_04.json"
         return filename
 
     def download_instrument(self, filename):
         # url = "https://archives.nseindia.com/content/equities/sec_list_06022023.csv"
-        yesterday = datetime.today() - timedelta(days=1)
-        if yesterday.weekday() > 4:
-            yesterday = datetime.now() + relativedelta(weekday=FR(-1))
-
-        yesterday = yesterday.strftime("%d%m%Y")
+        yesterday = self.get_yesterday()
         url = settings.BAND_MASTER.format(yesterday=yesterday)
         df = pd.read_csv(url)
         df = df.loc[df['Series'] == "EQ"]

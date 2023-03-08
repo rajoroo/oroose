@@ -28,7 +28,7 @@ def polling_top_ten_stocks():
 def trigger_calculate_top_ten():
     recs = TopTen.objects.filter(is_valid=True, ema_200__isnull=True)[:100]
     for rec in recs:
-        rec.generate_osc()
+        rec.generate_macd_osc()
         rec.get_day_status()
     return True
 
