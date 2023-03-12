@@ -9,7 +9,6 @@ class TopTenAdmin(admin.ModelAdmin):
         "symbol",
         "company_name",
         "last_price",
-        "is_valid",
         "ema_200",
         "ema_50",
         "osc_status",

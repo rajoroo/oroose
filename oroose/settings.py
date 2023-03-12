@@ -50,9 +50,7 @@ INSTALLED_APPS = [
     "django_extensions",
     "core",
     "home",
-    "bengaluru",
     "mysuru",
-    "stockwatch",
 ]
 
 MIDDLEWARE = [
@@ -134,46 +132,6 @@ USE_L10N = True
 USE_TZ = False
 
 
-LOGGING = {
-    "version": 1,
-    "disable_existing_loggers": False,
-    "formatters": {
-        "simple": {
-            "format": "[{asctime}] {levelname} {module} {message}",
-            "style": "{",
-        },
-        "json": {
-            "()": "core.jsonlogger.CeleryLogger",
-        },
-    },
-    "handlers": {
-        "file": {
-            "level": "DEBUG",
-            "class": "logging.FileHandler",
-            "filename": os.environ.get("LOG_FILE_WEB"),
-            "formatter": "simple",
-        },
-        "celery": {
-            "level": "INFO",
-            "class": "logging.handlers.RotatingFileHandler",
-            "filename": os.environ.get("LOG_FILE_SCHEDULER"),
-            "formatter": "simple",
-        },
-    },
-    "loggers": {
-        # "django": {
-        #     "handlers": ["file"],
-        #     "level": "INFO",
-        #     "propagate": True,
-        # },
-        "celery": {
-            "handlers": ["celery"],
-            "level": "INFO",
-            "propagate": True,
-        },
-    },
-}
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
@@ -186,14 +144,6 @@ LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
 
 
-# Celery - prefix with CELERY_
-CELERY_BROKER_URL = os.environ.get("CELERY_BROKER_URL")
-CELERY_RESULT_BACKEND = CELERY_BROKER_URL
-CELERY_ACCEPT_CONTENT = ["json"]
-CELERY_TASK_SERIALIZER = "json"
-CELERY_TASK_TRACK_STARTED = True
-
-
 STOCK_DATA_PATH = os.environ.get("STOCK_DATA_PATH")
 STOCK_DATA_PATH_DUMMY = os.environ.get("STOCK_DATA_PATH_DUMMY")
 
@@ -203,14 +153,7 @@ LIVE_INDEX_URL = os.environ.get("LIVE_INDEX_URL")
 LIVE_INDEX_500_URL = os.environ.get("LIVE_INDEX_500_URL")
 
 
-# API Config
-ZERO_API_KEY = os.environ.get("ZERO_API_KEY")
-ZERO_ACCESS_TOKEN = os.environ.get("ZERO_ACCESS_TOKEN")
-
-
-BAND_MASTER = "https://archives.nseindia.com/content/equities/sec_list_{yesterday}.csv"
 SMART_MASTER = "https://margincalculator.angelbroking.com/OpenAPI_File/files/OpenAPIScripMaster.json"
-KSEC_MASTER = "https://lapi.kotaksecurities.com/wso2-scripmaster/v1/prod/{today}/transformed/nse_cm.csv"
 
 
 MEDIA_URL = "/media/"

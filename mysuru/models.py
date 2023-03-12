@@ -1,13 +1,10 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from datetime import datetime, time, timedelta
+from datetime import datetime, time
 from dateutil.relativedelta import relativedelta
-from core.ks_util import KsecInstrument
 from core.smart_util import SmartInstrument, SmartTool
-from core.tools import calculate_macd, get_param_config_tag, get_today_datetime, calculate_osc
-from stockwatch.stocks import PriceBand
+from core.tools import calculate_macd, get_param_config_tag, calculate_osc
 import pandas as pd
-from core.ks_util import KsTool
 
 
 class DayStatus(models.TextChoices):
@@ -38,7 +35,6 @@ class TopTen(models.Model):
     isin = models.CharField(max_length=100, verbose_name="Isin")
     last_price = models.FloatField(verbose_name="Price")
     percentage_change = models.FloatField(verbose_name="Percentage")
-    is_valid = models.BooleanField(default=False, verbose_name="Is Valid")
     is_accepted = models.BooleanField(default=False, verbose_name="Is Accepted")
     ema_200 = models.FloatField(verbose_name="Ema200", null=True, blank=True)
     ema_50 = models.FloatField(verbose_name="Ema50", null=True, blank=True)
@@ -96,17 +92,10 @@ class TopTen(models.Model):
         except:
             pass
 
-    def is_valid_stock(self):
-        band = PriceBand(instrument=self.symbol)
-        if self.smart_token and band.get_valid_instrument():
-            self.is_valid = True
-            self.save()
-
     def get_day_status(self):
         config = get_param_config_tag(tag="MYSURU")
         if (
-                self.is_valid
-                and self.last_price
+                self.last_price
                 and self.ema_200
                 and self.ema_50
                 and self.today_osc
@@ -134,7 +123,7 @@ class TopTen(models.Model):
 
     def get_year_data(self):
         from_date, to_date = self.get_date_difference()
-        tag_data = get_param_config_tag(tag="SMART_TRADE")
+        tag_data = get_param_config_tag(tag="SMART_HISTORY")
         smart = SmartTool(**tag_data)
         smart.get_object()
         history_data = smart.get_historical_data(

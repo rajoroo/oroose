@@ -1,8 +1,0 @@
-# Stock Watch
-LIVE_START = "0915"  # 0935
-LIVE_END = "1450"  # 1450
-
-
-# Bengaluru/ Mysuru
-FIVEHUNDRED_START = "0915"  # 0935
-FIVEHUNDRED_END = "1430"  # 1450

@@ -1,19 +1,14 @@
-import time
-from datetime import datetime
-
 from django.contrib.auth.decorators import login_required
-from django.db.models import F
 from django.http import HttpResponseRedirect
 from django.shortcuts import HttpResponse, render
 from django.template.loader import render_to_string
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 
-from core.ks_util import KsTool
-from core.models import DataLog, ParameterConfig
+from core.models import ParameterConfig
 from core.smart_util import SmartTool
 from core.tools import get_param_config_tag, handle_config_file, save_param_config_tag
-from home.forms import OtpForm, UploadFileForm
+from home.forms import UploadFileForm
 
 
 @login_required(login_url="/accounts/login/")
@@ -27,15 +22,6 @@ def configuration_page(request):
     configs = ParameterConfig.objects.all()
     context = {"active_page": "configuration", "configs": configs}
     return render(request, "configuration/configure_settings.html", context=context)
-
-
-@login_required(login_url="/accounts/login/")
-def data_log_page(request):
-    obj = DataLog.objects.filter(date=datetime.today())[:25]
-    obj.annotate(seconds_diff=F("end_time") - F("start_time"))
-
-    context = {"items": list(obj.values()), "active_page": "data_log"}
-    return render(request, "base/data_log_view.html", context=context)
 
 
 @csrf_exempt
@@ -55,18 +41,6 @@ def upload_config_file(request):
 def generate_smart_token(request):
     """Pull the five hundred data from stock api"""
     # SMART Token
-    config = get_param_config_tag(tag="SMART_TRADE")
-
-    obj = SmartTool(
-        api_key=config["api_key"],
-        client_code=config["client_code"],
-        password=config["password"],
-        totp=config["totp"],
-    )
-    params = obj.generate_token()
-    save_param_config_tag(params=params, tag="SMART_TRADE")
-    time.sleep(20)
-    # SMART Token
     config = get_param_config_tag(tag="SMART_HISTORY")
 
     obj = SmartTool(
@@ -78,26 +52,3 @@ def generate_smart_token(request):
     params = obj.generate_token()
     save_param_config_tag(params=params, tag="SMART_HISTORY")
     return HttpResponse(status=200)
-
-
-@csrf_exempt
-def generate_ksec_token(request):
-    if request.method == 'POST':
-        form = OtpForm(request.POST)
-        if form.is_valid():
-            otp = form.cleaned_data['otp']
-            config = get_param_config_tag(tag="KSEC")
-            obj = KsTool(**config)
-            params = obj.generate_session_token(otp=otp)
-            save_param_config_tag(params=params, tag="KSEC")
-            return HttpResponseRedirect(reverse("configuration"))
-
-    config = get_param_config_tag(tag="KSEC")
-    obj = KsTool(**config)
-    params = obj.generate_tokens()
-    save_param_config_tag(params=params, tag="KSEC")
-
-    form = OtpForm()
-    rendered = render_to_string('configuration/ksec_otp.html', {'form': form, "title": "Ksec OTP"})
-    response = HttpResponse(rendered)
-    return response
