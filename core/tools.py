@@ -146,6 +146,6 @@ def calculate_osc(df):
         (df['d'] > df['k_smooth']) & (df['k_smooth'].shift(1) > df['d'].shift(1)),
         "Crossed", np.nan)
     # df["osc_status"] = np.where(df["k_smooth"] < 20, "YES", np.nan)
-    df["osc_status"] = df["k_smooth"] < 20
+    df["osc_status"] = (df["k_smooth"] < 20) & (df["osc_crossed"] == "Crossed")
     print(df.tail(10))
     return df
