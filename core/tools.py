@@ -143,7 +143,7 @@ def calculate_osc(df):
     df['d'] = df['k'].rolling(3).mean()
     df['k_smooth'] = df['d'].rolling(3).mean()
     df['osc_crossed'] = np.where(
-        (df['d'] > df['k_smooth']) & (df['k_smooth'].shift(-1) > df['d'].shift(-1)),
+        (df['d'] > df['k_smooth']) & (df['k_smooth'].shift(1) > df['d'].shift(1)),
         "Crossed", np.nan)
     print(df.tail(10))
     return df
