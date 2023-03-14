@@ -123,7 +123,7 @@ class TopTen(models.Model):
         self.ema_50 = round(df["ema_50"].iloc[-1], 2)
 
         if df.shape[0] > 16:
-            self.osc_status = DayStatus.YES if df['osc_crossed'].iloc[-1] == "Crossed" else DayStatus.NO
+            self.osc_status = DayStatus.YES if df['osc_status'].iloc[-1] else DayStatus.NO
             self.save()
 
         return True
