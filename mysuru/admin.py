@@ -12,7 +12,6 @@ class TopTenAdmin(admin.ModelAdmin):
         "ema_200",
         "ema_50",
         "osc_status",
-        "macd_status",
         "day_status",
         "is_accepted",
     )

@@ -39,21 +39,6 @@ class TopTen(models.Model):
     ema_200 = models.FloatField(verbose_name="Ema200", null=True, blank=True)
     ema_50 = models.FloatField(verbose_name="Ema50", null=True, blank=True)
     last_close = models.FloatField(verbose_name="Last Close", null=True, blank=True)
-    yesterday_macd = models.FloatField(verbose_name="Yesterday MACD", null=True, blank=True)
-    yesterday_macd_signal = models.FloatField(verbose_name="Yesterday MACD Signal", null=True, blank=True)
-    yesterday_macd_histogram = models.FloatField(verbose_name="Yesterday MACD Histogram", null=True, blank=True)
-    today_macd = models.FloatField(verbose_name="MACD", null=True, blank=True)
-    today_macd_signal = models.FloatField(verbose_name="MACD Signal", null=True, blank=True)
-    today_macd_histogram = models.FloatField(verbose_name="MACD Histogram", null=True, blank=True)
-    macd_status = models.CharField(
-        max_length=5,
-        choices=DayStatus.choices,
-        default=DayStatus.NO,
-    )
-    yesterday_osc = models.FloatField(verbose_name="Yesterday OSC", null=True, blank=True)
-    yesterday_osc_signal = models.FloatField(verbose_name="Yesterday OSC Signal", null=True, blank=True)
-    today_osc = models.FloatField(verbose_name="OSC", null=True, blank=True)
-    today_osc_signal = models.FloatField(verbose_name="OSC Signal", null=True, blank=True)
     osc_status = models.CharField(
         max_length=5,
         choices=DayStatus.choices,
@@ -97,23 +82,9 @@ class TopTen(models.Model):
         if (
                 self.last_price
                 and self.ema_200
-                and self.ema_50
-                and self.today_osc
-                and self.today_osc_signal
-                and self.yesterday_osc
-                and self.yesterday_osc_signal
-                and self.yesterday_macd_signal
-                and self.yesterday_macd
-                and self.today_macd_signal
-                and self.today_macd
-                and (self.last_price > config["min_price"])
                 and (self.last_price < config["max_price"])
                 and (self.last_price > self.ema_200)
-                and (self.ema_50 > self.ema_200)
-                and (self.yesterday_osc_signal > self.yesterday_osc)
-                and (self.today_osc > self.today_osc_signal)
-                and (self.yesterday_macd_signal > self.yesterday_macd)
-                and (self.today_macd_signal > self.today_macd)
+                and (self.osc_status == DayStatus.YES)
         ):
             self.day_status = DayStatus.YES
         else:
@@ -140,9 +111,11 @@ class TopTen(models.Model):
         return df
 
     def generate_macd_osc(self):
+        if not self.smart_token:
+            return None
+
         df = self.get_year_data()
         df = calculate_osc(df=df)
-        result_df = calculate_macd(df=df)
 
         df['ema_200'] = df['close'].rolling(window=200).mean()
         df['ema_50'] = df['close'].rolling(window=50).mean()
@@ -150,25 +123,7 @@ class TopTen(models.Model):
         self.ema_50 = round(df["ema_50"].iloc[-1], 2)
 
         if df.shape[0] > 16:
-            self.yesterday_osc = round(df['d'].iloc[-2], 2)
-            self.yesterday_osc_signal = round(df['k_smooth'].iloc[-2], 2)
-            self.today_osc = round(df['d'].iloc[-1], 2)
-            self.today_osc_signal = round(df['k_smooth'].iloc[-1], 2)
-
-            self.yesterday_macd = round(result_df['macd'].iloc[-2], 2)
-            self.yesterday_macd_signal = round(result_df['macd_s'].iloc[-2], 2)
-            self.yesterday_macd_histogram = round(result_df['macd_h'].iloc[-2], 2)
-
-            self.today_macd = round(result_df['macd'].iloc[-1], 2)
-            self.today_macd_signal = round(result_df['macd_s'].iloc[-1], 2)
-            self.today_macd_histogram = round(result_df['macd_h'].iloc[-1], 2)
-
-            if self.yesterday_osc_signal > self.yesterday_osc and self.today_osc > self.today_osc_signal:
-                self.osc_status = DayStatus.YES
-
-            if self.yesterday_macd_signal > self.yesterday_macd and self.today_macd > self.today_macd_signal:
-                self.macd_status = DayStatus.YES
-
+            self.osc_status = DayStatus.YES if df['osc_crossed'].iloc[-1] == "Crossed" else DayStatus.NO
             self.save()
 
         return True

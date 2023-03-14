@@ -4,14 +4,14 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import render
 
-from mysuru.models import TopTen
+from mysuru.models import TopTen, DayStatus
 from mysuru.polling_top_ten import polling_top_ten_stocks, trigger_calculate_top_ten, trigger_validate_top_ten
 
 
 # Uptrend
 @login_required(login_url="/accounts/login/")
 def mysuru_page(request):
-    top_10 = TopTen.objects.filter(date=datetime.today(), is_accepted=True)
+    top_10 = TopTen.objects.filter(date=datetime.today(), osc_status=DayStatus.YES)
     context = {
         "active_page": "mysuru",
         "top_10": list(top_10.values()),

@@ -8,35 +8,33 @@
         {% if top_10 %}
         <table class="green-table">
             <tr>
-                <th>Rank</th>
-                <th>Time</th>
                 <th>Symbol</th>
                 <th>Company</th>
                 <th>Last Price</th>
-                <th>Percentage</th>
-                <th>Signal</th>
-                <th>Status</th>
-                <th>PP2</th>
-                <th>PP1</th>
-                <th>PP0</th>
+                <th>EMA 200</th>
+                <th>EMA 50</th>
+                <th>OSC Status</th>
+                <th>DAY Status</th>
+                <th>Accepted</th>
             </tr>
             {% for item in top_10 %}
             <tr class="{% if item.is_valid == False %} bg-danger {% else %} valid {% endif %}">
-                <td>{% if item.rank %}{{ item.rank }}{% endif %}</td>
-                <td>{{ item.created_date|date:'d-m-Y H:i:s' }}</td>
                 <td>{{ item.symbol }}</td>
                 <td>{{ item.company_name }}</td>
                 <td class="value">{{ item.last_price }}</td>
-                <td class="value">{{ item.percentage_change }}</td>
-                <td>{{ item.signal_status }}</td>
+                <td class="value">{{ item.ema_200 }}</td>
+                <td class="value">{{ item.ema_50 }}</td>
                 <td class="text-center">
-                    <span class="badge {% if item.rank <= 5 %} bg-primary {% else %} bg-danger {% endif %}">
-                        {% if item.rank <= 5 %} Winner {% else %} Runner {% endif %}
+                    <span class="badge {% if item.osc_status == 'YES' %} bg-primary {% else %} bg-danger {% endif %}">
+                        {{ item.osc_status }}
                     </span>
                 </td>
-                <td>{% if item.pp2 %}{{ item.pp2|floatformat:2 }}{% endif %}</td>
-                <td>{% if item.pp1 %}{{ item.pp1|floatformat:2 }}{% endif %}</td>
-                <td>{% if item.pp %}{{ item.pp|floatformat:2 }}{% endif %}</td>
+                <td class="text-center">
+                    <span class="badge {% if item.day_status == 'YES' %} bg-primary {% else %} bg-danger {% endif %}">
+                        {{ item.day_status }}
+                    </span>
+                </td>
+                <td>{{ item.is_accepted }}</td>
             </tr>
             {% endfor %}
         </table>
