@@ -27,6 +27,7 @@ class PlStatus(models.TextChoices):
 
 class TopTen(models.Model):
     date = models.DateField(verbose_name="Date")
+    updated_date = models.DateField(verbose_name="Updated Date", null=True, blank=True)
     symbol = models.CharField(max_length=200, verbose_name="Symbol")
     smart_token = models.CharField(max_length=50, verbose_name="Smart Token", null=True, blank=True)
     ksec_token = models.CharField(max_length=50, verbose_name="Ksec Token", null=True, blank=True)
@@ -124,6 +125,7 @@ class TopTen(models.Model):
 
         if df.shape[0] > 16:
             self.osc_status = DayStatus.YES if df['osc_status'].iloc[-1] else DayStatus.NO
+            self.updated_date = datetime.fromisoformat(df["date"].iloc[-1])
             self.save()
 
         return True

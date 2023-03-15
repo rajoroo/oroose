@@ -34,7 +34,11 @@
                         {{ item.day_status }}
                     </span>
                 </td>
-                <td>{{ item.is_accepted }}</td>
+                <td class="text-center">
+                    <span class="badge {% if item.is_accepted %} bg-primary {% else %} bg-danger {% endif %}">
+                        {{ item.is_accepted }}
+                    </span>
+                </td>
             </tr>
             {% endfor %}
         </table>

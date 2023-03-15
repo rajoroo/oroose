@@ -3,6 +3,7 @@ from mysuru.models import TopTen, DayStatus
 from .stocks import LiveStocks
 from django.conf import settings
 import random
+from django.db.models import Q, Max
 
 
 def polling_top_ten_stocks():
@@ -31,21 +32,32 @@ def polling_top_ten_stocks():
     return True
 
 
-def trigger_calculate_top_ten():
+def check_update_latest_date():
+    latest_date = TopTen.objects.filter(ema_200__isnull=False).latest('updated_date').updated_date
+    print(latest_date, "----")
+    if latest_date:
+        recs = TopTen.objects.filter(~Q(updated_date=latest_date), ema_200__isnull=False)
+        for rec in recs:
+            rec.ema_200 = None
+            rec.save()
+
+
+def calculate_top_ten():
     recs = TopTen.objects.filter(ema_200__isnull=True)[:100]
     for rec in recs:
         rec.generate_macd_osc()
         rec.get_day_status()
+
+
+def trigger_calculate_top_ten():
+    calculate_top_ten()
+    check_update_latest_date()
     return True
 
 
 def trigger_validate_top_ten():
-    is_crawl_not_completed = TopTen.objects.filter(ema_200__isnull=True).exists()
-    if is_crawl_not_completed:
-        return True
-
     recs = TopTen.objects.filter(day_status=DayStatus.YES).values_list('pk', flat=True)
-    vals = random.sample(list(recs), 5)
+    vals = random.sample(list(recs), 2)
     for val in vals:
         obj = TopTen.objects.get(pk=val)
         obj.is_accepted = True

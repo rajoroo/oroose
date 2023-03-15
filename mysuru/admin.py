@@ -7,6 +7,7 @@ from mysuru.models import TopTen
 class TopTenAdmin(admin.ModelAdmin):
     list_display = (
         "symbol",
+        "updated_date",
         "company_name",
         "last_price",
         "ema_200",
