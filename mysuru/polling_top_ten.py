@@ -1,9 +1,8 @@
 from datetime import datetime
-from mysuru.models import TopTen, DayStatus
+from mysuru.models import TopTen
 from .stocks import LiveStocks
 from django.conf import settings
-import random
-from django.db.models import Q, Max
+from django.db.models import Q
 
 
 def polling_top_ten_stocks():
@@ -34,7 +33,6 @@ def polling_top_ten_stocks():
 
 def check_update_latest_date():
     latest_date = TopTen.objects.filter(ema_200__isnull=False).latest('updated_date').updated_date
-    print(latest_date, "----")
     if latest_date:
         recs = TopTen.objects.filter(~Q(updated_date=latest_date), ema_200__isnull=False)
         for rec in recs:
@@ -52,14 +50,4 @@ def calculate_top_ten():
 def trigger_calculate_top_ten():
     calculate_top_ten()
     check_update_latest_date()
-    return True
-
-
-def trigger_validate_top_ten():
-    recs = TopTen.objects.filter(day_status=DayStatus.YES).values_list('pk', flat=True)
-    vals = random.sample(list(recs), 2)
-    for val in vals:
-        obj = TopTen.objects.get(pk=val)
-        obj.is_accepted = True
-        obj.save()
     return True

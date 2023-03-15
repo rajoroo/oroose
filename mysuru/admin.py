@@ -14,6 +14,5 @@ class TopTenAdmin(admin.ModelAdmin):
         "ema_50",
         "osc_status",
         "day_status",
-        "is_accepted",
     )
     date_hierarchy = "date"

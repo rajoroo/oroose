@@ -36,7 +36,6 @@ class TopTen(models.Model):
     isin = models.CharField(max_length=100, verbose_name="Isin")
     last_price = models.FloatField(verbose_name="Price")
     percentage_change = models.FloatField(verbose_name="Percentage")
-    is_accepted = models.BooleanField(default=False, verbose_name="Is Accepted")
     ema_200 = models.FloatField(verbose_name="Ema200", null=True, blank=True)
     ema_50 = models.FloatField(verbose_name="Ema50", null=True, blank=True)
     last_close = models.FloatField(verbose_name="Last Close", null=True, blank=True)

@@ -6,6 +6,9 @@
 <div class="card-body">
     <div class="table-responsive">
         {% if top_10 %}
+        <div class="pt-3 txt-rt">
+            <span>Remaining to calculate - {{ to_calculate }}</span>
+        </div>
         <table class="green-table">
             <tr>
                 <th>Symbol</th>
@@ -15,7 +18,6 @@
                 <th>EMA 50</th>
                 <th>OSC Status</th>
                 <th>DAY Status</th>
-                <th>Accepted</th>
             </tr>
             {% for item in top_10 %}
             <tr class="{% if item.is_valid == False %} bg-danger {% else %} valid {% endif %}">
@@ -32,11 +34,6 @@
                 <td class="text-center">
                     <span class="badge {% if item.day_status == 'YES' %} bg-primary {% else %} bg-danger {% endif %}">
                         {{ item.day_status }}
-                    </span>
-                </td>
-                <td class="text-center">
-                    <span class="badge {% if item.is_accepted %} bg-primary {% else %} bg-danger {% endif %}">
-                        {{ item.is_accepted }}
                     </span>
                 </td>
             </tr>
