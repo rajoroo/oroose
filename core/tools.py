@@ -129,10 +129,13 @@ def calculate_macd(df):
     df['macd'] = df.index.map(macd)
     df['macd_h'] = df.index.map(macd_h)
     df['macd_s'] = df.index.map(macd_s)
-    # signal = self.generate_signals(df)
-    # df['buy_sig'] = signal[0]
-    # df['sell_sig'] = signal[1]
-    print(df)
+    df['macd_crossed'] = np.where(
+        (df['macd_s'] > df['macd']) & (df['macd'].shift(1) > df['macd_s'].shift(1)),
+        "Crossed", np.nan)
+    df_crossed = df[(df.macd_crossed == "Crossed")]
+    macd_limit = df_crossed['macd_h'].iloc[-1] * 1.5
+    df["macd_status"] = (df["macd_h"] > macd_limit) & (df["macd_h"] < 0) & (df["macd_crossed"] != "Crossed")
+    print(df.tail(10))
     return df
 
 

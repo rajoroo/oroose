@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from mysuru.models import TopTen
+from mysuru.models import TopTen, MacdTrend
 
 
 @admin.register(TopTen)
@@ -9,10 +9,25 @@ class TopTenAdmin(admin.ModelAdmin):
         "symbol",
         "updated_date",
         "company_name",
-        "last_price",
+        "price",
         "ema_200",
         "ema_50",
-        "osc_status",
-        "day_status",
+        "is_valid",
+        "trend_status",
+    )
+    date_hierarchy = "date"
+
+
+@admin.register(MacdTrend)
+class MacdAdmin(admin.ModelAdmin):
+    list_display = (
+        "symbol",
+        "updated_date",
+        "company_name",
+        "price",
+        "ema_200",
+        "ema_50",
+        "is_valid",
+        "trend_status",
     )
     date_hierarchy = "date"

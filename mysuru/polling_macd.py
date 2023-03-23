@@ -1,11 +1,11 @@
 from datetime import datetime
-from mysuru.models import TopTen
+from mysuru.models import MacdTrend
 from .stocks import LiveStocks
 from django.conf import settings
 from django.db.models import Q
 
 
-def polling_top_ten_stocks():
+def polling_macd_stocks():
     obj = LiveStocks(base_url=settings.LIVE_INDEX_URL, url=settings.LIVE_INDEX_500_URL)
 
     # Get live data, feed data, save data
@@ -15,10 +15,10 @@ def polling_top_ten_stocks():
 
     # Raw data
     stock_data = obj.get_live_stock_list()
-    TopTen.objects.all().delete()
+    MacdTrend.objects.all().delete()
 
     for index, row in stock_data.iterrows():
-        tt = TopTen.objects.create(
+        tt = MacdTrend.objects.create(
             date=datetime.today(),
             symbol=row["symbol"],
             identifier=row["identifier"],
@@ -32,22 +32,22 @@ def polling_top_ten_stocks():
 
 
 def check_update_latest_date():
-    latest_date = TopTen.objects.filter(ema_200__isnull=False).latest('updated_date').updated_date
+    latest_date = MacdTrend.objects.filter(ema_200__isnull=False).latest('updated_date').updated_date
     if latest_date:
-        recs = TopTen.objects.filter(~Q(updated_date=latest_date), ema_200__isnull=False)
+        recs = MacdTrend.objects.filter(~Q(updated_date=latest_date), ema_200__isnull=False)
         for rec in recs:
             rec.ema_200 = None
             rec.save()
 
 
-def calculate_top_ten():
-    recs = TopTen.objects.filter(ema_200__isnull=True)[:100]
+def calculate_macd():
+    recs = MacdTrend.objects.filter(ema_200__isnull=True)[:100]
     for rec in recs:
         rec.generate_macd_osc()
         rec.get_day_status()
 
 
-def trigger_calculate_top_ten():
-    calculate_top_ten()
+def trigger_calculate_macd():
+    calculate_macd()
     check_update_latest_date()
     return True
