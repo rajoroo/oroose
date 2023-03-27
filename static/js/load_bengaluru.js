@@ -6,6 +6,7 @@ $(".ser_act").click(function(){
       url: $(this).attr('trigger-url'),
       beforeSend: function( xhr ) {
         $('.ajax-loader').css("visibility", "show");
+        $('.loader').css('display', 'flex');
       },
       success: function(data){
         $("#resultarea").text(data);
@@ -21,6 +22,7 @@ $(".ser_act").click(function(){
             '<span aria-hidden="true">&times;</span>' +
             '</button>' + message + '</div>');
         $("#buttonAlert").addClass('show')
+        $('.loader').css('display', 'none');
       }
 
     })
