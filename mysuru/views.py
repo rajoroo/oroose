@@ -1,12 +1,12 @@
 from datetime import datetime
 
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
 from django.shortcuts import render
 
 from mysuru.models import TopTen, TrendStatus, MacdTrend
 from mysuru.polling_top_ten import polling_top_ten_stocks, trigger_calculate_top_ten
 from mysuru.polling_macd import polling_macd_stocks, trigger_calculate_macd
+from django.http import JsonResponse
 
 
 # Uptrend
@@ -24,12 +24,20 @@ def mysuru_page(request):
 
 def mysuru_load_top_ten(request):
     polling_top_ten_stocks()
-    return HttpResponse(status=200)
+
+    return JsonResponse({
+        "status": "success",
+        "message": "Successfully loaded the content"
+    })
 
 
 def mysuru_calculate_top_ten(request):
     trigger_calculate_top_ten()
-    return HttpResponse(status=200)
+
+    return JsonResponse({
+        "status": "success",
+        "message": "Successfully Calculated"
+    })
 
 
 # Uptrend
@@ -48,9 +56,17 @@ def macd_page(request):
 
 def load_macd_page(request):
     polling_macd_stocks()
-    return HttpResponse(status=200)
+
+    return JsonResponse({
+        "status": "success",
+        "message": "Successfully loaded the content"
+    })
 
 
 def calculate_macd_page(request):
     trigger_calculate_macd()
-    return HttpResponse(status=200)
+
+    return JsonResponse({
+        "status": "success",
+        "message": "Successfully Calculated"
+    })

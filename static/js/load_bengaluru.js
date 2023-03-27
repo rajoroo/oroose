@@ -9,9 +9,12 @@ $(".ser_act").click(function(){
       },
       success: function(data){
         $("#resultarea").text(data);
+//        console.log("ghbhbh")
       },
       complete: function(data){
         $('.ajax-loader').css("visibility", "hidden");
+        var message = data["responseJSON"]["message"];
+        alert(message)
       }
     })
 
