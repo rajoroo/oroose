@@ -9,13 +9,20 @@ $(".ser_act").click(function(){
       },
       success: function(data){
         $("#resultarea").text(data);
-//        console.log("ghbhbh")
       },
       complete: function(data){
         $('.ajax-loader').css("visibility", "hidden");
         var message = data["responseJSON"]["message"];
-        alert(message)
+        $('#alerts').empty();
+
+        $('#alerts').append(
+        '<div class="alert alert-success alert-dismissible fade" role="alert" id="buttonAlert">' +
+            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+            '<span aria-hidden="true">&times;</span>' +
+            '</button>' + message + '</div>');
+        $("#buttonAlert").addClass('show')
       }
+
     })
 
 });
