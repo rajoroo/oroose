@@ -41,7 +41,7 @@ def check_update_latest_date():
 
 
 def calculate_macd():
-    recs = MacdTrend.objects.filter(ema_200__isnull=True)[:100]
+    recs = MacdTrend.objects.filter(ema_200__isnull=True)[:3]
     for rec in recs:
         rec.generate_macd_osc()
         rec.get_day_status()

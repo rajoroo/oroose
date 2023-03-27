@@ -6,6 +6,7 @@ from django.shortcuts import render
 
 from mysuru.models import TopTen, TrendStatus, MacdTrend
 from mysuru.polling_top_ten import polling_top_ten_stocks, trigger_calculate_top_ten
+from mysuru.polling_macd import polling_macd_stocks, trigger_calculate_macd
 
 
 # Uptrend
@@ -46,10 +47,10 @@ def macd_page(request):
 
 
 def load_macd_page(request):
-    polling_top_ten_stocks()
+    polling_macd_stocks()
     return HttpResponse(status=200)
 
 
 def calculate_macd_page(request):
-    trigger_calculate_top_ten()
+    trigger_calculate_macd()
     return HttpResponse(status=200)
