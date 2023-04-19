@@ -12,11 +12,12 @@ from django.http import JsonResponse
 # Uptrend
 @login_required(login_url="/accounts/login/")
 def mysuru_page(request):
-    top_10 = TopTen.objects.filter(is_valid=True)
+    top_10 = TopTen.objects.filter(trend_status=TrendStatus.YES)
     to_calculate = TopTen.objects.filter(date=datetime.today(), ema_200__isnull=True).count()
     context = {
         "active_page": "mysuru",
         "top_10": list(top_10.values()),
+        "top_10_count": top_10.count(),
         "to_calculate": to_calculate,
     }
     return render(request, "mysuru/base_page.html", context)

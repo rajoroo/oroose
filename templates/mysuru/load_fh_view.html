@@ -5,10 +5,10 @@
 </div>
 <div class="card-body">
     <div class="table-responsive">
-        {% if top_10 %}
         <div class="pt-3 txt-rt">
-            <span>Remaining to calculate - {{ to_calculate }}</span>
+            <span>Remaining to calculate - {{ to_calculate }} | TOP 10 - {{ top_10_count }}</span>
         </div>
+        {% if top_10 %}
         <table class="green-table">
             <tr>
                 <th>Symbol</th>
@@ -16,7 +16,6 @@
                 <th>Last Price</th>
                 <th>EMA 200</th>
                 <th>EMA 50</th>
-                <th>OSC Status</th>
                 <th>DAY Status</th>
             </tr>
             {% for item in top_10 %}
@@ -27,13 +26,8 @@
                 <td class="value">{{ item.ema_200 }}</td>
                 <td class="value">{{ item.ema_50 }}</td>
                 <td class="text-center">
-                    <span class="badge {% if item.osc_status == 'YES' %} bg-primary {% else %} bg-danger {% endif %}">
-                        {{ item.osc_status }}
-                    </span>
-                </td>
-                <td class="text-center">
-                    <span class="badge {% if item.day_status == 'YES' %} bg-primary {% else %} bg-danger {% endif %}">
-                        {{ item.day_status }}
+                    <span class="badge {% if item.trend_status == 'YES' %} bg-primary {% else %} bg-danger {% endif %}">
+                        {{ item.trend_status }}
                     </span>
                 </td>
             </tr>
