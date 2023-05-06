@@ -12,7 +12,6 @@ class TopTenAdmin(admin.ModelAdmin):
         "price",
         "ema_200",
         "ema_50",
-        "is_valid",
         "trend_status",
     )
     date_hierarchy = "date"
@@ -27,7 +26,8 @@ class MacdAdmin(admin.ModelAdmin):
         "price",
         "ema_200",
         "ema_50",
-        "is_valid",
+        "day_1_status",
+        "day_2_status",
         "trend_status",
     )
     date_hierarchy = "date"

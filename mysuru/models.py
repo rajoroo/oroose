@@ -3,7 +3,7 @@ from django.utils.translation import gettext_lazy as _
 from datetime import datetime, time
 from dateutil.relativedelta import relativedelta
 from core.smart_util import SmartInstrument, SmartTool
-from core.tools import calculate_macd, get_param_config_tag, calculate_osc
+from core.tools import calculate_macd, get_param_config_tag, calculate_osc, get_macd_last_two_cross_over
 import pandas as pd
 
 
@@ -125,7 +125,8 @@ class MacdTrend(models.Model):
     ema_200 = models.FloatField(verbose_name="Ema200", null=True, blank=True)
     ema_50 = models.FloatField(verbose_name="Ema50", null=True, blank=True)
     last_close = models.FloatField(verbose_name="Last Close", null=True, blank=True)
-    is_valid = models.BooleanField(verbose_name="Is Valid", default=False)
+    day_1_status = models.BooleanField(verbose_name="Day 1", default=False)
+    day_2_status = models.BooleanField(verbose_name="Day 2", default=False)
     trend_status = models.CharField(
         max_length=5,
         choices=TrendStatus.choices,
@@ -159,11 +160,9 @@ class MacdTrend(models.Model):
         config = get_param_config_tag(tag="MYSURU")
         if (
                 self.price
-                and self.is_valid
                 and self.ema_200
                 and (self.price < config["max_price"])
                 and (self.price > self.ema_200)
-
         ):
             self.trend_status = TrendStatus.YES
         else:
@@ -194,17 +193,13 @@ class MacdTrend(models.Model):
             return None
 
         df = self.get_year_data()
-        df = calculate_macd(df=df)
+        data = get_macd_last_two_cross_over(df=df)
+        print(data)
 
-        df['ema_200'] = df['close'].rolling(window=200).mean()
-        df['ema_50'] = df['close'].rolling(window=50).mean()
-        self.ema_200 = round(df["ema_200"].iloc[-1], 2)
-        self.ema_50 = round(df["ema_50"].iloc[-1], 2)
-
-        if df.shape[0] > 16:
-            self.is_valid = True if df['macd_status'].iloc[-1] else False
-            self.updated_date = datetime.fromisoformat(df["date"].iloc[-1])
-            self.save()
+        self.ema_200 = round(data["ema_200"], 2)
+        self.ema_50 = round(data["ema_50"], 2)
+        self.updated_date = datetime.fromisoformat(data["date"])
+        self.save()
 
         return True
 
@@ -220,6 +215,6 @@ class PriceAction(models.Model):
     class Meta:
         ordering = ["symbol"]
         constraints = [
-            models.UniqueConstraint(fields=["date", "symbol"], name="%(app_label)s_%(class)s_price_action")
+            models.UniqueConstraint(fields=["symbol"], name="%(app_label)s_%(class)s_price_action")
         ]
 

@@ -152,3 +152,45 @@ def calculate_osc(df):
     df["osc_status"] = (df["k_smooth"] < 20) & (df["osc_crossed"] == "Crossed")
     print(df.tail(10))
     return df
+
+
+def get_macd_last_two_cross_over(df):
+    day_1_status = None
+    day_2_status = None
+
+    k = df['close'].ewm(span=12, adjust=False, min_periods=12).mean()
+    d = df['close'].ewm(span=26, adjust=False, min_periods=26).mean()
+    macd = k - d
+    macd_s = macd.ewm(span=9, adjust=False, min_periods=9).mean()
+    macd_h = macd - macd_s
+    df['macd'] = df.index.map(macd)
+    df['macd_h'] = df.index.map(macd_h)
+    df['macd_s'] = df.index.map(macd_s)
+    df['crossed'] = np.where(
+        (df['macd_s'] > df['macd']) & (df['macd'].shift(1) > df['macd_s'].shift(1)),
+        "Crossed", np.nan)
+    df["crossed_count"] = df['crossed'].eq('Crossed').cumsum()
+    df['ema_200'] = df['close'].rolling(window=200).mean()
+    df['ema_50'] = df['close'].rolling(window=50).mean()
+
+    last_crossed_df = df[df["crossed_count"] == df["crossed_count"].max()]
+    df = last_crossed_df.reset_index()
+    current_day = df.iloc[-1]
+    print(df.tail(10))
+
+    if df.shape[0] > 3:
+        day_2 = df.iloc[1]
+        day_3 = df.loc[2]
+
+        if day_2["macd_h"] >= current_day["macd_h"]:
+            day_1_status = True
+        if day_3["macd_h"] >= current_day["macd_h"]:
+            day_2_status = True
+
+    return {
+        "day_1_status": day_1_status,
+        "day_2_status": day_2_status,
+        "date": current_day["date"],
+        "ema_200": current_day["ema_200"],
+        "ema_50": current_day["ema_50"]
+    }
