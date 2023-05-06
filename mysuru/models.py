@@ -199,6 +199,8 @@ class MacdTrend(models.Model):
         self.ema_200 = round(data["ema_200"], 2)
         self.ema_50 = round(data["ema_50"], 2)
         self.updated_date = datetime.fromisoformat(data["date"])
+        self.day_1_status = data["day_1_status"]
+        self.day_2_status = data["day_2_status"]
         self.save()
 
         return True

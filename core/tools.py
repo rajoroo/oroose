@@ -155,8 +155,8 @@ def calculate_osc(df):
 
 
 def get_macd_last_two_cross_over(df):
-    day_1_status = None
-    day_2_status = None
+    day_1_status = False
+    day_2_status = False
 
     k = df['close'].ewm(span=12, adjust=False, min_periods=12).mean()
     d = df['close'].ewm(span=26, adjust=False, min_periods=26).mean()
@@ -176,15 +176,19 @@ def get_macd_last_two_cross_over(df):
     last_crossed_df = df[df["crossed_count"] == df["crossed_count"].max()]
     df = last_crossed_df.reset_index()
     current_day = df.iloc[-1]
-    print(df.tail(10))
+    print(df.tail(30))
+    print(df.shape[0])
 
     if df.shape[0] > 3:
         day_2 = df.iloc[1]
         day_3 = df.loc[2]
 
-        if day_2["macd_h"] >= current_day["macd_h"]:
+        print(day_2["macd_h"], current_day["macd_h"])
+        print(day_3["macd_h"], current_day["macd_h"])
+
+        if current_day["macd_h"] < 0 and current_day["macd_h"] >= day_2["macd_h"]:
             day_1_status = True
-        if day_3["macd_h"] >= current_day["macd_h"]:
+        if current_day["macd_h"] < 0 and current_day["macd_h"] >= day_3["macd_h"]:
             day_2_status = True
 
     return {

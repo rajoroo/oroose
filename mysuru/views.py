@@ -44,7 +44,7 @@ def mysuru_calculate_top_ten(request):
 # Uptrend
 @login_required(login_url="/accounts/login/")
 def macd_page(request):
-    macd_list = MacdTrend.objects.filter(trend_status=TrendStatus.YES)
+    macd_list = MacdTrend.objects.filter(trend_status=TrendStatus.YES, day_1_status=True)
     to_calculate = MacdTrend.objects.filter(date=datetime.today(), ema_200__isnull=True).count()
     context = {
         "active_page": "macd",
