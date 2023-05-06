@@ -53,7 +53,7 @@ class SmartTool:
                 "fromdate": fromdate,
                 "todate": todate
             }
-            time.sleep(3)
+            time.sleep(1)
             result = self.smart.getCandleData(historicParam)
 
         except Exception as e:

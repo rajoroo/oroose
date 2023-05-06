@@ -207,3 +207,19 @@ class MacdTrend(models.Model):
             self.save()
 
         return True
+
+
+class PriceAction(models.Model):
+    symbol = models.CharField(max_length=200, verbose_name="Symbol")
+    smart_token = models.CharField(max_length=50, verbose_name="Smart Token", null=True, blank=True)
+    identifier = models.CharField(max_length=200, verbose_name="Identifier")
+    company_name = models.CharField(max_length=500, verbose_name="Company Name")
+    price_data = models.JSONField(verbose_name="Price Data", null=True, blank=True)
+    objects = models.Manager()
+
+    class Meta:
+        ordering = ["symbol"]
+        constraints = [
+            models.UniqueConstraint(fields=["date", "symbol"], name="%(app_label)s_%(class)s_price_action")
+        ]
+
