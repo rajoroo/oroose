@@ -46,9 +46,11 @@ def mysuru_calculate_top_ten(request):
 def macd_page(request):
     day_1_list = MacdTrend.objects.filter(trend_status=TrendStatus.YES, day_1_status=True)
     day_2_list = MacdTrend.objects.filter(trend_status=TrendStatus.YES, day_2_status=True)
-    valid_list = MacdTrend.objects.filter(Q(day_1_status=True, trend_status=TrendStatus.NO) | Q(day_2_status=True, trend_status=TrendStatus.NO))
-    invalid_list = MacdTrend.objects.filter(smart_token__isnull=True).count()
-    to_calculate = MacdTrend.objects.filter(date=datetime.today(), ema_200__isnull=True).count()
+    valid_list = MacdTrend.objects.filter(
+        Q(day_1_status=True, trend_status=TrendStatus.NO) |
+        Q(day_2_status=True, trend_status=TrendStatus.NO)
+    )
+    to_calculate = MacdTrend.objects.filter(date=datetime.today(), ema_200__isnull=True, smart_token__isnull=False).count()
     macd_result = [
         {
             "title": "Day 1",
@@ -70,7 +72,7 @@ def macd_page(request):
     context = {
         "active_page": "macd",
         "macd_result": macd_result,
-        "to_calculate": to_calculate - invalid_list,
+        "to_calculate": to_calculate,
     }
     return render(request, "macd/base_page.html", context)
 
