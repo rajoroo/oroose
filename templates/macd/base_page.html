@@ -11,7 +11,7 @@
             <div class="card">
                 <div class="card-body">
                     <div class="btn-list">
-                        <button type="button" class="btn btn-primary ser_act" id="load_macd_page" trigger-url="{% url 'load_macd_page' %}" on-complete="Loading completed...">Load Stock</button>
+                        <button type="button" class="btn btn-primary" id="load_macd_page" onclick="location.href='{% url 'load_macd_page' %}'">Load Stock</button>
                         <button type="button" class="btn btn-primary ser_act" id="calculate_macd_page" trigger-url="{% url 'calculate_macd_page' %}">Calculate</button>
                     </div>
                 </div>

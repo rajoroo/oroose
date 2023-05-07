@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.db.models import Q
 from mysuru.models import TopTen, TrendStatus, MacdTrend
 from mysuru.polling_top_ten import polling_top_ten_stocks, trigger_calculate_top_ten
@@ -79,11 +79,7 @@ def macd_page(request):
 
 def load_macd_page(request):
     polling_macd_stocks()
-
-    return JsonResponse({
-        "status": "success",
-        "message": "Successfully loaded the content"
-    })
+    return redirect("macd")
 
 
 def calculate_macd_page(request):
