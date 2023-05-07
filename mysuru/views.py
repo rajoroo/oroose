@@ -1,12 +1,13 @@
 from datetime import datetime
 
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect
 from django.db.models import Q
-from mysuru.models import TopTen, TrendStatus, MacdTrend
-from mysuru.polling_top_ten import polling_top_ten_stocks, trigger_calculate_top_ten
-from mysuru.polling_macd import polling_macd_stocks, trigger_calculate_macd
 from django.http import JsonResponse
+from django.shortcuts import redirect, render
+
+from mysuru.models import MacdTrend, TopTen, TrendStatus
+from mysuru.polling_macd import polling_macd_stocks, trigger_calculate_macd
+from mysuru.polling_top_ten import polling_top_ten_stocks, trigger_calculate_top_ten
 
 
 # Uptrend

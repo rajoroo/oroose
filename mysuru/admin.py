@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from mysuru.models import TopTen, MacdTrend
+from mysuru.models import MacdTrend, TopTen
 
 
 @admin.register(TopTen)

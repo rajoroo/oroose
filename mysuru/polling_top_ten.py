@@ -1,8 +1,11 @@
 from datetime import datetime
-from mysuru.models import TopTen
-from .stocks import LiveStocks
+
 from django.conf import settings
 from django.db.models import Q
+
+from mysuru.models import TopTen
+
+from .stocks import LiveStocks
 
 
 def polling_top_ten_stocks():
