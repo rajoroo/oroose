@@ -1,6 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
-from django.shortcuts import HttpResponse, render
+from django.shortcuts import HttpResponse, render, redirect
 from django.template.loader import render_to_string
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
@@ -51,4 +51,10 @@ def generate_smart_token(request):
     )
     params = obj.generate_token()
     save_param_config_tag(params=params, tag="SMART_HISTORY")
-    return HttpResponse(status=200)
+    return redirect("configuration")
+
+
+def reset_configuration(request):
+    """Reset configurations"""
+    ParameterConfig.objects.all().delete()
+    return redirect("configuration")

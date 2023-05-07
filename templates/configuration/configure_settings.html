@@ -13,7 +13,8 @@
                 <div class="card-body">
                     <div class="btn-list">
                         <button type="button" class="btn btn-primary modal_act" trigger-url="{% url 'upload_config_file' %}" data-toggle="modal" data-target="#modal_popup_area">Upload config</button>
-                        <button type="button" class="btn btn-primary ser_act" id="pull_fh" trigger-url="{% url 'generate_smart_token' %}">Generate Smart Token</button>
+                        <button type="button" class="btn btn-primary" id="pull_fh" onclick="location.href='{% url 'generate_smart_token' %}'">Generate Smart Token</button>
+                        <button type="button" class="btn btn-primary" id="reset_config" onclick="location.href='{% url 'reset_configuration' %}'">Reset Config</button>
                     </div>
                 </div>
             </div>
