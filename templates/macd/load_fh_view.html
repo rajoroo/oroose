@@ -16,6 +16,7 @@
                 <th>Last Price</th>
                 <th>EMA 200</th>
                 <th>EMA 50</th>
+                <th>EMA 200 Percentage</th>
                 <th>Trend Status</th>
             </tr>
             {% for item in row.macd_value %}
@@ -25,6 +26,7 @@
                 <td class="value">{{ item.price }}</td>
                 <td class="value">{{ item.ema_200 }}</td>
                 <td class="value">{{ item.ema_50 }}</td>
+                <td class="value">{{ item.ema_200_percentage }}</td>
                 <td class="text-center">
                     <span class="badge {% if item.trend_status == 'YES' %} bg-primary {% else %} bg-danger {% endif %}">
                         {{ item.trend_status }}

@@ -175,9 +175,9 @@ def get_macd_last_two_cross_over(df):
 
     last_crossed_df = df[df["crossed_count"] == df["crossed_count"].max()]
     df = last_crossed_df.reset_index()
+    df["ema_200_percentage"] = ((df["ema_200"]/df["close"]) - 1) * 100
     current_day = df.iloc[-1]
     print(df.tail(10))
-    print(df.shape[0])
 
     if df.shape[0] > 3:
         day_2 = df.iloc[1]
@@ -193,5 +193,6 @@ def get_macd_last_two_cross_over(df):
         "day_2_status": day_2_status,
         "date": current_day["date"],
         "ema_200": current_day["ema_200"],
-        "ema_50": current_day["ema_50"]
+        "ema_50": current_day["ema_50"],
+        "ema_200_percentage": current_day["ema_200_percentage"],
     }

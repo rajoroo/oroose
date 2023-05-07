@@ -45,7 +45,7 @@ def mysuru_calculate_top_ten(request):
 @login_required(login_url="/accounts/login/")
 def macd_page(request):
     day_1_list = MacdTrend.objects.filter(trend_status=TrendStatus.YES, day_1_status=True)
-    day_2_list = MacdTrend.objects.filter(trend_status=TrendStatus.YES, day_2_status=True)
+    day_2_list = MacdTrend.objects.filter(trend_status=TrendStatus.YES, day_1_status=False, day_2_status=True)
     valid_list = MacdTrend.objects.filter(
         Q(day_1_status=True, trend_status=TrendStatus.NO) |
         Q(day_2_status=True, trend_status=TrendStatus.NO)

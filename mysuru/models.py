@@ -127,6 +127,7 @@ class MacdTrend(models.Model):
     last_close = models.FloatField(verbose_name="Last Close", null=True, blank=True)
     day_1_status = models.BooleanField(verbose_name="Day 1", default=False)
     day_2_status = models.BooleanField(verbose_name="Day 2", default=False)
+    ema_200_percentage = models.FloatField(verbose_name="Ema 200 Percentage", default=0.0)
     trend_status = models.CharField(
         max_length=5,
         choices=TrendStatus.choices,
@@ -201,6 +202,7 @@ class MacdTrend(models.Model):
         self.updated_date = datetime.fromisoformat(data["date"])
         self.day_1_status = data["day_1_status"]
         self.day_2_status = data["day_2_status"]
+        self.ema_200_percentage = round(data["ema_200_percentage"], 1)
         self.save()
 
         return True
