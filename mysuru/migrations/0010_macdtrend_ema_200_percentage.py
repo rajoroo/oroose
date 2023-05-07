@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('mysuru', '0009_remove_macdtrend_is_valid'),
+        ("mysuru", "0009_remove_macdtrend_is_valid"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='macdtrend',
-            name='ema_200_percentage',
-            field=models.FloatField(default=0.0, verbose_name='Ema 200 Percentage'),
+            model_name="macdtrend",
+            name="ema_200_percentage",
+            field=models.FloatField(default=0.0, verbose_name="Ema 200 Percentage"),
         ),
     ]

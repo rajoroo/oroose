@@ -20,12 +20,12 @@ class SmartTool:
         self.feed_token = feed_token
 
     def generate_token(self):
-        """ Generate token for first time"""
+        """Generate token for first time"""
         obj = self.smart.generateSession(self.client_code, self.password, pyotp.TOTP(self.totp).now())
-        self.client_code = obj['data']['clientcode']
-        bearer = obj['data']['jwtToken']
+        self.client_code = obj["data"]["clientcode"]
+        bearer = obj["data"]["jwtToken"]
         self.jwt_token = bearer.split()[1]
-        self.refresh_token = obj['data']['refreshToken']
+        self.refresh_token = obj["data"]["refreshToken"]
         self.feed_token = self.smart.getfeedToken()
 
         return {
@@ -51,7 +51,7 @@ class SmartTool:
                 "symboltoken": symboltoken,
                 "interval": interval,
                 "fromdate": fromdate,
-                "todate": todate
+                "todate": todate,
             }
             time.sleep(1)
             result = self.smart.getCandleData(historicParam)
@@ -92,8 +92,8 @@ class SmartInstrument:
 
     def download_instrument(self, filename):
         df = pd.read_json(settings.SMART_MASTER)
-        df = df.loc[df['exch_seg'] == "NSE"]
-        df = df[df['symbol'].str.endswith('EQ')]
+        df = df.loc[df["exch_seg"] == "NSE"]
+        df = df[df["symbol"].str.endswith("EQ")]
         df.to_json(filename)
         return df
 

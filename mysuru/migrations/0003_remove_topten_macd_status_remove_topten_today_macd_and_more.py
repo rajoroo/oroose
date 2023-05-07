@@ -6,52 +6,52 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('mysuru', '0002_remove_topten_is_valid'),
+        ("mysuru", "0002_remove_topten_is_valid"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='topten',
-            name='macd_status',
+            model_name="topten",
+            name="macd_status",
         ),
         migrations.RemoveField(
-            model_name='topten',
-            name='today_macd',
+            model_name="topten",
+            name="today_macd",
         ),
         migrations.RemoveField(
-            model_name='topten',
-            name='today_macd_histogram',
+            model_name="topten",
+            name="today_macd_histogram",
         ),
         migrations.RemoveField(
-            model_name='topten',
-            name='today_macd_signal',
+            model_name="topten",
+            name="today_macd_signal",
         ),
         migrations.RemoveField(
-            model_name='topten',
-            name='today_osc',
+            model_name="topten",
+            name="today_osc",
         ),
         migrations.RemoveField(
-            model_name='topten',
-            name='today_osc_signal',
+            model_name="topten",
+            name="today_osc_signal",
         ),
         migrations.RemoveField(
-            model_name='topten',
-            name='yesterday_macd',
+            model_name="topten",
+            name="yesterday_macd",
         ),
         migrations.RemoveField(
-            model_name='topten',
-            name='yesterday_macd_histogram',
+            model_name="topten",
+            name="yesterday_macd_histogram",
         ),
         migrations.RemoveField(
-            model_name='topten',
-            name='yesterday_macd_signal',
+            model_name="topten",
+            name="yesterday_macd_signal",
         ),
         migrations.RemoveField(
-            model_name='topten',
-            name='yesterday_osc',
+            model_name="topten",
+            name="yesterday_osc",
         ),
         migrations.RemoveField(
-            model_name='topten',
-            name='yesterday_osc_signal',
+            model_name="topten",
+            name="yesterday_osc_signal",
         ),
     ]

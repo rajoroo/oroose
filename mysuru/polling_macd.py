@@ -35,7 +35,7 @@ def polling_macd_stocks():
 
 
 def check_update_latest_date():
-    latest_date = MacdTrend.objects.filter(ema_200__isnull=False).latest('updated_date').updated_date
+    latest_date = MacdTrend.objects.filter(ema_200__isnull=False).latest("updated_date").updated_date
     if latest_date:
         recs = MacdTrend.objects.filter(~Q(updated_date=latest_date), ema_200__isnull=False)
         for rec in recs:

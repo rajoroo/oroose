@@ -1,6 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
-from django.shortcuts import HttpResponse, render, redirect
+from django.shortcuts import HttpResponse, redirect, render
 from django.template.loader import render_to_string
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
@@ -26,14 +26,14 @@ def configuration_page(request):
 
 @csrf_exempt
 def upload_config_file(request):
-    if request.method == 'POST':
+    if request.method == "POST":
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
-            handle_config_file(request.FILES['file'])
+            handle_config_file(request.FILES["file"])
             return HttpResponseRedirect(reverse("configuration"))
     else:
         form = UploadFileForm()
-    rendered = render_to_string('configuration/file_upload.html', {'form': form, "title": "Upload Configs"})
+    rendered = render_to_string("configuration/file_upload.html", {"form": form, "title": "Upload Configs"})
     response = HttpResponse(rendered)
     return response
 

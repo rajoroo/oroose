@@ -40,7 +40,5 @@ class ParameterConfig(models.Model):
     class Meta:
         ordering = ["tag", "sequence"]
         constraints = [
-            models.UniqueConstraint(
-                fields=["nick_name"], name="%(app_label)s_%(class)s_unique_parameter_configs"
-            )
+            models.UniqueConstraint(fields=["nick_name"], name="%(app_label)s_%(class)s_unique_parameter_configs")
         ]

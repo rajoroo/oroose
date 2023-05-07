@@ -64,11 +64,11 @@ class TopTen(models.Model):
     def get_day_status(self):
         config = get_param_config_tag(tag="MYSURU")
         if (
-                self.price
-                and self.is_valid
-                and self.ema_200
-                and (self.price < config["max_price"])
-                and (self.price > self.ema_200)
+            self.price
+            and self.is_valid
+            and self.ema_200
+            and (self.price < config["max_price"])
+            and (self.price > self.ema_200)
         ):
             self.trend_status = TrendStatus.YES
         else:
@@ -86,7 +86,7 @@ class TopTen(models.Model):
             symboltoken=self.smart_token,
             interval="ONE_DAY",
             fromdate=from_date.strftime("%Y-%m-%d %H:%M"),
-            todate=to_date.strftime("%Y-%m-%d %H:%M")
+            todate=to_date.strftime("%Y-%m-%d %H:%M"),
         )
 
         df = pd.DataFrame(history_data)
@@ -101,13 +101,13 @@ class TopTen(models.Model):
         df = self.get_year_data()
         df = calculate_osc(df=df)
 
-        df['ema_200'] = df['close'].rolling(window=200).mean()
-        df['ema_50'] = df['close'].rolling(window=50).mean()
+        df["ema_200"] = df["close"].rolling(window=200).mean()
+        df["ema_50"] = df["close"].rolling(window=50).mean()
         self.ema_200 = round(df["ema_200"].iloc[-1], 2)
         self.ema_50 = round(df["ema_50"].iloc[-1], 2)
 
         if df.shape[0] > 16:
-            self.is_valid = True if df['osc_status'].iloc[-1] else False
+            self.is_valid = True if df["osc_status"].iloc[-1] else False
             self.updated_date = datetime.fromisoformat(df["date"].iloc[-1])
             self.save()
 
@@ -161,12 +161,7 @@ class MacdTrend(models.Model):
 
     def get_day_status(self):
         config = get_param_config_tag(tag="MYSURU")
-        if (
-                self.price
-                and self.ema_200
-                and (self.price < config["max_price"])
-                and (self.price > self.ema_200)
-        ):
+        if self.price and self.ema_200 and (self.price < config["max_price"]) and (self.price > self.ema_200):
             self.trend_status = TrendStatus.YES
         else:
             self.trend_status = TrendStatus.NO
@@ -183,7 +178,7 @@ class MacdTrend(models.Model):
             symboltoken=self.smart_token,
             interval="ONE_DAY",
             fromdate=from_date.strftime("%Y-%m-%d %H:%M"),
-            todate=to_date.strftime("%Y-%m-%d %H:%M")
+            todate=to_date.strftime("%Y-%m-%d %H:%M"),
         )
 
         df = pd.DataFrame(history_data)
@@ -220,7 +215,4 @@ class PriceAction(models.Model):
 
     class Meta:
         ordering = ["symbol"]
-        constraints = [
-            models.UniqueConstraint(fields=["symbol"], name="%(app_label)s_%(class)s_price_action")
-        ]
-
+        constraints = [models.UniqueConstraint(fields=["symbol"], name="%(app_label)s_%(class)s_price_action")]

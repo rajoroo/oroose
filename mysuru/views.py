@@ -27,19 +27,13 @@ def mysuru_page(request):
 def mysuru_load_top_ten(request):
     polling_top_ten_stocks()
 
-    return JsonResponse({
-        "status": "success",
-        "message": "Successfully loaded the content"
-    })
+    return JsonResponse({"status": "success", "message": "Successfully loaded the content"})
 
 
 def mysuru_calculate_top_ten(request):
     trigger_calculate_top_ten()
 
-    return JsonResponse({
-        "status": "success",
-        "message": "Successfully Calculated"
-    })
+    return JsonResponse({"status": "success", "message": "Successfully Calculated"})
 
 
 # Uptrend
@@ -48,10 +42,11 @@ def macd_page(request):
     day_1_list = MacdTrend.objects.filter(trend_status=TrendStatus.YES, day_1_status=True)
     day_2_list = MacdTrend.objects.filter(trend_status=TrendStatus.YES, day_1_status=False, day_2_status=True)
     valid_list = MacdTrend.objects.filter(
-        Q(day_1_status=True, trend_status=TrendStatus.NO) |
-        Q(day_2_status=True, trend_status=TrendStatus.NO)
+        Q(day_1_status=True, trend_status=TrendStatus.NO) | Q(day_2_status=True, trend_status=TrendStatus.NO)
     )
-    to_calculate = MacdTrend.objects.filter(date=datetime.today(), ema_200__isnull=True, smart_token__isnull=False).count()
+    to_calculate = MacdTrend.objects.filter(
+        date=datetime.today(), ema_200__isnull=True, smart_token__isnull=False
+    ).count()
     macd_result = [
         {
             "title": "Day 1",
@@ -68,7 +63,6 @@ def macd_page(request):
             "macd_value": list(valid_list.values()),
             "macd_count": valid_list.count(),
         },
-
     ]
     context = {
         "active_page": "macd",
@@ -86,7 +80,4 @@ def load_macd_page(request):
 def calculate_macd_page(request):
     trigger_calculate_macd()
 
-    return JsonResponse({
-        "status": "success",
-        "message": "Successfully Calculated"
-    })
+    return JsonResponse({"status": "success", "message": "Successfully Calculated"})

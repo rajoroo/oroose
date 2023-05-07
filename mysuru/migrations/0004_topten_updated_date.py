@@ -7,14 +7,14 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('mysuru', '0003_remove_topten_macd_status_remove_topten_today_macd_and_more'),
+        ("mysuru", "0003_remove_topten_macd_status_remove_topten_today_macd_and_more"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='topten',
-            name='updated_date',
-            field=models.DateField(default=django.utils.timezone.now, verbose_name='Updated Date'),
+            model_name="topten",
+            name="updated_date",
+            field=models.DateField(default=django.utils.timezone.now, verbose_name="Updated Date"),
             preserve_default=False,
         ),
     ]
