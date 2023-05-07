@@ -3,7 +3,7 @@ from django.utils.translation import gettext_lazy as _
 from datetime import datetime, time
 from dateutil.relativedelta import relativedelta
 from core.smart_util import SmartInstrument, SmartTool
-from core.tools import calculate_macd, get_param_config_tag, calculate_osc, get_macd_last_two_cross_over
+from core.tools import get_param_config_tag, calculate_osc, get_macd_last_two_cross_over
 import pandas as pd
 
 
