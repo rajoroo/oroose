@@ -167,7 +167,7 @@ def get_macd_last_two_cross_over(df):
     df['macd_h'] = df.index.map(macd_h)
     df['macd_s'] = df.index.map(macd_s)
     df['crossed'] = np.where(
-        (df['macd_s'] > df['macd']) & (df['macd'].shift(1) > df['macd_s'].shift(1)),
+        (df['macd_h'] < 0) & (df['macd_h'].shift(1) > 0),
         "Crossed", np.nan)
     df["crossed_count"] = df['crossed'].eq('Crossed').cumsum()
     df['ema_200'] = df['close'].rolling(window=200).mean()
@@ -176,15 +176,12 @@ def get_macd_last_two_cross_over(df):
     last_crossed_df = df[df["crossed_count"] == df["crossed_count"].max()]
     df = last_crossed_df.reset_index()
     current_day = df.iloc[-1]
-    print(df.tail(30))
+    print(df.tail(10))
     print(df.shape[0])
 
     if df.shape[0] > 3:
         day_2 = df.iloc[1]
         day_3 = df.loc[2]
-
-        print(day_2["macd_h"], current_day["macd_h"])
-        print(day_3["macd_h"], current_day["macd_h"])
 
         if current_day["macd_h"] < 0 and current_day["macd_h"] >= day_2["macd_h"]:
             day_1_status = True
