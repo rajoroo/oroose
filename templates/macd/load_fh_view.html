@@ -1,14 +1,14 @@
 {% load humanize %}
 
 <div class="card-header border-bottom">
-    <h3 class="card-title mb-0">MACD</h3>
+    <h3 class="card-title mb-0">MACD - {{ row.title }}</h3>
 </div>
 <div class="card-body">
     <div class="table-responsive">
         <div class="pt-3 txt-rt">
-            <span>Remaining to calculate - {{ to_calculate }} | MACD - {{ macd_count }}</span>
+            <span>Remaining to calculate - {{ to_calculate }} | MACD - {{ row.macd_count }}</span>
         </div>
-        {% if macds %}
+        {% if row.macd_value %}
         <table class="green-table">
             <tr>
                 <th>Symbol</th>
@@ -18,7 +18,7 @@
                 <th>EMA 50</th>
                 <th>Trend Status</th>
             </tr>
-            {% for item in macds %}
+            {% for item in row.macd_value %}
             <tr class="{% if item.is_valid == False %} bg-danger {% else %} valid {% endif %}">
                 <td>{{ item.symbol }}</td>
                 <td>{{ item.company_name }}</td>
