@@ -11,5 +11,6 @@ htmlcov/
 bin
 lib
 lib64
+include
 
 .ipynb_checkpoints/
