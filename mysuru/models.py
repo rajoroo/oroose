@@ -9,11 +9,6 @@ from core.smart_util import SmartInstrument, SmartTool
 from core.tools import calculate_osc, get_macd_last_two_cross_over, get_param_config_tag
 
 
-class TrendStatus(models.TextChoices):
-    YES = "YES", _("Yes")
-    NO = "NO", _("No")
-
-
 class MacdTrend(models.Model):
     date = models.DateField(verbose_name="Date")
     updated_date = models.DateField(verbose_name="Updated Date", null=True, blank=True)
@@ -30,11 +25,7 @@ class MacdTrend(models.Model):
     day_1_status = models.BooleanField(verbose_name="Day 1", default=False)
     day_2_status = models.BooleanField(verbose_name="Day 2", default=False)
     ema_200_percentage = models.FloatField(verbose_name="Ema 200 Percentage", default=0.0)
-    trend_status = models.CharField(
-        max_length=5,
-        choices=TrendStatus.choices,
-        default=TrendStatus.NO,
-    )
+    trend_status = models.BooleanField(verbose_name="Trend Status", default=False)
     objects = models.Manager()
 
     class Meta:
@@ -62,11 +53,8 @@ class MacdTrend(models.Model):
     def get_day_status(self):
         config = get_param_config_tag(tag="MYSURU")
         if self.price and self.ema_200 and (self.price < config["max_price"]) and (self.price > self.ema_200):
-            self.trend_status = TrendStatus.YES
-        else:
-            self.trend_status = TrendStatus.NO
-
-        self.save()
+            self.trend_status = True
+            self.save()
 
     def get_year_data(self):
         from_date, to_date = self.get_date_difference()
