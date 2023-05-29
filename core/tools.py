@@ -135,19 +135,29 @@ def calculate_macd(df):
     return df
 
 
-def calculate_osc(df):
+def get_stoch_crossover(df):
+    df["ema_200"] = df["close"].rolling(window=200).mean()
+    df["ema_50"] = df["close"].rolling(window=50).mean()
+    df["ema_200_percentage"] = ((df["ema_200"] / df["close"]) - 1) * 100
     df["14-high"] = df["high"].rolling(14).max()
     df["14-low"] = df["low"].rolling(14).min()
     df["k"] = (df["close"] - df["14-low"]) * 100 / (df["14-high"] - df["14-low"])
     df["d"] = df["k"].rolling(3).mean()
     df["k_smooth"] = df["d"].rolling(3).mean()
-    df["osc_crossed"] = np.where(
+    df["stoch_crossed"] = np.where(
         (df["d"] > df["k_smooth"]) & (df["k_smooth"].shift(1) > df["d"].shift(1)), "Crossed", np.nan
     )
-    # df["osc_status"] = np.where(df["k_smooth"] < 20, "YES", np.nan)
-    df["osc_status"] = (df["k_smooth"] < 20) & (df["osc_crossed"] == "Crossed")
+    df["stoch_status"] = (df["k_smooth"] < 20) & (df["stoch_crossed"] == "Crossed")
+    current_day = df.iloc[-1]
     print(df.tail(10))
-    return df
+
+    return {
+        "stoch_status": current_day["stoch_status"],
+        "date": current_day["date"],
+        "ema_200": current_day["ema_200"],
+        "ema_50": current_day["ema_50"],
+        "ema_200_percentage": current_day["ema_200_percentage"],
+    }
 
 
 def get_macd_last_two_cross_over(df):
