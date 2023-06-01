@@ -14,7 +14,7 @@ from mysuru.polling_stoch import polling_stoch_stocks, trigger_calculate_stoch
 def stoch_page(request):
     stoch_list = StochTrend.objects.filter(trend_status=True, stoch_status=True)
     valid_list = StochTrend.objects.filter(trend_status=False, stoch_status=True).order_by("ema_200_percentage")
-    to_calculate = MacdTrend.objects.filter(
+    to_calculate = StochTrend.objects.filter(
         date=datetime.today(), ema_200__isnull=True, smart_token__isnull=False
     ).count()
     stoch_result = [
