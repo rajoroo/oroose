@@ -8,6 +8,7 @@ def show_menu_navbar(page):
 
     menu = [
         {"name": "home", "display_name": "Home"},
+        {"name": "stoch", "display_name": "STOCH"},
         {"name": "macd", "display_name": "MACD"},
         {"name": "configuration", "display_name": "Configuration"},
     ]

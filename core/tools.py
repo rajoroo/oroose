@@ -136,8 +136,8 @@ def calculate_macd(df):
 
 
 def get_stoch_crossover(df):
-    df["ema_200"] = df["close"].rolling(window=200).mean()
-    df["ema_50"] = df["close"].rolling(window=50).mean()
+    df["ema_200"] = df["close"].ewm(span=200, min_periods=0, adjust=False, ignore_na=False).mean()
+    df["ema_50"] = df["close"].ewm(span=50, min_periods=0, adjust=False, ignore_na=False).mean()
     df["ema_200_percentage"] = ((df["ema_200"] / df["close"]) - 1) * 100
     df["14-high"] = df["high"].rolling(14).max()
     df["14-low"] = df["low"].rolling(14).min()
@@ -149,7 +149,6 @@ def get_stoch_crossover(df):
     )
     df["stoch_status"] = (df["k_smooth"] < 20) & (df["stoch_crossed"] == "Crossed")
     current_day = df.iloc[-1]
-    print(df.tail(10))
 
     return {
         "stoch_status": current_day["stoch_status"],
@@ -174,20 +173,18 @@ def get_macd_last_two_cross_over(df):
     df["macd_s"] = df.index.map(macd_s)
     df["crossed"] = np.where((df["macd_h"] < 0) & (df["macd_h"].shift(1) > 0), "Crossed", np.nan)
     df["crossed_count"] = df["crossed"].eq("Crossed").cumsum()
-    df["ema_200"] = df["close"].rolling(window=200).mean()
-    df["ema_50"] = df["close"].rolling(window=50).mean()
+    df["ema_200"] = df["close"].ewm(span=200, min_periods=0, adjust=False, ignore_na=False).mean()
+    df["ema_50"] = df["close"].ewm(span=50, min_periods=0, adjust=False, ignore_na=False).mean()
 
     last_crossed_df = df[df["crossed_count"] == df["crossed_count"].max()]
     df = last_crossed_df.reset_index()
     df["ema_200_percentage"] = ((df["ema_200"] / df["close"]) - 1) * 100
     current_day = df.iloc[-1]
-    print(df.tail(30))
 
     if df.shape[0] > 3:
         day_2 = df.iloc[1]
         day_3 = df.loc[2]
 
-        print(day_2["date"], day_3["date"])
         if current_day["macd_h"] < 0 and current_day["macd_h"] >= day_2["macd_h"]:
             day_1_status = True
         if current_day["macd_h"] < 0 and current_day["macd_h"] >= day_3["macd_h"]:

@@ -153,6 +153,7 @@ LIVE_INDEX_500_URL = os.environ.get("LIVE_INDEX_500_URL")
 
 
 SMART_MASTER = "https://margincalculator.angelbroking.com/OpenAPI_File/files/OpenAPIScripMaster.json"
+PAISA_MASTER = "https://images.5paisa.com/website/scripmaster-csv-format.csv"
 
 
 MEDIA_URL = "/media/"
