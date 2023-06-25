@@ -8,7 +8,7 @@ from core.smart_util import SmartInstrument, SmartTool
 from core.tools import get_stoch_crossover, get_macd_last_two_cross_over, get_param_config_tag
 
 
-class StochTrend(models.Model):
+class StochDailyTrend(models.Model):
     date = models.DateField(verbose_name="Date")
     updated_date = models.DateField(verbose_name="Updated Date", null=True, blank=True)
     symbol = models.CharField(max_length=200, verbose_name="Symbol")
@@ -22,6 +22,7 @@ class StochTrend(models.Model):
     ema_50 = models.FloatField(verbose_name="Ema50", null=True, blank=True)
     last_close = models.FloatField(verbose_name="Last Close", null=True, blank=True)
     stoch_status = models.BooleanField(verbose_name="Stoch Status", default=False)
+    stoch_positive_trend = models.BooleanField(verbose_name="Stoch Positive Trend", default=False)
     ema_200_percentage = models.FloatField(verbose_name="Ema 200 Percentage", default=0.0)
     trend_status = models.BooleanField(verbose_name="Trend Status", default=False)
     objects = models.Manager()
@@ -69,7 +70,7 @@ class StochTrend(models.Model):
 
         df = pd.DataFrame(history_data)
         df[["date", "open", "high", "low", "close", "volume"]] = pd.DataFrame(df.data.tolist(), index=df.index)
-
+        df["date"] = pd.to_datetime(df["date"])
         return df
 
     def generate_stoch(self):
@@ -82,8 +83,106 @@ class StochTrend(models.Model):
 
         self.ema_200 = round(data["ema_200"], 2)
         self.ema_50 = round(data["ema_50"], 2)
-        self.updated_date = datetime.fromisoformat(data["date"])
+        self.updated_date = data["date"]
         self.stoch_status = data["stoch_status"]
+        self.stoch_positive_trend = data["stoch_positive_trend"]
+        self.ema_200_percentage = round(data["ema_200_percentage"], 1)
+        self.save()
+
+        return True
+
+
+class StochWeeklyTrend(models.Model):
+    date = models.DateField(verbose_name="Date")
+    updated_date = models.DateField(verbose_name="Updated Date", null=True, blank=True)
+    symbol = models.CharField(max_length=200, verbose_name="Symbol")
+    smart_token = models.CharField(max_length=50, verbose_name="Smart Token", null=True, blank=True)
+    identifier = models.CharField(max_length=200, verbose_name="Identifier")
+    company_name = models.CharField(max_length=500, verbose_name="Company Name")
+    isin = models.CharField(max_length=100, verbose_name="Isin")
+    price = models.FloatField(verbose_name="Price")
+    percentage_change = models.FloatField(verbose_name="Percentage")
+    ema_200 = models.FloatField(verbose_name="Ema200", null=True, blank=True)
+    ema_50 = models.FloatField(verbose_name="Ema50", null=True, blank=True)
+    last_close = models.FloatField(verbose_name="Last Close", null=True, blank=True)
+    stoch_status = models.BooleanField(verbose_name="Stoch Status", default=False)
+    stoch_positive_trend = models.BooleanField(verbose_name="Stoch Positive Trend", default=False)
+    ema_200_percentage = models.FloatField(verbose_name="Ema 200 Percentage", default=0.0)
+    trend_status = models.BooleanField(verbose_name="Trend Status", default=False)
+    objects = models.Manager()
+
+    class Meta:
+        ordering = ["-date", "symbol"]
+        constraints = [
+            models.UniqueConstraint(fields=["date", "symbol"], name="%(app_label)s_%(class)s_unique_stoch_trend")
+        ]
+
+    def get_date_difference(self):
+        to_date = datetime.now() - relativedelta(days=1)
+        last_month_same_date = to_date - relativedelta(years=3, days=1)
+        exact_time = time(hour=9, minute=15)
+        from_date = datetime.combine(last_month_same_date, exact_time)
+        return from_date, to_date
+
+    def get_smart_token(self):
+        try:
+            obj = SmartInstrument(instrument=self.symbol)
+            result = obj.get_instrument()
+            self.smart_token = str(result.get("token"))
+            self.save()
+        except:
+            pass
+
+    def get_day_status(self):
+        config = get_param_config_tag(tag="MYSURU")
+        if self.price and self.ema_200 and (self.price < config["max_price"]) and (self.price > self.ema_200):
+            self.trend_status = True
+            self.save()
+
+    def get_year_data(self):
+        from_date, to_date = self.get_date_difference()
+        tag_data = get_param_config_tag(tag="SMART_HISTORY")
+        smart = SmartTool(**tag_data)
+        smart.get_object()
+        history_data = smart.get_historical_data(
+            exchange="NSE",
+            symboltoken=self.smart_token,
+            interval="ONE_DAY",
+            fromdate=from_date.strftime("%Y-%m-%d %H:%M"),
+            todate=to_date.strftime("%Y-%m-%d %H:%M"),
+        )
+
+        df = pd.DataFrame(history_data)
+        df[["date", "open", "high", "low", "close", "volume"]] = pd.DataFrame(df.data.tolist(), index=df.index)
+
+        logic = {
+            "open": "first",
+            "high": "max",
+            "low": "min",
+            "close": "last",
+            "volume": "sum",
+        }
+
+        df["date"] = pd.to_datetime(df["date"])
+        df.set_index("date", inplace=True)
+        dfw = df.resample("W").apply(logic)
+        dfw.index = dfw.index - pd.tseries.frequencies.to_offset("6D")
+        dfw.reset_index(inplace=True)
+        return dfw
+
+    def generate_stoch(self):
+        if not self.smart_token:
+            return None
+
+        df = self.get_year_data()
+        data = get_stoch_crossover(df=df)
+        print(data)
+
+        self.ema_200 = round(data["ema_200"], 2)
+        self.ema_50 = round(data["ema_50"], 2)
+        self.updated_date = data["date"]
+        self.stoch_status = data["stoch_status"]
+        self.stoch_positive_trend = data["stoch_positive_trend"]
         self.ema_200_percentage = round(data["ema_200_percentage"], 1)
         self.save()
 

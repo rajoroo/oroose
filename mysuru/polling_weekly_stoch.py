@@ -3,7 +3,7 @@ from datetime import datetime
 from django.conf import settings
 from django.db.models import Q
 
-from mysuru.models import StochTrend
+from mysuru.models import StochWeeklyTrend
 
 from .stocks import LiveStocks
 
@@ -18,10 +18,10 @@ def polling_stoch_stocks():
 
     # Raw data
     stock_data = obj.get_live_stock_list()
-    StochTrend.objects.all().delete()
+    StochWeeklyTrend.objects.all().delete()
 
     for index, row in stock_data.iterrows():
-        tt = StochTrend.objects.create(
+        tt = StochWeeklyTrend.objects.create(
             date=datetime.today(),
             symbol=row["symbol"],
             identifier=row["identifier"],
@@ -35,16 +35,16 @@ def polling_stoch_stocks():
 
 
 def check_update_latest_date():
-    latest_date = StochTrend.objects.filter(ema_200__isnull=False).latest("updated_date").updated_date
+    latest_date = StochWeeklyTrend.objects.filter(ema_200__isnull=False).latest("updated_date").updated_date
     if latest_date:
-        recs = StochTrend.objects.filter(~Q(updated_date=latest_date), ema_200__isnull=False)
+        recs = StochWeeklyTrend.objects.filter(~Q(updated_date=latest_date), ema_200__isnull=False)
         for rec in recs:
             rec.ema_200 = None
             rec.save()
 
 
 def calculate_stoch():
-    recs = StochTrend.objects.filter(ema_200__isnull=True)[:500]
+    recs = StochWeeklyTrend.objects.filter(ema_200__isnull=True)[:500]
     for rec in recs:
         rec.generate_stoch()
         rec.get_day_status()
