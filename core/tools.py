@@ -157,6 +157,7 @@ def get_stoch_crossover(df):
         "ema_200": current_day["ema_200"],
         "ema_50": current_day["ema_50"],
         "ema_200_percentage": current_day["ema_200_percentage"],
+        "d_value": current_day["d"],
         "stoch_positive_trend": current_day["stoch_positive_trend"],
     }
 

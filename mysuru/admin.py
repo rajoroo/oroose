@@ -31,6 +31,7 @@ class StochDailyAdmin(admin.ModelAdmin):
         "stoch_status",
         "trend_status",
         "stoch_positive_trend",
+        "d_value",
     )
     date_hierarchy = "date"
 
@@ -47,5 +48,6 @@ class StochWeeklyAdmin(admin.ModelAdmin):
         "stoch_status",
         "trend_status",
         "stoch_positive_trend",
+        "d_value",
     )
     date_hierarchy = "date"

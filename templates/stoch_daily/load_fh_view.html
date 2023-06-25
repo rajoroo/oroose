@@ -17,7 +17,7 @@
                 <th>EMA 200</th>
                 <th>EMA 50</th>
                 <th>EMA 200 Percentage</th>
-                <th>Trend Status</th>
+                <th>D Value</th>
             </tr>
             {% for item in row.stoch_value %}
             <tr class="{% if item.is_valid == False %} bg-danger {% else %} valid {% endif %}">
@@ -27,11 +27,7 @@
                 <td class="value">{{ item.ema_200 }}</td>
                 <td class="value">{{ item.ema_50 }}</td>
                 <td class="value">{{ item.ema_200_percentage }}</td>
-                <td class="text-center">
-                    <span class="badge {% if item.trend_status %} bg-primary {% else %} bg-danger {% endif %}">
-                        {% if item.trend_status %} YES {% else %} NO {% endif %}
-                    </span>
-                </td>
+                <td class="value">{{ item.d_value }}</td>
             </tr>
             {% endfor %}
         </table>

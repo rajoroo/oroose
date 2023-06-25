@@ -53,7 +53,11 @@ def calculate_stoch_daily_page(request):
 def stoch_weekly_page(request):
     stoch_list = StochWeeklyTrend.objects.filter(trend_status=True, stoch_status=True)
     valid_list = StochWeeklyTrend.objects.filter(trend_status=False, stoch_status=True).order_by("ema_200_percentage")
-    positive_list = StochWeeklyTrend.objects.filter(stoch_positive_trend=True)
+    positive_list = StochWeeklyTrend.objects.filter(stoch_positive_trend=True).order_by("d_value")
+    weekly_data = StochWeeklyTrend.objects.filter(stoch_positive_trend=True).values_list("symbol", flat=True)
+    daily_data = StochDailyTrend.objects.filter(stoch_positive_trend=True).values_list("symbol", flat=True)
+    match_data = list(set(weekly_data) & set(daily_data))
+    match_list = StochDailyTrend.objects.filter(symbol__in=match_data).order_by("d_value")
     to_calculate = StochWeeklyTrend.objects.filter(
         date=datetime.today(), ema_200__isnull=True, smart_token__isnull=False
     ).count()
@@ -72,6 +76,11 @@ def stoch_weekly_page(request):
             "title": "Positive",
             "stoch_value": list(positive_list.values()),
             "stoch_count": positive_list.count(),
+        },
+        {
+            "title": "Match (Daily)",
+            "stoch_value": list(match_list.values()),
+            "stoch_count": match_list.count(),
         },
     ]
     context = {
