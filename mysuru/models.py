@@ -36,7 +36,7 @@ class StochDailyTrend(models.Model):
 
     def get_date_difference(self):
         to_date = datetime.now() - relativedelta(days=1)
-        if datetime.now().hour > 16:
+        if datetime.now().hour >= 16:
             to_date = datetime.now()
 
         last_month_same_date = to_date - relativedelta(years=1, days=1)
@@ -125,7 +125,7 @@ class StochWeeklyTrend(models.Model):
 
     def get_date_difference(self):
         to_date = datetime.now() - relativedelta(days=1)
-        if datetime.now().hour > 16:
+        if datetime.now().hour >= 16:
             to_date = datetime.now()
 
         last_month_same_date = to_date - relativedelta(years=3, days=1)
