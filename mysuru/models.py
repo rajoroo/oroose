@@ -112,14 +112,14 @@ class StochWeeklyTrend(models.Model):
     # stoch calculated
     ema_200 = models.FloatField(verbose_name="Ema200", null=True, blank=True)
     ema_50 = models.FloatField(verbose_name="Ema50", null=True, blank=True)
-    last_close = models.FloatField(verbose_name="Last Close", null=True, blank=True)
+    ema_200_percentage = models.FloatField(verbose_name="Ema 200 Percentage", default=0.0)
+    d_value = models.FloatField(verbose_name="D value", default=0.0)
+
     stoch_status = models.BooleanField(verbose_name="Stoch Status", default=False)
+    stoch_positive_trend = models.BooleanField(verbose_name="Stoch Positive Trend", default=False)
     crossed = models.BooleanField(verbose_name="Stoch Crossed", default=False)
     tend_to_positive = models.BooleanField(verbose_name="Tend to Positive", default=False)
     d_trend = models.BooleanField(verbose_name="D Trend", default=False)
-    stoch_positive_trend = models.BooleanField(verbose_name="Stoch Positive Trend", default=False)
-    ema_200_percentage = models.FloatField(verbose_name="Ema 200 Percentage", default=0.0)
-    d_value = models.FloatField(verbose_name="D value", default=0.0)
 
     # conditional
     trend_status = models.BooleanField(verbose_name="Trend Status", default=False)
@@ -196,16 +196,18 @@ class StochWeeklyTrend(models.Model):
         data = get_stoch_crossover(df=df)
         print(data)
 
+        self.updated_date = data["date"]
         self.ema_200 = round(data["ema_200"], 2)
         self.ema_50 = round(data["ema_50"], 2)
-        self.updated_date = data["date"]
+        self.ema_200_percentage = round(data["ema_200_percentage"], 1)
+        self.d_value = round(data["d_value"], 2)
+
         self.stoch_status = data["stoch_status"]
         self.crossed = data["crossed"]
         self.tend_to_positive = data["tend_to_positive"]
         self.d_trend = data["d_trend"]
         self.stoch_positive_trend = data["stoch_positive_trend"]
-        self.d_value = round(data["d_value"], 2)
-        self.ema_200_percentage = round(data["ema_200_percentage"], 1)
+
         self.save()
 
         return True

@@ -13,6 +13,9 @@
                     <div class="btn-list">
                         <button type="button" class="btn btn-primary" id="load_stoch_weekly_page" onclick="location.href='{% url 'load_stoch_weekly_page' %}'">Load Stock</button>
                         <button type="button" class="btn btn-primary ser_act" id="calculate_stoch_weekly_page" trigger-url="{% url 'calculate_stoch_weekly_page' %}">Calculate</button>
+                        {% for row in stoch_result %}
+                        <button type="button" class="btn btn-primary scroll_act" scroll-div="{{row.reference}}"><i class="{{row.icon}}"></i></button>
+                        {% endfor %}
                     </div>
                 </div>
             </div>
@@ -31,5 +34,6 @@
 {% endblock content %}
 
 {% block js_scripts %}
-<script src="{% static 'js/load_bengaluru.js' %}" crossorigin="anonymous"></script>
+<script src="{% static 'js/load_bengaluru.js' %}"></script>
+<script src="{% static 'js/ScrollPage.js' %}"></script>
 {% endblock js_scripts %}

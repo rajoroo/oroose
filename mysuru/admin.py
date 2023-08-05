@@ -32,6 +32,8 @@ class StochWeeklyAdmin(admin.ModelAdmin):
         "stoch_status",
         "trend_status",
         "stoch_positive_trend",
+        "crossed",
+        "tend_to_positive",
         "d_value",
     )
     date_hierarchy = "date"

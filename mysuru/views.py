@@ -61,26 +61,36 @@ def stoch_weekly_page(request):
     stoch_result = [
         {
             "title": "Positive",
+            "reference": "positive_stoch",
+            "icon": "fa fa-solid fa-plus",
             "stoch_value": list(positive_list.values()),
             "stoch_count": positive_list.count(),
         },
         {
             "title": "Crossed",
+            "reference": "crossed_stoch",
+            "icon": "fa fa-solid fa-times",
             "stoch_value": list(crossed_list.values()),
             "stoch_count": crossed_list.count(),
         },
         {
             "title": "Tend to positive (1)",
+            "reference": "tend_to_positive_1_stoch",
+            "icon": "fa fa-solid fa-line-chart",
             "stoch_value": list(tend_positive_1_list.values()),
             "stoch_count": tend_positive_1_list.count(),
         },
         {
             "title": "Tend to positive (2)",
+            "reference": "tend_to_positive_2_stoch",
+            "icon": "fa fa-solid fa-level-up",
             "stoch_value": list(tend_positive_2_list.values()),
             "stoch_count": tend_positive_2_list.count(),
         },
         {
             "title": "Negative",
+            "reference": "negative_stoch",
+            "icon": "fa fa-solid fa-minus",
             "stoch_value": list(negative_list.values()),
             "stoch_count": negative_list.count(),
         },
