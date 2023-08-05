@@ -144,10 +144,13 @@ def get_stoch_crossover(df):
     df["k"] = (df["close"] - df["14-low"]) * 100 / (df["14-high"] - df["14-low"])
     df["d"] = df["k"].rolling(3).mean()
     df["k_smooth"] = df["d"].rolling(3).mean()
-    df["stoch_crossed"] = np.where(
-        (df["d"] > df["k_smooth"]) & (df["k_smooth"].shift(1) > df["d"].shift(1)), "Crossed", np.nan
+    df["kd_diff"] = df["k_smooth"] - df["d"]
+    df["crossed"] = np.where((df["d"] > df["k_smooth"]) & (df["k_smooth"].shift(1) > df["d"].shift(1)), True, False)
+    df["tend_to_positive"] = np.where(
+        (df["k_smooth"] > df["d"]) & (df["kd_diff"].shift(1) > df["kd_diff"]), True, False
     )
-    df["stoch_status"] = (df["k_smooth"] < 20) & (df["stoch_crossed"] == "Crossed")
+    df["d_trend"] = np.where(df["d"] > df["d"].shift(1), True, False)
+    df["stoch_status"] = (df["k_smooth"] < 20) & (df["crossed"] is True)
     df["stoch_positive_trend"] = df["d"] > df["k_smooth"]
     current_day = df.iloc[-1]
 
@@ -158,7 +161,10 @@ def get_stoch_crossover(df):
         "ema_50": current_day["ema_50"],
         "ema_200_percentage": current_day["ema_200_percentage"],
         "d_value": current_day["d"],
+        "d_trend": current_day["d_trend"],
         "stoch_positive_trend": current_day["stoch_positive_trend"],
+        "crossed": current_day["crossed"],
+        "tend_to_positive": current_day["tend_to_positive"],
     }
 
 

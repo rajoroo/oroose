@@ -50,36 +50,39 @@ def calculate_stoch_daily_page(request):
 # ======================================Stoch Weekly Page=======================================
 @login_required(login_url="/accounts/login/")
 def stoch_weekly_page(request):
-    stoch_list = StochWeeklyTrend.objects.filter(trend_status=True, stoch_status=True)
-    valid_list = StochWeeklyTrend.objects.filter(trend_status=False, stoch_status=True).order_by("ema_200_percentage")
     positive_list = StochWeeklyTrend.objects.filter(stoch_positive_trend=True).order_by("d_value")
-    weekly_data = StochWeeklyTrend.objects.filter(stoch_positive_trend=True).values_list("symbol", flat=True)
-    daily_data = StochDailyTrend.objects.filter(stoch_positive_trend=True).values_list("symbol", flat=True)
-    match_data = list(set(weekly_data) & set(daily_data))
-    match_list = StochDailyTrend.objects.filter(symbol__in=match_data).order_by("d_value")
+    crossed_list = StochWeeklyTrend.objects.filter(crossed=True).order_by("d_value")
+    tend_positive_1_list = StochWeeklyTrend.objects.filter(tend_to_positive=True, d_trend=True).order_by("d_value")
+    tend_positive_2_list = StochWeeklyTrend.objects.filter(tend_to_positive=True, d_trend=False).order_by("d_value")
+    negative_list = StochWeeklyTrend.objects.filter(stoch_positive_trend=False).order_by("d_value")
     to_calculate = StochWeeklyTrend.objects.filter(
         date=datetime.today(), ema_200__isnull=True, smart_token__isnull=False
     ).count()
     stoch_result = [
-        {
-            "title": "Status",
-            "stoch_value": list(stoch_list.values()),
-            "stoch_count": stoch_list.count(),
-        },
-        {
-            "title": "Valid",
-            "stoch_value": list(valid_list.values()),
-            "stoch_count": valid_list.count(),
-        },
         {
             "title": "Positive",
             "stoch_value": list(positive_list.values()),
             "stoch_count": positive_list.count(),
         },
         {
-            "title": "Match (Daily)",
-            "stoch_value": list(match_list.values()),
-            "stoch_count": match_list.count(),
+            "title": "Crossed",
+            "stoch_value": list(crossed_list.values()),
+            "stoch_count": crossed_list.count(),
+        },
+        {
+            "title": "Tend to positive (1)",
+            "stoch_value": list(tend_positive_1_list.values()),
+            "stoch_count": tend_positive_1_list.count(),
+        },
+        {
+            "title": "Tend to positive (2)",
+            "stoch_value": list(tend_positive_2_list.values()),
+            "stoch_count": tend_positive_2_list.count(),
+        },
+        {
+            "title": "Negative",
+            "stoch_value": list(negative_list.values()),
+            "stoch_count": negative_list.count(),
         },
     ]
     context = {
