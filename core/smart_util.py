@@ -5,7 +5,7 @@ from datetime import datetime
 import pandas as pd
 import pyotp
 from django.conf import settings
-from smartapi import SmartConnect
+from SmartApi import SmartConnect
 
 
 class SmartTool:
