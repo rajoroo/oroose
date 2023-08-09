@@ -13,6 +13,7 @@ from mysuru import polling_daily_stoch, polling_weekly_stoch
 def stoch_daily_page(request):
     stoch_list = StochDailyTrend.objects.filter(trend_status=True, stoch_status=True)
     valid_list = StochDailyTrend.objects.filter(trend_status=False, stoch_status=True).order_by("ema_200_percentage")
+    crossed_list = StochDailyTrend.objects.filter(crossed=True).order_by("d_value")
     to_calculate = StochDailyTrend.objects.filter(
         date=datetime.today(), ema_200__isnull=True, smart_token__isnull=False
     ).count()
@@ -26,6 +27,11 @@ def stoch_daily_page(request):
             "title": "Valid",
             "stoch_value": list(valid_list.values()),
             "stoch_count": valid_list.count(),
+        },
+        {
+            "title": "Crossed",
+            "stoch_value": list(crossed_list.values()),
+            "stoch_count": crossed_list.count(),
         },
     ]
     context = {

@@ -25,6 +25,7 @@ class StochDailyTrend(models.Model):
     stoch_positive_trend = models.BooleanField(verbose_name="Stoch Positive Trend", default=False)
     ema_200_percentage = models.FloatField(verbose_name="Ema 200 Percentage", default=0.0)
     d_value = models.FloatField(verbose_name="D value", default=0.0)
+    crossed = models.BooleanField(verbose_name="Stoch Crossed", default=False)
     trend_status = models.BooleanField(verbose_name="Trend Status", default=False)
     objects = models.Manager()
 
@@ -91,6 +92,7 @@ class StochDailyTrend(models.Model):
         self.stoch_status = data["stoch_status"]
         self.stoch_positive_trend = data["stoch_positive_trend"]
         self.d_value = round(data["d_value"], 2)
+        self.crossed = data["crossed"]
         self.ema_200_percentage = round(data["ema_200_percentage"], 1)
         self.save()
 

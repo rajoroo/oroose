@@ -150,7 +150,7 @@ def get_stoch_crossover(df):
         (df["k_smooth"] > df["d"]) & (df["kd_diff"].shift(1) > df["kd_diff"]), True, False
     )
     df["d_trend"] = np.where(df["d"] > df["d"].shift(1), True, False)
-    df["stoch_status"] = (df["k_smooth"] < 20) & (df["crossed"] is True)
+    df["stoch_status"] = (df["k_smooth"] < 20) & (df["crossed"] == True)
     df["stoch_positive_trend"] = df["d"] > df["k_smooth"]
     current_day = df.iloc[-1]
 
