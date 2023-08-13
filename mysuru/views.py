@@ -14,6 +14,12 @@ def stoch_daily_page(request):
     stoch_list = StochDailyTrend.objects.filter(trend_status=True, stoch_status=True)
     valid_list = StochDailyTrend.objects.filter(trend_status=False, stoch_status=True).order_by("ema_200_percentage")
     crossed_list = StochDailyTrend.objects.filter(crossed=True).order_by("d_value")
+
+    weekly_data = StochWeeklyTrend.objects.filter(stoch_positive_trend=True).values_list("symbol", flat=True)
+    daily_data = StochDailyTrend.objects.filter(crossed=True).values_list("symbol", flat=True)
+    match_data = list(set(weekly_data) & set(daily_data))
+    match_list = StochDailyTrend.objects.filter(symbol__in=match_data).order_by("d_value")
+
     to_calculate = StochDailyTrend.objects.filter(
         date=datetime.today(), ema_200__isnull=True, smart_token__isnull=False
     ).count()
@@ -32,6 +38,11 @@ def stoch_daily_page(request):
             "title": "Crossed",
             "stoch_value": list(crossed_list.values()),
             "stoch_count": crossed_list.count(),
+        },
+        {
+            "title": "Matched",
+            "stoch_value": list(match_list.values()),
+            "stoch_count": match_list.count(),
         },
     ]
     context = {
