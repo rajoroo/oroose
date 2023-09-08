@@ -11,8 +11,8 @@ from mysuru import polling_daily_stoch, polling_weekly_stoch
 # ======================================Stoch Daily Page=======================================
 @login_required(login_url="/accounts/login/")
 def stoch_daily_page(request):
-    stoch_list = StochDailyTrend.objects.filter(trend_status=True, stoch_status=True)
-    valid_list = StochDailyTrend.objects.filter(trend_status=False, stoch_status=True).order_by("ema_200_percentage")
+    stoch_list = StochDailyTrend.objects.filter(trend_status=True, stoch_status=True).order_by("d_value")
+    valid_list = StochDailyTrend.objects.filter(trend_status=False, stoch_status=True).order_by("d_value")
     crossed_list = StochDailyTrend.objects.filter(crossed=True).order_by("d_value")
 
     weekly_data = StochWeeklyTrend.objects.filter(stoch_positive_trend=True).values_list("symbol", flat=True)
