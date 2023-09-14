@@ -19,6 +19,7 @@ def stoch_daily_page(request):
     daily_data = StochDailyTrend.objects.filter(crossed=True).values_list("symbol", flat=True)
     match_data = list(set(weekly_data) & set(daily_data))
     match_list = StochDailyTrend.objects.filter(symbol__in=match_data).order_by("d_value")
+    all_stock_list = StochDailyTrend.objects.filter(stoch_positive_trend=True).order_by("d_value")
 
     to_calculate = StochDailyTrend.objects.filter(
         date=datetime.today(), ema_200__isnull=True, smart_token__isnull=False
@@ -43,6 +44,11 @@ def stoch_daily_page(request):
             "title": "Matched",
             "stoch_value": list(match_list.values()),
             "stoch_count": match_list.count(),
+        },
+        {
+            "title": "All Stocks",
+            "stoch_value": list(all_stock_list.values()),
+            "stoch_count": all_stock_list.count(),
         },
     ]
     context = {
