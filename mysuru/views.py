@@ -17,9 +17,12 @@ def stoch_daily_page(request):
 
     weekly_data = StochWeeklyTrend.objects.filter(stoch_positive_trend=True).values_list("symbol", flat=True)
     daily_data = StochDailyTrend.objects.filter(crossed=True).values_list("symbol", flat=True)
-    match_data = list(set(weekly_data) & set(daily_data))
-    match_list = StochDailyTrend.objects.filter(symbol__in=match_data).order_by("d_value")
+    cross_match_data = list(set(weekly_data) & set(daily_data))
+    cross_match_list = StochDailyTrend.objects.filter(symbol__in=cross_match_data).order_by("d_value")
     all_stock_list = StochDailyTrend.objects.filter(stoch_positive_trend=True).order_by("d_value")
+    all_stock_data = StochDailyTrend.objects.filter(stoch_positive_trend=True).values_list("symbol", flat=True)
+    positive_match_data = list(set(weekly_data) & set(all_stock_data))
+    positive_match_list = StochDailyTrend.objects.filter(symbol__in=positive_match_data).order_by("d_value")
 
     to_calculate = StochDailyTrend.objects.filter(
         date=datetime.today(), ema_200__isnull=True, smart_token__isnull=False
@@ -41,9 +44,14 @@ def stoch_daily_page(request):
             "stoch_count": crossed_list.count(),
         },
         {
-            "title": "Matched",
-            "stoch_value": list(match_list.values()),
-            "stoch_count": match_list.count(),
+            "title": "Crossed Matched",
+            "stoch_value": list(cross_match_list.values()),
+            "stoch_count": cross_match_list.count(),
+        },
+        {
+            "title": "Positive Matched",
+            "stoch_value": list(positive_match_list.values()),
+            "stoch_count": positive_match_list.count(),
         },
         {
             "title": "All Stocks",
