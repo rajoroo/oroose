@@ -1,0 +1,24 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block title %}
+<title>Potential Stock</title>
+{% endblock title %}
+
+{% block content %}
+    {% for row in stoch_result %}
+    <div class="row">
+        <div class="col-12 col-sm-12">
+            <div class="card nifty-table">
+                {% include "potential_stock/load_fh_view.html" %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+{% endblock content %}
+
+{% block js_scripts %}
+<script src="{% static 'js/load_bengaluru.js' %}"></script>
+<script src="{% static 'js/ScrollPage.js' %}"></script>
+{% endblock js_scripts %}
