@@ -1,0 +1,36 @@
+{% load humanize %}
+
+<div class="card-header border-bottom" id="{{row.reference}}">
+    <h3 class="card-title mb-0">STOCK - {{ row.title }}</h3>
+</div>
+<div class="card-body">
+    <div class="table-responsive">
+        <div class="pt-3 txt-rt">
+            <span>Remaining to calculate - {{ to_calculate }} | STOCH - {{ row.stoch_count }}</span>
+        </div>
+        {% if row.stoch_value %}
+        <table class="green-table">
+            <tr>
+                <th>Symbol</th>
+                <th>Company</th>
+                <th>Last Price</th>
+                <th>EMA 200</th>
+                <th>EMA 50</th>
+                <th>EMA 200 Percentage</th>
+                <th>D Value</th>
+            </tr>
+            {% for item in row.stoch_value %}
+            <tr class="{% if item.is_valid == False %} bg-danger {% else %} valid {% endif %}">
+                <td>{{ item.symbol }}</td>
+                <td>{{ item.company_name }}</td>
+                <td class="value">{{ item.price }}</td>
+                <td class="value">{{ item.ema_200 }}</td>
+                <td class="value">{{ item.ema_50 }}</td>
+                <td class="value">{{ item.ema_200_percentage }}</td>
+                <td class="value">{{ item.d_value }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        {% endif %}
+    </div>
+</div>

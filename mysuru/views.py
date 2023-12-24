@@ -170,3 +170,36 @@ def potential_stock_page(request):
         "to_calculate": to_calculate,
     }
     return render(request, "potential_stock/base_page.html", context)
+
+
+# ============================= Short Term page ==============================
+@login_required(login_url="/accounts/login/")
+def short_term_page(request):
+    weekly_data = StochWeeklyTrend.objects.filter(
+        stoch_positive_trend=True, ema_200_percentage__lt=0, d_value__range=[20, 90]
+    ).values_list("symbol", flat=True)
+    daily_data = StochDailyTrend.objects.filter(crossed=True, stoch_positive_trend=True).values_list(
+        "symbol", flat=True
+    )
+    cross_match_data = list(set(weekly_data) & set(daily_data))
+    cross_match_list = StochDailyTrend.objects.filter(symbol__in=cross_match_data).order_by("d_value")
+
+    to_calculate = StochWeeklyTrend.objects.filter(
+        date=datetime.today(), ema_200__isnull=True, smart_token__isnull=False
+    ).count()
+    stoch_result = [
+        {
+            "title": "Short Term Crossed",
+            "reference": "positive_stoch",
+            "icon": "fa fa-solid fa-plus",
+            "stoch_value": list(cross_match_list.values()),
+            "stoch_count": cross_match_list.count(),
+        }
+    ]
+
+    context = {
+        "active_page": "short_term",
+        "stoch_result": stoch_result,
+        "to_calculate": to_calculate,
+    }
+    return render(request, "short_term/base_page.html", context)
