@@ -2,10 +2,15 @@ from datetime import datetime
 
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
-from django.shortcuts import redirect, render
+from django.shortcuts import HttpResponse, redirect, render
 
 from mysuru.models import StochDailyTrend, StochWeeklyTrend
 from mysuru import polling_daily_stoch, polling_weekly_stoch
+from django.views.decorators.csrf import csrf_exempt
+from home.forms import UploadFileForm
+from django.http import HttpResponseRedirect
+from django.template.loader import render_to_string
+from django.urls import reverse
 
 
 # ======================================Stoch Daily Page=======================================
@@ -69,6 +74,25 @@ def stoch_daily_page(request):
 
 def load_stoch_daily_page(request):
     polling_daily_stoch.polling_stoch_stocks()
+    return redirect("stoch_daily")
+
+
+@csrf_exempt
+def upload_daily_stock_file(request):
+    if request.method == "POST":
+        form = UploadFileForm(request.POST, request.FILES)
+        if form.is_valid():
+            polling_daily_stoch.handle_upload_stoch_stocks(request.FILES["file"])
+            return HttpResponseRedirect(reverse("stoch_daily"))
+    else:
+        form = UploadFileForm()
+    rendered = render_to_string("stoch_daily/file_upload.html", {"form": form, "title": "Upload Stocks"})
+    response = HttpResponse(rendered)
+    return response
+
+
+def load_bhav_stoch_daily_page(request):
+    polling_daily_stoch.polling_bhav_copy()
     return redirect("stoch_daily")
 
 
@@ -139,6 +163,25 @@ def load_stoch_weekly_page(request):
     return redirect("stoch_weekly")
 
 
+@csrf_exempt
+def upload_weekly_stock_file(request):
+    if request.method == "POST":
+        form = UploadFileForm(request.POST, request.FILES)
+        if form.is_valid():
+            polling_weekly_stoch.handle_upload_stoch_stocks(request.FILES["file"])
+            return HttpResponseRedirect(reverse("stoch_weekly"))
+    else:
+        form = UploadFileForm()
+    rendered = render_to_string("stoch_weekly/file_upload.html", {"form": form, "title": "Upload Stocks"})
+    response = HttpResponse(rendered)
+    return response
+
+
+def load_bhav_stoch_weekly_page(request):
+    polling_weekly_stoch.polling_bhav_copy()
+    return redirect("stoch_weekly")
+
+
 def calculate_stoch_weekly_page(request):
     polling_weekly_stoch.trigger_calculate_stoch()
 
@@ -203,3 +246,6 @@ def short_term_page(request):
         "to_calculate": to_calculate,
     }
     return render(request, "short_term/base_page.html", context)
+
+
+# ======================================================================================

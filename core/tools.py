@@ -165,6 +165,7 @@ def get_stoch_crossover(df):
         "stoch_positive_trend": current_day["stoch_positive_trend"],
         "crossed": current_day["crossed"],
         "tend_to_positive": current_day["tend_to_positive"],
+        "last_price": current_day["close"],
     }
 
 

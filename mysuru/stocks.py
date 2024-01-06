@@ -4,6 +4,9 @@ from datetime import datetime
 import pandas as pd
 from django.conf import settings
 from requests import Session
+from io import BytesIO
+from zipfile import ZipFile
+
 
 headers = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36",  # noqa: E501
@@ -59,3 +62,20 @@ class LiveStocks:
             ]
         ]
         return df
+
+    def get_bhav_data(self) -> bool:
+        """
+        Get bhav data feed
+        base_url: url to get their cookies
+        url: url to get live data by using cookies from base_url
+        """
+        base_response = self.session.get(self.base_url)
+        response = self.session.get(self.url, cookies=base_response.cookies)
+
+        with ZipFile(BytesIO(response.content)) as my_zip_file:
+            for contained_file in my_zip_file.namelist():
+                df = pd.read_csv(my_zip_file.open(contained_file))
+                df = df[df["SERIES"].str.endswith("EQ").fillna(False)]
+                return df
+
+        return True

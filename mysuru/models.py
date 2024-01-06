@@ -13,11 +13,11 @@ class StochDailyTrend(models.Model):
     updated_date = models.DateField(verbose_name="Updated Date", null=True, blank=True)
     symbol = models.CharField(max_length=200, verbose_name="Symbol")
     smart_token = models.CharField(max_length=50, verbose_name="Smart Token", null=True, blank=True)
-    identifier = models.CharField(max_length=200, verbose_name="Identifier")
-    company_name = models.CharField(max_length=500, verbose_name="Company Name")
-    isin = models.CharField(max_length=100, verbose_name="Isin")
-    price = models.FloatField(verbose_name="Price")
-    percentage_change = models.FloatField(verbose_name="Percentage")
+    identifier = models.CharField(max_length=200, verbose_name="Identifier", null=True, blank=True)
+    company_name = models.CharField(max_length=500, verbose_name="Company Name", null=True, blank=True)
+    isin = models.CharField(max_length=100, verbose_name="Isin", null=True, blank=True)
+    price = models.FloatField(verbose_name="Price", null=True, blank=True)
+    percentage_change = models.FloatField(verbose_name="Percentage", null=True, blank=True)
     ema_200 = models.FloatField(verbose_name="Ema200", null=True, blank=True)
     ema_50 = models.FloatField(verbose_name="Ema50", null=True, blank=True)
     last_close = models.FloatField(verbose_name="Last Close", null=True, blank=True)
@@ -94,6 +94,7 @@ class StochDailyTrend(models.Model):
         self.d_value = round(data["d_value"], 2)
         self.crossed = data["crossed"]
         self.ema_200_percentage = round(data["ema_200_percentage"], 1)
+        self.price = data["last_price"]
         self.save()
 
         return True
@@ -105,11 +106,11 @@ class StochWeeklyTrend(models.Model):
     updated_date = models.DateField(verbose_name="Updated Date", null=True, blank=True)
     symbol = models.CharField(max_length=200, verbose_name="Symbol")
     smart_token = models.CharField(max_length=50, verbose_name="Smart Token", null=True, blank=True)
-    identifier = models.CharField(max_length=200, verbose_name="Identifier")
-    company_name = models.CharField(max_length=500, verbose_name="Company Name")
-    isin = models.CharField(max_length=100, verbose_name="Isin")
-    price = models.FloatField(verbose_name="Price")
-    percentage_change = models.FloatField(verbose_name="Percentage")
+    identifier = models.CharField(max_length=200, verbose_name="Identifier", null=True, blank=True)
+    company_name = models.CharField(max_length=500, verbose_name="Company Name", null=True, blank=True)
+    isin = models.CharField(max_length=100, verbose_name="Isin", null=True, blank=True)
+    price = models.FloatField(verbose_name="Price", null=True, blank=True)
+    percentage_change = models.FloatField(verbose_name="Percentage", null=True, blank=True)
 
     # stoch calculated
     ema_200 = models.FloatField(verbose_name="Ema200", null=True, blank=True)
@@ -209,7 +210,7 @@ class StochWeeklyTrend(models.Model):
         self.tend_to_positive = data["tend_to_positive"]
         self.d_trend = data["d_trend"]
         self.stoch_positive_trend = data["stoch_positive_trend"]
-
+        self.price = data["last_price"]
         self.save()
 
         return True
