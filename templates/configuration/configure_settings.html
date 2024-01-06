@@ -36,25 +36,5 @@
 
 {% block js_scripts %}
 <script src="{% static 'js/load_bengaluru.js' %}" crossorigin="anonymous"></script>
-<script>
-
-$( ".modal_act" ).click(function () {
-    $.ajax({
-      type: 'GET',
-      url: $(this).attr('trigger-url'),
-      beforeSend: function( xhr ) {
-        $('.ajax-loader').css("visibility", "show");
-      },
-      success: function(data){
-        $("#modelresultarea").html(data);
-      },
-      complete: function(data){
-        $('.ajax-loader').css("visibility", "hidden");
-      }
-    })
-});
-
-</script>
-
-
+<script src="{% static 'js/load_upload_file.js' %}" crossorigin="anonymous"></script>
 {% endblock js_scripts %}
