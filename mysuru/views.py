@@ -28,7 +28,7 @@ def stoch_daily_page(request):
     all_stock_data = StochDailyTrend.objects.filter(stoch_positive_trend=True).values_list("symbol", flat=True)
     positive_match_data = list(set(weekly_data) & set(all_stock_data))
     positive_match_list = StochDailyTrend.objects.filter(symbol__in=positive_match_data).order_by("d_value")
-
+    total_stock = StochDailyTrend.objects.all().count()
     to_calculate = StochDailyTrend.objects.filter(
         date=datetime.today(), ema_200__isnull=True, smart_token__isnull=False
     ).count()
@@ -68,6 +68,7 @@ def stoch_daily_page(request):
         "active_page": "stoch_daily",
         "stoch_result": stoch_result,
         "to_calculate": to_calculate,
+        "total_stock": total_stock,
     }
     return render(request, "stoch_daily/base_page.html", context)
 
@@ -110,6 +111,7 @@ def stoch_weekly_page(request):
     tend_positive_1_list = StochWeeklyTrend.objects.filter(tend_to_positive=True, d_trend=True).order_by("d_value")
     tend_positive_2_list = StochWeeklyTrend.objects.filter(tend_to_positive=True, d_trend=False).order_by("d_value")
     negative_list = StochWeeklyTrend.objects.filter(stoch_positive_trend=False).order_by("d_value")
+    total_stock = StochWeeklyTrend.objects.all().count()
     to_calculate = StochWeeklyTrend.objects.filter(
         date=datetime.today(), ema_200__isnull=True, smart_token__isnull=False
     ).count()
@@ -154,6 +156,7 @@ def stoch_weekly_page(request):
         "active_page": "stoch_weekly",
         "stoch_result": stoch_result,
         "to_calculate": to_calculate,
+        "total_stock": total_stock,
     }
     return render(request, "stoch_weekly/base_page.html", context)
 
