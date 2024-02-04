@@ -207,22 +207,27 @@ class StochWeeklyTrend(models.Model):
         if not self.smart_token:
             return None
 
-        df = self.get_year_data()
-        data = get_stoch_crossover(df=df)
-        print(data)
+        try:
+            df = self.get_year_data()
+            data = get_stoch_crossover(df=df)
+            print(data)
 
-        self.updated_date = data["date"]
-        self.ema_200 = round(data["ema_200"], 2)
-        self.ema_50 = round(data["ema_50"], 2)
-        self.ema_200_percentage = round(data["ema_200_percentage"], 1)
-        self.d_value = round(data["d_value"], 2)
+            self.updated_date = data["date"]
+            self.ema_200 = round(data["ema_200"], 2)
+            self.ema_50 = round(data["ema_50"], 2)
+            self.ema_200_percentage = round(data["ema_200_percentage"], 1)
+            self.d_value = round(data["d_value"], 2)
 
-        self.stoch_status = data["stoch_status"]
-        self.crossed = data["crossed"]
-        self.tend_to_positive = data["tend_to_positive"]
-        self.d_trend = data["d_trend"]
-        self.stoch_positive_trend = data["stoch_positive_trend"]
-        self.price = data["last_price"]
-        self.save()
-
+            self.stoch_status = data["stoch_status"]
+            self.crossed = data["crossed"]
+            self.tend_to_positive = data["tend_to_positive"]
+            self.d_trend = data["d_trend"]
+            self.stoch_positive_trend = data["stoch_positive_trend"]
+            self.price = data["last_price"]
+            self.save()
+            print(f"------------------{self.symbol}----------------------")
+        except ValueError as ve:
+            print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+            print(ve)
+            print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         return True
