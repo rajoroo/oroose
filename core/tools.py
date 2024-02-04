@@ -243,4 +243,9 @@ def get_heikin_ashi(df):
         False,
     )
     current_day = heikin_ashi_df.iloc[-1]
-    return {"heikin_ashi_crossed": current_day["crossed"], "heikin_ashi_top": current_day["top"]}
+    yesterday = heikin_ashi_df.iloc[-2]
+    return {
+        "heikin_ashi_crossed": current_day["crossed"],
+        "heikin_ashi_top": current_day["top"],
+        "heikin_ashi_crossed_yesterday": yesterday["crossed"],
+    }

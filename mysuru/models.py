@@ -27,6 +27,7 @@ class StochDailyTrend(models.Model):
     d_value = models.FloatField(verbose_name="D value", default=0.0)
     crossed = models.BooleanField(verbose_name="Stoch Crossed", default=False)
     trend_status = models.BooleanField(verbose_name="Trend Status", default=False)
+    heikin_ashi_crossed_yesterday = models.BooleanField(verbose_name="Heikin-Ashi Crossed Yesterday", default=False)
     heikin_ashi_crossed = models.BooleanField(verbose_name="Heikin-Ashi Crossed", default=False)
     heikin_ashi_top = models.BooleanField(verbose_name="Heikin-Ashi Top", default=False)
     objects = models.Manager()
@@ -101,6 +102,7 @@ class StochDailyTrend(models.Model):
             self.save()
 
             data = get_heikin_ashi(df=df)
+            self.heikin_ashi_crossed_yesterday = data["heikin_ashi_crossed_yesterday"]
             self.heikin_ashi_crossed = data["heikin_ashi_crossed"]
             self.heikin_ashi_top = data["heikin_ashi_top"]
             print(data)
