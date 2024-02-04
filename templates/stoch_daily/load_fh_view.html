@@ -17,6 +17,8 @@
                 <th>EMA 200</th>
                 <th>EMA 50</th>
                 <th>EMA 200 Percentage</th>
+                <th>HA Cross</th>
+                <th>HA TOP</th>
                 <th>D Value</th>
             </tr>
             {% for item in row.stoch_value %}
@@ -27,6 +29,8 @@
                 <td class="value">{{ item.ema_200 }}</td>
                 <td class="value">{{ item.ema_50 }}</td>
                 <td class="value">{{ item.ema_200_percentage }}</td>
+                <td>{% if item.heikin_ashi_crossed %} {{ item.heikin_ashi_crossed }} {% else %} - {% endif %}</td>
+                <td>{% if item.heikin_ashi_top %} {{ item.heikin_ashi_top }} {% else %} - {% endif %}</td>
                 <td class="value">{{ item.d_value }}</td>
             </tr>
             {% endfor %}

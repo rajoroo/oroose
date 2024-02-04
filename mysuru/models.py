@@ -5,7 +5,7 @@ from dateutil.relativedelta import relativedelta
 from django.db import models
 
 from core.smart_util import SmartInstrument, SmartTool
-from core.tools import get_stoch_crossover, get_macd_last_two_cross_over, get_param_config_tag
+from core.tools import get_stoch_crossover, get_macd_last_two_cross_over, get_param_config_tag, get_heikin_ashi
 
 
 class StochDailyTrend(models.Model):
@@ -27,6 +27,8 @@ class StochDailyTrend(models.Model):
     d_value = models.FloatField(verbose_name="D value", default=0.0)
     crossed = models.BooleanField(verbose_name="Stoch Crossed", default=False)
     trend_status = models.BooleanField(verbose_name="Trend Status", default=False)
+    heikin_ashi_crossed = models.BooleanField(verbose_name="Heikin-Ashi Crossed", default=False)
+    heikin_ashi_top = models.BooleanField(verbose_name="Heikin-Ashi Top", default=False)
     objects = models.Manager()
 
     class Meta:
@@ -82,21 +84,31 @@ class StochDailyTrend(models.Model):
         if not self.smart_token:
             return None
 
-        df = self.get_year_data()
-        data = get_stoch_crossover(df=df)
-        print(data)
+        try:
+            df = self.get_year_data()
+            data = get_stoch_crossover(df=df)
+            print(data)
 
-        self.ema_200 = round(data["ema_200"], 2)
-        self.ema_50 = round(data["ema_50"], 2)
-        self.updated_date = data["date"]
-        self.stoch_status = data["stoch_status"]
-        self.stoch_positive_trend = data["stoch_positive_trend"]
-        self.d_value = round(data["d_value"], 2)
-        self.crossed = data["crossed"]
-        self.ema_200_percentage = round(data["ema_200_percentage"], 1)
-        self.price = data["last_price"]
-        self.save()
+            self.ema_200 = round(data["ema_200"], 2)
+            self.ema_50 = round(data["ema_50"], 2)
+            self.updated_date = data["date"]
+            self.stoch_status = data["stoch_status"]
+            self.stoch_positive_trend = data["stoch_positive_trend"]
+            self.d_value = round(data["d_value"], 2)
+            self.crossed = data["crossed"]
+            self.ema_200_percentage = round(data["ema_200_percentage"], 1)
+            self.price = data["last_price"]
+            self.save()
 
+            data = get_heikin_ashi(df=df)
+            self.heikin_ashi_crossed = data["heikin_ashi_crossed"]
+            self.heikin_ashi_top = data["heikin_ashi_top"]
+            print(data)
+            print(f"------------------{self.symbol}----------------------")
+        except ValueError as ve:
+            print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+            print(ve)
+            print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         return True
 
 

@@ -221,26 +221,27 @@ def potential_stock_page(request):
 # ============================= Short Term page ==============================
 @login_required(login_url="/accounts/login/")
 def short_term_page(request):
-    weekly_data = StochWeeklyTrend.objects.filter(
-        stoch_positive_trend=True, ema_200_percentage__lt=0, d_value__range=[20, 90]
-    ).values_list("symbol", flat=True)
-    daily_data = StochDailyTrend.objects.filter(crossed=True, stoch_positive_trend=True).values_list(
-        "symbol", flat=True
-    )
-    cross_match_data = list(set(weekly_data) & set(daily_data))
-    cross_match_list = StochDailyTrend.objects.filter(symbol__in=cross_match_data).order_by("d_value")
+    ha_top = StochDailyTrend.objects.filter(heikin_ashi_top=True).order_by("d_value")
+    ha_cross = StochDailyTrend.objects.filter(heikin_ashi_crossed=True).order_by("d_value")
 
-    to_calculate = StochWeeklyTrend.objects.filter(
+    to_calculate = StochDailyTrend.objects.filter(
         date=datetime.today(), ema_200__isnull=True, smart_token__isnull=False
     ).count()
     stoch_result = [
         {
-            "title": "Short Term Crossed",
-            "reference": "positive_stoch",
+            "title": "Heikin Ashi Top",
+            "reference": "ha_top",
+            "icon": "fa fa-solid fa-level-up",
+            "stoch_value": list(ha_top.values()),
+            "stoch_count": ha_top.count(),
+        },
+        {
+            "title": "Heikin Ashi Crossed",
+            "reference": "ha_cross",
             "icon": "fa fa-solid fa-plus",
-            "stoch_value": list(cross_match_list.values()),
-            "stoch_count": cross_match_list.count(),
-        }
+            "stoch_value": list(ha_cross.values()),
+            "stoch_count": ha_cross.count(),
+        },
     ]
 
     context = {

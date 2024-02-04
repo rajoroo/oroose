@@ -208,3 +208,39 @@ def get_macd_last_two_cross_over(df):
         "ema_50": current_day["ema_50"],
         "ema_200_percentage": current_day["ema_200_percentage"],
     }
+
+
+def wma(arr, period):
+    kernel = np.arange(period, 0, -1)
+    kernel = np.concatenate([np.zeros(period - 1), kernel / kernel.sum()])
+    return np.convolve(arr, kernel, "same")
+
+
+def get_heikin_ashi(df):
+    heikin_ashi_df = pd.DataFrame(index=df.index.values, columns=["open", "high", "low", "close"])
+    heikin_ashi_df["close"] = (df["open"] + df["high"] + df["low"] + df["close"]) / 4
+
+    for i in range(len(df)):
+        if i == 0:
+            heikin_ashi_df.iat[0, 0] = df["open"].iloc[0]
+        else:
+            heikin_ashi_df.iat[i, 0] = (heikin_ashi_df.iat[i - 1, 0] + heikin_ashi_df.iat[i - 1, 3]) / 2
+
+    heikin_ashi_df["high"] = heikin_ashi_df.loc[:, ["open", "close"]].join(df["high"]).max(axis=1)
+    heikin_ashi_df["low"] = heikin_ashi_df.loc[:, ["open", "close"]].join(df["low"]).min(axis=1)
+
+    heikin_ashi_df["wma_20"] = wma(heikin_ashi_df["close"], 20)
+    heikin_ashi_df["crossed"] = np.where(
+        (heikin_ashi_df["open"] < heikin_ashi_df["wma_20"]) & (heikin_ashi_df["wma_20"] < heikin_ashi_df["close"]),
+        True,
+        False,
+    )
+    heikin_ashi_df["top"] = np.where(
+        (heikin_ashi_df["wma_20"] < heikin_ashi_df["open"])
+        & (heikin_ashi_df["wma_20"] < heikin_ashi_df["close"])
+        & (heikin_ashi_df["close"] > heikin_ashi_df["open"]),
+        True,
+        False,
+    )
+    current_day = heikin_ashi_df.iloc[-1]
+    return {"heikin_ashi_crossed": current_day["crossed"], "heikin_ashi_top": current_day["top"]}
