@@ -237,9 +237,8 @@ def get_heikin_ashi(df):
         False,
     )
     ha_df["ha_cross"] = np.where(
-        (ha_df["ha_positive"] == True) & (ha_df["ha_positive"].shift(1) == False),
-        True,
-        False)
+        (ha_df["ha_positive"] == True) & (ha_df["ha_positive"].shift(1) == False), True, False
+    )
 
     ha_df["ha_wma_cross"] = np.where(
         (ha_df["open"] < ha_df["wma_20"]) & (ha_df["wma_20"] < ha_df["close"]),
@@ -247,13 +246,11 @@ def get_heikin_ashi(df):
         False,
     )
     ha_df["ha_wma_top"] = np.where(
-        (ha_df["wma_20"] < ha_df["open"])
-        & (ha_df["wma_20"] < ha_df["close"])
-        & (ha_df["close"] > ha_df["open"]),
+        (ha_df["wma_20"] < ha_df["open"]) & (ha_df["wma_20"] < ha_df["close"]) & (ha_df["close"] > ha_df["open"]),
         True,
         False,
     )
-    
+
     current_day = ha_df.iloc[-1]
     yesterday = ha_df.iloc[-2]
     yesterday_1 = ha_df.iloc[-3]

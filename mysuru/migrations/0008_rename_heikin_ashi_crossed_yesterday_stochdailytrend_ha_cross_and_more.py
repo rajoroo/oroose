@@ -6,41 +6,41 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('mysuru', '0007_stochdailytrend_heikin_ashi_crossed_yesterday'),
+        ("mysuru", "0007_stochdailytrend_heikin_ashi_crossed_yesterday"),
     ]
 
     operations = [
         migrations.RenameField(
-            model_name='stochdailytrend',
-            old_name='heikin_ashi_crossed_yesterday',
-            new_name='ha_cross',
+            model_name="stochdailytrend",
+            old_name="heikin_ashi_crossed_yesterday",
+            new_name="ha_cross",
         ),
         migrations.RemoveField(
-            model_name='stochdailytrend',
-            name='heikin_ashi_crossed',
+            model_name="stochdailytrend",
+            name="heikin_ashi_crossed",
         ),
         migrations.RemoveField(
-            model_name='stochdailytrend',
-            name='heikin_ashi_top',
+            model_name="stochdailytrend",
+            name="heikin_ashi_top",
         ),
         migrations.AddField(
-            model_name='stochdailytrend',
-            name='ha_cross_yesterday',
-            field=models.BooleanField(default=False, verbose_name='Heikin-Ashi Crossed Yesterday'),
+            model_name="stochdailytrend",
+            name="ha_cross_yesterday",
+            field=models.BooleanField(default=False, verbose_name="Heikin-Ashi Crossed Yesterday"),
         ),
         migrations.AddField(
-            model_name='stochdailytrend',
-            name='ha_wma_cross',
-            field=models.BooleanField(default=False, verbose_name='Heikin-Ashi WMA Crossed'),
+            model_name="stochdailytrend",
+            name="ha_wma_cross",
+            field=models.BooleanField(default=False, verbose_name="Heikin-Ashi WMA Crossed"),
         ),
         migrations.AddField(
-            model_name='stochdailytrend',
-            name='ha_wma_cross_yesterday',
-            field=models.BooleanField(default=False, verbose_name='Heikin-Ashi WMA Crossed Yesterday'),
+            model_name="stochdailytrend",
+            name="ha_wma_cross_yesterday",
+            field=models.BooleanField(default=False, verbose_name="Heikin-Ashi WMA Crossed Yesterday"),
         ),
         migrations.AddField(
-            model_name='stochdailytrend',
-            name='ha_wma_top',
-            field=models.BooleanField(default=False, verbose_name='Heikin-Ashi WMA Top'),
+            model_name="stochdailytrend",
+            name="ha_wma_top",
+            field=models.BooleanField(default=False, verbose_name="Heikin-Ashi WMA Top"),
         ),
     ]

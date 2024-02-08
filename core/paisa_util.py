@@ -54,4 +54,3 @@ class PaisaScrip:
         if df.shape[0]:
             return df.iloc[0].get("Scripcode")
         return None
-

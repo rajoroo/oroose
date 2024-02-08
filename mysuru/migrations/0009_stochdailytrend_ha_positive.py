@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('mysuru', '0008_rename_heikin_ashi_crossed_yesterday_stochdailytrend_ha_cross_and_more'),
+        ("mysuru", "0008_rename_heikin_ashi_crossed_yesterday_stochdailytrend_ha_cross_and_more"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='stochdailytrend',
-            name='ha_positive',
-            field=models.BooleanField(default=False, verbose_name='Heikin-Ashi Positive'),
+            model_name="stochdailytrend",
+            name="ha_positive",
+            field=models.BooleanField(default=False, verbose_name="Heikin-Ashi Positive"),
         ),
     ]
