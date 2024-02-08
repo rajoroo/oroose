@@ -217,35 +217,53 @@ def wma(arr, period):
 
 
 def get_heikin_ashi(df):
-    heikin_ashi_df = pd.DataFrame(index=df.index.values, columns=["open", "high", "low", "close"])
-    heikin_ashi_df["close"] = (df["open"] + df["high"] + df["low"] + df["close"]) / 4
+    ha_df = pd.DataFrame(index=df.index.values, columns=["open", "high", "low", "close"])
+    ha_df["close"] = (df["open"] + df["high"] + df["low"] + df["close"]) / 4
 
     for i in range(len(df)):
         if i == 0:
-            heikin_ashi_df.iat[0, 0] = df["open"].iloc[0]
+            ha_df.iat[0, 0] = df["open"].iloc[0]
         else:
-            heikin_ashi_df.iat[i, 0] = (heikin_ashi_df.iat[i - 1, 0] + heikin_ashi_df.iat[i - 1, 3]) / 2
+            ha_df.iat[i, 0] = (ha_df.iat[i - 1, 0] + ha_df.iat[i - 1, 3]) / 2
 
-    heikin_ashi_df["high"] = heikin_ashi_df.loc[:, ["open", "close"]].join(df["high"]).max(axis=1)
-    heikin_ashi_df["low"] = heikin_ashi_df.loc[:, ["open", "close"]].join(df["low"]).min(axis=1)
+    ha_df["high"] = ha_df.loc[:, ["open", "close"]].join(df["high"]).max(axis=1)
+    ha_df["low"] = ha_df.loc[:, ["open", "close"]].join(df["low"]).min(axis=1)
 
-    heikin_ashi_df["wma_20"] = wma(heikin_ashi_df["close"], 20)
-    heikin_ashi_df["crossed"] = np.where(
-        (heikin_ashi_df["open"] < heikin_ashi_df["wma_20"]) & (heikin_ashi_df["wma_20"] < heikin_ashi_df["close"]),
+    ha_df["wma_20"] = wma(ha_df["close"], 20)
+
+    ha_df["ha_positive"] = np.where(
+        ha_df["open"] < ha_df["close"],
         True,
         False,
     )
-    heikin_ashi_df["top"] = np.where(
-        (heikin_ashi_df["wma_20"] < heikin_ashi_df["open"])
-        & (heikin_ashi_df["wma_20"] < heikin_ashi_df["close"])
-        & (heikin_ashi_df["close"] > heikin_ashi_df["open"]),
+    ha_df["ha_cross"] = np.where(
+        (ha_df["ha_positive"] == True) & (ha_df["ha_positive"].shift(1) == False),
+        True,
+        False)
+
+    ha_df["ha_wma_cross"] = np.where(
+        (ha_df["open"] < ha_df["wma_20"]) & (ha_df["wma_20"] < ha_df["close"]),
         True,
         False,
     )
-    current_day = heikin_ashi_df.iloc[-1]
-    yesterday = heikin_ashi_df.iloc[-2]
+    ha_df["ha_wma_top"] = np.where(
+        (ha_df["wma_20"] < ha_df["open"])
+        & (ha_df["wma_20"] < ha_df["close"])
+        & (ha_df["close"] > ha_df["open"]),
+        True,
+        False,
+    )
+    
+    current_day = ha_df.iloc[-1]
+    yesterday = ha_df.iloc[-2]
+    yesterday_1 = ha_df.iloc[-3]
     return {
-        "heikin_ashi_crossed": current_day["crossed"],
-        "heikin_ashi_top": current_day["top"],
-        "heikin_ashi_crossed_yesterday": yesterday["crossed"],
+        # "ha_cross": current_day["ha_positive"] and yesterday["ha_positive"] and not yesterday_1["ha_positive"],
+        # "ha_cross_yesterday": yesterday["ha_positive"] and not yesterday_1["ha_positive"],
+        "ha_positive": current_day["ha_positive"],
+        "ha_cross": current_day["ha_cross"],
+        "ha_cross_yesterday": yesterday["ha_cross"],
+        "ha_wma_cross": current_day["ha_wma_cross"],
+        "ha_wma_top": current_day["ha_wma_top"],
+        "ha_wma_cross_yesterday": yesterday["ha_wma_cross"],
     }

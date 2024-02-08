@@ -27,9 +27,12 @@ class StochDailyTrend(models.Model):
     d_value = models.FloatField(verbose_name="D value", default=0.0)
     crossed = models.BooleanField(verbose_name="Stoch Crossed", default=False)
     trend_status = models.BooleanField(verbose_name="Trend Status", default=False)
-    heikin_ashi_crossed_yesterday = models.BooleanField(verbose_name="Heikin-Ashi Crossed Yesterday", default=False)
-    heikin_ashi_crossed = models.BooleanField(verbose_name="Heikin-Ashi Crossed", default=False)
-    heikin_ashi_top = models.BooleanField(verbose_name="Heikin-Ashi Top", default=False)
+    ha_positive = models.BooleanField(verbose_name="Heikin-Ashi Positive", default=False)
+    ha_cross_yesterday = models.BooleanField(verbose_name="Heikin-Ashi Crossed Yesterday", default=False)
+    ha_cross = models.BooleanField(verbose_name="Heikin-Ashi Crossed Yesterday", default=False)
+    ha_wma_cross_yesterday = models.BooleanField(verbose_name="Heikin-Ashi WMA Crossed Yesterday", default=False)
+    ha_wma_cross = models.BooleanField(verbose_name="Heikin-Ashi WMA Crossed", default=False)
+    ha_wma_top = models.BooleanField(verbose_name="Heikin-Ashi WMA Top", default=False)
     objects = models.Manager()
 
     class Meta:
@@ -40,7 +43,7 @@ class StochDailyTrend(models.Model):
 
     def get_date_difference(self):
         to_date = datetime.now() - relativedelta(days=1)
-        if datetime.now().hour >= 16:
+        if datetime.now().hour >= 13:
             to_date = datetime.now()
 
         last_month_same_date = to_date - relativedelta(years=1, days=1)
@@ -102,9 +105,12 @@ class StochDailyTrend(models.Model):
             self.save()
 
             data = get_heikin_ashi(df=df)
-            self.heikin_ashi_crossed_yesterday = data["heikin_ashi_crossed_yesterday"]
-            self.heikin_ashi_crossed = data["heikin_ashi_crossed"]
-            self.heikin_ashi_top = data["heikin_ashi_top"]
+            self.ha_positive = data["ha_positive"]
+            self.ha_cross_yesterday = data["ha_cross_yesterday"]
+            self.ha_cross = data["ha_cross"]
+            self.ha_wma_cross_yesterday = data["ha_wma_cross_yesterday"]
+            self.ha_wma_cross = data["ha_wma_cross"]
+            self.ha_wma_top = data["ha_wma_top"]
             print(data)
             print(f"------------------{self.symbol}----------------------")
         except ValueError as ve:
@@ -151,7 +157,7 @@ class StochWeeklyTrend(models.Model):
 
     def get_date_difference(self):
         to_date = datetime.now() - relativedelta(days=1)
-        if datetime.now().hour >= 16:
+        if datetime.now().hour >= 13:
             to_date = datetime.now()
 
         last_month_same_date = to_date - relativedelta(years=3, days=1)
