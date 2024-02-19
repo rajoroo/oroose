@@ -81,6 +81,9 @@ def calculate_stoch_hourly_page(request):
 @login_required(login_url="/accounts/login/")
 def stoch_daily_page(request):
     all_stock_list = StochDailyTrend.objects.filter(stoch_positive_trend=True).order_by("d_value")
+    ha_wma_cross_yesterday = StochDailyTrend.objects.filter(ha_wma_cross_yesterday=True, ha_wma_top=True).order_by(
+        "d_value"
+    )
     total_stock = StochDailyTrend.objects.all().count()
     to_calculate = StochDailyTrend.objects.filter(
         date=datetime.today(), ema_200__isnull=True, smart_token__isnull=False
@@ -90,6 +93,13 @@ def stoch_daily_page(request):
             "title": "All Stocks",
             "stoch_value": list(all_stock_list.values()),
             "stoch_count": all_stock_list.count(),
+        },
+        {
+            "title": "HA WMA Cross Yesterday",
+            "reference": "ha_top",
+            "icon": "fa fa-solid fa-level-up",
+            "stoch_value": list(ha_wma_cross_yesterday.values()),
+            "stoch_count": ha_wma_cross_yesterday.count(),
         },
     ]
     context = {
