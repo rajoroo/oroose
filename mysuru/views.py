@@ -16,20 +16,9 @@ from django.urls import reverse
 # ======================================Stoch Hourly Page=======================================
 @login_required(login_url="/accounts/login/")
 def stoch_hourly_page(request):
-    stoch_list = StochHourlyTrend.objects.filter(trend_status=True, stoch_status=True).order_by("d_value")
-    valid_list = StochHourlyTrend.objects.filter(trend_status=False, stoch_status=True).order_by("d_value")
-    crossed_list = StochHourlyTrend.objects.filter(crossed=True).order_by("d_value")
-
-    daily_data = StochWeeklyTrend.objects.filter(stoch_positive_trend=True).values_list("symbol", flat=True)
-    hourly_data = StochHourlyTrend.objects.filter(crossed=True).values_list("symbol", flat=True)
-    cross_match_data = list(set(daily_data) & set(hourly_data))
-    cross_match_list = StochHourlyTrend.objects.filter(symbol__in=cross_match_data).order_by("d_value")
-    all_stock_list = StochHourlyTrend.objects.filter(stoch_positive_trend=True).order_by("d_value")
-    all_stock_data = StochHourlyTrend.objects.filter(stoch_positive_trend=True).values_list("symbol", flat=True)
-    positive_match_data = list(set(daily_data) & set(all_stock_data))
-    positive_match_list = StochHourlyTrend.objects.filter(symbol__in=positive_match_data).order_by("d_value")
+    all_stock_list = StochHourlyTrend.objects.all().order_by("d_value")
     ha_wma_cross_last_hour = StochHourlyTrend.objects.filter(
-        ha_wma_cross_yesterday=True,
+        ha_wma_cross_last_hour=True,
         ha_wma_top=True
     ).order_by("d_value")
     total_stock = StochHourlyTrend.objects.all().count()
@@ -37,31 +26,6 @@ def stoch_hourly_page(request):
         date=datetime.today(), ema_200__isnull=True, smart_token__isnull=False
     ).count()
     stoch_result = [
-        {
-            "title": "Status",
-            "stoch_value": list(stoch_list.values()),
-            "stoch_count": stoch_list.count(),
-        },
-        {
-            "title": "Valid",
-            "stoch_value": list(valid_list.values()),
-            "stoch_count": valid_list.count(),
-        },
-        {
-            "title": "Crossed",
-            "stoch_value": list(crossed_list.values()),
-            "stoch_count": crossed_list.count(),
-        },
-        {
-            "title": "Crossed Matched",
-            "stoch_value": list(cross_match_list.values()),
-            "stoch_count": cross_match_list.count(),
-        },
-        {
-            "title": "Positive Matched",
-            "stoch_value": list(positive_match_list.values()),
-            "stoch_count": positive_match_list.count(),
-        },
         {
             "title": "All Stocks",
             "stoch_value": list(all_stock_list.values()),
@@ -117,48 +81,12 @@ def calculate_stoch_hourly_page(request):
 # ======================================Stoch Daily Page=======================================
 @login_required(login_url="/accounts/login/")
 def stoch_daily_page(request):
-    stoch_list = StochDailyTrend.objects.filter(trend_status=True, stoch_status=True).order_by("d_value")
-    valid_list = StochDailyTrend.objects.filter(trend_status=False, stoch_status=True).order_by("d_value")
-    crossed_list = StochDailyTrend.objects.filter(crossed=True).order_by("d_value")
-
-    weekly_data = StochWeeklyTrend.objects.filter(stoch_positive_trend=True).values_list("symbol", flat=True)
-    daily_data = StochDailyTrend.objects.filter(crossed=True).values_list("symbol", flat=True)
-    cross_match_data = list(set(weekly_data) & set(daily_data))
-    cross_match_list = StochDailyTrend.objects.filter(symbol__in=cross_match_data).order_by("d_value")
     all_stock_list = StochDailyTrend.objects.filter(stoch_positive_trend=True).order_by("d_value")
-    all_stock_data = StochDailyTrend.objects.filter(stoch_positive_trend=True).values_list("symbol", flat=True)
-    positive_match_data = list(set(weekly_data) & set(all_stock_data))
-    positive_match_list = StochDailyTrend.objects.filter(symbol__in=positive_match_data).order_by("d_value")
     total_stock = StochDailyTrend.objects.all().count()
     to_calculate = StochDailyTrend.objects.filter(
         date=datetime.today(), ema_200__isnull=True, smart_token__isnull=False
     ).count()
     stoch_result = [
-        {
-            "title": "Status",
-            "stoch_value": list(stoch_list.values()),
-            "stoch_count": stoch_list.count(),
-        },
-        {
-            "title": "Valid",
-            "stoch_value": list(valid_list.values()),
-            "stoch_count": valid_list.count(),
-        },
-        {
-            "title": "Crossed",
-            "stoch_value": list(crossed_list.values()),
-            "stoch_count": crossed_list.count(),
-        },
-        {
-            "title": "Crossed Matched",
-            "stoch_value": list(cross_match_list.values()),
-            "stoch_count": cross_match_list.count(),
-        },
-        {
-            "title": "Positive Matched",
-            "stoch_value": list(positive_match_list.values()),
-            "stoch_count": positive_match_list.count(),
-        },
         {
             "title": "All Stocks",
             "stoch_value": list(all_stock_list.values()),

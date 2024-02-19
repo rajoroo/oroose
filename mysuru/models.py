@@ -28,9 +28,9 @@ class StochHourlyTrend(models.Model):
     crossed = models.BooleanField(verbose_name="Stoch Crossed", default=False)
     trend_status = models.BooleanField(verbose_name="Trend Status", default=False)
     ha_positive = models.BooleanField(verbose_name="Heikin-Ashi Positive", default=False)
-    ha_cross_yesterday = models.BooleanField(verbose_name="Heikin-Ashi Crossed Yesterday", default=False)
+    ha_cross_last_hour = models.BooleanField(verbose_name="Heikin-Ashi Crossed Last Hour", default=False)
     ha_cross = models.BooleanField(verbose_name="Heikin-Ashi Crossed Yesterday", default=False)
-    ha_wma_cross_yesterday = models.BooleanField(verbose_name="Heikin-Ashi WMA Crossed Yesterday", default=False)
+    ha_wma_cross_last_hour = models.BooleanField(verbose_name="Heikin-Ashi WMA Crossed Last Hour", default=False)
     ha_wma_cross = models.BooleanField(verbose_name="Heikin-Ashi WMA Crossed", default=False)
     ha_wma_top = models.BooleanField(verbose_name="Heikin-Ashi WMA Top", default=False)
     objects = models.Manager()
@@ -103,9 +103,9 @@ class StochHourlyTrend(models.Model):
 
             data = get_heikin_ashi(df=df)
             self.ha_positive = data["ha_positive"]
-            self.ha_cross_yesterday = data["ha_cross_yesterday"]
+            self.ha_cross_last_hour = data["ha_cross_yesterday"]
             self.ha_cross = data["ha_cross"]
-            self.ha_wma_cross_yesterday = data["ha_wma_cross_yesterday"]
+            self.ha_wma_cross_last_hour = data["ha_wma_cross_yesterday"]
             self.ha_wma_cross = data["ha_wma_cross"]
             self.ha_wma_top = data["ha_wma_top"]
             print(data)
