@@ -84,6 +84,9 @@ def stoch_daily_page(request):
     ha_wma_cross_yesterday = StochDailyTrend.objects.filter(ha_wma_cross_yesterday=True, ha_wma_top=True).order_by(
         "d_value"
     )
+    potential_stock = StochDailyTrend.objects.filter(
+        stoch_positive_trend=True, ema_200_percentage__lt=0, d_value__range=[20, 80]
+    ).order_by("d_value")
     total_stock = StochDailyTrend.objects.all().count()
     to_calculate = StochDailyTrend.objects.filter(
         date=datetime.today(), ema_200__isnull=True, smart_token__isnull=False
@@ -100,6 +103,13 @@ def stoch_daily_page(request):
             "icon": "fa fa-solid fa-level-up",
             "stoch_value": list(ha_wma_cross_yesterday.values()),
             "stoch_count": ha_wma_cross_yesterday.count(),
+        },
+        {
+            "title": "Potential Positive",
+            "reference": "positive_stoch",
+            "icon": "fa fa-solid fa-plus",
+            "stoch_value": list(potential_stock.values()),
+            "stoch_count": potential_stock.count(),
         },
     ]
     context = {

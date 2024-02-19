@@ -5,7 +5,13 @@ from dateutil.relativedelta import relativedelta
 from django.db import models
 
 from core.smart_util import SmartInstrument, SmartTool
-from core.tools import get_stoch_crossover, get_macd_last_two_cross_over, get_param_config_tag, get_heikin_ashi
+from core.tools import (
+    get_stoch_crossover,
+    get_macd_last_two_cross_over,
+    get_param_config_tag,
+    get_heikin_ashi,
+    get_rsi,
+)
 
 
 class StochHourlyTrend(models.Model):
@@ -33,6 +39,7 @@ class StochHourlyTrend(models.Model):
     ha_wma_cross_last_hour = models.BooleanField(verbose_name="Heikin-Ashi WMA Crossed Last Hour", default=False)
     ha_wma_cross = models.BooleanField(verbose_name="Heikin-Ashi WMA Crossed", default=False)
     ha_wma_top = models.BooleanField(verbose_name="Heikin-Ashi WMA Top", default=False)
+    rsi = models.FloatField(verbose_name="D value", default=0.0)
     objects = models.Manager()
 
     class Meta:
@@ -108,6 +115,9 @@ class StochHourlyTrend(models.Model):
             self.ha_wma_cross_last_hour = data["ha_wma_cross_yesterday"]
             self.ha_wma_cross = data["ha_wma_cross"]
             self.ha_wma_top = data["ha_wma_top"]
+
+            data = get_rsi(df=df)
+            self.rsi = data["rsi"]
             print(data)
             print(f"------------------{self.symbol}----------------------")
         except ValueError as ve:
@@ -142,6 +152,7 @@ class StochDailyTrend(models.Model):
     ha_wma_cross_yesterday = models.BooleanField(verbose_name="Heikin-Ashi WMA Crossed Yesterday", default=False)
     ha_wma_cross = models.BooleanField(verbose_name="Heikin-Ashi WMA Crossed", default=False)
     ha_wma_top = models.BooleanField(verbose_name="Heikin-Ashi WMA Top", default=False)
+    rsi = models.FloatField(verbose_name="D value", default=0.0)
     objects = models.Manager()
 
     class Meta:
@@ -220,6 +231,9 @@ class StochDailyTrend(models.Model):
             self.ha_wma_cross_yesterday = data["ha_wma_cross_yesterday"]
             self.ha_wma_cross = data["ha_wma_cross"]
             self.ha_wma_top = data["ha_wma_top"]
+
+            data = get_rsi(df=df)
+            self.rsi = data["rsi"]
             print(data)
             print(f"------------------{self.symbol}----------------------")
         except ValueError as ve:

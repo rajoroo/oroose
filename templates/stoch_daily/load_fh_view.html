@@ -23,6 +23,7 @@
                 <th>HA WMA Cross</th>
                 <th>HA WMA TOP</th>
                 <th>D Value</th>
+                <th>RSI</th>
             </tr>
             {% for item in row.stoch_value %}
             <tr class="{% if item.is_valid == False %} bg-danger {% else %} valid {% endif %}">
@@ -38,6 +39,7 @@
                 <td>{% if item.ha_wma_cross %} {{ item.ha_wma_cross }} {% else %} - {% endif %}</td>
                 <td>{% if item.ha_wma_top %} {{ item.ha_wma_top }} {% else %} - {% endif %}</td>
                 <td class="value">{{ item.d_value }}</td>
+                <td class="value">{{ item.rsi }}</td>
             </tr>
             {% endfor %}
         </table>
