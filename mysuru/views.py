@@ -17,10 +17,9 @@ from django.urls import reverse
 @login_required(login_url="/accounts/login/")
 def stoch_hourly_page(request):
     all_stock_list = StochHourlyTrend.objects.all().order_by("d_value")
-    ha_wma_cross_last_hour = StochHourlyTrend.objects.filter(
-        ha_wma_cross_last_hour=True,
-        ha_wma_top=True
-    ).order_by("d_value")
+    ha_wma_cross_last_hour = StochHourlyTrend.objects.filter(ha_wma_cross_last_hour=True, ha_wma_top=True).order_by(
+        "d_value"
+    )
     total_stock = StochHourlyTrend.objects.all().count()
     to_calculate = StochHourlyTrend.objects.filter(
         date=datetime.today(), ema_200__isnull=True, smart_token__isnull=False
@@ -251,14 +250,10 @@ def potential_stock_page(request):
 @login_required(login_url="/accounts/login/")
 def short_term_page(request):
     positive_list = StochWeeklyTrend.objects.filter(stoch_positive_trend=True).values_list("symbol", flat=True)
-    ha_wma_cross_yesterday = StochDailyTrend.objects.filter(
-        ha_wma_cross_yesterday=True,
-        ha_wma_top=True
-    ).order_by("d_value")
-    ha_cross_yesterday = StochDailyTrend.objects.filter(
-        ha_cross_yesterday=True,
-        ha_positive=True
-    ).order_by("d_value")
+    ha_wma_cross_yesterday = StochDailyTrend.objects.filter(ha_wma_cross_yesterday=True, ha_wma_top=True).order_by(
+        "d_value"
+    )
+    ha_cross_yesterday = StochDailyTrend.objects.filter(ha_cross_yesterday=True, ha_positive=True).order_by("d_value")
 
     to_calculate = StochDailyTrend.objects.filter(
         date=datetime.today(), ema_200__isnull=True, smart_token__isnull=False

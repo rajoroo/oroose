@@ -6,26 +6,26 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('mysuru', '0010_stochhourlytrend_and_more'),
+        ("mysuru", "0010_stochhourlytrend_and_more"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='stochhourlytrend',
-            name='ha_cross_yesterday',
+            model_name="stochhourlytrend",
+            name="ha_cross_yesterday",
         ),
         migrations.RemoveField(
-            model_name='stochhourlytrend',
-            name='ha_wma_cross_yesterday',
+            model_name="stochhourlytrend",
+            name="ha_wma_cross_yesterday",
         ),
         migrations.AddField(
-            model_name='stochhourlytrend',
-            name='ha_cross_last_hour',
-            field=models.BooleanField(default=False, verbose_name='Heikin-Ashi Crossed Last Hour'),
+            model_name="stochhourlytrend",
+            name="ha_cross_last_hour",
+            field=models.BooleanField(default=False, verbose_name="Heikin-Ashi Crossed Last Hour"),
         ),
         migrations.AddField(
-            model_name='stochhourlytrend',
-            name='ha_wma_cross_last_hour',
-            field=models.BooleanField(default=False, verbose_name='Heikin-Ashi WMA Crossed Last Hour'),
+            model_name="stochhourlytrend",
+            name="ha_wma_cross_last_hour",
+            field=models.BooleanField(default=False, verbose_name="Heikin-Ashi WMA Crossed Last Hour"),
         ),
     ]
