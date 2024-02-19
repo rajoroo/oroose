@@ -4,13 +4,114 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.shortcuts import HttpResponse, redirect, render
 
-from mysuru.models import StochDailyTrend, StochWeeklyTrend
-from mysuru import polling_daily_stoch, polling_weekly_stoch
+from mysuru.models import StochHourlyTrend, StochDailyTrend, StochWeeklyTrend
+from mysuru import polling_hourly_stoch, polling_daily_stoch, polling_weekly_stoch
 from django.views.decorators.csrf import csrf_exempt
 from home.forms import UploadFileForm
 from django.http import HttpResponseRedirect
 from django.template.loader import render_to_string
 from django.urls import reverse
+
+
+# ======================================Stoch Hourly Page=======================================
+@login_required(login_url="/accounts/login/")
+def stoch_hourly_page(request):
+    stoch_list = StochHourlyTrend.objects.filter(trend_status=True, stoch_status=True).order_by("d_value")
+    valid_list = StochHourlyTrend.objects.filter(trend_status=False, stoch_status=True).order_by("d_value")
+    crossed_list = StochHourlyTrend.objects.filter(crossed=True).order_by("d_value")
+
+    daily_data = StochWeeklyTrend.objects.filter(stoch_positive_trend=True).values_list("symbol", flat=True)
+    hourly_data = StochHourlyTrend.objects.filter(crossed=True).values_list("symbol", flat=True)
+    cross_match_data = list(set(daily_data) & set(hourly_data))
+    cross_match_list = StochHourlyTrend.objects.filter(symbol__in=cross_match_data).order_by("d_value")
+    all_stock_list = StochHourlyTrend.objects.filter(stoch_positive_trend=True).order_by("d_value")
+    all_stock_data = StochHourlyTrend.objects.filter(stoch_positive_trend=True).values_list("symbol", flat=True)
+    positive_match_data = list(set(daily_data) & set(all_stock_data))
+    positive_match_list = StochHourlyTrend.objects.filter(symbol__in=positive_match_data).order_by("d_value")
+    ha_wma_cross_last_hour = StochHourlyTrend.objects.filter(
+        ha_wma_cross_yesterday=True,
+        ha_wma_top=True
+    ).order_by("d_value")
+    total_stock = StochHourlyTrend.objects.all().count()
+    to_calculate = StochHourlyTrend.objects.filter(
+        date=datetime.today(), ema_200__isnull=True, smart_token__isnull=False
+    ).count()
+    stoch_result = [
+        {
+            "title": "Status",
+            "stoch_value": list(stoch_list.values()),
+            "stoch_count": stoch_list.count(),
+        },
+        {
+            "title": "Valid",
+            "stoch_value": list(valid_list.values()),
+            "stoch_count": valid_list.count(),
+        },
+        {
+            "title": "Crossed",
+            "stoch_value": list(crossed_list.values()),
+            "stoch_count": crossed_list.count(),
+        },
+        {
+            "title": "Crossed Matched",
+            "stoch_value": list(cross_match_list.values()),
+            "stoch_count": cross_match_list.count(),
+        },
+        {
+            "title": "Positive Matched",
+            "stoch_value": list(positive_match_list.values()),
+            "stoch_count": positive_match_list.count(),
+        },
+        {
+            "title": "All Stocks",
+            "stoch_value": list(all_stock_list.values()),
+            "stoch_count": all_stock_list.count(),
+        },
+        {
+            "title": "HA WMA Cross Last Hour",
+            "reference": "ha_top",
+            "icon": "fa fa-solid fa-level-up",
+            "stoch_value": list(ha_wma_cross_last_hour.values()),
+            "stoch_count": ha_wma_cross_last_hour.count(),
+        },
+    ]
+    context = {
+        "active_page": "stoch_hourly",
+        "stoch_result": stoch_result,
+        "to_calculate": to_calculate,
+        "total_stock": total_stock,
+    }
+    return render(request, "stoch_hourly/base_page.html", context)
+
+
+def load_stoch_hourly_page(request):
+    polling_hourly_stoch.polling_stoch_stocks()
+    return redirect("stoch_hourly")
+
+
+@csrf_exempt
+def upload_hourly_stock_file(request):
+    if request.method == "POST":
+        form = UploadFileForm(request.POST, request.FILES)
+        if form.is_valid():
+            polling_hourly_stoch.handle_upload_stoch_stocks(request.FILES["file"])
+            return HttpResponseRedirect(reverse("stoch_hourly"))
+    else:
+        form = UploadFileForm()
+    rendered = render_to_string("stoch_hourly/file_upload.html", {"form": form, "title": "Upload Stocks"})
+    response = HttpResponse(rendered)
+    return response
+
+
+def load_bhav_stoch_hourly_page(request):
+    polling_hourly_stoch.polling_bhav_copy()
+    return redirect("stoch_hourly")
+
+
+def calculate_stoch_hourly_page(request):
+    polling_hourly_stoch.trigger_calculate_stoch()
+
+    return JsonResponse({"status": "success", "message": "Successfully Calculated"})
 
 
 # ======================================Stoch Daily Page=======================================
@@ -221,11 +322,15 @@ def potential_stock_page(request):
 # ============================= Short Term page ==============================
 @login_required(login_url="/accounts/login/")
 def short_term_page(request):
-    positive_list = StochWeeklyTrend.objects.filter(stoch_positive_trend=True).values("symbol")
-    ha_wma_cross_yesterday = StochDailyTrend.objects.filter(ha_wma_cross_yesterday=True, ha_wma_top=True).order_by(
-        "d_value"
-    )
-    ha_cross_yesterday = StochDailyTrend.objects.filter(ha_cross_yesterday=True, ha_positive=True).order_by("d_value")
+    positive_list = StochWeeklyTrend.objects.filter(stoch_positive_trend=True).values_list("symbol", flat=True)
+    ha_wma_cross_yesterday = StochDailyTrend.objects.filter(
+        ha_wma_cross_yesterday=True,
+        ha_wma_top=True
+    ).order_by("d_value")
+    ha_cross_yesterday = StochDailyTrend.objects.filter(
+        ha_cross_yesterday=True,
+        ha_positive=True
+    ).order_by("d_value")
 
     to_calculate = StochDailyTrend.objects.filter(
         date=datetime.today(), ema_200__isnull=True, smart_token__isnull=False

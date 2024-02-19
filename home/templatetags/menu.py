@@ -8,6 +8,7 @@ def show_menu_navbar(page):
 
     menu = [
         {"name": "home", "display_name": "Home"},
+        {"name": "stoch_hourly", "display_name": "STOCH HOURLY"},
         {"name": "stoch_daily", "display_name": "STOCH DAILY"},
         {"name": "stoch_weekly", "display_name": "STOCH WEEKLY"},
         {"name": "potential_stock", "display_name": "Potential Stock"},
