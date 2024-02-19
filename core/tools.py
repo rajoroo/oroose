@@ -253,10 +253,7 @@ def get_heikin_ashi(df):
 
     current_day = ha_df.iloc[-1]
     yesterday = ha_df.iloc[-2]
-    yesterday_1 = ha_df.iloc[-3]
     return {
-        # "ha_cross": current_day["ha_positive"] and yesterday["ha_positive"] and not yesterday_1["ha_positive"],
-        # "ha_cross_yesterday": yesterday["ha_positive"] and not yesterday_1["ha_positive"],
         "ha_positive": current_day["ha_positive"],
         "ha_cross": current_day["ha_cross"],
         "ha_cross_yesterday": yesterday["ha_cross"],
