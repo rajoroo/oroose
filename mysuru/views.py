@@ -308,15 +308,11 @@ def potential_stock_page(request):
 # ============================= Short Term page ==============================
 @login_required(login_url="/accounts/login/")
 def short_term_page(request):
-    positive_list = StochWeeklyTrend.objects.filter(stoch_positive_trend=True).values_list("symbol", flat=True)
     ha_wma_cross_yesterday = StochDailyTrend.objects.filter(ha_wma_cross_yesterday=True, ha_wma_top=True).order_by(
         "d_value"
     )
     ha_cross_yesterday = StochDailyTrend.objects.filter(ha_cross_yesterday=True, ha_positive=True).order_by("d_value")
-
-    to_calculate = StochDailyTrend.objects.filter(
-        date=datetime.today(), ema_200__isnull=True, smart_token__isnull=False
-    ).count()
+    to_calculate = StochDailyTrend.objects.filter(date=datetime.today()).count()
     stoch_result = [
         {
             "title": "HA WMA Cross Yesterday",
