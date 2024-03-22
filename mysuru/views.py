@@ -13,7 +13,7 @@ from django.http import HttpResponseRedirect
 from django.template.loader import render_to_string
 from django.urls import reverse
 from django_q.models import Schedule
-
+from django_q.tasks import schedule
 
 
 # ======================================Stoch Hourly Page=======================================
@@ -259,16 +259,17 @@ def load_eligible_futures_stoch_weekly_page(request):
 
 def load_schedule_futures_stoch_weekly_page(request):
     Schedule.objects.all().delete()
-    Schedule.objects.create(
-        func='mysuru.views.tron',
-        schedule_type=Schedule.DAILY
+    schedule(
+        func="mysuru.views.run_schedule_futures", schedule_type=Schedule.CRON, cron="20 9,10,11,12,13,14,15 * * 1-5"
     )
     return redirect("stoch_weekly")
 
 
-def tron():
-    print("TRON")
-    return "TRON"
+def run_schedule_futures():
+    print("=====scheduler start=====")
+    polling_daily_stoch.trigger_calculate_stoch()
+    print("=====scheduler stop=====")
+    return True
 
 
 def calculate_stoch_weekly_page(request):

@@ -2,8 +2,6 @@ from datetime import datetime
 from django.conf import settings
 from mysuru.models import StochWeeklyTrend
 from .stocks import LiveStocks
-import io
-import pandas as pd
 
 
 def polling_futures_stocks():
@@ -23,5 +21,5 @@ def polling_futures_stocks():
             price=0,
             percentage_change=0,
         )
-        # tt.get_smart_token()
+        tt.get_smart_token()
     return True
