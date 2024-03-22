@@ -3,6 +3,7 @@ from datetime import datetime
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.shortcuts import HttpResponse, redirect, render
+from django.db.models import F
 
 from mysuru.models import StochHourlyTrend, StochDailyTrend, StochWeeklyTrend
 from mysuru import polling_hourly_stoch, polling_daily_stoch, polling_weekly_stoch, polling_futures
@@ -11,6 +12,8 @@ from home.forms import UploadFileForm
 from django.http import HttpResponseRedirect
 from django.template.loader import render_to_string
 from django.urls import reverse
+from django_q.models import Schedule
+
 
 
 # ======================================Stoch Hourly Page=======================================
@@ -236,6 +239,36 @@ def load_bhav_stoch_weekly_page(request):
 def load_futures_stoch_weekly_page(request):
     polling_futures.polling_futures_stocks()
     return redirect("stoch_weekly")
+
+
+def load_eligible_futures_stoch_weekly_page(request):
+    recs = StochWeeklyTrend.objects.filter(ema_50__gt=F("ema_200"))
+    StochHourlyTrend.objects.all().delete()
+    for rec in recs:
+        StochHourlyTrend.objects.create(
+            date=datetime.today(),
+            symbol=rec.symbol,
+            identifier=rec.identifier,
+            isin=rec.isin,
+            company_name=rec.company_name,
+            price=rec.price,
+            percentage_change=rec.percentage_change,
+        )
+    return redirect("stoch_weekly")
+
+
+def load_schedule_futures_stoch_weekly_page(request):
+    Schedule.objects.all().delete()
+    Schedule.objects.create(
+        func='mysuru.views.tron',
+        schedule_type=Schedule.DAILY
+    )
+    return redirect("stoch_weekly")
+
+
+def tron():
+    print("TRON")
+    return "TRON"
 
 
 def calculate_stoch_weekly_page(request):
