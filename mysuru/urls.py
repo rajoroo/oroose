@@ -20,6 +20,7 @@ urlpatterns = [
     path("stoch_weekly/load_top_ten/", views.load_stoch_weekly_page, name="load_stoch_weekly_page"),
     path("upload_weekly_stock_file/", views.upload_weekly_stock_file, name="upload_weekly_stock_file"),
     path("stoch_weekly/load_bhav/", views.load_bhav_stoch_weekly_page, name="load_bhav_stoch_weekly_page"),
+    path("stoch_weekly/load_futures/", views.load_futures_stoch_weekly_page, name="load_futures_stoch_weekly_page"),
     path("stoch_weekly/calculate_top_ten/", views.calculate_stoch_weekly_page, name="calculate_stoch_weekly_page"),
     # Others
     path("potential_stock/", views.potential_stock_page, name="potential_stock"),

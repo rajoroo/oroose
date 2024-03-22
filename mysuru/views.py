@@ -5,7 +5,7 @@ from django.http import JsonResponse
 from django.shortcuts import HttpResponse, redirect, render
 
 from mysuru.models import StochHourlyTrend, StochDailyTrend, StochWeeklyTrend
-from mysuru import polling_hourly_stoch, polling_daily_stoch, polling_weekly_stoch
+from mysuru import polling_hourly_stoch, polling_daily_stoch, polling_weekly_stoch, polling_futures
 from django.views.decorators.csrf import csrf_exempt
 from home.forms import UploadFileForm
 from django.http import HttpResponseRedirect
@@ -230,6 +230,11 @@ def upload_weekly_stock_file(request):
 
 def load_bhav_stoch_weekly_page(request):
     polling_weekly_stoch.polling_bhav_copy()
+    return redirect("stoch_weekly")
+
+
+def load_futures_stoch_weekly_page(request):
+    polling_futures.polling_futures_stocks()
     return redirect("stoch_weekly")
 
 

@@ -150,6 +150,7 @@ STOCK_DATA_PATH_DUMMY = os.environ.get("STOCK_DATA_PATH_DUMMY")
 # API
 LIVE_INDEX_URL = os.environ.get("LIVE_INDEX_URL")
 LIVE_INDEX_500_URL = os.environ.get("LIVE_INDEX_500_URL")
+LIVE_FUTURES_URL = os.environ.get("LIVE_FUTURES_URL")
 BHAV_URL = os.environ.get("BHAV_COPY_URL")
 
 

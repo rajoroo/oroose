@@ -1,5 +1,6 @@
 import json
 from datetime import datetime
+import io
 
 import pandas as pd
 from django.conf import settings
@@ -79,3 +80,23 @@ class LiveStocks:
                 return df
 
         return True
+
+    def get_csv_data(self):
+        """
+        Get csv response bytes data feed
+        base_url: url to get their cookies
+        url: url to get live data by using cookies from base_url
+        """
+        base_response = self.session.get(self.base_url)
+        response = self.session.get(self.url, cookies=base_response.cookies)
+        df = pd.read_csv(io.StringIO(response.text))
+        df.columns = df.columns.str.strip()
+        row_break = None
+        for index, row in df.iterrows():
+            if row['UNDERLYING'] == "Derivatives on Individual Securities":
+                row_break = index
+                break
+        df.rename(columns={'UNDERLYING': 'COMPANY NAME'}, inplace=True)
+        subset_df = df[df.index > row_break]
+        subset_df = subset_df.reset_index(drop=True)
+        return subset_df
