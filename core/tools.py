@@ -85,6 +85,21 @@ def handle_config_file(csv_file):
     ParameterConfig.objects.bulk_create(configs)
 
 
+def calculate_exponential_moving_average(df):
+    """Calculate exponential moving average 200, 50 and 20."""
+    df["ema_200"] = df["close"].ewm(span=200, min_periods=0, adjust=False, ignore_na=False).mean()
+    df["ema_50"] = df["close"].ewm(span=50, min_periods=0, adjust=False, ignore_na=False).mean()
+    df["ema_20"] = df["close"].ewm(span=20, min_periods=0, adjust=False, ignore_na=False).mean()
+    df["ema_200_percentage"] = ((df["ema_200"] / df["close"]) - 1) * 100
+    current = df.iloc[-1]
+    return {
+        "ema_200": current["ema_200"],
+        "ema_50": current["ema_50"],
+        "ema_20": current["ema_20"],
+        "ema_200_percentage": current["ema_200_percentage"]
+    }
+
+
 def calculate_rsi(df):
     """Calculate RSI dataframe has close price"""
     df["change"] = df["close"].diff(1)  # Calculate change
@@ -112,101 +127,30 @@ def calculate_rsi(df):
     df["rs"] = df["avg_gain"] / df["avg_loss"]
     df["rsi"] = 100 - (100 / (1 + df["rs"]))
 
-    # return df['rsi'].iloc[-3], df['rsi'].iloc[-2], df['rsi'].iloc[-1]
-    return df
+    current = df.iloc[-1]
+    previous = df.iloc[-2]
+    return {
+        "rsi": current["rsi"],
+        "rsi_previous": previous["rsi"],
+    }
 
 
-def calculate_macd(df):
-    k = df["close"].ewm(span=12, adjust=False, min_periods=12).mean()
-    d = df["close"].ewm(span=26, adjust=False, min_periods=26).mean()
-    macd = k - d
-    macd_s = macd.ewm(span=9, adjust=False, min_periods=9).mean()
-    macd_h = macd - macd_s
-    df["macd"] = df.index.map(macd)
-    df["macd_h"] = df.index.map(macd_h)
-    df["macd_s"] = df.index.map(macd_s)
-    df["macd_crossed"] = np.where(
-        (df["macd_s"] > df["macd"]) & (df["macd"].shift(1) > df["macd_s"].shift(1)), "Crossed", np.nan
-    )
-    df_crossed = df[(df.macd_crossed == "Crossed")]
-    macd_limit = df_crossed["macd_h"].iloc[-1] * 1.5
-    df["macd_status"] = (df["macd_h"] > macd_limit) & (df["macd_h"] < 0) & (df["macd_crossed"] != "Crossed")
-    print(df.tail(10))
-    return df
-
-
-def get_stoch_crossover(df):
-    df["ema_200"] = df["close"].ewm(span=200, min_periods=0, adjust=False, ignore_na=False).mean()
-    df["ema_50"] = df["close"].ewm(span=50, min_periods=0, adjust=False, ignore_na=False).mean()
-    df["ema_200_percentage"] = ((df["ema_200"] / df["close"]) - 1) * 100
+def calculate_stochastic(df):
+    """Calculate Stochastic value"""
     df["14-high"] = df["high"].rolling(14).max()
     df["14-low"] = df["low"].rolling(14).min()
     df["k"] = (df["close"] - df["14-low"]) * 100 / (df["14-high"] - df["14-low"])
     df["d"] = df["k"].rolling(3).mean()
     df["k_smooth"] = df["d"].rolling(3).mean()
-    df["kd_diff"] = df["k_smooth"] - df["d"]
-    df["crossed"] = np.where((df["d"] > df["k_smooth"]) & (df["k_smooth"].shift(1) > df["d"].shift(1)), True, False)
-    df["tend_to_positive"] = np.where(
-        (df["k_smooth"] > df["d"]) & (df["kd_diff"].shift(1) > df["kd_diff"]), True, False
-    )
-    df["d_trend"] = np.where(df["d"] > df["d"].shift(1), True, False)
-    df["stoch_status"] = (df["k_smooth"] < 20) & (df["crossed"] == True)
-    df["stoch_positive_trend"] = df["d"] > df["k_smooth"]
-    current_day = df.iloc[-1]
+
+    current = df.iloc[-1]
+    previous = df.iloc[-2]
 
     return {
-        "stoch_status": current_day["stoch_status"],
-        "date": current_day["date"],
-        "ema_200": current_day["ema_200"],
-        "ema_50": current_day["ema_50"],
-        "ema_200_percentage": current_day["ema_200_percentage"],
-        "d_value": current_day["d"],
-        "d_trend": current_day["d_trend"],
-        "stoch_positive_trend": current_day["stoch_positive_trend"],
-        "crossed": current_day["crossed"],
-        "tend_to_positive": current_day["tend_to_positive"],
-        "last_price": current_day["close"],
-    }
-
-
-def get_macd_last_two_cross_over(df):
-    day_1_status = False
-    day_2_status = False
-
-    k = df["close"].ewm(span=12, adjust=False, min_periods=12).mean()
-    d = df["close"].ewm(span=26, adjust=False, min_periods=26).mean()
-    macd = k - d
-    macd_s = macd.ewm(span=9, adjust=False, min_periods=9).mean()
-    macd_h = macd - macd_s
-    df["macd"] = df.index.map(macd)
-    df["macd_h"] = df.index.map(macd_h)
-    df["macd_s"] = df.index.map(macd_s)
-    df["crossed"] = np.where((df["macd_h"] < 0) & (df["macd_h"].shift(1) > 0), "Crossed", np.nan)
-    df["crossed_count"] = df["crossed"].eq("Crossed").cumsum()
-    df["ema_200"] = df["close"].ewm(span=200, min_periods=0, adjust=False, ignore_na=False).mean()
-    df["ema_50"] = df["close"].ewm(span=50, min_periods=0, adjust=False, ignore_na=False).mean()
-
-    last_crossed_df = df[df["crossed_count"] == df["crossed_count"].max()]
-    df = last_crossed_df.reset_index()
-    df["ema_200_percentage"] = ((df["ema_200"] / df["close"]) - 1) * 100
-    current_day = df.iloc[-1]
-
-    if df.shape[0] > 3:
-        day_2 = df.iloc[1]
-        day_3 = df.loc[2]
-
-        if current_day["macd_h"] < 0 and current_day["macd_h"] >= day_2["macd_h"]:
-            day_1_status = True
-        if current_day["macd_h"] < 0 and current_day["macd_h"] >= day_3["macd_h"]:
-            day_2_status = True
-
-    return {
-        "day_1_status": day_1_status,
-        "day_2_status": day_2_status,
-        "date": current_day["date"],
-        "ema_200": current_day["ema_200"],
-        "ema_50": current_day["ema_50"],
-        "ema_200_percentage": current_day["ema_200_percentage"],
+        "stoch_black": current["k_smooth"],
+        "stoch_red": current["d"],
+        "stoch_black_previous": previous["k_smooth"],
+        "stoch_rec_previous": previous["d"],
     }
 
 
@@ -216,7 +160,8 @@ def wma(arr, period):
     return np.convolve(arr, kernel, "same")
 
 
-def get_heikin_ashi(df):
+def calculate_heikin_ashi(df):
+    """Calculate Heikin-Ashi candle sticks"""
     ha_df = pd.DataFrame(index=df.index.values, columns=["open", "high", "low", "close"])
     ha_df["close"] = (df["open"] + df["high"] + df["low"] + df["close"]) / 4
 
@@ -251,15 +196,17 @@ def get_heikin_ashi(df):
         False,
     )
 
-    current_day = ha_df.iloc[-1]
-    yesterday = ha_df.iloc[-2]
+    current = ha_df.iloc[-1]
+    previous = ha_df.iloc[-2]
     return {
-        "ha_positive": current_day["ha_positive"],
-        "ha_cross": current_day["ha_cross"],
-        "ha_cross_yesterday": yesterday["ha_cross"],
-        "ha_wma_cross": current_day["ha_wma_cross"],
-        "ha_wma_top": current_day["ha_wma_top"],
-        "ha_wma_cross_yesterday": yesterday["ha_wma_cross"],
+        "ha_open": current["ha_open"],
+        "ha_high": current["ha_high"],
+        "ha_low": current["ha_low"],
+        "ha_close": current["ha_close"],
+        "ha_open_previous": previous["ha_open"],
+        "ha_high_previous": previous["ha_high"],
+        "ha_low_previous": previous["ha_low"],
+        "ha_close_previous": previous["ha_close"],
     }
 
 
