@@ -15,6 +15,7 @@
                         <button type="button" class="btn btn-primary modal_act" trigger-url="{% url 'upload_weekly_stock_file' %}" data-toggle="modal" data-target="#modal_popup_area">Upload Stock</button>
                         <button type="button" class="btn btn-primary" id="load_bhav_stoch_weekly_page" onclick="location.href='{% url 'load_bhav_stoch_weekly_page' %}'">Load Bhav</button>
                         <button type="button" class="btn btn-primary" id="load_futures_stoch_weekly_page" onclick="location.href='{% url 'load_futures_stoch_weekly_page' %}'">Load Futures</button>
+                        <button type="button" class="btn btn-primary" id="load_eligible_futures_stoch_weekly_page" onclick="location.href='{% url 'load_eligible_futures_stoch_weekly_page' %}'">Load Eligible Futures</button>
                         <button type="button" class="btn btn-primary" id="load_schedule_futures_stoch_weekly_page" onclick="location.href='{% url 'load_schedule_futures_stoch_weekly_page' %}'">Load Schedules</button>
                         <button type="button" class="btn btn-primary ser_act" id="calculate_stoch_weekly_page" trigger-url="{% url 'calculate_stoch_weekly_page' %}">Calculate</button>
                         {% for row in stoch_result reversed %}

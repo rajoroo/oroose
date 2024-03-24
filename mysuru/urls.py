@@ -9,6 +9,7 @@ urlpatterns = [
     path("stoch_hourly/load_bhav/", views.load_bhav_stoch_hourly_page, name="load_bhav_stoch_hourly_page"),
     path("upload_hourly_stock_file/", views.upload_hourly_stock_file, name="upload_hourly_stock_file"),
     path("stoch_hourly/calculate_top_ten/", views.calculate_stoch_hourly_page, name="calculate_stoch_hourly_page"),
+    path("stoch_hourly/reset_calculate_top_ten/", views.reset_calculate_stoch_hourly_page, name="reset_calculate_stoch_hourly_page"),
     # Daily
     path("stoch_daily/", views.stoch_daily_page, name="stoch_daily"),
     path("stoch_daily/load_top_ten/", views.load_stoch_daily_page, name="load_stoch_daily_page"),

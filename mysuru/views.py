@@ -74,6 +74,11 @@ def load_bhav_stoch_hourly_page(request):
     return redirect("stoch_hourly")
 
 
+def reset_calculate_stoch_hourly_page(request):
+    StochHourlyTrend.objects.all().update(ema_200=None)
+    return JsonResponse({"status": "success", "message": "Successfully Reset Calculated"})
+
+
 def calculate_stoch_hourly_page(request):
     polling_hourly_stoch.trigger_calculate_stoch()
 
@@ -213,6 +218,7 @@ def stoch_weekly_page(request):
 
 
 def load_stoch_weekly_page(request):
+    print("i call -----")
     polling_weekly_stoch.polling_stoch_stocks()
     return redirect("stoch_weekly")
 
@@ -245,15 +251,16 @@ def load_eligible_futures_stoch_weekly_page(request):
     recs = StochWeeklyTrend.objects.filter(ema_50__gt=F("ema_200"))
     StochHourlyTrend.objects.all().delete()
     for rec in recs:
-        StochHourlyTrend.objects.create(
+        tt = StochHourlyTrend.objects.create(
             date=datetime.today(),
             symbol=rec.symbol,
             identifier=rec.identifier,
             isin=rec.isin,
             company_name=rec.company_name,
-            price=rec.price,
-            percentage_change=rec.percentage_change,
+            # ema_200=rec.ema_200,
+            # updated_date=datetime.today(),
         )
+        tt.get_smart_token()
     return redirect("stoch_weekly")
 
 
@@ -308,21 +315,21 @@ def potential_stock_page(request):
 # ============================= Short Term page ==============================
 @login_required(login_url="/accounts/login/")
 def short_term_page(request):
-    ha_wma_cross_yesterday = StochDailyTrend.objects.filter(ha_wma_cross_yesterday=True, ha_wma_top=True).order_by(
+    ha_wma_cross_yesterday = StochHourlyTrend.objects.filter(ha_wma_cross_last_hour=True, ha_wma_top=True).order_by(
         "d_value"
     )
-    ha_cross_yesterday = StochDailyTrend.objects.filter(ha_cross_yesterday=True, ha_positive=True).order_by("d_value")
-    to_calculate = StochDailyTrend.objects.filter(date=datetime.today()).count()
+    ha_cross_yesterday = StochHourlyTrend.objects.filter(ha_cross_last_hour=True, ha_positive=True).order_by("d_value")
+    to_calculate = StochHourlyTrend.objects.filter(date=datetime.today()).count()
     stoch_result = [
         {
-            "title": "HA WMA Cross Yesterday",
+            "title": "HA WMA Cross Last hour",
             "reference": "ha_top",
             "icon": "fa fa-solid fa-level-up",
             "stoch_value": list(ha_wma_cross_yesterday.values()),
             "stoch_count": ha_wma_cross_yesterday.count(),
         },
         {
-            "title": "HA Cross Yesterday",
+            "title": "HA Cross Last hour",
             "reference": "ha_top",
             "icon": "fa fa-solid fa-level-up",
             "stoch_value": list(ha_cross_yesterday.values()),
@@ -339,3 +346,4 @@ def short_term_page(request):
 
 
 # ======================================================================================
+

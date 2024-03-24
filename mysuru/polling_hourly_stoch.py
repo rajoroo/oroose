@@ -54,7 +54,7 @@ def calculate_stoch():
 
 def trigger_calculate_stoch():
     calculate_stoch()
-    check_update_latest_date()
+    # check_update_latest_date()
     return True
 
 

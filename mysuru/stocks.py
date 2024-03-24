@@ -64,6 +64,10 @@ class LiveStocks:
         ]
         return df
 
+    def get_futures_stock_list(self):
+        df = pd.json_normalize(self.stock_json["data"]["UnderlyingList"])
+        return df
+
     def get_bhav_data(self) -> bool:
         """
         Get bhav data feed
@@ -80,23 +84,3 @@ class LiveStocks:
                 return df
 
         return True
-
-    def get_csv_data(self):
-        """
-        Get csv response bytes data feed
-        base_url: url to get their cookies
-        url: url to get live data by using cookies from base_url
-        """
-        base_response = self.session.get(self.base_url)
-        response = self.session.get(self.url, cookies=base_response.cookies)
-        df = pd.read_csv(io.StringIO(response.text))
-        df.columns = df.columns.str.strip()
-        row_break = None
-        for index, row in df.iterrows():
-            if row['UNDERLYING'] == "Derivatives on Individual Securities":
-                row_break = index
-                break
-        df.rename(columns={'UNDERLYING': 'COMPANY NAME'}, inplace=True)
-        subset_df = df[df.index > row_break]
-        subset_df = subset_df.reset_index(drop=True)
-        return subset_df
