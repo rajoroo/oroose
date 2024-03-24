@@ -51,6 +51,6 @@ def fetch_trend_value(model_obj):
 def reset_fetched(model_obj):
     """Reset fetch flag"""
     if not model_obj.objects.filter(is_fetched=False):
-        model_obj.objects.all().update(is_fetched=True)
+        model_obj.objects.all().update(is_fetched=False)
 
     return True
