@@ -150,7 +150,7 @@ def calculate_stochastic(df):
         "stoch_black": current["k_smooth"],
         "stoch_red": current["d"],
         "stoch_black_previous": previous["k_smooth"],
-        "stoch_rec_previous": previous["d"],
+        "stoch_red_previous": previous["d"],
     }
 
 
@@ -199,14 +199,14 @@ def calculate_heikin_ashi(df):
     current = ha_df.iloc[-1]
     previous = ha_df.iloc[-2]
     return {
-        "ha_open": current["ha_open"],
-        "ha_high": current["ha_high"],
-        "ha_low": current["ha_low"],
-        "ha_close": current["ha_close"],
-        "ha_open_previous": previous["ha_open"],
-        "ha_high_previous": previous["ha_high"],
-        "ha_low_previous": previous["ha_low"],
-        "ha_close_previous": previous["ha_close"],
+        "ha_open": current["open"],
+        "ha_high": current["high"],
+        "ha_low": current["low"],
+        "ha_close": current["close"],
+        "ha_open_previous": previous["open"],
+        "ha_high_previous": previous["high"],
+        "ha_low_previous": previous["low"],
+        "ha_close_previous": previous["close"],
     }
 
 
@@ -231,4 +231,7 @@ def get_rsi(df, periods=14, ema=True):
 
     rsi = ma_up / ma_down
     rsi = 100 - (100 / (1 + rsi))
-    return {"rsi": np.round(rsi.iloc[-1], decimals=2)}
+    return {
+        "rsi": np.round(rsi.iloc[-1], decimals=2),
+        "rsi_previous": np.round(rsi.iloc[-2], decimals=2),
+    }

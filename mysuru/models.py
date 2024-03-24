@@ -23,7 +23,7 @@ class Trend(models.Model):
     symbol = models.CharField(max_length=50, verbose_name="Symbol")
     company_name = models.CharField(max_length=200, verbose_name="Company Name", null=True, blank=True)
     smart_token = models.CharField(max_length=50, verbose_name="Smart Token", null=True, blank=True)
-    smart_token_not_found = models.BooleanField(verbose_name="Smart Token Not Found", default=False)
+    smart_token_fetched = models.BooleanField(verbose_name="Smart Token Fetched", default=False)
 
     open = models.FloatField(verbose_name="Open", null=True, blank=True)
     high = models.FloatField(verbose_name="High", null=True, blank=True)
@@ -55,6 +55,8 @@ class Trend(models.Model):
     rsi = models.FloatField(verbose_name="RSI", null=True, blank=True)
     rsi_previous = models.FloatField(verbose_name="RSI Previous", null=True, blank=True)
 
+    is_fetched = models.BooleanField(verbose_name="Is Fetched", default=False)
+
     objects = models.Manager()
 
     class Meta:
@@ -75,7 +77,9 @@ class Trend(models.Model):
             result = obj.get_instrument()
             self.smart_token = str(result.get("token"))
         except:
-            self.smart_token_not_found = True
+            pass
+
+        self.smart_token_fetched = True
         self.save()
 
     def get_date_range(self):
@@ -117,11 +121,12 @@ class Trend(models.Model):
         try:
             df = self.get_smart_ohlc()
             df = self.reset_date_ohlc(df=df)
-            self.open = round(df["open"], 2)
-            self.high = round(df["high"], 2)
-            self.low = round(df["low"], 2)
-            self.close = round(df["close"], 2)
-            self.volume = round(df["volume"], 2)
+            data = df.iloc[-1]
+            self.open = round(data["open"], 2)
+            self.high = round(data["high"], 2)
+            self.low = round(data["low"], 2)
+            self.close = round(data["close"], 2)
+            self.volume = round(data["volume"], 2)
 
             data = calculate_exponential_moving_average(df=df)
             self.ema_200 = round(data["ema_200"], 2)
@@ -145,10 +150,11 @@ class Trend(models.Model):
             self.ha_low_previous = round(data["ha_low_previous"], 2)
             self.ha_close_previous = round(data["ha_close_previous"], 2)
 
-            data = calculate_rsi(df=df)
+            data = get_rsi(df=df)
             self.rsi = round(data["rsi"], 2)
             self.rsi_previous = round(data["rsi_previous"], 2)
 
+            self.is_fetched = True
             self.save()
             print(f"------------------{self.symbol}----------------------")
         except ValueError as ve:
