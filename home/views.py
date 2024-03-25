@@ -13,14 +13,14 @@ from home.forms import UploadFileForm
 
 @login_required(login_url="/accounts/login/")
 def home_page(request):
-    context = {"active_page": "home"}
+    context = {"active_page": "home", "active_path": None}
     return render(request, "base/home.html", context)
 
 
 @login_required(login_url="/accounts/login/")
 def configuration_page(request):
     configs = ParameterConfig.objects.all()
-    context = {"active_page": "configuration", "configs": configs}
+    context = {"active_page": "configuration", "active_path": None, "configs": configs}
     return render(request, "configuration/configure_settings.html", context=context)
 
 

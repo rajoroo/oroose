@@ -62,6 +62,7 @@ class LiveStocks:
                 "meta.companyName",
             ]
         ]
+        df.rename({"symbol": "Symbol", "meta.companyName": "Company Name"}, axis=1, inplace=True)
         return df
 
     def get_futures_stock_list(self):
@@ -81,6 +82,7 @@ class LiveStocks:
             for contained_file in my_zip_file.namelist():
                 df = pd.read_csv(my_zip_file.open(contained_file))
                 df = df[df["SERIES"].str.endswith("EQ").fillna(False)]
+                # df.rename({'SYMBOL': 'Symbol', 'meta.companyName': 'Company Name'}, axis=1, inplace=True)
                 return df
 
         return True

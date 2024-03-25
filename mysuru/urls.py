@@ -3,37 +3,13 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    # Hourly
-    path("stoch_hourly/", views.stoch_hourly_page, name="stoch_hourly"),
-    path("stoch_hourly/load_top_ten/", views.load_stoch_hourly_page, name="load_stoch_hourly_page"),
-    path("stoch_hourly/load_bhav/", views.load_bhav_stoch_hourly_page, name="load_bhav_stoch_hourly_page"),
-    path("upload_hourly_stock_file/", views.upload_hourly_stock_file, name="upload_hourly_stock_file"),
-    path("stoch_hourly/calculate_top_ten/", views.calculate_stoch_hourly_page, name="calculate_stoch_hourly_page"),
-    path("stoch_hourly/reset_calculate_top_ten/", views.reset_calculate_stoch_hourly_page, name="reset_calculate_stoch_hourly_page"),
-    # Daily
-    path("stoch_daily/", views.stoch_daily_page, name="stoch_daily"),
-    path("stoch_daily/load_top_ten/", views.load_stoch_daily_page, name="load_stoch_daily_page"),
-    path("stoch_daily/load_bhav/", views.load_bhav_stoch_daily_page, name="load_bhav_stoch_daily_page"),
-    path("upload_daily_stock_file/", views.upload_daily_stock_file, name="upload_daily_stock_file"),
-    path("stoch_daily/calculate_top_ten/", views.calculate_stoch_daily_page, name="calculate_stoch_daily_page"),
-    # Weekly
-    path("stoch_weekly/", views.stoch_weekly_page, name="stoch_weekly"),
-    path("stoch_weekly/load_top_ten/", views.load_stoch_weekly_page, name="load_stoch_weekly_page"),
-    path("upload_weekly_stock_file/", views.upload_weekly_stock_file, name="upload_weekly_stock_file"),
-    path("stoch_weekly/load_bhav/", views.load_bhav_stoch_weekly_page, name="load_bhav_stoch_weekly_page"),
-    path("stoch_weekly/load_futures/", views.load_futures_stoch_weekly_page, name="load_futures_stoch_weekly_page"),
-    path(
-        "stoch_weekly/load_eligible_futures/",
-        views.load_eligible_futures_stoch_weekly_page,
-        name="load_eligible_futures_stoch_weekly_page",
-    ),
-    path("stoch_weekly/calculate_top_ten/", views.calculate_stoch_weekly_page, name="calculate_stoch_weekly_page"),
-    path(
-        "stoch_hourly/schedule_futures/",
-        views.load_schedule_futures_stoch_weekly_page,
-        name="load_schedule_futures_stoch_weekly_page",
-    ),
-    # Others
-    path("potential_stock/", views.potential_stock_page, name="potential_stock"),
-    path("short_term/", views.short_term_page, name="short_term"),
+    # Trend
+    path("trend/<str:name>", views.trend_page, name="trend_page"),
+    path("trend/<str:name>/load_live", views.trend_page_load_live, name="trend_page_load_live"),
+    path("trend/<str:name>/load_bhav", views.trend_page_load_bhav, name="trend_page_load_bhav"),
+    path("trend/<str:name>/upload", views.trend_page_upload, name="trend_page_upload"),
+    path("trend/<str:name>/fetch", views.trend_page_fetch, name="trend_page_fetch"),
+    path("trend/<str:name>/reset", views.trend_page_reset, name="trend_page_reset"),
+    path("potential", views.potential_page, name="potential_page"),
+    path("short_term", views.short_term_page, name="short_term_page"),
 ]

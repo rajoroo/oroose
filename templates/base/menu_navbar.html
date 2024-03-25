@@ -1,5 +1,9 @@
 {% for rec in menu %}
 <li class="nav-item col-6 col-md-auto">
+    {% if rec.has_path %}
+    <a class="nav-link p-2 {{ rec.status }}" href="{% url rec.name rec.path %}">{{ rec.display_name }}</a>
+    {% else %}
     <a class="nav-link p-2 {{ rec.status }}" href="{% url rec.name %}">{{ rec.display_name }}</a>
+    {% endif %}
 </li>
 {% endfor %}
