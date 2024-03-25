@@ -50,7 +50,7 @@ class LiveStocks:
         df1 = pd.json_normalize(self.stock_json["data"])
         df2 = df1.loc[df1["priority"] == 0]
         df3 = df2.reset_index(level=0)
-        df = df3[
+        df4 = df3[
             [
                 "index",
                 "symbol",
@@ -62,7 +62,7 @@ class LiveStocks:
                 "meta.companyName",
             ]
         ]
-        df.rename({"symbol": "Symbol", "meta.companyName": "Company Name"}, axis=1, inplace=True)
+        df = df4.rename({"symbol": "Symbol", "meta.companyName": "Company Name"}, axis=1)
         return df
 
     def get_futures_stock_list(self):
@@ -82,7 +82,6 @@ class LiveStocks:
             for contained_file in my_zip_file.namelist():
                 df = pd.read_csv(my_zip_file.open(contained_file))
                 df = df[df["SERIES"].str.endswith("EQ").fillna(False)]
-                # df.rename({'SYMBOL': 'Symbol', 'meta.companyName': 'Company Name'}, axis=1, inplace=True)
                 return df
 
         return True

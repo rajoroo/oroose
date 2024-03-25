@@ -50,7 +50,7 @@ class FetchTrend:
         # Raw data
         stock_data = obj.get_futures_stock_list()
         self.stock_data = [
-            {"symbol": row["Symbol"], "company_name": row["underlying"]} for index, row in stock_data.iterrows()
+            {"symbol": row["symbol"], "company_name": row["underlying"]} for index, row in stock_data.iterrows()
         ]
         return True
 
