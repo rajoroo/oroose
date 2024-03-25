@@ -14,6 +14,7 @@
                         <button type="button" class="btn btn-primary" id="trend_page_load_live" onclick="location.href='{% url 'trend_page_load_live' active_path %}'">Load</button>
                         <button type="button" class="btn btn-primary modal_act" trigger-url="{% url 'trend_page_load_bhav' active_path %}" data-toggle="modal" data-target="#modal_popup_area">Upload</button>
                         <button type="button" class="btn btn-primary" id="trend_page_load_bhav" onclick="location.href='{% url 'trend_page_load_bhav' active_path %}'">Load Bhav</button>
+                        <button type="button" class="btn btn-primary" id="trend_page_load_futures" onclick="location.href='{% url 'trend_page_load_futures' active_path %}'">Load Futures</button>
                         {% if active_path == 'weekly' %}
                             <button type="button" class="btn btn-primary" id="copy_eligible_stocks" onclick="location.href='{% url 'copy_eligible_stocks' %}'">Copy Eligible</button>
                         {% endif %}
