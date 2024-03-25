@@ -40,6 +40,20 @@ class FetchTrend:
         ]
         return True
 
+    def fetch_futures_stocks(self):
+        obj = LiveStocks(base_url=settings.LIVE_INDEX_URL, url=settings.LIVE_FUTURES_URL)
+
+        # Get live data, feed data, save data
+        obj.get_live_data()
+        obj.save_stock_data()
+
+        # Raw data
+        stock_data = obj.get_futures_stock_list()
+        self.stock_data = [
+            {"symbol": row["Symbol"], "company_name": row["underlying"]} for index, row in stock_data.iterrows()
+        ]
+        return True
+
     def handle_upload_stoch_stocks(self, csv_file):
         """Process data from uploaded CSV file"""
         # Raw data

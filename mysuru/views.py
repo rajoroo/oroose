@@ -79,6 +79,19 @@ def trend_page_upload(request, name):
     pass
 
 
+def trend_page_load_futures(request, name):
+    """
+    Load futures stocks
+    Parameters:
+        name - model name string representation
+    """
+    model_obj = get_model_object(name)
+    trend_obj = FetchTrend(model_obj)
+    trend_obj.fetch_futures_stocks()
+    trend_obj.create_trend()
+    return redirect("trend_page", name=name)
+
+
 def trend_page_fetch(request, name):
     """
     Fetch data form the API
