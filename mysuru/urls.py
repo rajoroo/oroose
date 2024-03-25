@@ -12,4 +12,5 @@ urlpatterns = [
     path("trend/<str:name>/reset", views.trend_page_reset, name="trend_page_reset"),
     path("potential", views.potential_page, name="potential_page"),
     path("short_term", views.short_term_page, name="short_term_page"),
+    path("copy_eligible", views.copy_eligible_stocks, name="copy_eligible_stocks"),
 ]

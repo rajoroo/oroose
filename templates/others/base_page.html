@@ -2,15 +2,16 @@
 {% load static %}
 
 {% block title %}
-<title>Short Term</title>
+<title>{{page_title}}</title>
 {% endblock title %}
 
 {% block content %}
-    {% for row in stoch_result %}
+
+    {% for row in items %}
     <div class="row">
         <div class="col-12 col-sm-12">
             <div class="card nifty-table">
-                {% include "short_term/load_fh_view.html" %}
+                {% include "others/load_fh_view.html" %}
             </div>
         </div>
     </div>
@@ -19,6 +20,6 @@
 {% endblock content %}
 
 {% block js_scripts %}
-<script src="{% static 'js/load_bengaluru.js' %}"></script>
-<script src="{% static 'js/ScrollPage.js' %}"></script>
+<script src="{% static 'js/load_bengaluru.js' %}" crossorigin="anonymous"></script>
+<script src="{% static 'js/load_upload_file.js' %}" crossorigin="anonymous"></script>
 {% endblock js_scripts %}

@@ -3,6 +3,7 @@ from datetime import datetime
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
 from django.db.models import F
+from django.http import JsonResponse
 
 from mysuru.fetch_trend import get_model_object, FetchTrend
 from mysuru.models import HourlyTrend, WeeklyTrend
@@ -22,6 +23,7 @@ def trend_page(request, name):
         ema_50__lt=F("ema_20"),
         ha_open__lt=F("ha_close"),
         ema_20__lt=F("ha_close"),
+        ema_20__gt=F("ha_open"),
     )
     items = [
         {
@@ -102,22 +104,49 @@ def trend_page_reset(request, name):
 
 
 def potential_page(request):
+    """
+    Potential page
+    WeeklyTrend with
+        Uptrend
+        - moving average 20 > 200
+        - moving average 20 > 50
+        Stochastics
+        - between 20 to 80
+        - black > red
+        Heikin-ashi
+        - candle is green
+        - candle > moving average 20
+    """
     total_stock = WeeklyTrend.objects.all().count()
     to_calculate = WeeklyTrend.objects.filter(is_fetched=False).count()
-    potential_stocks = WeeklyTrend.objects.filter(
+    potential_stocks_first = WeeklyTrend.objects.filter(
         is_fetched=True,
         ema_200__lt=F("ema_20"),
         ema_50__lt=F("ema_20"),
         ha_open__lt=F("ha_close"),
+        ema_20__lt=F("ha_open"),
         stoch_black__gt=F("stoch_red"),
-        stoch_black__gte=20,
-        stoch_black__lte=80,
+        stoch_black__range=(20, 80),
+    )
+    potential_stocks_second = WeeklyTrend.objects.filter(
+        is_fetched=True,
+        ema_200__lt=F("ema_20"),
+        ema_50__lt=F("ema_20"),
+        ha_open__lt=F("ha_close"),
+        ema_20__lt=F("ha_open"),
+        stoch_black__gt=F("stoch_red"),
+        stoch_black__range=(80, 100),
     )
     items = [
         {
-            "title": "Stocks",
-            "stocks": potential_stocks,
-            "count": potential_stocks.count(),
+            "title": "First class",
+            "stocks": potential_stocks_first,
+            "count": potential_stocks_first.count(),
+        },
+        {
+            "title": "Second class",
+            "stocks": potential_stocks_second,
+            "count": potential_stocks_second.count(),
         },
     ]
     context = {
@@ -128,24 +157,35 @@ def potential_page(request):
         "to_calculate": to_calculate,
         "total_stock": total_stock,
     }
-    return render(request, "trend/base_page.html", context)
+    return render(request, "others/base_page.html", context)
 
 
 def short_term_page(request):
+    """
+    Short term page
+    HourlyTrend with
+        Uptrend
+        - moving average 20 > 200
+        - moving average 20 > 50
+        Heikin-ashi
+        - candle is green
+        - moving average 20 is crossing candle
+    """
     total_stock = HourlyTrend.objects.all().count()
     to_calculate = HourlyTrend.objects.filter(is_fetched=False).count()
-    potential_stocks = HourlyTrend.objects.filter(
+    short_term = HourlyTrend.objects.filter(
         is_fetched=True,
         ema_200__lt=F("ema_20"),
         ema_50__lt=F("ema_20"),
         ha_open__lt=F("ha_close"),
         ema_20__lt=F("ha_close"),
+        ema_20__gt=F("ha_open"),
     )
     items = [
         {
-            "title": "Stocks",
-            "stocks": potential_stocks,
-            "count": potential_stocks.count(),
+            "title": "Short Term",
+            "stocks": short_term,
+            "count": short_term.count(),
         },
     ]
     context = {
@@ -156,4 +196,19 @@ def short_term_page(request):
         "to_calculate": to_calculate,
         "total_stock": total_stock,
     }
-    return render(request, "trend/base_page.html", context)
+    return render(request, "others/base_page.html", context)
+
+
+def copy_eligible_stocks(request):
+    """Filter weekly trend and copy eligible stocks to hourly"""
+    recs = WeeklyTrend.objects.filter(
+        is_fetched=True,
+        ema_200__lt=F("ema_20"),
+        ema_50__lt=F("ema_20"),
+        ha_open__lt=F("ha_close"),
+        ema_20__lt=F("ha_open"),
+    )
+    HourlyTrend.objects.all().delete()
+    create_list = [HourlyTrend(symbol=rec.symbol, comapny=rec.company) for rec in recs]
+    HourlyTrend.objects.bulk_create(create_list)
+    return JsonResponse({"status": "success", "message": "Successfully created hourly records"})
