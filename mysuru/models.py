@@ -163,6 +163,34 @@ class Trend(models.Model):
             print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         return True
 
+    @property
+    def ema_200_50(self):
+        result = None
+        if self.ema_50 and self.ema_200:
+            result = self.ema_50 > self.ema_200
+        return result
+
+    @property
+    def ema_50_20(self):
+        result = None
+        if self.ema_20 and self.ema_50:
+            result = self.ema_20 > self.ema_50
+        return result
+
+    @property
+    def ha_green(self):
+        result = None
+        if self.ha_open and self.close:
+            result = self.ha_close > self.ha_open
+        return result
+
+    @property
+    def rsi_60(self):
+        result = None
+        if self.rsi:
+            result = self.rsi > 60
+        return result
+
 
 class HourlyTrend(Trend):
     """Hourly trend inherits from trend model"""

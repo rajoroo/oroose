@@ -21,6 +21,16 @@
     color: white;
 }
 
+.green-col {
+    background-color: #76b852;
+    color: white;
+}
+
+.red-col {
+    background-color: #FF6666;
+    color: white;
+}
+
 
 .card .card-header h3::after {
   content: "";

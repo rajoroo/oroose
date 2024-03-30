@@ -13,11 +13,19 @@
             <tr>
                 <th>Symbol</th>
                 <th>Company</th>
+                <th>EMA 200</th>
+                <th>EMA 50</th>
+                <th>Heishinki Ashi</th>
+                <th>RSI</th>
             </tr>
             {% for item in row.stocks %}
             <tr>
                 <td>{{ item.symbol }}</td>
                 <td>{{ item.company_name }}</td>
+                <td class="{% if item.ema_200_50 %}green-col{% else %}red-col{% endif %}">{{ item.ema_200_50 }}</td>
+                <td class="{% if item.ema_50_20 %}green-col{% else %}red-col{% endif %}">{{ item.ema_50_20 }}</td>
+                <td class="{% if item.ha_green %}green-col{% else %}red-col{% endif %}">{{ item.ha_green }}</td>
+                <td class="{% if item.rsi_60 %}green-col{% else %}red-col{% endif %}">{{ item.rsi_60 }}</td>
             </tr>
             {% endfor %}
         </table>
