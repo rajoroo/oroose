@@ -17,6 +17,8 @@
                 <th>EMA 50</th>
                 <th>Heishinki Ashi</th>
                 <th>RSI</th>
+                <th>RSI Crossed</th>
+                <th>D Value</th>
             </tr>
             {% for item in row.stocks %}
             <tr>
@@ -25,7 +27,9 @@
                 <td class="{% if item.ema_200_50 %}green-col{% else %}red-col{% endif %}">{{ item.ema_200_50 }}</td>
                 <td class="{% if item.ema_50_20 %}green-col{% else %}red-col{% endif %}">{{ item.ema_50_20 }}</td>
                 <td class="{% if item.ha_green %}green-col{% else %}red-col{% endif %}">{{ item.ha_green }}</td>
-                <td class="{% if item.rsi_60 %}green-col{% else %}red-col{% endif %}">{{ item.rsi_60 }}</td>
+                <td class="{% if item.rsi_60 %}green-col{% else %}red-col{% endif %}">{{ item.rsi }}</td>
+                <td class="{% if item.rsi_crossed %}green-col{% else %}red-col{% endif %}">{{ item.rsi_crossed }}</td>
+                <td class="{% if item.stoch_positive %}green-col{% else %}red-col{% endif %}">{{ item.stoch_black }}</td>
             </tr>
             {% endfor %}
         </table>

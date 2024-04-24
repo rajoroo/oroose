@@ -132,7 +132,7 @@ def potential_page(request):
         ema_50__lt=F("ema_20"),
         ha_open__lt=F("ha_close"),
         ema_20__lt=F("ha_open"),
-    )
+    ).order_by("rsi")
     items = [
         {
             "title": "Potential Stocks",

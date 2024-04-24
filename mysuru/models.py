@@ -191,6 +191,20 @@ class Trend(models.Model):
             result = self.rsi > 60
         return result
 
+    @property
+    def rsi_crossed(self):
+        result = None
+        if self.rsi and self.rsi_previous:
+            result = self.rsi_previous < 60 < self.rsi
+        return result
+
+    @property
+    def stoch_positive(self):
+        result = None
+        if self.stoch_black and self.stoch_red:
+            result = self.stoch_black > self.stoch_red
+        return result
+
 
 class HourlyTrend(Trend):
     """Hourly trend inherits from trend model"""
