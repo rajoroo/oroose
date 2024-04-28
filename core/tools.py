@@ -147,10 +147,10 @@ def calculate_stochastic(df):
     previous = df.iloc[-2]
 
     return {
-        "stoch_black": current["k_smooth"],
-        "stoch_red": current["d"],
-        "stoch_black_previous": previous["k_smooth"],
-        "stoch_red_previous": previous["d"],
+        "stoch_black": current["d"],
+        "stoch_red": current["k_smooth"],
+        "stoch_black_previous": previous["d"],
+        "stoch_red_previous": previous["k_smooth"],
     }
 
 

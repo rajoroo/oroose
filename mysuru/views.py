@@ -3,7 +3,7 @@ from django.shortcuts import redirect, render
 from django.db.models import F
 
 from mysuru.fetch_trend import get_model_object, FetchTrend
-from mysuru.models import HourlyTrend, WeeklyTrend
+from mysuru.models import HourlyTrend, WeeklyTrend, DailyTrend
 
 
 # =========================================Trend==========================================
@@ -126,18 +126,47 @@ def potential_page(request):
     """
     total_stock = WeeklyTrend.objects.all().count()
     to_calculate = WeeklyTrend.objects.filter(is_fetched=False).count()
-    potential_stocks = WeeklyTrend.objects.filter(
+    potential_stocks_cross = WeeklyTrend.objects.filter(
+        is_fetched=True,
+        ema_200__lt=F("ema_20"),
+        ema_50__lt=F("ema_20"),
+        ha_open__lt=F("ha_close"),
+        ema_20__lt=F("ha_close"),
+        ema_20__gt=F("ha_open"),
+    )
+    potential_stocks_rsi = WeeklyTrend.objects.filter(
         is_fetched=True,
         ema_200__lt=F("ema_20"),
         ema_50__lt=F("ema_20"),
         ha_open__lt=F("ha_close"),
         ema_20__lt=F("ha_open"),
+        rsi__gt=60
     ).order_by("rsi")
+    potential_stocks_stoch = WeeklyTrend.objects.filter(
+        is_fetched=True,
+        ema_200__lt=F("ema_20"),
+        ema_50__lt=F("ema_20"),
+        ha_open__lt=F("ha_close"),
+        ema_20__lt=F("ha_open"),
+        stoch_black__gt=F("stoch_red"),
+        stoch_black__gte=20,
+        stoch_black__lte=80,
+    ).order_by("stoch_black")
     items = [
         {
-            "title": "Potential Stocks",
-            "stocks": potential_stocks,
-            "count": potential_stocks.count(),
+            "title": "Potential Stocks Crossed",
+            "stocks": potential_stocks_cross,
+            "count": potential_stocks_cross.count(),
+        },
+        {
+            "title": "Potential Stocks RSI",
+            "stocks": potential_stocks_rsi,
+            "count": potential_stocks_rsi.count(),
+        },
+        {
+            "title": "Potential Stocks Stoch",
+            "stocks": potential_stocks_stoch,
+            "count": potential_stocks_stoch.count(),
         },
     ]
     context = {
@@ -162,21 +191,59 @@ def short_term_page(request):
         - candle is green
         - moving average 20 is crossing candle
     """
-    total_stock = HourlyTrend.objects.all().count()
-    to_calculate = HourlyTrend.objects.filter(is_fetched=False).count()
-    short_term = HourlyTrend.objects.filter(
+    potential_stocks_list = WeeklyTrend.objects.filter(
         is_fetched=True,
+        ema_200__lt=F("ema_20"),
+        ema_50__lt=F("ema_20"),
+        ha_open__lt=F("ha_close"),
+        ema_20__lt=F("ha_open"),
+    ).values_list("symbol")
+    short_term_cross = DailyTrend.objects.filter(
+        is_fetched=True,
+        symbol__in=potential_stocks_list,
         ema_200__lt=F("ema_20"),
         ema_50__lt=F("ema_20"),
         ha_open__lt=F("ha_close"),
         ema_20__lt=F("ha_close"),
         ema_20__gt=F("ha_open"),
     )
+    short_term_rsi = DailyTrend.objects.filter(
+        is_fetched=True,
+        symbol__in=potential_stocks_list,
+        ema_200__lt=F("ema_20"),
+        ema_50__lt=F("ema_20"),
+        ha_open__lt=F("ha_close"),
+        ema_20__lt=F("ha_open"),
+        rsi__gt=60
+    ).order_by("rsi")
+    short_term_stoch = DailyTrend.objects.filter(
+        is_fetched=True,
+        symbol__in=potential_stocks_list,
+        ema_200__lt=F("ema_20"),
+        ema_50__lt=F("ema_20"),
+        ha_open__lt=F("ha_close"),
+        ema_20__lt=F("ha_open"),
+        stoch_black__gt=F("stoch_red"),
+        stoch_black__gte=20,
+        # stoch_black__lte=80,
+    ).order_by("stoch_black")
+    total_stock = DailyTrend.objects.all().count()
+    to_calculate = DailyTrend.objects.filter(is_fetched=False).count()
     items = [
         {
-            "title": "Short Term",
-            "stocks": short_term,
-            "count": short_term.count(),
+            "title": "Short Term Crossed",
+            "stocks": short_term_cross,
+            "count": short_term_cross.count(),
+        },
+        {
+            "title": "Short Term RSI",
+            "stocks": short_term_rsi,
+            "count": short_term_rsi.count(),
+        },
+        {
+            "title": "Short Terms Stoch",
+            "stocks": short_term_stoch,
+            "count": short_term_stoch.count(),
         },
     ]
     context = {
