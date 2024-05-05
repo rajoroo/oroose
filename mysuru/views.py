@@ -18,9 +18,9 @@ def trend_page(request, name):
         is_fetched=True,
         ema_200__lt=F("ema_20"),
         ema_50__lt=F("ema_20"),
-        ha_open__lt=F("ha_close"),
-        ema_20__lt=F("ha_close"),
-        ema_20__gt=F("ha_open"),
+        ha_open_0__lt=F("ha_close_0"),
+        ema_20__lt=F("ha_close_0"),
+        ema_20__gt=F("ha_open_0"),
     )
     items = [
         {
@@ -130,27 +130,27 @@ def potential_page(request):
         is_fetched=True,
         ema_200__lt=F("ema_20"),
         ema_50__lt=F("ema_20"),
-        ha_open__lt=F("ha_close"),
-        ema_20__lt=F("ha_close"),
-        ema_20__gt=F("ha_open"),
+        ha_open_0__lt=F("ha_close_0"),
+        ema_20__lt=F("ha_close_0"),
+        ema_20__gt=F("ha_open_0"),
     )
     potential_stocks_rsi = WeeklyTrend.objects.filter(
         is_fetched=True,
         ema_200__lt=F("ema_20"),
         ema_50__lt=F("ema_20"),
-        ha_open__lt=F("ha_close"),
-        ema_20__lt=F("ha_open"),
-        rsi__gt=60
+        ha_open_0__lt=F("ha_close_0"),
+        ema_20__lt=F("ha_open_0"),
+        rsi_0__gt=60
     ).order_by("rsi")
     potential_stocks_stoch = WeeklyTrend.objects.filter(
         is_fetched=True,
         ema_200__lt=F("ema_20"),
         ema_50__lt=F("ema_20"),
-        ha_open__lt=F("ha_close"),
-        ema_20__lt=F("ha_open"),
-        stoch_black__gt=F("stoch_red"),
-        stoch_black__gte=20,
-        stoch_black__lte=80,
+        ha_open_0__lt=F("ha_close_0"),
+        ema_20__lt=F("ha_open_0"),
+        stoch_black_0__gt=F("stoch_red_0"),
+        stoch_black_0__gte=20,
+        stoch_black_0__lte=80,
     ).order_by("stoch_black")
     items = [
         {

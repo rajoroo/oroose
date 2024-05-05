@@ -91,48 +91,7 @@ def calculate_exponential_moving_average(df):
     df["ema_50"] = df["close"].ewm(span=50, min_periods=0, adjust=False, ignore_na=False).mean()
     df["ema_20"] = df["close"].ewm(span=20, min_periods=0, adjust=False, ignore_na=False).mean()
     df["ema_200_percentage"] = ((df["ema_200"] / df["close"]) - 1) * 100
-    current = df.iloc[-1]
-    return {
-        "ema_200": current["ema_200"],
-        "ema_50": current["ema_50"],
-        "ema_20": current["ema_20"],
-        "ema_200_percentage": current["ema_200_percentage"]
-    }
-
-
-def calculate_rsi(df):
-    """Calculate RSI dataframe has close price"""
-    df["change"] = df["close"].diff(1)  # Calculate change
-
-    # calculate gain / loss from every change
-    df["gain"] = np.select([df["change"] > 0, df["change"].isna()], [df["change"], np.nan], default=0)
-    df["loss"] = np.select([df["change"] < 0, df["change"].isna()], [-df["change"], np.nan], default=0)
-
-    # create avg_gain /  avg_loss columns with all nan
-    df["avg_gain"] = np.nan
-    df["avg_loss"] = np.nan
-
-    n = 14  # what is the window
-
-    # Alternatively
-    df["avg_gain"][n] = df.loc[:n, "gain"].mean()
-    df["avg_loss"][n] = df.loc[:n, "loss"].mean()
-
-    # This is not a pandas way, looping through the pandas series, but it does what you need
-    for i in range(n + 1, df.shape[0]):
-        df["avg_gain"].iloc[i] = (df["avg_gain"].iloc[i - 1] * (n - 1) + df["gain"].iloc[i]) / n
-        df["avg_loss"].iloc[i] = (df["avg_loss"].iloc[i - 1] * (n - 1) + df["loss"].iloc[i]) / n
-
-    # calculate rs and rsi
-    df["rs"] = df["avg_gain"] / df["avg_loss"]
-    df["rsi"] = 100 - (100 / (1 + df["rs"]))
-
-    current = df.iloc[-1]
-    previous = df.iloc[-2]
-    return {
-        "rsi": current["rsi"],
-        "rsi_previous": previous["rsi"],
-    }
+    return df
 
 
 def calculate_stochastic(df):
@@ -142,22 +101,7 @@ def calculate_stochastic(df):
     df["k"] = (df["close"] - df["14-low"]) * 100 / (df["14-high"] - df["14-low"])
     df["d"] = df["k"].rolling(3).mean()
     df["k_smooth"] = df["d"].rolling(3).mean()
-
-    current = df.iloc[-1]
-    previous = df.iloc[-2]
-
-    return {
-        "stoch_black": current["d"],
-        "stoch_red": current["k_smooth"],
-        "stoch_black_previous": previous["d"],
-        "stoch_red_previous": previous["k_smooth"],
-    }
-
-
-def wma(arr, period):
-    kernel = np.arange(period, 0, -1)
-    kernel = np.concatenate([np.zeros(period - 1), kernel / kernel.sum()])
-    return np.convolve(arr, kernel, "same")
+    return df
 
 
 def calculate_heikin_ashi(df):
@@ -173,44 +117,10 @@ def calculate_heikin_ashi(df):
 
     ha_df["high"] = ha_df.loc[:, ["open", "close"]].join(df["high"]).max(axis=1)
     ha_df["low"] = ha_df.loc[:, ["open", "close"]].join(df["low"]).min(axis=1)
-
-    ha_df["wma_20"] = wma(ha_df["close"], 20)
-
-    ha_df["ha_positive"] = np.where(
-        ha_df["open"] < ha_df["close"],
-        True,
-        False,
-    )
-    ha_df["ha_cross"] = np.where(
-        (ha_df["ha_positive"] == True) & (ha_df["ha_positive"].shift(1) == False), True, False
-    )
-
-    ha_df["ha_wma_cross"] = np.where(
-        (ha_df["open"] < ha_df["wma_20"]) & (ha_df["wma_20"] < ha_df["close"]),
-        True,
-        False,
-    )
-    ha_df["ha_wma_top"] = np.where(
-        (ha_df["wma_20"] < ha_df["open"]) & (ha_df["wma_20"] < ha_df["close"]) & (ha_df["close"] > ha_df["open"]),
-        True,
-        False,
-    )
-
-    current = ha_df.iloc[-1]
-    previous = ha_df.iloc[-2]
-    return {
-        "ha_open": current["open"],
-        "ha_high": current["high"],
-        "ha_low": current["low"],
-        "ha_close": current["close"],
-        "ha_open_previous": previous["open"],
-        "ha_high_previous": previous["high"],
-        "ha_low_previous": previous["low"],
-        "ha_close_previous": previous["close"],
-    }
+    return ha_df
 
 
-def get_rsi(df, periods=14, ema=True):
+def caculate_rsi(df, periods=14, ema=True):
     """
     Returns a pd.Series with the relative strength index.
     """
@@ -229,9 +139,135 @@ def get_rsi(df, periods=14, ema=True):
         ma_up = up.rolling(window=periods, adjust=False).mean()
         ma_down = down.rolling(window=periods, adjust=False).mean()
 
-    rsi = ma_up / ma_down
-    rsi = 100 - (100 / (1 + rsi))
+    df_rsi = ma_up / ma_down
+    df_rsi = 100 - (100 / (1 + df_rsi))
+    # return {
+    #     "rsi": np.round(rsi.iloc[-1], decimals=2),
+    # }
+    return df_rsi
+
+
+def get_ema(df):
+    current = df.iloc[-1]
+    if len(df.index) > 7:
+        return {
+            "ema_200": current["ema_200"],
+            "ema_50": current["ema_50"],
+            "ema_20": current["ema_20"],
+            "ema_200_percentage": current["ema_200_percentage"]
+        }
     return {
-        "rsi": np.round(rsi.iloc[-1], decimals=2),
-        "rsi_previous": np.round(rsi.iloc[-2], decimals=2),
+        "ema_200": 0,
+        "ema_50": 0,
+        "ema_20": 0,
+        "ema_200_percentage": 0
+    }
+
+
+def get_stochastic(df):
+    if len(df.index) > 7:
+        return {
+            "stoch_black_0": round(df.iloc[-1]["d"], 2),
+            "stoch_black_1": round(df.iloc[-2]["d"], 2),
+            "stoch_black_2": round(df.iloc[-3]["d"], 2),
+            "stoch_black_3": round(df.iloc[-4]["d"], 2),
+            "stoch_black_4": round(df.iloc[-5]["d"], 2),
+            "stoch_black_5": round(df.iloc[-6]["d"], 2),
+            "stoch_red_0": round(df.iloc[-1]["k_smooth"], 2),
+            "stoch_red_1": round(df.iloc[-2]["k_smooth"], 2),
+            "stoch_red_2": round(df.iloc[-3]["k_smooth"], 2),
+            "stoch_red_3": round(df.iloc[-4]["k_smooth"], 2),
+            "stoch_red_4": round(df.iloc[-5]["k_smooth"], 2),
+            "stoch_red_5": round(df.iloc[-6]["k_smooth"], 2),
+        }
+    return {
+        "stoch_black_0": 0,
+        "stoch_black_1": 0,
+        "stoch_black_2": 0,
+        "stoch_black_3": 0,
+        "stoch_black_4": 0,
+        "stoch_black_5": 0,
+        "stoch_red_0": 0,
+        "stoch_red_1": 0,
+        "stoch_red_2": 0,
+        "stoch_red_3": 0,
+        "stoch_red_4": 0,
+        "stoch_red_5": 0,
+    }
+
+
+def get_heikin_ashi(df):
+    if len(df.index) > 7:
+        return {
+            "ha_open_0": round(df.iloc[-1]["ha_open"], 2),
+            "ha_high_0": round(df.iloc[-1]["ha_open"], 2),
+            "ha_low_0": round(df.iloc[-1]["ha_open"], 2),
+            "ha_close_0": round(df.iloc[-1]["ha_open"], 2),
+            "ha_open_1": round(df.iloc[-2]["ha_open"], 2),
+            "ha_high_1": round(df.iloc[-2]["ha_open"], 2),
+            "ha_low_1": round(df.iloc[-2]["ha_open"], 2),
+            "ha_close_1": round(df.iloc[-2]["ha_open"], 2),
+            "ha_open_2": round(df.iloc[-3]["ha_open"], 2),
+            "ha_high_2": round(df.iloc[-3]["ha_open"], 2),
+            "ha_low_2": round(df.iloc[-3]["ha_open"], 2),
+            "ha_close_2": round(df.iloc[-3]["ha_open"], 2),
+            "ha_open_3": round(df.iloc[-4]["ha_open"], 2),
+            "ha_high_3": round(df.iloc[-4]["ha_open"], 2),
+            "ha_low_3": round(df.iloc[-4]["ha_open"], 2),
+            "ha_close_3": round(df.iloc[-4]["ha_open"], 2),
+            "ha_open_4": round(df.iloc[-5]["ha_open"], 2),
+            "ha_high_4": round(df.iloc[-5]["ha_open"], 2),
+            "ha_low_4": round(df.iloc[-5]["ha_open"], 2),
+            "ha_close_4": round(df.iloc[-5]["ha_open"], 2),
+            "ha_open_5": round(df.iloc[-6]["ha_open"], 2),
+            "ha_high_5": round(df.iloc[-6]["ha_open"], 2),
+            "ha_low_5": round(df.iloc[-6]["ha_open"], 2),
+            "ha_close_5": round(df.iloc[-6]["ha_open"], 2),
+        }
+
+    return {
+        "ha_open_0": 0,
+        "ha_high_0": 0,
+        "ha_low_0": 0,
+        "ha_close_0": 0,
+        "ha_open_1": 0,
+        "ha_high_1": 0,
+        "ha_low_1": 0,
+        "ha_close_1": 0,
+        "ha_open_2": 0,
+        "ha_high_2": 0,
+        "ha_low_2": 0,
+        "ha_close_2": 0,
+        "ha_open_3": 0,
+        "ha_high_3": 0,
+        "ha_low_3": 0,
+        "ha_close_3": 0,
+        "ha_open_4": 0,
+        "ha_high_4": 0,
+        "ha_low_4": 0,
+        "ha_close_4": 0,
+        "ha_open_5": 0,
+        "ha_high_5": 0,
+        "ha_low_5": 0,
+        "ha_close_5": 0,
+    }
+
+
+def get_rsi(df):
+    if len(df.index) > 7:
+        return {
+            "rsi_0": round(df.iloc[-1], 2),
+            "rsi_1": round(df.iloc[-2], 2),
+            "rsi_2": round(df.iloc[-3], 2),
+            "rsi_3": round(df.iloc[-4], 2),
+            "rsi_4": round(df.iloc[-5], 2),
+            "rsi_5": round(df.iloc[-6], 2),
+        }
+    return {
+        "rsi_0": 0,
+        "rsi_1": 0,
+        "rsi_2": 0,
+        "rsi_3": 0,
+        "rsi_4": 0,
+        "rsi_5": 0,
     }
