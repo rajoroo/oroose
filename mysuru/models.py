@@ -34,11 +34,10 @@ class Trend(models.Model):
     close = models.FloatField(verbose_name="Close", null=True, blank=True)
     volume = models.FloatField(verbose_name="Volume", null=True, blank=True)
 
-    ema_20 = models.FloatField(verbose_name="EMA 20", null=True, blank=True)
-    ema_50 = models.FloatField(verbose_name="EMA 50", null=True, blank=True)
-    ema_200 = models.FloatField(verbose_name="EMA 200", null=True, blank=True)
-    ema_200_percentage = models.FloatField(verbose_name="EMA 200 Percentage", null=True, blank=True)
-
+    ema_20_0 = models.FloatField(verbose_name="EMA 20", null=True, blank=True)
+    ema_50_0 = models.FloatField(verbose_name="EMA 50", null=True, blank=True)
+    ema_200_0 = models.FloatField(verbose_name="EMA 200", null=True, blank=True)
+    ema_200_percentage_0 = models.FloatField(verbose_name="EMA 200 Percentage", null=True, blank=True)
     stoch_black_0 = models.FloatField(verbose_name="Stoch Black", null=True, blank=True)
     stoch_red_0 = models.FloatField(verbose_name="Stoch Red", null=True, blank=True)
     ha_open_0 = models.FloatField(verbose_name="HA Open", null=True, blank=True)
@@ -47,6 +46,10 @@ class Trend(models.Model):
     ha_close_0 = models.FloatField(verbose_name="HA Close", null=True, blank=True)
     rsi_0 = models.FloatField(verbose_name="RSI", null=True, blank=True)
 
+    ema_20_1 = models.FloatField(verbose_name="EMA 20", null=True, blank=True)
+    ema_50_1 = models.FloatField(verbose_name="EMA 50", null=True, blank=True)
+    ema_200_1 = models.FloatField(verbose_name="EMA 200", null=True, blank=True)
+    ema_200_percentage_1 = models.FloatField(verbose_name="EMA 200 Percentage", null=True, blank=True)
     stoch_black_1 = models.FloatField(verbose_name="Stoch Black", null=True, blank=True)
     stoch_red_1 = models.FloatField(verbose_name="Stoch Red", null=True, blank=True)
     ha_open_1 = models.FloatField(verbose_name="HA Open", null=True, blank=True)
@@ -55,6 +58,10 @@ class Trend(models.Model):
     ha_close_1 = models.FloatField(verbose_name="HA Close", null=True, blank=True)
     rsi_1 = models.FloatField(verbose_name="RSI", null=True, blank=True)
 
+    ema_20_2 = models.FloatField(verbose_name="EMA 20", null=True, blank=True)
+    ema_50_2 = models.FloatField(verbose_name="EMA 50", null=True, blank=True)
+    ema_200_2 = models.FloatField(verbose_name="EMA 200", null=True, blank=True)
+    ema_200_percentage_2 = models.FloatField(verbose_name="EMA 200 Percentage", null=True, blank=True)
     stoch_black_2 = models.FloatField(verbose_name="Stoch Black", null=True, blank=True)
     stoch_red_2 = models.FloatField(verbose_name="Stoch Red", null=True, blank=True)
     ha_open_2 = models.FloatField(verbose_name="HA Open", null=True, blank=True)
@@ -63,6 +70,10 @@ class Trend(models.Model):
     ha_close_2 = models.FloatField(verbose_name="HA Close", null=True, blank=True)
     rsi_2 = models.FloatField(verbose_name="RSI", null=True, blank=True)
 
+    ema_20_3 = models.FloatField(verbose_name="EMA 20", null=True, blank=True)
+    ema_50_3 = models.FloatField(verbose_name="EMA 50", null=True, blank=True)
+    ema_200_3 = models.FloatField(verbose_name="EMA 200", null=True, blank=True)
+    ema_200_percentage_3 = models.FloatField(verbose_name="EMA 200 Percentage", null=True, blank=True)
     stoch_black_3 = models.FloatField(verbose_name="Stoch Black", null=True, blank=True)
     stoch_red_3 = models.FloatField(verbose_name="Stoch Red", null=True, blank=True)
     ha_open_3 = models.FloatField(verbose_name="HA Open", null=True, blank=True)
@@ -71,6 +82,10 @@ class Trend(models.Model):
     ha_close_3 = models.FloatField(verbose_name="HA Close", null=True, blank=True)
     rsi_3 = models.FloatField(verbose_name="RSI", null=True, blank=True)
 
+    ema_20_4 = models.FloatField(verbose_name="EMA 20", null=True, blank=True)
+    ema_50_4 = models.FloatField(verbose_name="EMA 50", null=True, blank=True)
+    ema_200_4 = models.FloatField(verbose_name="EMA 200", null=True, blank=True)
+    ema_200_percentage_4 = models.FloatField(verbose_name="EMA 200 Percentage", null=True, blank=True)
     stoch_black_4 = models.FloatField(verbose_name="Stoch Black", null=True, blank=True)
     stoch_red_4 = models.FloatField(verbose_name="Stoch Red", null=True, blank=True)
     ha_open_4 = models.FloatField(verbose_name="HA Open", null=True, blank=True)
@@ -79,6 +94,10 @@ class Trend(models.Model):
     ha_close_4 = models.FloatField(verbose_name="HA Close", null=True, blank=True)
     rsi_4 = models.FloatField(verbose_name="RSI", null=True, blank=True)
 
+    ema_20_5 = models.FloatField(verbose_name="EMA 20", null=True, blank=True)
+    ema_50_5 = models.FloatField(verbose_name="EMA 50", null=True, blank=True)
+    ema_200_5 = models.FloatField(verbose_name="EMA 200", null=True, blank=True)
+    ema_200_percentage_5 = models.FloatField(verbose_name="EMA 200 Percentage", null=True, blank=True)
     stoch_black_5 = models.FloatField(verbose_name="Stoch Black", null=True, blank=True)
     stoch_red_5 = models.FloatField(verbose_name="Stoch Red", null=True, blank=True)
     ha_open_5 = models.FloatField(verbose_name="HA Open", null=True, blank=True)
@@ -186,15 +205,15 @@ class Trend(models.Model):
     @property
     def ema_200_50(self):
         result = None
-        if self.ema_50 and self.ema_200:
-            result = self.ema_50 > self.ema_200
+        if self.ema_50_0 and self.ema_200_0:
+            result = self.ema_50_0 > self.ema_200_0
         return result
 
     @property
     def ema_50_20(self):
         result = None
-        if self.ema_20 and self.ema_50:
-            result = self.ema_20 > self.ema_50
+        if self.ema_20_0 and self.ema_50_0:
+            result = self.ema_20_0 > self.ema_50_0
         return result
 
     @property

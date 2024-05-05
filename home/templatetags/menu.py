@@ -13,6 +13,7 @@ def show_menu_navbar(page, path):
         {"name": "trend_page", "display_name": "WEEKLY", "path": "weekly", "has_path": True},
         {"name": "potential_page", "display_name": "Potential", "path": None, "has_path": False},
         {"name": "short_term_page", "display_name": "Short Term", "path": None, "has_path": False},
+        {"name": "ultra_short_term_page", "display_name": "Ultra Short Term", "path": None, "has_path": False},
         {"name": "configuration", "display_name": "Configuration", "path": None, "has_path": False},
     ]
 

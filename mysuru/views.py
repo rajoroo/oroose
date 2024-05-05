@@ -16,11 +16,11 @@ def trend_page(request, name):
     to_calculate = model_obj.objects.filter(is_fetched=False).count()
     ha_cross_ma_20 = model_obj.objects.filter(
         is_fetched=True,
-        ema_200__lt=F("ema_20"),
-        ema_50__lt=F("ema_20"),
+        ema_200_0__lt=F("ema_20_0"),
+        ema_50_0__lt=F("ema_20_0"),
         ha_open_0__lt=F("ha_close_0"),
-        ema_20__lt=F("ha_close_0"),
-        ema_20__gt=F("ha_open_0"),
+        ema_20_0__lt=F("ha_close_0"),
+        ema_20_0__gt=F("ha_open_0"),
     )
     items = [
         {
@@ -128,30 +128,30 @@ def potential_page(request):
     to_calculate = WeeklyTrend.objects.filter(is_fetched=False).count()
     potential_stocks_cross = WeeklyTrend.objects.filter(
         is_fetched=True,
-        ema_200__lt=F("ema_20"),
-        ema_50__lt=F("ema_20"),
+        ema_200_0__lt=F("ema_20_0"),
+        ema_50_0__lt=F("ema_20_0"),
         ha_open_0__lt=F("ha_close_0"),
-        ema_20__lt=F("ha_close_0"),
-        ema_20__gt=F("ha_open_0"),
+        ema_20_0__lt=F("ha_close_0"),
+        ema_20_0__gt=F("ha_open_0"),
     )
     potential_stocks_rsi = WeeklyTrend.objects.filter(
         is_fetched=True,
-        ema_200__lt=F("ema_20"),
-        ema_50__lt=F("ema_20"),
+        ema_200_0__lt=F("ema_20_0"),
+        ema_50_0__lt=F("ema_20_0"),
         ha_open_0__lt=F("ha_close_0"),
-        ema_20__lt=F("ha_open_0"),
+        ema_20_0__lt=F("ha_open_0"),
         rsi_0__gt=60
-    ).order_by("rsi")
+    ).order_by("rsi_0")
     potential_stocks_stoch = WeeklyTrend.objects.filter(
         is_fetched=True,
-        ema_200__lt=F("ema_20"),
-        ema_50__lt=F("ema_20"),
+        ema_200_0__lt=F("ema_20_0"),
+        ema_50_0__lt=F("ema_20_0"),
         ha_open_0__lt=F("ha_close_0"),
-        ema_20__lt=F("ha_open_0"),
+        ema_20_0__lt=F("ha_open_0"),
         stoch_black_0__gt=F("stoch_red_0"),
         stoch_black_0__gte=20,
         stoch_black_0__lte=80,
-    ).order_by("stoch_black")
+    ).order_by("stoch_black_0")
     items = [
         {
             "title": "Potential Stocks Crossed",
@@ -193,40 +193,40 @@ def short_term_page(request):
     """
     potential_stocks_list = WeeklyTrend.objects.filter(
         is_fetched=True,
-        ema_200__lt=F("ema_20"),
-        ema_50__lt=F("ema_20"),
-        ha_open__lt=F("ha_close"),
-        ema_20__lt=F("ha_open"),
+        ema_200_0__lt=F("ema_20_0"),
+        ema_50_0__lt=F("ema_20_0"),
+        ha_open_0__lt=F("ha_close_0"),
+        ema_20_0__lt=F("ha_open_0"),
     ).values_list("symbol")
     short_term_cross = DailyTrend.objects.filter(
         is_fetched=True,
         symbol__in=potential_stocks_list,
-        ema_200__lt=F("ema_20"),
-        ema_50__lt=F("ema_20"),
-        ha_open__lt=F("ha_close"),
-        ema_20__lt=F("ha_close"),
-        ema_20__gt=F("ha_open"),
+        ema_200_0__lt=F("ema_20_0"),
+        ema_50_0__lt=F("ema_20_0"),
+        ha_open_0__lt=F("ha_close_0"),
+        ema_20_0__lt=F("ha_close_0"),
+        ema_20_0__gt=F("ha_open_0"),
     )
     short_term_rsi = DailyTrend.objects.filter(
         is_fetched=True,
         symbol__in=potential_stocks_list,
-        ema_200__lt=F("ema_20"),
-        ema_50__lt=F("ema_20"),
-        ha_open__lt=F("ha_close"),
-        ema_20__lt=F("ha_open"),
-        rsi__gt=60
-    ).order_by("rsi")
+        ema_200_0__lt=F("ema_20_0"),
+        ema_50_0__lt=F("ema_20_0"),
+        ha_open_0__lt=F("ha_close_0"),
+        ema_20_0__lt=F("ha_open_0"),
+        rsi_0__gt=60
+    ).order_by("rsi_0")
     short_term_stoch = DailyTrend.objects.filter(
         is_fetched=True,
         symbol__in=potential_stocks_list,
-        ema_200__lt=F("ema_20"),
-        ema_50__lt=F("ema_20"),
-        ha_open__lt=F("ha_close"),
-        ema_20__lt=F("ha_open"),
-        stoch_black__gt=F("stoch_red"),
-        stoch_black__gte=20,
+        ema_200_0__lt=F("ema_20_0"),
+        ema_50_0__lt=F("ema_20_0"),
+        ha_open_0__lt=F("ha_close_0"),
+        ema_20_0__lt=F("ha_open_0"),
+        stoch_black_0__gt=F("stoch_red_0"),
+        stoch_black_0__gte=20,
         # stoch_black__lte=80,
-    ).order_by("stoch_black")
+    ).order_by("stoch_black_0")
     total_stock = DailyTrend.objects.all().count()
     to_calculate = DailyTrend.objects.filter(is_fetched=False).count()
     items = [
@@ -257,14 +257,131 @@ def short_term_page(request):
     return render(request, "others/base_page.html", context)
 
 
+def ultra_short_term_page(request):
+    """
+    Short term page
+    HourlyTrend with
+        Uptrend
+        - moving average 20 > 200
+        - moving average 20 > 50
+        Heikin-ashi
+        - candle is green
+        - moving average 20 is crossing candle
+    """
+    potential_stocks_list = WeeklyTrend.objects.filter(
+        is_fetched=True,
+        ema_200_0__lt=F("ema_20_0"),
+        ema_50_0__lt=F("ema_20_0"),
+        ha_open_0__lt=F("ha_close_0"),
+        ema_20_0__lt=F("ha_open_0"),
+    ).values_list("symbol")
+    ultra_short_term_cross_0 = HourlyTrend.objects.filter(
+        is_fetched=True,
+        symbol__in=potential_stocks_list,
+        ema_200_0__lt=F("ema_20_0"),
+        ema_50_0__lt=F("ema_20_0"),
+        ha_open_0__lt=F("ha_close_0"),
+        ema_20_0__lt=F("ha_close_0"),
+        ema_20_0__gt=F("ha_open_0"),
+    )
+    ultra_short_term_cross_1 = HourlyTrend.objects.filter(
+        is_fetched=True,
+        symbol__in=potential_stocks_list,
+        ema_200_1__lt=F("ema_20_1"),
+        ema_50_1__lt=F("ema_20_1"),
+        ha_open_1__lt=F("ha_close_1"),
+        ema_20_1__lt=F("ha_close_1"),
+        ema_20_1__gt=F("ha_open_1"),
+    )
+    ultra_short_term_cross_2 = HourlyTrend.objects.filter(
+        is_fetched=True,
+        symbol__in=potential_stocks_list,
+        ema_200_2__lt=F("ema_20_2"),
+        ema_50_2__lt=F("ema_20_2"),
+        ha_open_2__lt=F("ha_close_2"),
+        ema_20_2__lt=F("ha_close_2"),
+        ema_20_2__gt=F("ha_open_2"),
+    )
+    ultra_short_term_cross_3 = HourlyTrend.objects.filter(
+        is_fetched=True,
+        symbol__in=potential_stocks_list,
+        ema_200_3__lt=F("ema_20_3"),
+        ema_50_3__lt=F("ema_20_3"),
+        ha_open_3__lt=F("ha_close_3"),
+        ema_20_3__lt=F("ha_close_3"),
+        ema_20_3__gt=F("ha_open_3"),
+    )
+    ultra_short_term_cross_4 = HourlyTrend.objects.filter(
+        is_fetched=True,
+        symbol__in=potential_stocks_list,
+        ema_200_4__lt=F("ema_20_4"),
+        ema_50_4__lt=F("ema_20_4"),
+        ha_open_4__lt=F("ha_close_4"),
+        ema_20_4__lt=F("ha_close_4"),
+        ema_20_4__gt=F("ha_open_4"),
+    )
+    ultra_short_term_cross_5 = HourlyTrend.objects.filter(
+        is_fetched=True,
+        symbol__in=potential_stocks_list,
+        ema_200_5__lt=F("ema_20_5"),
+        ema_50_5__lt=F("ema_20_5"),
+        ha_open_5__lt=F("ha_close_5"),
+        ema_20_5__lt=F("ha_close_5"),
+        ema_20_5__gt=F("ha_open_5"),
+    )
+    total_stock = HourlyTrend.objects.all().count()
+    to_calculate = HourlyTrend.objects.filter(is_fetched=False).count()
+    items = [
+        {
+            "title": "Ultra Short Term Crossed 0-HR",
+            "stocks": ultra_short_term_cross_0,
+            "count": ultra_short_term_cross_0.count(),
+        },
+        {
+            "title": "Ultra Short Term Crossed 1-HR",
+            "stocks": ultra_short_term_cross_1,
+            "count": ultra_short_term_cross_1.count(),
+        },
+        {
+            "title": "Ultra Short Term Crossed 2-HR",
+            "stocks": ultra_short_term_cross_2,
+            "count": ultra_short_term_cross_2.count(),
+        },
+        {
+            "title": "Ultra Short Term Crossed 3-HR",
+            "stocks": ultra_short_term_cross_3,
+            "count": ultra_short_term_cross_3.count(),
+        },
+        {
+            "title": "Ultra Short Term Crossed 4-HR",
+            "stocks": ultra_short_term_cross_4,
+            "count": ultra_short_term_cross_4.count(),
+        },
+        {
+            "title": "Ultra Short Term Crossed 5-HR",
+            "stocks": ultra_short_term_cross_5,
+            "count": ultra_short_term_cross_5.count(),
+        }
+    ]
+    context = {
+        "page_title": "ULTRA SHORT TERM",
+        "active_page": "ultra_short_term_page",
+        "active_path": None,
+        "items": items,
+        "to_calculate": to_calculate,
+        "total_stock": total_stock,
+    }
+    return render(request, "others/base_page.html", context)
+
+
 def copy_eligible_stocks(request):
     """Filter weekly trend and copy eligible stocks to hourly"""
     recs = WeeklyTrend.objects.filter(
         is_fetched=True,
-        ema_200__lt=F("ema_20"),
-        ema_50__lt=F("ema_20"),
-        ha_open__lt=F("ha_close"),
-        ema_20__lt=F("ha_open"),
+        ema_200_0__lt=F("ema_20_0"),
+        ema_50_0__lt=F("ema_20_0"),
+        ha_open_0__lt=F("ha_close_0"),
+        ema_20_0__lt=F("ha_open_0"),
     )
     trend_obj = FetchTrend(HourlyTrend)
     trend_obj.stock_data = [{"symbol": rec.symbol, "company_name": rec.company_name} for rec in recs]
