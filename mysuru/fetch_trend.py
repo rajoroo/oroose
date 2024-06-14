@@ -5,7 +5,7 @@ from django.conf import settings
 from .stocks import LiveStocks
 import io
 import pandas as pd
-from mysuru.models import HourlyTrend, DailyTrend, WeeklyTrend
+from mysuru.models import HourlyTrend, DailyTrend, WeeklyTrend, StockData
 
 
 class FetchTrend:
@@ -110,5 +110,7 @@ def get_model_object(name):
         model_obj = DailyTrend
     elif name == "weekly":
         model_obj = WeeklyTrend
+    elif name == "stock_data":
+        model_obj = StockData
 
     return model_obj
