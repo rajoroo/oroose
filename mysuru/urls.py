@@ -4,6 +4,8 @@ from . import views
 
 urlpatterns = [
     # Trend
+    path("stock_data_week_page/", views.stock_data_week_page, name="stock_data"),
+    path("potential_page/", views.potential_page, name="potential"),
     path("trend/load_live", views.trend_page_load_live, name="trend_page_load_live"),
     path("trend/load_bhav", views.trend_page_load_bhav, name="trend_page_load_bhav"),
     path("trend/futures", views.trend_page_load_futures, name="trend_page_load_futures"),

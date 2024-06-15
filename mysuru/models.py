@@ -424,8 +424,14 @@ class StockData(models.Model):
         return dfw
 
     def get_fetch_params(self, data_type):
-        if data_type == "wk":
-            return "ONE_DAY", 900
+        params = {
+            "wk": ("ONE_DAY", 900),
+            "day": ("ONE_DAY", 400),
+            "hr": ("ONE_HOUR", 60),
+            "m15": ("FIFTEEN_MINUTE", 60),
+            "m5": ("FIVE_MINUTE", 60),
+        }
+        return params.get(data_type)
 
     def generate_trend_value(self, data_type):
         """Generate trend value"""

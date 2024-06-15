@@ -1,0 +1,84 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block title %}
+<title>{{title}}</title>
+{% endblock title %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-12 col-sm-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="btn-list">
+                        <button type="button" class="btn btn-primary" id="weekly_page" onclick="location.href='{% url 'stock_data' %}'">Weekly</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-12 col-sm-12">
+            <div class="card nifty-table">
+                <div class="card-header border-bottom">
+                    <h3 class="card-title mb-0">{{title}}</h3>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <div class="pt-3 txt-rt">
+                            <span>Total - {{ total_stock }} | Remaining to calculate - {{ to_calculate }}</span>
+                        </div>
+                        {% if stocks %}
+                        <table class="green-table">
+                            <tr>
+                                <th>Symbol</th>
+                                <th>Company</th>
+                                <th>Open</th>
+                                <th>High</th>
+                                <th>Low</th>
+                                <th>Close</th>
+                                <th>EMA 200</th>
+                                <th>EMA 50</th>
+                                <th>EMA 20</th>
+                                <th>HA</th>
+                                <th>RSI</th>
+                            </tr>
+                            {% for row in stocks %}
+                            <tr>
+                                <td>{{ row.symbol }}</td>
+                                <td>{{ row.company_name }}</td>
+                                <td>{{ row.wk_open }}</td>
+                                <td>{{ row.wk_high }}</td>
+                                <td>{{ row.wk_low }}</td>
+                                <td>{{ row.wk_close }}</td>
+                                {% if record_type %}
+                                    <td>{{ row.wk_ema_200_0 }}</td>
+                                    <td>{{ row.wk_ema_50_0 }}</td>
+                                    <td>{{ row.wk_ema_20_0 }}</td>
+                                    <td>{% if row.wk_ha_close_0 > row.wk_ha_open_0 %}True{% else %}False{% endif %}</td>
+                                    <td>{{ row.wk_rsi_0 }}</td>
+                                {% else %}
+                                    <td>{{ row.wk_ema_200_1 }}</td>
+                                    <td>{{ row.wk_ema_50_1 }}</td>
+                                    <td>{{ row.wk_ema_20_1 }}</td>
+                                    <td>{% if row.wk_ha_close_1 > row.wk_ha_open_1 %}True{% else %}False{% endif %}</td>
+                                    <td>{{ row.wk_rsi_1 }}</td>
+                                {% endif%}
+                            </tr>
+                            {% endfor %}
+                        </table>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+{% block js_scripts %}
+<script src="{% static 'js/load_bengaluru.js' %}" crossorigin="anonymous"></script>
+<script src="{% static 'js/load_upload_file.js' %}" crossorigin="anonymous"></script>
+{% endblock js_scripts %}
