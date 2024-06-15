@@ -32,6 +32,19 @@
 
 {% include "configuration/configuration_table.html" %}
 
+    <!-- Polling data-->
+    <div class="row">
+        <div class="col-12 col-sm-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="btn-list">
+                        <button type="button" class="btn btn-primary" id="trend_page_load_futures" onclick="location.href='{% url 'trend_page_load_futures' %}'">Load Futures</button>
+                        <button type="button" class="btn btn-primary ser_act" id="trend_page_fetch_week" trigger-url="{% url 'trend_page_fetch' 'wk' %}">Fetch Week</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock content %}
 
 {% block js_scripts %}

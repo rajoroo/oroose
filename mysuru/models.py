@@ -14,7 +14,8 @@ from core.tools import (
     get_ema,
     get_stochastic,
     get_heikin_ashi,
-    get_rsi
+    get_rsi,
+    get_ohlcv,
 )
 
 
@@ -405,13 +406,55 @@ class StockData(models.Model):
         df["date"] = pd.to_datetime(df["date"])
         return df
 
-    def generate_trend_value(self):
+    def reset_date_ohlc(self, df):
+        """Convert the daily data OHLC to weekly"""
+        logic = {
+            "open": "first",
+            "high": "max",
+            "low": "min",
+            "close": "last",
+            "volume": "sum",
+        }
+
+        df["date"] = pd.to_datetime(df["date"])
+        df.set_index("date", inplace=True)
+        dfw = df.resample("W").apply(logic)
+        dfw.index = dfw.index - pd.tseries.frequencies.to_offset("6D")
+        dfw.reset_index(inplace=True)
+        return dfw
+
+    def get_fetch_params(self, data_type):
+        if data_type == "wk":
+            return "ONE_DAY", 900
+
+    def generate_trend_value(self, data_type):
         """Generate trend value"""
         if not self.smart_token:
             return None
 
         try:
-            df = self.get_smart_ohlc(interval="ONE_HOUR", days=60)
+            interval, days = self.get_fetch_params(data_type)
+            df = self.get_smart_ohlc(interval=interval, days=days)
+            if data_type == "wk":
+                df = self.reset_date_ohlc(df=df)
+
+            df_ohlcv = get_ohlcv(df=df, data_type=data_type)
+            df_ema = calculate_exponential_moving_average(df=df)
+            df_stoch = calculate_stochastic(df=df)
+            df_ha = calculate_heikin_ashi(df=df)
+            df_rsi = caculate_rsi(df=df)
+
+            data_ema = get_ema(df_ema, data_type)
+            data_stoch = get_stochastic(df_stoch, data_type)
+            data_ha = get_heikin_ashi(df_ha, data_type)
+            data_rsi = get_rsi(df_rsi, data_type)
+
+            all_data = df_ohlcv | data_ema | data_stoch | data_ha | data_rsi
+            for attr, value in all_data.items():
+                setattr(self, attr, value)
+
+            setattr(self, f"is_{data_type}_fetched", True)
+            self.save()
             print(f"------------------{self.symbol}----------------------")
         except ValueError as ve:
             print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")

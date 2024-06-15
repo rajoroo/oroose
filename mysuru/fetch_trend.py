@@ -5,13 +5,13 @@ from django.conf import settings
 from .stocks import LiveStocks
 import io
 import pandas as pd
-from mysuru.models import HourlyTrend, DailyTrend, WeeklyTrend, StockData
+from mysuru.models import StockData
 
 
 class FetchTrend:
-    def __init__(self, model_obj):
+    def __init__(self):
         """Initialization of fetch trend"""
-        self.model_obj = model_obj
+        self.model_obj = StockData
         self.stock_data = None
 
     def fetch_live_stocks(self):
@@ -85,32 +85,12 @@ class FetchTrend:
         self.model_obj.objects.filter(smart_token__isnull=True, smart_token_fetched=True).delete()
         return True
 
-    def fetch_trend_value(self):
+    def fetch_trend_value(self, data_type):
         """Fetch trend value"""
-        recs = self.model_obj.objects.filter(is_fetched=False)[:500]
+        filter_params = {f"is_{data_type}_fetched": False}
+        recs = self.model_obj.objects.filter(**filter_params)[:500]
         for rec in recs:
-            rec.generate_trend_value()
+            rec.generate_trend_value(data_type=data_type)
 
         return True
 
-    def reset_fetched(self):
-        """Reset fetch flag"""
-        if not self.model_obj.objects.filter(is_fetched=False):
-            self.model_obj.objects.all().update(is_fetched=False)
-
-        return True
-
-
-def get_model_object(name):
-    """Get model object from name"""
-    model_obj = None
-    if name == "hourly":
-        model_obj = HourlyTrend
-    elif name == "daily":
-        model_obj = DailyTrend
-    elif name == "weekly":
-        model_obj = WeeklyTrend
-    elif name == "stock_data":
-        model_obj = StockData
-
-    return model_obj

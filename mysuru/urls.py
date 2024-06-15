@@ -4,15 +4,9 @@ from . import views
 
 urlpatterns = [
     # Trend
-    path("trend/<str:name>", views.trend_page, name="trend_page"),
-    path("trend/<str:name>/load_live", views.trend_page_load_live, name="trend_page_load_live"),
-    path("trend/<str:name>/load_bhav", views.trend_page_load_bhav, name="trend_page_load_bhav"),
-    path("trend/<str:name>/futures", views.trend_page_load_futures, name="trend_page_load_futures"),
-    path("trend/<str:name>/upload", views.trend_page_upload, name="trend_page_upload"),
+    path("trend/load_live", views.trend_page_load_live, name="trend_page_load_live"),
+    path("trend/load_bhav", views.trend_page_load_bhav, name="trend_page_load_bhav"),
+    path("trend/futures", views.trend_page_load_futures, name="trend_page_load_futures"),
+    path("trend/upload", views.trend_page_upload, name="trend_page_upload"),
     path("trend/<str:name>/fetch", views.trend_page_fetch, name="trend_page_fetch"),
-    path("trend/<str:name>/reset", views.trend_page_reset, name="trend_page_reset"),
-    path("potential", views.potential_page, name="potential_page"),
-    path("short_term", views.short_term_page, name="short_term_page"),
-    path("ultra_short_term", views.ultra_short_term_page, name="ultra_short_term_page"),
-    path("copy_eligible", views.copy_eligible_stocks, name="copy_eligible_stocks"),
 ]
