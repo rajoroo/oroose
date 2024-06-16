@@ -7,6 +7,8 @@
 
 {% block content %}
 
+    {% include "stock/intraday_stock_link.html" %}
+
     <div class="row">
         <div class="col-12 col-sm-12">
             <div class="card nifty-table">
@@ -14,6 +16,8 @@
                     <h3 class="card-title mb-0">{{title}}</h3>
                 </div>
                 <div class="card-body">
+                    <button type="button" class="btn btn-primary mr-1" id="potential_trend_page_fetch" onclick="location.href='{% url 'potential_trend_page_fetch' 'day' %}'">Fetch</button>
+                    <button type="button" class="btn btn-primary mr-1" id="potential_trend_page_reset_fetch" onclick="location.href='{% url 'potential_trend_page_reset_fetch' 'day' %}'">Reset</button>
                     <div class="table-responsive">
                         <div class="pt-3 txt-rt">
                             <span>Total - {{ total_stock }} | Remaining to calculate - {{ to_calculate }} | Potential - {{ potential_count }}</span>
@@ -27,27 +31,17 @@
                                 <th>EMA 200</th>
                                 <th>EMA 50</th>
                                 <th>EMA 20</th>
-                                <th>HA Cross</th>
                                 <th>RSI</th>
                             </tr>
                             {% for row in stocks %}
                             <tr>
                                 <td>{{ row.symbol }}</td>
                                 <td>{{ row.company_name }}</td>
-                                <td>{{ row.wk_close }}</td>
-                                {% if record_type %}
-                                    <td>{{ row.wk_ema_200_0 }}</td>
-                                    <td>{{ row.wk_ema_50_0 }}</td>
-                                    <td>{{ row.wk_ema_20_0 }}</td>
-                                    <td {% if row.ha_cross_0 %}class="green-col"{% endif %}>{{ row.ha_cross_0 }}</td>
-                                    <td {% if row.rsi_cross_0 %}class="green-col"{% endif %}>{{ row.wk_rsi_0 }}</td>
-                                {% else %}
-                                    <td>{{ row.wk_ema_200_1 }}</td>
-                                    <td>{{ row.wk_ema_50_1 }}</td>
-                                    <td>{{ row.wk_ema_20_1 }}</td>
-                                    <td {% if row.ha_cross_1 %}class="green-col"{% endif %}>{{ row.ha_cross_1 }}</td>
-                                    <td {% if row.rsi_cross_1 %}class="green-col"{% endif %}>{{ row.wk_rsi_1 }}</td>
-                                {% endif%}
+                                <td>{{ row.m15_close }}</td>
+                                <td>{{ row.wk_ema_200_1 }}</td>
+                                <td>{{ row.wk_ema_50_1 }}</td>
+                                <td>{{ row.wk_ema_20_1 }}</td>
+                                <td {% if row.day_rsi_cross_1 %}class="green-col"{% endif %}>{{ row.day_rsi_1 }}</td>
                             </tr>
                             {% endfor %}
                         </table>
