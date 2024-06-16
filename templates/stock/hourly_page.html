@@ -32,22 +32,20 @@
                                 <th>EMA 200</th>
                                 <th>EMA 50</th>
                                 <th>EMA 20</th>
-                                <th>HA Cross</th>
                                 <th>RSI</th>
                             </tr>
                             {% for row in stocks %}
                             <tr>
                                 <td>{{ row.symbol }}</td>
                                 <td>{{ row.company_name }}</td>
-                                <td>{{ row.wk_open }}</td>
-                                <td>{{ row.wk_high }}</td>
-                                <td>{{ row.wk_low }}</td>
-                                <td>{{ row.wk_close }}</td>
-                                <td>{{ row.wk_ema_200_1 }}</td>
-                                <td>{{ row.wk_ema_50_1 }}</td>
-                                <td>{{ row.wk_ema_20_1 }}</td>
-                                <td {% if row.wk_ha_close_1 > row.wk_ha_open_1 %}class="green-col"{% endif %}>{% if row.wk_ha_close_1 > row.wk_ha_open_1 %}True{% else %}False{% endif %}</td>
-                                <td>{{ row.wk_rsi_1 }}</td>
+                                <td>{{ row.hr_open }}</td>
+                                <td>{{ row.hr_high }}</td>
+                                <td>{{ row.hr_low }}</td>
+                                <td>{{ row.hr_close }}</td>
+                                <td>{{ row.hr_ema_200_1 }}</td>
+                                <td>{{ row.hr_ema_50_1 }}</td>
+                                <td>{{ row.hr_ema_20_1 }}</td>
+                                <td>{{ row.hr_rsi_1 }}</td>
                             </tr>
                             {% endfor %}
                         </table>

@@ -23,35 +23,29 @@
                             <tr>
                                 <th>Symbol</th>
                                 <th>Company</th>
-                                <th>Open</th>
-                                <th>High</th>
-                                <th>Low</th>
                                 <th>Close</th>
                                 <th>EMA 200</th>
                                 <th>EMA 50</th>
                                 <th>EMA 20</th>
-                                <th>HA</th>
+                                <th>HA Cross</th>
                                 <th>RSI</th>
                             </tr>
                             {% for row in stocks %}
                             <tr>
                                 <td>{{ row.symbol }}</td>
                                 <td>{{ row.company_name }}</td>
-                                <td>{{ row.wk_open }}</td>
-                                <td>{{ row.wk_high }}</td>
-                                <td>{{ row.wk_low }}</td>
                                 <td>{{ row.wk_close }}</td>
                                 {% if record_type %}
                                     <td>{{ row.wk_ema_200_0 }}</td>
                                     <td>{{ row.wk_ema_50_0 }}</td>
                                     <td>{{ row.wk_ema_20_0 }}</td>
-                                    <td>{% if row.wk_ha_close_0 > row.wk_ha_open_0 %}True{% else %}False{% endif %}</td>
+                                    <td {% if row.wk_ha_close_0 > row.wk_ha_open_0 %}class="green-col"{% endif %}>{% if row.wk_ha_close_0 > row.wk_ha_open_0 %}True{% else %}False{% endif %}</td>
                                     <td>{{ row.wk_rsi_0 }}</td>
                                 {% else %}
                                     <td>{{ row.wk_ema_200_1 }}</td>
                                     <td>{{ row.wk_ema_50_1 }}</td>
                                     <td>{{ row.wk_ema_20_1 }}</td>
-                                    <td>{% if row.wk_ha_close_1 > row.wk_ha_open_1 %}True{% else %}False{% endif %}</td>
+                                    <td {% if row.wk_ha_close_1 > row.wk_ha_open_1 %}class="green-col"{% endif %}>{% if row.wk_ha_close_1 > row.wk_ha_open_1 %}True{% else %}False{% endif %}</td>
                                     <td>{{ row.wk_rsi_1 }}</td>
                                 {% endif%}
                             </tr>

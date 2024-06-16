@@ -14,11 +14,9 @@ def stock_data_week_page(request):
     total_stock = StockData.objects.all().count()
     all_stock_list = StockData.objects.all()
     to_calculate = StockData.objects.filter(is_wk_fetched=False).count()
-    record_type = True if datetime.today().weekday() > 4 else False
     context = {
         "title": "Weekly",
         "stocks": all_stock_list,
-        "record_type": record_type,
         "to_calculate": to_calculate,
         "total_stock": total_stock,
         "active_page": "stock_data",
@@ -28,20 +26,66 @@ def stock_data_week_page(request):
 
 @login_required(login_url="/accounts/login/")
 def stock_data_day_page(request):
-    """Trend page for display Weekly"""
+    """Trend page for display Daily"""
     total_stock = StockData.objects.all().count()
     all_stock_list = StockData.objects.all()
     to_calculate = StockData.objects.filter(is_day_fetched=False).count()
-    record_type = True if datetime.today().weekday() > 4 else False
     context = {
         "title": "Daily",
         "stocks": all_stock_list,
-        "record_type": record_type,
         "to_calculate": to_calculate,
         "total_stock": total_stock,
         "active_page": "stock_data",
     }
-    return render(request, "stock/day_page.html", context)
+    return render(request, "stock/daily_page.html", context)
+
+
+@login_required(login_url="/accounts/login/")
+def stock_data_hour_page(request):
+    """Trend page for display Hourly"""
+    total_stock = StockData.objects.all().count()
+    all_stock_list = StockData.objects.all()
+    to_calculate = StockData.objects.filter(is_hr_fetched=False).count()
+    context = {
+        "title": "Hourly",
+        "stocks": all_stock_list,
+        "to_calculate": to_calculate,
+        "total_stock": total_stock,
+        "active_page": "stock_data",
+    }
+    return render(request, "stock/hourly_page.html", context)
+
+
+@login_required(login_url="/accounts/login/")
+def stock_data_15min_page(request):
+    """Trend page for display 15 Min"""
+    total_stock = StockData.objects.all().count()
+    all_stock_list = StockData.objects.all()
+    to_calculate = StockData.objects.filter(is_m15_fetched=False).count()
+    context = {
+        "title": "15 Min",
+        "stocks": all_stock_list,
+        "to_calculate": to_calculate,
+        "total_stock": total_stock,
+        "active_page": "stock_data",
+    }
+    return render(request, "stock/m15_page.html", context)
+
+
+@login_required(login_url="/accounts/login/")
+def stock_data_5min_page(request):
+    """Trend page for display 15 Min"""
+    total_stock = StockData.objects.all().count()
+    all_stock_list = StockData.objects.all()
+    to_calculate = StockData.objects.filter(is_m5_fetched=False).count()
+    context = {
+        "title": "15 Min",
+        "stocks": all_stock_list,
+        "to_calculate": to_calculate,
+        "total_stock": total_stock,
+        "active_page": "stock_data",
+    }
+    return render(request, "stock/m5_page.html", context)
 
 
 @login_required(login_url="/accounts/login/")

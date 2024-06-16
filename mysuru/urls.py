@@ -5,6 +5,10 @@ from . import views
 urlpatterns = [
     # Trend
     path("stock_data_week_page/", views.stock_data_week_page, name="stock_data"),
+    path("stock_data_day_page/", views.stock_data_day_page, name="stock_data_day"),
+    path("stock_data_hour_page/", views.stock_data_hour_page, name="stock_data_hour"),
+    path("stock_data_15min_page/", views.stock_data_15min_page, name="stock_data_15min"),
+    path("stock_data_5min_page/", views.stock_data_5min_page, name="stock_data_5min"),
     path("potential_page/", views.potential_page, name="potential"),
     path("trend/load_live", views.trend_page_load_live, name="trend_page_load_live"),
     path("trend/load_bhav", views.trend_page_load_bhav, name="trend_page_load_bhav"),
