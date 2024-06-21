@@ -112,7 +112,7 @@ class FetchTrend:
 
         return True
 
-    def fetch_potential_trend_reset_value(self, data_type):
+    def trend_reset(self, data_type):
         """Fetch potential trend value"""
         filter_params = {
             f"is_{data_type}_fetched": True

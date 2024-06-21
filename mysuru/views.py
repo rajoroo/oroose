@@ -7,6 +7,15 @@ from mysuru.models import StockData
 from datetime import datetime
 
 
+# =========================================Fiters=========================================
+potential_stock_filters = {
+    "is_wk_fetched": True,
+    "wk_ema_200_1__lt": F("wk_ema_20_1"),
+    "wk_ema_50_1__lt": F("wk_ema_20_1"),
+    "wk_ha_open_1__lt": F("wk_ha_close_1"),
+    "wk_ema_20_1__lt": F("wk_ha_open_1"),
+    "wk_rsi_1__gt": 60,
+}
 # =========================================Trend==========================================
 @login_required(login_url="/accounts/login/")
 def stock_data_week_page(request):
@@ -152,22 +161,8 @@ def potential_page(request):
 @login_required(login_url="/accounts/login/")
 def intraday_m15_rsi_page(request):
     """Trend page for display potential"""
-    stock_filter = {
-        "is_wk_fetched": True,
-        "wk_ema_200_1__lt": F("wk_ema_20_1"),
-        "wk_ema_50_1__lt": F("wk_ema_20_1"),
-        "wk_ha_open_1__lt": F("wk_ha_close_1"),
-        "wk_ema_20_1__lt": F("wk_ha_open_1"),
-        "wk_rsi_1__gt": 60,
-    }
-    total_stock = StockData.objects.filter(**stock_filter).count()
+    total_stock = StockData.objects.filter(**potential_stock_filters).count()
     filter_params = {
-        "is_wk_fetched": True,
-        "wk_ema_200_1__lt": F("wk_ema_20_1"),
-        "wk_ema_50_1__lt": F("wk_ema_20_1"),
-        "wk_ha_open_1__lt": F("wk_ha_close_1"),
-        "wk_ema_20_1__lt": F("wk_ha_open_1"),
-        "wk_rsi_1__gt": 60,
         "is_day_fetched": True,
         "day_ha_open_1__lt": F("day_ha_close_1"),
         "is_m15_fetched": True,
@@ -180,8 +175,8 @@ def intraday_m15_rsi_page(request):
             output_field=BooleanField()
         ),
     }
-    m15_rsi_list = StockData.objects.annotate(**annotate_params).filter(**filter_params)
-    to_calculate = StockData.objects.filter(**stock_filter).filter(is_m15_fetched=False).count()
+    m15_rsi_list = StockData.objects.annotate(**annotate_params).filter(**potential_stock_filters).filter(**filter_params)
+    to_calculate = StockData.objects.filter(**potential_stock_filters).filter(is_m15_fetched=False).count()
     context = {
         "title": "15 Min RSI",
         "stocks": m15_rsi_list,
@@ -196,22 +191,8 @@ def intraday_m15_rsi_page(request):
 @login_required(login_url="/accounts/login/")
 def intraday_hourly_rsi_page(request):
     """Trend page for display potential"""
-    stock_filter = {
-        "is_wk_fetched": True,
-        "wk_ema_200_1__lt": F("wk_ema_20_1"),
-        "wk_ema_50_1__lt": F("wk_ema_20_1"),
-        "wk_ha_open_1__lt": F("wk_ha_close_1"),
-        "wk_ema_20_1__lt": F("wk_ha_open_1"),
-        "wk_rsi_1__gt": 60,
-    }
-    total_stock = StockData.objects.filter(**stock_filter).count()
+    total_stock = StockData.objects.filter(**potential_stock_filters).count()
     filter_params = {
-        "is_wk_fetched": True,
-        "wk_ema_200_1__lt": F("wk_ema_20_1"),
-        "wk_ema_50_1__lt": F("wk_ema_20_1"),
-        "wk_ha_open_1__lt": F("wk_ha_close_1"),
-        "wk_ema_20_1__lt": F("wk_ha_open_1"),
-        "wk_rsi_1__gt": 60,
         "is_day_fetched": True,
         "day_ha_open_1__lt": F("day_ha_close_1"),
         "is_hr_fetched": True,
@@ -224,8 +205,8 @@ def intraday_hourly_rsi_page(request):
             output_field=BooleanField()
         ),
     }
-    hr_rsi_list = StockData.objects.annotate(**annotate_params).filter(**filter_params)
-    to_calculate = StockData.objects.filter(**stock_filter).filter(is_hr_fetched=False).count()
+    hr_rsi_list = StockData.objects.annotate(**annotate_params).filter(**potential_stock_filters).filter(**filter_params)
+    to_calculate = StockData.objects.filter(**potential_stock_filters).filter(is_hr_fetched=False).count()
     context = {
         "title": "Hourly RSI",
         "stocks": hr_rsi_list,
@@ -240,22 +221,8 @@ def intraday_hourly_rsi_page(request):
 @login_required(login_url="/accounts/login/")
 def intraday_daily_rsi_page(request):
     """Trend page for display potential"""
-    stock_filter = {
-        "is_wk_fetched": True,
-        "wk_ema_200_1__lt": F("wk_ema_20_1"),
-        "wk_ema_50_1__lt": F("wk_ema_20_1"),
-        "wk_ha_open_1__lt": F("wk_ha_close_1"),
-        "wk_ema_20_1__lt": F("wk_ha_open_1"),
-        "wk_rsi_1__gt": 60,
-    }
-    total_stock = StockData.objects.filter(**stock_filter).count()
+    total_stock = StockData.objects.filter(**potential_stock_filters).count()
     filter_params = {
-        "is_wk_fetched": True,
-        "wk_ema_200_1__lt": F("wk_ema_20_1"),
-        "wk_ema_50_1__lt": F("wk_ema_20_1"),
-        "wk_ha_open_1__lt": F("wk_ha_close_1"),
-        "wk_ema_20_1__lt": F("wk_ha_open_1"),
-        "wk_rsi_1__gt": 60,
         "is_day_fetched": True,
         "day_ha_open_1__lt": F("day_ha_close_1"),
         "day_rsi_1__gt": 60,
@@ -267,8 +234,8 @@ def intraday_daily_rsi_page(request):
             output_field=BooleanField()
         ),
     }
-    day_rsi_list = StockData.objects.annotate(**annotate_params).filter(**filter_params)
-    to_calculate = StockData.objects.filter(**stock_filter).filter(is_day_fetched=False).count()
+    day_rsi_list = StockData.objects.annotate(**annotate_params).filter(**potential_stock_filters).filter(**filter_params)
+    to_calculate = StockData.objects.filter(**potential_stock_filters).filter(is_day_fetched=False).count()
     context = {
         "title": "Daily RSI",
         "stocks": day_rsi_list,
@@ -283,22 +250,8 @@ def intraday_daily_rsi_page(request):
 @login_required(login_url="/accounts/login/")
 def intraday_daily_stoch_page(request):
     """Trend page for display potential"""
-    stock_filter = {
-        "is_wk_fetched": True,
-        "wk_ema_200_1__lt": F("wk_ema_20_1"),
-        "wk_ema_50_1__lt": F("wk_ema_20_1"),
-        "wk_ha_open_1__lt": F("wk_ha_close_1"),
-        "wk_ema_20_1__lt": F("wk_ha_open_1"),
-        "wk_rsi_1__gt": 60,
-    }
-    total_stock = StockData.objects.filter(**stock_filter).count()
+    total_stock = StockData.objects.filter(**potential_stock_filters).count()
     filter_params = {
-        "is_wk_fetched": True,
-        "wk_ema_200_1__lt": F("wk_ema_20_1"),
-        "wk_ema_50_1__lt": F("wk_ema_20_1"),
-        "wk_ha_open_1__lt": F("wk_ha_close_1"),
-        "wk_ema_20_1__lt": F("wk_ha_open_1"),
-        "wk_rsi_1__gt": 60,
         "is_day_fetched": True,
         "day_ha_open_1__lt": F("day_ha_close_1"),
         "day_stoch_black_1__gt": 20,
@@ -311,8 +264,8 @@ def intraday_daily_stoch_page(request):
             output_field=BooleanField()
         ),
     }
-    day_stoch_list = StockData.objects.annotate(**annotate_params).filter(**filter_params)
-    to_calculate = StockData.objects.filter(**stock_filter).filter(is_day_fetched=False).count()
+    day_stoch_list = StockData.objects.annotate(**annotate_params).filter(**potential_stock_filters).filter(**filter_params)
+    to_calculate = StockData.objects.filter(**potential_stock_filters).filter(is_day_fetched=False).count()
     context = {
         "title": "Stochastics RSI",
         "stocks": day_stoch_list,
@@ -386,12 +339,12 @@ def potential_trend_page_fetch(request, name):
     return redirect("configuration")
 
 
-def potential_trend_page_reset_fetch(request, name):
+def trend_page_reset_fetch(request, name):
     """
     Fetch data form the API
     Parameters:
         name - model name string representation
     """
     trend_obj = FetchTrend()
-    trend_obj.fetch_potential_trend_reset_value(name)
+    trend_obj.trend_reset(name)
     return redirect("configuration")

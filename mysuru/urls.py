@@ -20,5 +20,5 @@ urlpatterns = [
     path("trend/upload", views.trend_page_upload, name="trend_page_upload"),
     path("trend/<str:name>/fetch", views.trend_page_fetch, name="trend_page_fetch"),
     path("potential_trend/<str:name>/fetch", views.potential_trend_page_fetch, name="potential_trend_page_fetch"),
-    path("potential_trend/<str:name>/reset_fetch", views.potential_trend_page_reset_fetch, name="potential_trend_page_reset_fetch"),
+    path("trend/<str:name>/reset_fetch", views.trend_page_reset_fetch, name="trend_page_reset_fetch"),
 ]

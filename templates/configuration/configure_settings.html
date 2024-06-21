@@ -38,12 +38,17 @@
             <div class="card">
                 <div class="card-body">
                     <div class="btn-list">
-                        <button type="button" class="btn btn-primary" id="trend_page_load_futures" onclick="location.href='{% url 'trend_page_load_futures' %}'">Load Futures</button>
+                        <button type="button" class="btn btn-info" id="trend_page_load_futures" onclick="location.href='{% url 'trend_page_load_futures' %}'">Load Futures</button>
                         <button type="button" class="btn btn-primary ser_act" id="trend_page_fetch_week" trigger-url="{% url 'trend_page_fetch' 'wk' %}">Fetch Week</button>
+                        <button type="button" class="btn btn-danger ser_act" id="trend_page_reset_fetch_week" trigger-url="{% url 'trend_page_reset_fetch' 'wk' %}">Reset Week</button>
                         <button type="button" class="btn btn-primary ser_act" id="trend_page_fetch_day" trigger-url="{% url 'trend_page_fetch' 'day' %}">Fetch Day</button>
+                        <button type="button" class="btn btn-danger ser_act" id="trend_page_reset_fetch_day" trigger-url="{% url 'trend_page_reset_fetch' 'day' %}">Reset Day</button>
                         <button type="button" class="btn btn-primary ser_act" id="trend_page_fetch_hour" trigger-url="{% url 'trend_page_fetch' 'hr' %}">Fetch Hour</button>
+                        <button type="button" class="btn btn-danger ser_act" id="trend_page_reset_fetch_hour" trigger-url="{% url 'trend_page_reset_fetch' 'hr' %}">Fetch Hour</button>
                         <button type="button" class="btn btn-primary ser_act" id="trend_page_fetch_15min" trigger-url="{% url 'trend_page_fetch' 'm15' %}">Fetch 15 Min</button>
+                        <button type="button" class="btn btn-danger ser_act" id="trend_page_reset_fetch_15min" trigger-url="{% url 'trend_page_reset_fetch' 'm15' %}">Fetch 15 Min</button>
                         <button type="button" class="btn btn-primary ser_act" id="trend_page_fetch_5min" trigger-url="{% url 'trend_page_fetch' 'm5' %}">Fetch 5 Min</button>
+                        <button type="button" class="btn btn-danger ser_act" id="trend_page_reset_fetch_5min" trigger-url="{% url 'trend_page_reset_fetch' 'm5' %}">Fetch 5 Min</button>
                     </div>
                 </div>
             </div>
