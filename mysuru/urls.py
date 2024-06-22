@@ -12,6 +12,7 @@ urlpatterns = [
     path("potential_page/", views.potential_page, name="potential"),
     path("short_term_page/", views.short_term_page, name="short_term"),
     path("intraday_m15_rsi_page/", views.intraday_m15_rsi_page, name="intraday"),
+    path("intraday_m15_negative_page/", views.intraday_m15_negative_page, name="intraday_m15_negative"),
     path("intraday_day_rsi_page/", views.intraday_daily_rsi_page, name="intraday_day_rsi"),
     path("intraday_day_stoch_page/", views.intraday_daily_stoch_page, name="intraday_day_stoch"),
     path("intraday_hr_rsi_page/", views.intraday_hourly_rsi_page, name="intraday_hr_rsi"),

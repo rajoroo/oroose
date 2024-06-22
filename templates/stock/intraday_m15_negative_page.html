@@ -1,0 +1,64 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block title %}
+<title>{{title}}</title>
+{% endblock title %}
+
+{% block content %}
+
+    {% include "stock/intraday_stock_link.html" %}
+
+    <div class="row">
+        <div class="col-12 col-sm-12">
+            <div class="card nifty-table">
+                <div class="card-header border-bottom">
+                    <h3 class="card-title mb-0">{{title}}</h3>
+                </div>
+                <div class="card-body">
+                    <button type="button" class="btn btn-primary mr-1" id="potential_trend_page_fetch" onclick="location.href='{% url 'potential_trend_page_fetch' 'm15' %}'">Fetch</button>
+                    <button type="button" class="btn btn-primary mr-1" id="trend_page_reset_fetch" onclick="location.href='{% url 'trend_page_reset_fetch' 'm15' %}'">Reset</button>
+                    <div class="table-responsive">
+                        <div class="pt-3 txt-rt">
+                            <span>Total - {{ total_stock }} | Remaining to calculate - {{ to_calculate }} | Potential - {{ potential_count }}</span>
+                        </div>
+                        {% if stocks %}
+                        <table class="green-table">
+                            <tr>
+                                <th>Symbol</th>
+                                <th>Company</th>
+                                <th>Close</th>
+                                <th>EMA 200</th>
+                                <th>EMA 50</th>
+                                <th>EMA 20</th>
+                                <th>HA EMA Half Cross</th>
+                                <th>HA EMA Full Cross</th>
+                                <th>EMA 20X50 Cross</th>
+                            </tr>
+                            {% for row in stocks %}
+                            <tr>
+                                <td>{{ row.symbol }}</td>
+                                <td>{{ row.company_name }}</td>
+                                <td>{{ row.m15_close }}</td>
+                                <td>{{ row.m15_ema_200_1 }}</td>
+                                <td>{{ row.m15_ema_50_1 }}</td>
+                                <td>{{ row.m15_ema_20_1 }}</td>
+                                <td {% if row.m15_ha_cross_1 %}class="green-col"{% endif %}>{{ row.m15_ha_cross_1 }}</td>
+                                <td {% if row.m15_ha_cross_2 %}class="green-col"{% endif %}>{{ row.m15_ha_cross_2 }}</td>
+                                <td {% if row.m15_ema_cross_1 %}class="green-col"{% endif %}>{{ row.m15_ema_cross_1 }}</td>
+                            </tr>
+                            {% endfor %}
+                        </table>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+{% block js_scripts %}
+<script src="{% static 'js/load_bengaluru.js' %}" crossorigin="anonymous"></script>
+<script src="{% static 'js/load_upload_file.js' %}" crossorigin="anonymous"></script>
+{% endblock js_scripts %}
