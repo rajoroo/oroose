@@ -127,3 +127,7 @@ table td.value {
     float: right;
     margin-right: 0.5rem;
 }
+
+.resize-select {
+    width: 300px;
+}

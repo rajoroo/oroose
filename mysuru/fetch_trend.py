@@ -112,6 +112,18 @@ class FetchTrend:
 
         return True
 
+    def fetch_trading_value(self, data_type):
+        """Fetch potential trend value"""
+        filter_params = {
+            "is_trading": True,
+            f"is_{data_type}_fetched": False
+        }
+        recs = self.model_obj.objects.filter(**filter_params)[:500]
+        for rec in recs:
+            rec.generate_trend_value(data_type=data_type)
+
+        return True
+
     def trend_reset(self, data_type):
         """Fetch potential trend value"""
         filter_params = {

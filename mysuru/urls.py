@@ -16,11 +16,13 @@ urlpatterns = [
     path("intraday_day_rsi_page/", views.intraday_daily_rsi_page, name="intraday_day_rsi"),
     path("intraday_day_stoch_page/", views.intraday_daily_stoch_page, name="intraday_day_stoch"),
     path("intraday_hr_rsi_page/", views.intraday_hourly_rsi_page, name="intraday_hr_rsi"),
+    path("trading_page/", views.trading_page, name="trading"),
     path("trend/load_live", views.trend_page_load_live, name="trend_page_load_live"),
     path("trend/load_bhav", views.trend_page_load_bhav, name="trend_page_load_bhav"),
     path("trend/futures", views.trend_page_load_futures, name="trend_page_load_futures"),
     path("trend/upload", views.trend_page_upload, name="trend_page_upload"),
     path("trend/<str:name>/fetch", views.trend_page_fetch, name="trend_page_fetch"),
     path("potential_trend/<str:name>/fetch", views.potential_trend_page_fetch, name="potential_trend_page_fetch"),
+    path("trading/<str:name>/fetch", views.trading_page_fetch, name="trading_page_fetch"),
     path("trend/<str:name>/reset_fetch", views.trend_page_reset_fetch, name="trend_page_reset_fetch"),
 ]
