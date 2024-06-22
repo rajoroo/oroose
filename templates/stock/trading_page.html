@@ -1,0 +1,69 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block title %}
+<title>{{title}}</title>
+{% endblock title %}
+
+{% block content %}
+
+    <div class="row">
+        <div class="col-12 col-sm-12">
+            <div class="card">
+                <div class="card-body">
+                    <form action="{% url 'trading' %}" method="post">
+                        {% csrf_token %}
+                        {{ form }}
+                        <input type="submit" class="btn btn-primary" value="Add" name="_add">
+                        <input type="submit" class="btn btn-primary" value="Remove" name="_remove">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 col-sm-12">
+            <div class="card nifty-table">
+                <div class="card-header border-bottom">
+                    <h3 class="card-title mb-0">{{title}}</h3>
+                </div>
+                <div class="card-body">
+                    <button type="button" class="btn btn-primary mr-1" id="trading_page_fetch" onclick="location.href='{% url 'trading_page_fetch' 'm5' %}'">Fetch</button>
+                    <div class="table-responsive">
+                        <div class="pt-3 txt-rt">
+                            <span>Updated at - {{trading_updated_at}}</span>
+                        </div>
+                        {% if stocks %}
+                        <table class="green-table">
+                            <tr>
+                                <th>Symbol</th>
+                                <th>Company</th>
+                                <th>5 Min 3</th>
+                                <th>5 Min 2</th>
+                                <th>5 Min 1</th>
+                                <th>HA Cross Up</th>
+                            </tr>
+                            {% for row in stocks %}
+                            <tr>
+                                <td>{{ row.symbol }}</td>
+                                <td>{{ row.company_name }}</td>
+                                <td {% if row.m5_3 %}class="green-col"{% else %}class="red-col"{% endif %}>{{ row.m5_3 }}</td>
+                                <td {% if row.m5_2 %}class="green-col"{% else %}class="red-col"{% endif %}>{{ row.m5_2 }}</td>
+                                <td {% if row.m5_1 %}class="green-col"{% else %}class="red-col"{% endif %}>{{ row.m5_1 }}</td>
+                                <td {% if row.m5_ha_cross_1 %}class="green-col"{% else %}class="red-col"{% endif %}>{{ row.m5_ha_cross_1 }}</td>
+                            </tr>
+                            {% endfor %}
+                        </table>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+{% block js_scripts %}
+<script src="{% static 'js/load_bengaluru.js' %}" crossorigin="anonymous"></script>
+<script src="{% static 'js/load_upload_file.js' %}" crossorigin="anonymous"></script>
+{% endblock js_scripts %}
