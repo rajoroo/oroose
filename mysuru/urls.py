@@ -10,6 +10,7 @@ urlpatterns = [
     path("stock_data_15min_page/", views.stock_data_15min_page, name="stock_data_15min"),
     path("stock_data_5min_page/", views.stock_data_5min_page, name="stock_data_5min"),
     path("potential_page/", views.potential_page, name="potential"),
+    path("short_term_page/", views.short_term_page, name="short_term"),
     path("intraday_m15_rsi_page/", views.intraday_m15_rsi_page, name="intraday"),
     path("intraday_day_rsi_page/", views.intraday_daily_rsi_page, name="intraday_day_rsi"),
     path("intraday_day_stoch_page/", views.intraday_daily_stoch_page, name="intraday_day_stoch"),

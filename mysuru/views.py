@@ -159,6 +159,39 @@ def potential_page(request):
 
 
 @login_required(login_url="/accounts/login/")
+def short_term_page(request):
+    """Trend page for display potential"""
+    filter_params = {
+        "is_day_fetched": True,
+        "day_ema_200_1__lt": F("day_ema_20_1"),
+        "day_ema_50_1__lt": F("day_ema_20_1"),
+        "day_ha_open_1__lt": F("day_ha_close_1"),
+        "day_ema_20_1__lt": F("day_ha_open_1"),
+        "day_stoch_black_1__gt": 20,
+        # "day_stoch_black_1__lt": 80,
+    }
+    total_stock = StockData.objects.all().count()
+    annotate_params = {
+        "day_stoch_cross_1": Case(
+            When(Q(day_stoch_black_1__gt=F("day_stoch_red_1")) & Q(day_stoch_black_2__lt=F("day_stoch_red_2")), then=Value(True)),
+            default=Value(False),
+            output_field=BooleanField()
+        ),
+    }
+    day_stoch_list = StockData.objects.annotate(**annotate_params).filter(**filter_params).order_by("day_stoch_black_1")
+    to_calculate = StockData.objects.filter(is_day_fetched=False).count()
+    context = {
+        "title": "Day Stochastics",
+        "stocks": day_stoch_list,
+        "to_calculate": to_calculate,
+        "total_stock": total_stock,
+        "short_term_count": day_stoch_list.count(),
+        "active_page": "short_term",
+    }
+    return render(request, "stock/short_term_page.html", context)
+
+
+@login_required(login_url="/accounts/login/")
 def intraday_m15_rsi_page(request):
     """Trend page for display potential"""
     total_stock = StockData.objects.filter(**potential_stock_filters).count()
