@@ -358,7 +358,7 @@ def intraday_daily_stoch_page(request):
 
 
 @login_required(login_url="/accounts/login/")
-def trading_page(request):
+def trading_negative_page(request):
     """Trend page for display potential"""
     annotate_params = {
         "m5_1": Case(
@@ -398,12 +398,12 @@ def trading_page(request):
     else:
         form = TradingForm()
     context = {
-        "title": "Trading",
+        "title": "Trading Negative",
         "form": form,
         "stocks": stock_list,
         "trading_updated_at": latest_record.trading_updated_at if latest_record else ""
     }
-    return render(request, "stock/trading_page.html", context)
+    return render(request, "stock/trading_negative_page.html", context)
 
 
 def trend_page_load_live(request):
