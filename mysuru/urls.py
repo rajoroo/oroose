@@ -25,4 +25,5 @@ urlpatterns = [
     path("potential_trend/<str:name>/fetch", views.potential_trend_page_fetch, name="potential_trend_page_fetch"),
     path("trading/<str:name>/fetch", views.trading_page_fetch, name="trading_page_fetch"),
     path("trend/<str:name>/reset_fetch", views.trend_page_reset_fetch, name="trend_page_reset_fetch"),
+    path("schedule_trading_start/", views.schedule_trading_start, name="schedule_trading_start"),
 ]

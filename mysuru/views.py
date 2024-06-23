@@ -6,6 +6,11 @@ from mysuru.forms import TradingForm
 from mysuru.fetch_trend import FetchTrend
 from mysuru.models import StockData
 from datetime import datetime
+from mysuru.task import trading_m5_fetch
+from django_q.tasks import schedule
+from django_q.models import Schedule
+import arrow
+
 
 
 # =========================================Fiters=========================================
@@ -490,8 +495,7 @@ def trading_page_fetch(request, name):
     Parameters:
         name - model name string representation
     """
-    trend_obj = FetchTrend()
-    trend_obj.fetch_trading_value(name)
+    trading_m5_fetch(name)
     return redirect("configuration")
 
 
@@ -503,4 +507,14 @@ def trend_page_reset_fetch(request, name):
     """
     trend_obj = FetchTrend()
     trend_obj.trend_reset(name)
+    return redirect("configuration")
+
+
+def schedule_trading_start(request):
+    schedule('mysuru.task.trading_m5_fetch',
+             'm5',
+             schedule_type=Schedule.MINUTES,
+             minutes=5,
+             repeats=72,
+             next_run=arrow.utcnow().replace(hour=4, minute=0).datetime)
     return redirect("configuration")
