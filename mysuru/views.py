@@ -193,33 +193,49 @@ def short_term_page(request):
 
 
 @login_required(login_url="/accounts/login/")
-def intraday_m15_rsi_page(request):
+def intraday_m15_positive_page(request):
     """Trend page for display potential"""
     total_stock = StockData.objects.filter(**potential_stock_filters).count()
     filter_params = {
-        "is_day_fetched": True,
-        "day_ha_open_1__lt": F("day_ha_close_1"),
         "is_m15_fetched": True,
-        "m15_rsi_cross_1": True,
+        "m15_ha_close_1__gt": F("m15_ha_open_1"),
+        "m15_ema_20_1__lt": F("m15_ha_close_1"),
+        "m15_valid": True
     }
     annotate_params = {
-        "m15_rsi_cross_1": Case(
-            When(Q(m15_rsi_1__gt=60) & Q(m15_rsi_2__lt=60), then=Value(True)),
+        "m15_ha_cross_1": Case(
+            When(Q(m15_ema_20_1__lt=F("m15_ha_close_1")) & Q(m15_ema_20_1__gt=F("m15_ha_open_1")), then=Value(True)),
+            default=Value(False),
+            output_field=BooleanField()
+        ),
+        "m15_ha_cross_2": Case(
+            When(Q(m15_ema_20_1__lt=F("m15_ha_close_1")) & Q(m15_ema_20_1__lt=F("m15_ha_open_1")) & Q(m15_ema_20_2__gt=F("m15_ha_open_2")), then=Value(True)),
+            default=Value(False),
+            output_field=BooleanField()
+        ),
+        "m15_ema_cross_1": Case(
+            When(m15_ema_50_1__lt=F("m15_ema_20_1"), then=Value(True)),
+            default=Value(False),
+            output_field=BooleanField()
+        ),
+        "m15_valid": Case(
+            When(Q(m15_ema_20_1__lt=F("m15_ha_close_1")) & Q(m15_ema_20_1__gt=F("m15_ha_open_1")), then=Value(True)),
+            When(Q(m15_ema_20_1__lt=F("m15_ha_close_1")) & Q(m15_ema_20_1__lt=F("m15_ha_open_1")) & Q(m15_ema_20_2__gt=F("m15_ha_open_2")), then=Value(True)),
             default=Value(False),
             output_field=BooleanField()
         ),
     }
-    m15_rsi_list = StockData.objects.annotate(**annotate_params).filter(**potential_stock_filters).filter(**filter_params)
+    m15_positive_list = StockData.objects.annotate(**annotate_params).filter(**potential_stock_filters).filter(**filter_params)
     to_calculate = StockData.objects.filter(**potential_stock_filters).filter(is_m15_fetched=False).count()
     context = {
-        "title": "15 Min RSI",
-        "stocks": m15_rsi_list,
+        "title": "15 Min Positive",
+        "stocks": m15_positive_list,
         "to_calculate": to_calculate,
         "total_stock": total_stock,
-        "potential_count": m15_rsi_list.count(),
+        "potential_count": m15_positive_list.count(),
         "active_page": "intraday",
     }
-    return render(request, "stock/intraday_m15_rsi_page.html", context)
+    return render(request, "stock/intraday_m15_positive_page.html", context)
 
 
 @login_required(login_url="/accounts/login/")
