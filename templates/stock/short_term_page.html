@@ -28,6 +28,7 @@
                                 <th>EMA 50</th>
                                 <th>EMA 20</th>
                                 <th>Stoch Cross</th>
+                                <th>RSI Cross</th>
                             </tr>
                             {% for row in stocks %}
                             <tr>
@@ -38,6 +39,7 @@
                                 <td>{{ row.day_ema_50_1 }}</td>
                                 <td>{{ row.day_ema_20_1 }}</td>
                                 <td {% if row.day_stoch_cross_1 %}class="green-col"{% endif %}>{{ row.day_stoch_black_1 }}</td>
+                                <td {% if row.rsi_cross_1 %}class="green-col"{% endif %}>{{ row.day_rsi_1 }}</td>
                             </tr>
                             {% endfor %}
                         </table>

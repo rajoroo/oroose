@@ -22,6 +22,10 @@ potential_stock_filters = {
     "wk_ema_20_1__lt": F("wk_ha_open_1"),
     "wk_rsi_1__gt": 60,
 }
+potential_negative_stock_filters = {
+    "is_wk_fetched": True,
+    "wk_ha_open_1__gt": F("wk_ha_close_1"),
+}
 # =========================================Trend==========================================
 @login_required(login_url="/accounts/login/")
 def stock_data_week_page(request):
@@ -183,6 +187,11 @@ def short_term_page(request):
             default=Value(False),
             output_field=BooleanField()
         ),
+        "rsi_cross_1": Case(
+            When(Q(day_rsi_1__gt=60) & Q(day_rsi_2__lt=60), then=Value(True)),
+            default=Value(False),
+            output_field=BooleanField()
+        ),
     }
     day_stoch_list = StockData.objects.annotate(**annotate_params).filter(**filter_params).order_by("day_stoch_black_1")
     to_calculate = StockData.objects.filter(is_day_fetched=False).count()
@@ -276,7 +285,7 @@ def intraday_m15_negative_page(request):
             output_field=BooleanField()
         ),
     }
-    m15_rsi_list = StockData.objects.annotate(**annotate_params).filter(**filter_params)
+    m15_rsi_list = StockData.objects.annotate(**annotate_params).filter(**potential_negative_stock_filters).filter(**filter_params)
     to_calculate = StockData.objects.filter(is_m15_fetched=False).count()
     context = {
         "title": "15 Min Negative",

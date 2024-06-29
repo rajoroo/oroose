@@ -116,7 +116,6 @@ class FetchTrend:
         """Fetch potential trend value"""
         filter_params = {
             "is_trading": True,
-            f"is_{data_type}_fetched": False
         }
         recs = self.model_obj.objects.filter(**filter_params)[:500]
         for rec in recs:

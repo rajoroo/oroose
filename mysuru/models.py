@@ -363,7 +363,7 @@ class StockData(models.Model):
     m5_ha_close_5 = models.FloatField(verbose_name="HA Close", null=True, blank=True)
     m5_rsi_5 = models.FloatField(verbose_name="RSI", null=True, blank=True)
 
-    trading_updated_at = models.DateTimeField(verbose_name="Trading Updated at")
+    trading_updated_at = models.DateTimeField(verbose_name="Trading Updated at", null=True, blank=True)
     is_trading = models.BooleanField(verbose_name="Is Trading", default=False)
 
     objects = models.Manager()
