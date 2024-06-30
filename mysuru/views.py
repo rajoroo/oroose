@@ -523,7 +523,5 @@ def schedule_trading_start(request):
     schedule('mysuru.task.trading_m5_fetch',
              'm5',
              schedule_type=Schedule.MINUTES,
-             minutes=5,
-             repeats=72,
-             next_run=arrow.utcnow().replace(hour=4, minute=0).datetime)
+             minutes=5)
     return redirect("configuration")

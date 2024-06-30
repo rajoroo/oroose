@@ -1,0 +1,11 @@
+Unit]
+Description=DjangoQ Daemon
+After=network.target
+
+[Service]
+User=ramesh
+Group=ramesh
+WorkingDirectory=/home/ramesh/oroose
+ExecStart=/home/ramesh/venv/bin/python manage.py qcluster
+[Install]
+WantedBy=multi-user.target
