@@ -1,6 +1,5 @@
 [Unit]
 Description=Oroose django app
-Requires=gunicorn.socket
 After=network.target
 
 [Service]
@@ -8,11 +7,10 @@ User=ramesh
 Group=ramesh
 WorkingDirectory=/home/ramesh/oroose
 ExecStart=/home/ramesh/oroose/venv/bin/gunicorn \
-          --bind unix:/run/gunicorn.sock \
+          --bind unix:/home/ramesh/oroose/oroose.sock \
           oroose.wsgi:application
 ExecStop=/usr/bin/kill -s TERM $MAINPID
 ExecReload=/usr/bin/kill -s HUP $MAINPID
 Always=start
-
 [Install]
 WantedBy=multi-user.target

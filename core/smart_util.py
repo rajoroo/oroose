@@ -112,3 +112,11 @@ class SmartInstrument:
             df = self.download_instrument(filename)
 
         return df[df.symbol == self.instrument].iloc[0]
+
+
+def download_future():
+    df = pd.read_json(settings.SMART_MASTER)
+    df = df.loc[df['exch_seg'] == "NFO"]
+    df = df.loc[df['instrumenttype'] == "FUTSTK"]
+    df = df.drop_duplicates(subset='name', keep="last")
+    return df

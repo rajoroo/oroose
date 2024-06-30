@@ -514,8 +514,9 @@ def trend_page_load_futures(request):
         name - model name string representation
     """
     trend_obj = FetchTrend()
-    trend_obj.fetch_futures_stocks()
-    trend_obj.create_trend()
+    # trend_obj.fetch_futures_stocks()
+    # trend_obj.create_trend()
+    trend_obj.fetch_futures_stocks_smart()
     return redirect("configuration")
 
 

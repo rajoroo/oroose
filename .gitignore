@@ -15,3 +15,5 @@ include
 
 .ipynb_checkpoints/
 *.ipynb
+
+.scrap

@@ -7,6 +7,7 @@ from .stocks import LiveStocks
 import io
 import pandas as pd
 from mysuru.models import StockData
+from core.smart_util import download_future
 
 
 class FetchTrend:
@@ -52,6 +53,13 @@ class FetchTrend:
         stock_data = obj.get_futures_stock_list()
         self.stock_data = [
             {"symbol": row["symbol"], "company_name": row["underlying"]} for index, row in stock_data.iterrows()
+        ]
+        return True
+
+    def fetch_futures_stocks_smart(self):
+        stock_data = download_future()
+        self.stock_data = [
+            {"symbol": row["name"], "company_name": row["name"]} for index, row in stock_data.iterrows()
         ]
         return True
 
