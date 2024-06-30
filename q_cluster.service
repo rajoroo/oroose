@@ -6,6 +6,10 @@ After=network.target
 User=ramesh
 Group=ramesh
 WorkingDirectory=/home/ramesh/oroose
-ExecStart=/home/ramesh/venv/bin/python manage.py qcluster
+ExecStart=/home/ramesh/oroose/venv/bin/python manage.py qcluster
+ExecStop=/usr/bin/kill -s TERM $MAINPID
+ExecReload=/usr/bin/kill -s HUP $MAINPID
+Always=start
+
 [Install]
 WantedBy=multi-user.target
