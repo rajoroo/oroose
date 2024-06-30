@@ -370,9 +370,7 @@ class StockData(models.Model):
 
     class Meta:
         ordering = ["symbol"]
-        constraints = [
-            models.UniqueConstraint(fields=["symbol"], name="%(app_label)s_%(class)s_unique_stock")
-        ]
+        constraints = [models.UniqueConstraint(fields=["symbol"], name="%(app_label)s_%(class)s_unique_stock")]
 
     def __str__(self):
         """String representation of trend"""

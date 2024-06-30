@@ -7,14 +7,14 @@ import django.utils.timezone
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('mysuru', '0002_delete_dailytrend_delete_hourlytrend_and_more'),
+        ("mysuru", "0002_delete_dailytrend_delete_hourlytrend_and_more"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='stockdata',
-            name='trading_updated_at',
-            field=models.DateTimeField(default=django.utils.timezone.now, verbose_name='Trading Updated at'),
+            model_name="stockdata",
+            name="trading_updated_at",
+            field=models.DateTimeField(default=django.utils.timezone.now, verbose_name="Trading Updated at"),
             preserve_default=False,
         ),
     ]

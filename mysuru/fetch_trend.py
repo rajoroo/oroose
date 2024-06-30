@@ -104,7 +104,7 @@ class FetchTrend:
             "wk_ha_open_1__lt": F("wk_ha_close_1"),
             "wk_ema_20_1__lt": F("wk_ha_open_1"),
             "wk_rsi_1__gt": 60,
-            f"is_{data_type}_fetched": False
+            f"is_{data_type}_fetched": False,
         }
         recs = self.model_obj.objects.filter(**filter_params)[:500]
         for rec in recs:
@@ -125,12 +125,8 @@ class FetchTrend:
 
     def trend_reset(self, data_type):
         """Fetch potential trend value"""
-        filter_params = {
-            f"is_{data_type}_fetched": True
-        }
-        update_params = {
-            f"is_{data_type}_fetched": False
-        }
+        filter_params = {f"is_{data_type}_fetched": True}
+        update_params = {f"is_{data_type}_fetched": False}
         recs = self.model_obj.objects.filter(**filter_params)
         recs.update(**update_params)
         return True

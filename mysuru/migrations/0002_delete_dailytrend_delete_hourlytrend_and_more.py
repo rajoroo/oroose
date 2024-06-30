@@ -6,22 +6,22 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('mysuru', '0001_initial'),
+        ("mysuru", "0001_initial"),
     ]
 
     operations = [
         migrations.DeleteModel(
-            name='DailyTrend',
+            name="DailyTrend",
         ),
         migrations.DeleteModel(
-            name='HourlyTrend',
+            name="HourlyTrend",
         ),
         migrations.DeleteModel(
-            name='WeeklyTrend',
+            name="WeeklyTrend",
         ),
         migrations.AddField(
-            model_name='stockdata',
-            name='is_trading',
-            field=models.BooleanField(default=False, verbose_name='Is Trading'),
+            model_name="stockdata",
+            name="is_trading",
+            field=models.BooleanField(default=False, verbose_name="Is Trading"),
         ),
     ]

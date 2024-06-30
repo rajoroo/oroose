@@ -154,7 +154,7 @@ def get_ohlcv(df, data_type):
             f"{data_type}_close": round(df.iloc[-1]["close"], 2),
             f"{data_type}_high": round(df.iloc[-1]["high"], 2),
             f"{data_type}_low": round(df.iloc[-1]["low"], 2),
-            f"{data_type}_volume": round(df.iloc[-1]["volume"], 2)
+            f"{data_type}_volume": round(df.iloc[-1]["volume"], 2),
         }
 
     return {
@@ -162,8 +162,9 @@ def get_ohlcv(df, data_type):
         f"{data_type}_close": 0,
         f"{data_type}_high": 0,
         f"{data_type}_low": 0,
-        f"{data_type}_volume": 0
+        f"{data_type}_volume": 0,
     }
+
 
 def get_ema(df, data_type):
     current = df.iloc[-1]
