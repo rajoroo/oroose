@@ -58,6 +58,7 @@ class FetchTrend:
 
     def fetch_futures_stocks_smart(self):
         stock_data = download_future()
+        print(stock_data, "----")
         self.stock_data = [
             {"symbol": row["name"], "company_name": row["name"]} for index, row in stock_data.iterrows()
         ]
