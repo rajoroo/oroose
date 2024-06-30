@@ -515,8 +515,8 @@ def trend_page_load_futures(request):
     """
     trend_obj = FetchTrend()
     # trend_obj.fetch_futures_stocks()
-    # trend_obj.create_trend()
     trend_obj.fetch_futures_stocks_smart()
+    trend_obj.create_trend()
     return redirect("configuration")
 
 
