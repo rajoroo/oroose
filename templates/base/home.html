@@ -1,5 +1,5 @@
 {% extends "base/base.html" %}
-
+{% load menu %}
 
 {% block title %}
 <title>Oroose - Home</title>
@@ -9,4 +9,9 @@
 {% block content %}
 
 <p>Home</p>
+<div class="bg-green">
+<ul class="navbar-nav flex-row flex-wrap bd-navbar-nav pt-2 py-md-0">
+    {% show_menu_navbar page=active_page path=active_path %}
+</ul>
+</div>
 {% endblock content %}
