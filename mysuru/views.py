@@ -19,6 +19,8 @@ potential_stock_filters = {
     "wk_ema_50_1__lt": F("wk_ema_20_1"),
     "wk_ha_open_1__lt": F("wk_ha_close_1"),
     "wk_ema_20_1__lt": F("wk_ha_open_1"),
+    "wk_ha_open_2__lt": F("wk_ha_open_1"),
+    "wk_ha_close_2__lt": F("wk_ha_close_1"),
     "wk_rsi_1__gt": 60,
 }
 potential_negative_stock_filters = {
