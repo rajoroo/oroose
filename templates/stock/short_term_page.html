@@ -27,7 +27,8 @@
                                 <th>EMA 200</th>
                                 <th>EMA 50</th>
                                 <th>EMA 20</th>
-                                <th>EMA Cross</th>
+                                <th>EMA Cross 1</th>
+                                <th>EMA Cross 2</th>
                                 <th>Stoch Cross</th>
                                 <th>RSI</th>
                                 <th>RSI Cross</th>
@@ -41,6 +42,7 @@
                                 <td>{{ row.day_ema_50_1 }}</td>
                                 <td>{{ row.day_ema_20_1 }}</td>
                                 <td {% if row.ema_20_cross_1 %}class="green-col"{% endif %}>{{ row.ema_20_cross_1 }}</td>
+                                <td {% if row.ema_20_cross_2 %}class="green-col"{% endif %}>{{ row.ema_20_cross_2 }}</td>
                                 <td {% if row.day_stoch_cross_1 %}class="green-col"{% endif %}>{{ row.day_stoch_black_1 }}</td>
                                 <td {% if row.rsi_above_60 %}class="green-col"{% endif %}>{{ row.day_rsi_1 }}</td>
                                 <td {% if row.rsi_cross_1 %}class="green-col"{% endif %}>{{ row.rsi_cross_1 }}</td>

@@ -129,6 +129,16 @@ def potential_page(request):
             default=Value(False),
             output_field=BooleanField(),
         ),
+        "ema_20_cross_2": Case(
+            When(Q(wk_ema_20_2__gt=F("wk_ha_open_2")) & Q(wk_ema_20_2__lt=F("wk_ha_close_2")), then=Value(True)),
+            default=Value(False),
+            output_field=BooleanField(),
+        ),
+        "ema_20_cross_1": Case(
+            When(Q(wk_ema_20_1__gt=F("wk_ha_open_1")) & Q(wk_ema_20_1__lt=F("wk_ha_close_1")), then=Value(True)),
+            default=Value(False),
+            output_field=BooleanField(),
+        ),
         "rsi_cross_1": Case(
             When(Q(wk_rsi_1__gt=60) & Q(wk_rsi_2__lt=60), then=Value(True)),
             default=Value(False),
@@ -177,8 +187,13 @@ def short_term_page(request):
             default=Value(False),
             output_field=BooleanField(),
         ),
-        "ema_20_cross_1": Case(
+        "ema_20_cross_2": Case(
             When(Q(day_ema_20_2__gt=F("day_ha_open_2")) & Q(day_ema_20_2__lt=F("day_ha_close_2")), then=Value(True)),
+            default=Value(False),
+            output_field=BooleanField(),
+        ),
+        "ema_20_cross_1": Case(
+            When(Q(day_ema_20_1__gt=F("day_ha_open_1")) & Q(day_ema_20_1__lt=F("day_ha_close_1")), then=Value(True)),
             default=Value(False),
             output_field=BooleanField(),
         ),
