@@ -29,25 +29,19 @@
                                 <th>EMA 20</th>
                                 <th>HA Cross</th>
                                 <th>RSI</th>
+                                <th>RSI Cross</th>
                             </tr>
                             {% for row in stocks %}
                             <tr>
                                 <td>{{ row.symbol }}</td>
                                 <td>{{ row.company_name }}</td>
                                 <td>{{ row.wk_close }}</td>
-                                {% if record_type %}
-                                    <td>{{ row.wk_ema_200_0 }}</td>
-                                    <td>{{ row.wk_ema_50_0 }}</td>
-                                    <td>{{ row.wk_ema_20_0 }}</td>
-                                    <td {% if row.ha_cross_0 %}class="green-col"{% endif %}>{{ row.ha_cross_0 }}</td>
-                                    <td {% if row.rsi_cross_0 %}class="green-col"{% endif %}>{{ row.wk_rsi_0 }}</td>
-                                {% else %}
-                                    <td>{{ row.wk_ema_200_1 }}</td>
-                                    <td>{{ row.wk_ema_50_1 }}</td>
-                                    <td>{{ row.wk_ema_20_1 }}</td>
-                                    <td {% if row.ha_cross_1 %}class="green-col"{% endif %}>{{ row.ha_cross_1 }}</td>
-                                    <td {% if row.rsi_cross_1 %}class="green-col"{% endif %}>{{ row.wk_rsi_1 }}</td>
-                                {% endif%}
+                                <td>{{ row.wk_ema_200_1 }}</td>
+                                <td>{{ row.wk_ema_50_1 }}</td>
+                                <td>{{ row.wk_ema_20_1 }}</td>
+                                <td {% if row.ha_cross_1 %}class="green-col"{% endif %}>{{ row.ha_cross_1 }}</td>
+                                <td {% if row.rsi_above_60 %}class="green-col"{% endif %}>{{ row.wk_rsi_1 }}</td>
+                                <td {% if row.rsi_cross_1 %}class="green-col"{% endif %}>{{ row.rsi_cross_1 }}</td>
                             </tr>
                             {% endfor %}
                         </table>

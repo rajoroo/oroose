@@ -112,56 +112,34 @@ def stock_data_5min_page(request):
 def potential_page(request):
     """Trend page for display potential"""
     total_stock = StockData.objects.all().count()
-    if datetime.today().weekday() > 4:
-        filter_params = {
-            "is_wk_fetched": True,
-            "wk_ema_200_0__lt": F("wk_ema_20_0"),
-            "wk_ema_50_0__lt": F("wk_ema_20_0"),
-            "wk_ha_open_0__lt": F("wk_ha_close_0"),
-            "wk_ema_20_0__lt": F("wk_ha_open_0"),
-            "wk_ha_open_1__lt": F("wk_ha_open_0"),
-            "wk_ha_close_1__lt": F("wk_ha_close_0"),
-            "wk_rsi_0__gt": 60,
-        }
-        annotate_params = {
-            "ha_cross_0": Case(
-                When(
-                    Q(wk_ha_open_0__lt=F("wk_ha_close_0")) & Q(wk_ha_open_1__gt=F("wk_ha_close_1")), then=Value(True)
-                ),
-                default=Value(False),
-                output_field=BooleanField(),
+    filter_params = {
+        "is_wk_fetched": True,
+        "wk_ema_200_1__lt": F("wk_ema_20_1"),
+        "wk_ema_50_1__lt": F("wk_ema_20_1"),
+        "wk_ha_open_1__lt": F("wk_ha_close_1"),
+        "wk_ema_20_1__lt": F("wk_ha_open_1"),
+        "wk_ha_open_2__lt": F("wk_ha_open_1"),
+        "wk_ha_close_2__lt": F("wk_ha_close_1"),
+    }
+    annotate_params = {
+        "ha_cross_1": Case(
+            When(
+                Q(wk_ha_open_1__lt=F("wk_ha_close_1")) & Q(wk_ha_open_2__gt=F("wk_ha_close_2")), then=Value(True)
             ),
-            "rsi_cross_0": Case(
-                When(Q(wk_rsi_0__gt=60) & Q(wk_rsi_1__lt=60), then=Value(True)),
-                default=Value(False),
-                output_field=BooleanField(),
-            ),
-        }
-    else:
-        filter_params = {
-            "is_wk_fetched": True,
-            "wk_ema_200_1__lt": F("wk_ema_20_1"),
-            "wk_ema_50_1__lt": F("wk_ema_20_1"),
-            "wk_ha_open_1__lt": F("wk_ha_close_1"),
-            "wk_ema_20_1__lt": F("wk_ha_open_1"),
-            "wk_ha_open_2__lt": F("wk_ha_open_1"),
-            "wk_ha_close_2__lt": F("wk_ha_close_1"),
-            "wk_rsi_1__gt": 60,
-        }
-        annotate_params = {
-            "ha_cross_1": Case(
-                When(
-                    Q(wk_ha_open_1__lt=F("wk_ha_close_1")) & Q(wk_ha_open_2__gt=F("wk_ha_close_2")), then=Value(True)
-                ),
-                default=Value(False),
-                output_field=BooleanField(),
-            ),
-            "rsi_cross_1": Case(
-                When(Q(wk_rsi_1__gt=60) & Q(wk_rsi_2__lt=60), then=Value(True)),
-                default=Value(False),
-                output_field=BooleanField(),
-            ),
-        }
+            default=Value(False),
+            output_field=BooleanField(),
+        ),
+        "rsi_cross_1": Case(
+            When(Q(wk_rsi_1__gt=60) & Q(wk_rsi_2__lt=60), then=Value(True)),
+            default=Value(False),
+            output_field=BooleanField(),
+        ),
+        "rsi_above_60": Case(
+            When(wk_rsi_1__gt=60, then=Value(True)),
+            default=Value(False),
+            output_field=BooleanField(),
+        ),
+    }
     potential_stock_list = StockData.objects.filter(**filter_params).annotate(**annotate_params)
     to_calculate = StockData.objects.filter(is_wk_fetched=False).count()
     record_type = True if datetime.today().weekday() > 4 else False
@@ -186,7 +164,7 @@ def short_term_page(request):
         "day_ema_50_1__lt": F("day_ema_20_1"),
         "day_ha_open_1__lt": F("day_ha_close_1"),
         "day_ema_20_1__lt": F("day_ha_open_1"),
-        "day_stoch_black_1__gt": 20,
+        # "day_stoch_black_1__gt": 20,
         # "day_stoch_black_1__lt": 80,
     }
     total_stock = StockData.objects.all().count()
@@ -199,8 +177,18 @@ def short_term_page(request):
             default=Value(False),
             output_field=BooleanField(),
         ),
+        "ema_20_cross_1": Case(
+            When(Q(day_ema_20_2__gt=F("day_ha_open_2")) & Q(day_ema_20_2__lt=F("day_ha_close_2")), then=Value(True)),
+            default=Value(False),
+            output_field=BooleanField(),
+        ),
         "rsi_cross_1": Case(
             When(Q(day_rsi_1__gt=60) & Q(day_rsi_2__lt=60), then=Value(True)),
+            default=Value(False),
+            output_field=BooleanField(),
+        ),
+        "rsi_above_60": Case(
+            When(day_rsi_1__gt=60, then=Value(True)),
             default=Value(False),
             output_field=BooleanField(),
         ),
@@ -210,7 +198,7 @@ def short_term_page(request):
     )
     to_calculate = StockData.objects.filter(is_day_fetched=False).count()
     context = {
-        "title": "Day Stochastics",
+        "title": "Day",
         "stocks": day_stoch_list,
         "to_calculate": to_calculate,
         "total_stock": total_stock,
