@@ -119,6 +119,8 @@ def potential_page(request):
             "wk_ema_50_0__lt": F("wk_ema_20_0"),
             "wk_ha_open_0__lt": F("wk_ha_close_0"),
             "wk_ema_20_0__lt": F("wk_ha_open_0"),
+            "wk_ha_open_1__lt": F("wk_ha_open_0"),
+            "wk_ha_close_1__lt": F("wk_ha_close_0"),
             "wk_rsi_0__gt": 60,
         }
         annotate_params = {
@@ -142,6 +144,8 @@ def potential_page(request):
             "wk_ema_50_1__lt": F("wk_ema_20_1"),
             "wk_ha_open_1__lt": F("wk_ha_close_1"),
             "wk_ema_20_1__lt": F("wk_ha_open_1"),
+            "wk_ha_open_2__lt": F("wk_ha_open_1"),
+            "wk_ha_close_2__lt": F("wk_ha_close_1"),
             "wk_rsi_1__gt": 60,
         }
         annotate_params = {
