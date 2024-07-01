@@ -226,6 +226,16 @@ def short_term_page(request):
 @login_required(login_url="/accounts/login/")
 def intraday_m15_positive_page(request):
     """Trend page for display potential"""
+    potential_stock_filters = {
+        "is_wk_fetched": True,
+        "wk_ema_200_1__lt": F("wk_ema_20_1"),
+        "wk_ema_50_1__lt": F("wk_ema_20_1"),
+        "wk_ha_open_1__lt": F("wk_ha_close_1"),
+        "wk_ema_20_1__lt": F("wk_ha_open_1"),
+        # "wk_ha_open_2__lt": F("wk_ha_open_1"),
+        # "wk_ha_close_2__lt": F("wk_ha_close_1"),
+        # "wk_rsi_1__gt": 60,
+    }
     total_stock = StockData.objects.filter(**potential_stock_filters).count()
     filter_params = {
         "is_m15_fetched": True,
