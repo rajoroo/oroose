@@ -86,6 +86,11 @@
 
 <div class="container-xxl bd-content order-1 py-3" id="content">
     <div id="alerts"></div>
+<div class="bg-green">
+    <ul class="navbar-nav flex-row flex-wrap bd-navbar-nav pt-2 py-md-0">
+        {% show_menu_navbar page=active_page path=active_path %}
+    </ul>
+</div>
 {% block content %}
 {% endblock content %}
 </div>
