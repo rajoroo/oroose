@@ -3,6 +3,7 @@ from datetime import datetime
 from django.conf import settings
 from django.db.models import F
 
+from core.telegram_util import TelegramAlert
 from .stocks import LiveStocks
 import io
 import pandas as pd
@@ -128,7 +129,6 @@ class FetchTrend:
         recs = self.model_obj.objects.filter(**filter_params)[:500]
         for rec in recs:
             rec.generate_trend_value(data_type=data_type)
-
         return True
 
     def trend_reset(self, data_type):
@@ -138,3 +138,10 @@ class FetchTrend:
         recs = self.model_obj.objects.filter(**filter_params)
         recs.update(**update_params)
         return True
+
+    def raise_alert_message(self):
+        recs = self.model_obj.objects.filter(is_trading=True).filter(m5_ema_20_1__gt=F("m5_ha_close_1")).values_list("symbol", flat=True)
+        if recs:
+            symbols = "\n".join(recs)
+            TelegramAlert.send_message(symbols)
+

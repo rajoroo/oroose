@@ -28,10 +28,10 @@ else:
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", get_random_secret_key())
+SECRET_KEY = "8ab#e7$3avrz62$)=0_+s)pvq7222py&ga%nks^y#e3bd$xwo="
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv("DEBUG", "False") == "True"
+DEBUG = True
 
 # ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "127.0.0.1,localhost").split(",")
 ALLOWED_HOSTS = []
@@ -174,3 +174,7 @@ Q_CLUSTER = {
     "bulk": 10,
     "orm": "default",
 }
+
+
+TELE_BOT = os.environ.get("TELE_BOT")
+TELE_BOT_CHANNEL = os.environ.get("TELE_BOT_CHANNEL")

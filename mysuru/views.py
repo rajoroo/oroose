@@ -114,23 +114,16 @@ def potential_page(request):
     total_stock = StockData.objects.all().count()
     filter_params = {
         "is_wk_fetched": True,
-        "wk_ema_200_1__lt": F("wk_ema_20_1"),
-        "wk_ema_50_1__lt": F("wk_ema_20_1"),
-        "wk_ha_open_1__lt": F("wk_ha_close_1"),
-        "wk_ema_20_1__lt": F("wk_ha_open_1"),
-        "wk_ha_open_2__lt": F("wk_ha_open_1"),
-        "wk_ha_close_2__lt": F("wk_ha_close_1"),
+        "wk_ema_200_0__lt": F("wk_ema_50_0"),
+        "wk_ema_50_0__lt": F("wk_ema_20_0"),
+        "wk_ema_20_0__lt": F("wk_ha_close_0"),
+        "wk_ha_open_0__lt": F("wk_ha_close_0"),
     }
     annotate_params = {
-        "ha_cross_1": Case(
+        "ha_cross_0": Case(
             When(
-                Q(wk_ha_open_1__lt=F("wk_ha_close_1")) & Q(wk_ha_open_2__gt=F("wk_ha_close_2")), then=Value(True)
+                Q(wk_ha_open_0__lt=F("wk_ha_close_0")) & Q(wk_ha_open_1__gt=F("wk_ha_close_1")), then=Value(True)
             ),
-            default=Value(False),
-            output_field=BooleanField(),
-        ),
-        "ema_20_cross_2": Case(
-            When(Q(wk_ema_20_2__gt=F("wk_ha_open_2")) & Q(wk_ema_20_2__lt=F("wk_ha_close_2")), then=Value(True)),
             default=Value(False),
             output_field=BooleanField(),
         ),
@@ -139,18 +132,23 @@ def potential_page(request):
             default=Value(False),
             output_field=BooleanField(),
         ),
-        "rsi_cross_1": Case(
-            When(Q(wk_rsi_1__gt=60) & Q(wk_rsi_2__lt=60), then=Value(True)),
+        "ema_20_cross_0": Case(
+            When(Q(wk_ema_20_0__gt=F("wk_ha_open_0")) & Q(wk_ema_20_0__lt=F("wk_ha_close_0")), then=Value(True)),
+            default=Value(False),
+            output_field=BooleanField(),
+        ),
+        "rsi_cross_0": Case(
+            When(Q(wk_rsi_0__gt=60) & Q(wk_rsi_1__lt=60), then=Value(True)),
             default=Value(False),
             output_field=BooleanField(),
         ),
         "rsi_above_60": Case(
-            When(wk_rsi_1__gt=60, then=Value(True)),
+            When(wk_rsi_0__gt=60, then=Value(True)),
             default=Value(False),
             output_field=BooleanField(),
         ),
     }
-    potential_stock_list = StockData.objects.filter(**filter_params).annotate(**annotate_params)
+    potential_stock_list = StockData.objects.filter(**filter_params).annotate(**annotate_params).order_by("wk_rsi_0")
     to_calculate = StockData.objects.filter(is_wk_fetched=False).count()
     record_type = True if datetime.today().weekday() > 4 else False
     context = {
@@ -170,25 +168,20 @@ def short_term_page(request):
     """Trend page for display potential"""
     filter_params = {
         "is_day_fetched": True,
-        "day_ema_200_1__lt": F("day_ema_20_1"),
-        "day_ema_50_1__lt": F("day_ema_20_1"),
-        "day_ha_open_1__lt": F("day_ha_close_1"),
-        "day_ema_20_1__lt": F("day_ha_open_1"),
+        "day_ema_200_0__lt": F("day_ema_20_0"),
+        "day_ema_50_0__lt": F("day_ema_20_0"),
+        "day_ha_open_0__lt": F("day_ha_close_0"),
+        "day_ema_20_0__lt": F("day_ha_open_0"),
         # "day_stoch_black_1__gt": 20,
         # "day_stoch_black_1__lt": 80,
     }
     total_stock = StockData.objects.all().count()
     annotate_params = {
-        "day_stoch_cross_1": Case(
+        "day_stoch_cross_0": Case(
             When(
-                Q(day_stoch_black_1__gt=F("day_stoch_red_1")) & Q(day_stoch_black_2__lt=F("day_stoch_red_2")),
+                Q(day_stoch_black_0__gt=F("day_stoch_red_0")) & Q(day_stoch_black_1__lt=F("day_stoch_red_1")),
                 then=Value(True),
             ),
-            default=Value(False),
-            output_field=BooleanField(),
-        ),
-        "ema_20_cross_2": Case(
-            When(Q(day_ema_20_2__gt=F("day_ha_open_2")) & Q(day_ema_20_2__lt=F("day_ha_close_2")), then=Value(True)),
             default=Value(False),
             output_field=BooleanField(),
         ),
@@ -197,19 +190,24 @@ def short_term_page(request):
             default=Value(False),
             output_field=BooleanField(),
         ),
-        "rsi_cross_1": Case(
-            When(Q(day_rsi_1__gt=60) & Q(day_rsi_2__lt=60), then=Value(True)),
+        "ema_20_cross_0": Case(
+            When(Q(day_ema_20_0__gt=F("day_ha_open_0")) & Q(day_ema_20_0__lt=F("day_ha_close_0")), then=Value(True)),
+            default=Value(False),
+            output_field=BooleanField(),
+        ),
+        "rsi_cross_0": Case(
+            When(Q(day_rsi_0__gt=60) & Q(day_rsi_1__lt=60), then=Value(True)),
             default=Value(False),
             output_field=BooleanField(),
         ),
         "rsi_above_60": Case(
-            When(day_rsi_1__gt=60, then=Value(True)),
+            When(day_rsi_0__gt=60, then=Value(True)),
             default=Value(False),
             output_field=BooleanField(),
         ),
     }
     day_stoch_list = (
-        StockData.objects.annotate(**annotate_params).filter(**filter_params).order_by("day_stoch_black_1")
+        StockData.objects.annotate(**annotate_params).filter(**filter_params).order_by("day_stoch_black_0")
     )
     to_calculate = StockData.objects.filter(is_day_fetched=False).count()
     context = {
@@ -228,10 +226,10 @@ def intraday_m15_positive_page(request):
     """Trend page for display potential"""
     potential_stock_filters = {
         "is_wk_fetched": True,
-        "wk_ema_200_1__lt": F("wk_ema_20_1"),
-        "wk_ema_50_1__lt": F("wk_ema_20_1"),
-        "wk_ha_open_1__lt": F("wk_ha_close_1"),
-        "wk_ema_20_1__lt": F("wk_ha_open_1"),
+        "wk_ema_200_0__lt": F("wk_ema_50_0"),
+        "wk_ema_50_0__lt": F("wk_ema_20_0"),
+        "wk_ha_open_0__lt": F("wk_ha_close_0"),
+        "wk_ema_20_0__lt": F("wk_ha_close_0"),
         # "wk_ha_open_2__lt": F("wk_ha_open_1"),
         # "wk_ha_close_2__lt": F("wk_ha_close_1"),
         # "wk_rsi_1__gt": 60,
@@ -239,7 +237,7 @@ def intraday_m15_positive_page(request):
     total_stock = StockData.objects.filter(**potential_stock_filters).count()
     filter_params = {
         "is_m15_fetched": True,
-        "m15_ha_close_1__gt": F("m15_ha_open_1"),
+        # "m15_ha_close_1__gt": F("m15_ha_open_1"),
         "m15_ema_20_1__lt": F("m15_ha_close_1"),
         "m15_valid": True,
     }
@@ -272,6 +270,7 @@ def intraday_m15_positive_page(request):
                 & Q(m15_ema_20_2__gt=F("m15_ha_open_2")),
                 then=Value(True),
             ),
+            When(m15_ema_50_1__lt=F("m15_ema_20_1"), then=Value(True)),
             default=Value(False),
             output_field=BooleanField(),
         ),
@@ -289,164 +288,6 @@ def intraday_m15_positive_page(request):
         "active_page": "intraday",
     }
     return render(request, "stock/intraday_m15_positive_page.html", context)
-
-
-@login_required(login_url="/accounts/login/")
-def intraday_m15_negative_page(request):
-    """Trend page for display potential"""
-    total_stock = StockData.objects.all().count()
-    filter_params = {
-        "is_m15_fetched": True,
-        "m15_ha_close_1__lt": F("m15_ha_open_1"),
-        "m15_ema_20_1__gt": F("m15_ha_close_1"),
-        "m15_valid": True,
-    }
-    annotate_params = {
-        "m15_ha_cross_1": Case(
-            When(Q(m15_ema_20_1__gt=F("m15_ha_close_1")) & Q(m15_ema_20_1__lt=F("m15_ha_open_1")), then=Value(True)),
-            default=Value(False),
-            output_field=BooleanField(),
-        ),
-        "m15_ha_cross_2": Case(
-            When(
-                Q(m15_ema_20_1__gt=F("m15_ha_close_1"))
-                & Q(m15_ema_20_1__gt=F("m15_ha_open_1"))
-                & Q(m15_ema_20_2__lt=F("m15_ha_open_2")),
-                then=Value(True),
-            ),
-            default=Value(False),
-            output_field=BooleanField(),
-        ),
-        "m15_ema_cross_1": Case(
-            When(m15_ema_50_1__gt=F("m15_ema_20_1"), then=Value(True)),
-            default=Value(False),
-            output_field=BooleanField(),
-        ),
-        "m15_valid": Case(
-            When(Q(m15_ema_20_1__gt=F("m15_ha_close_1")) & Q(m15_ema_20_1__lt=F("m15_ha_open_1")), then=Value(True)),
-            When(
-                Q(m15_ema_20_1__gt=F("m15_ha_close_1"))
-                & Q(m15_ema_20_1__gt=F("m15_ha_open_1"))
-                & Q(m15_ema_20_2__lt=F("m15_ha_open_2")),
-                then=Value(True),
-            ),
-            default=Value(False),
-            output_field=BooleanField(),
-        ),
-    }
-    m15_rsi_list = (
-        StockData.objects.annotate(**annotate_params)
-        .filter(**potential_negative_stock_filters)
-        .filter(**filter_params)
-    )
-    to_calculate = StockData.objects.filter(is_m15_fetched=False).count()
-    context = {
-        "title": "15 Min Negative",
-        "stocks": m15_rsi_list,
-        "to_calculate": to_calculate,
-        "total_stock": total_stock,
-        "potential_count": m15_rsi_list.count(),
-        "active_page": "intraday",
-    }
-    return render(request, "stock/intraday_m15_negative_page.html", context)
-
-
-@login_required(login_url="/accounts/login/")
-def intraday_hourly_rsi_page(request):
-    """Trend page for display potential"""
-    total_stock = StockData.objects.filter(**potential_stock_filters).count()
-    filter_params = {
-        "is_day_fetched": True,
-        "day_ha_open_1__lt": F("day_ha_close_1"),
-        "is_hr_fetched": True,
-        "hr_rsi_cross_1": True,
-    }
-    annotate_params = {
-        "hr_rsi_cross_1": Case(
-            When(Q(hr_rsi_1__gt=60) & Q(hr_rsi_2__lt=60), then=Value(True)),
-            default=Value(False),
-            output_field=BooleanField(),
-        ),
-    }
-    hr_rsi_list = (
-        StockData.objects.annotate(**annotate_params).filter(**potential_stock_filters).filter(**filter_params)
-    )
-    to_calculate = StockData.objects.filter(**potential_stock_filters).filter(is_hr_fetched=False).count()
-    context = {
-        "title": "Hourly RSI",
-        "stocks": hr_rsi_list,
-        "to_calculate": to_calculate,
-        "total_stock": total_stock,
-        "potential_count": hr_rsi_list.count(),
-        "active_page": "intraday",
-    }
-    return render(request, "stock/intraday_hr_rsi_page.html", context)
-
-
-@login_required(login_url="/accounts/login/")
-def intraday_daily_rsi_page(request):
-    """Trend page for display potential"""
-    total_stock = StockData.objects.filter(**potential_stock_filters).count()
-    filter_params = {
-        "is_day_fetched": True,
-        "day_ha_open_1__lt": F("day_ha_close_1"),
-        "day_rsi_1__gt": 60,
-    }
-    annotate_params = {
-        "day_rsi_cross_1": Case(
-            When(Q(day_rsi_1__gt=60) & Q(day_rsi_2__lt=60), then=Value(True)),
-            default=Value(False),
-            output_field=BooleanField(),
-        ),
-    }
-    day_rsi_list = (
-        StockData.objects.annotate(**annotate_params).filter(**potential_stock_filters).filter(**filter_params)
-    )
-    to_calculate = StockData.objects.filter(**potential_stock_filters).filter(is_day_fetched=False).count()
-    context = {
-        "title": "Daily RSI",
-        "stocks": day_rsi_list,
-        "to_calculate": to_calculate,
-        "total_stock": total_stock,
-        "potential_count": day_rsi_list.count(),
-        "active_page": "intraday",
-    }
-    return render(request, "stock/intraday_day_rsi_page.html", context)
-
-
-@login_required(login_url="/accounts/login/")
-def intraday_daily_stoch_page(request):
-    """Trend page for display potential"""
-    total_stock = StockData.objects.filter(**potential_stock_filters).count()
-    filter_params = {
-        "is_day_fetched": True,
-        "day_ha_open_1__lt": F("day_ha_close_1"),
-        "day_stoch_black_1__gt": 20,
-        "day_stoch_black_1__lt": 80,
-    }
-    annotate_params = {
-        "day_stoch_cross_1": Case(
-            When(
-                Q(day_stoch_black_1__gt=F("day_stoch_red_1")) & Q(day_stoch_black_2__lt=F("day_stoch_red_2")),
-                then=Value(True),
-            ),
-            default=Value(False),
-            output_field=BooleanField(),
-        ),
-    }
-    day_stoch_list = (
-        StockData.objects.annotate(**annotate_params).filter(**potential_stock_filters).filter(**filter_params)
-    )
-    to_calculate = StockData.objects.filter(**potential_stock_filters).filter(is_day_fetched=False).count()
-    context = {
-        "title": "Stochastics RSI",
-        "stocks": day_stoch_list,
-        "to_calculate": to_calculate,
-        "total_stock": total_stock,
-        "potential_count": day_stoch_list.count(),
-        "active_page": "intraday",
-    }
-    return render(request, "stock/intraday_day_stoch_page.html", context)
 
 
 @login_required(login_url="/accounts/login/")
@@ -490,7 +331,7 @@ def trading_negative_page(request):
     else:
         form = TradingForm()
     context = {
-        "title": "Trading Negative",
+        "title": "Monitoring",
         "form": form,
         "stocks": stock_list,
         "trading_updated_at": latest_record.trading_updated_at if latest_record else "",

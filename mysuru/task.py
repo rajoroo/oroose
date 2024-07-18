@@ -10,5 +10,8 @@ def trading_m5_fetch(name):
     """
     trend_obj = FetchTrend()
     trend_obj.fetch_trading_value(name)
+
     print(f"================I fetch - {datetime.now()}=================")
+    trend_obj.raise_alert_message()
     return True
+

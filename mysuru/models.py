@@ -449,10 +449,10 @@ class StockData(models.Model):
                 self.trading_updated_at = df.iloc[-1]["date"]
 
             df_ohlcv = get_ohlcv(df=df, data_type=data_type)
-            df_ema = calculate_exponential_moving_average(df=df)
-            df_stoch = calculate_stochastic(df=df)
             df_ha = calculate_heikin_ashi(df=df)
-            df_rsi = caculate_rsi(df=df)
+            df_ema = calculate_exponential_moving_average(df=df_ha)
+            df_stoch = calculate_stochastic(df=df_ha)
+            df_rsi = caculate_rsi(df=df_ha)
 
             data_ema = get_ema(df_ema, data_type)
             data_stoch = get_stochastic(df_stoch, data_type)
