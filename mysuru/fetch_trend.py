@@ -140,7 +140,15 @@ class FetchTrend:
         return True
 
     def raise_alert_message(self):
-        recs = self.model_obj.objects.filter(is_trading=True).filter(m5_ema_20_1__gt=F("m5_ha_close_1")).values_list("symbol", flat=True)
+        # Up Values
+        recs = self.model_obj.objects.filter(is_trading=True, trading_status="up").filter(m5_ema_20_0__gt=F("m5_ha_close_0")).values_list("symbol", flat=True)
+        if recs:
+            symbols = "\n".join(recs)
+            TelegramAlert.send_message(symbols)
+
+        # Down Values
+        recs = self.model_obj.objects.filter(is_trading=True, trading_status="dn").filter(
+            m5_ema_20_0__lt=F("m5_ha_close_0")).values_list("symbol", flat=True)
         if recs:
             symbols = "\n".join(recs)
             TelegramAlert.send_message(symbols)

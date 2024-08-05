@@ -9,10 +9,16 @@ urlpatterns = [
     path("stock_data_hour_page/", views.stock_data_hour_page, name="stock_data_hour"),
     path("stock_data_15min_page/", views.stock_data_15min_page, name="stock_data_15min"),
     path("stock_data_5min_page/", views.stock_data_5min_page, name="stock_data_5min"),
+    # Potential
     path("potential_page/", views.potential_page, name="potential"),
+    # Short Term
     path("short_term_page/", views.short_term_page, name="short_term"),
+    # Intraday
     path("intraday_m15_positive_page/", views.intraday_m15_positive_page, name="intraday"),
+    path("intraday_m15_negative_page/", views.intraday_m15_negative_page, name="intraday_negative"),
+    # Trading
     path("trading_negative_page/", views.trading_negative_page, name="trading"),
+    # Configuration
     path("trend/load_live", views.trend_page_load_live, name="trend_page_load_live"),
     path("trend/load_bhav", views.trend_page_load_bhav, name="trend_page_load_bhav"),
     path("trend/futures", views.trend_page_load_futures, name="trend_page_load_futures"),

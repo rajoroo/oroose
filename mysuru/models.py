@@ -19,6 +19,11 @@ from core.tools import (
 )
 
 
+class TradingStatus(models.TextChoices):
+    UP = "up", "UP"
+    DOWN = "dn", "Down"
+
+
 class StockData(models.Model):
     created_date = models.DateField(verbose_name="Created Date", auto_now_add=True)
     updated_date = models.DateField(verbose_name="Updated Date", auto_now=True)
@@ -365,6 +370,7 @@ class StockData(models.Model):
 
     trading_updated_at = models.DateTimeField(verbose_name="Trading Updated at", null=True, blank=True)
     is_trading = models.BooleanField(verbose_name="Is Trading", default=False)
+    trading_status = models.CharField(max_length=2, choices=TradingStatus.choices, null=True, blank=True)
 
     objects = models.Manager()
 

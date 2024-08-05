@@ -12,22 +12,7 @@ from django_q.models import Schedule
 import arrow
 
 
-# =========================================Fiters=========================================
-potential_stock_filters = {
-    "is_wk_fetched": True,
-    "wk_ema_200_1__lt": F("wk_ema_20_1"),
-    "wk_ema_50_1__lt": F("wk_ema_20_1"),
-    "wk_ha_open_1__lt": F("wk_ha_close_1"),
-    "wk_ema_20_1__lt": F("wk_ha_open_1"),
-    "wk_ha_open_2__lt": F("wk_ha_open_1"),
-    "wk_ha_close_2__lt": F("wk_ha_close_1"),
-    "wk_rsi_1__gt": 60,
-}
-potential_negative_stock_filters = {
-    "is_wk_fetched": True,
-    "wk_ha_open_1__gt": F("wk_ha_close_1"),
-}
-# =========================================Trend==========================================
+# =========================================TREND PAGE START==========================================
 @login_required(login_url="/accounts/login/")
 def stock_data_week_page(request):
     """Trend page for display Weekly"""
@@ -106,6 +91,8 @@ def stock_data_5min_page(request):
         "active_page": "stock_data",
     }
     return render(request, "stock/m5_page.html", context)
+
+#===================================TREND PAGE END===========================================
 
 
 @login_required(login_url="/accounts/login/")
@@ -228,49 +215,41 @@ def intraday_m15_positive_page(request):
         "is_wk_fetched": True,
         "wk_ema_200_0__lt": F("wk_ema_50_0"),
         "wk_ema_50_0__lt": F("wk_ema_20_0"),
-        "wk_ha_open_0__lt": F("wk_ha_close_0"),
         "wk_ema_20_0__lt": F("wk_ha_close_0"),
-        # "wk_ha_open_2__lt": F("wk_ha_open_1"),
-        # "wk_ha_close_2__lt": F("wk_ha_close_1"),
-        # "wk_rsi_1__gt": 60,
+        "wk_ha_open_0__lt": F("wk_ha_close_0"),
+        "wk_rsi_0__gt": 60,
     }
     total_stock = StockData.objects.filter(**potential_stock_filters).count()
     filter_params = {
         "is_m15_fetched": True,
-        # "m15_ha_close_1__gt": F("m15_ha_open_1"),
-        "m15_ema_20_1__lt": F("m15_ha_close_1"),
         "m15_valid": True,
     }
     annotate_params = {
+        "m15_ha_cross_0": Case(
+            When(Q(m15_ema_20_0__lt=F("m15_ha_close_0")) & Q(m15_ema_20_0__gt=F("m15_ha_open_0")), then=Value(True)),
+            default=Value(False),
+            output_field=BooleanField(),
+        ),
         "m15_ha_cross_1": Case(
             When(Q(m15_ema_20_1__lt=F("m15_ha_close_1")) & Q(m15_ema_20_1__gt=F("m15_ha_open_1")), then=Value(True)),
             default=Value(False),
             output_field=BooleanField(),
         ),
         "m15_ha_cross_2": Case(
-            When(
-                Q(m15_ema_20_1__lt=F("m15_ha_close_1"))
-                & Q(m15_ema_20_1__lt=F("m15_ha_open_1"))
-                & Q(m15_ema_20_2__gt=F("m15_ha_open_2")),
-                then=Value(True),
-            ),
+            When(Q(m15_ema_20_2__lt=F("m15_ha_close_2")) & Q(m15_ema_20_2__gt=F("m15_ha_open_2")), then=Value(True)),
             default=Value(False),
             output_field=BooleanField(),
         ),
-        "m15_ema_cross_1": Case(
-            When(m15_ema_50_1__lt=F("m15_ema_20_1"), then=Value(True)),
+        "m15_ha_cross_3": Case(
+            When(Q(m15_ema_20_3__lt=F("m15_ha_close_3")) & Q(m15_ema_20_3__gt=F("m15_ha_open_3")), then=Value(True)),
             default=Value(False),
             output_field=BooleanField(),
         ),
         "m15_valid": Case(
-            When(Q(m15_ema_20_1__lt=F("m15_ha_close_1")) & Q(m15_ema_20_1__gt=F("m15_ha_open_1")), then=Value(True)),
-            When(
-                Q(m15_ema_20_1__lt=F("m15_ha_close_1"))
-                & Q(m15_ema_20_1__lt=F("m15_ha_open_1"))
-                & Q(m15_ema_20_2__gt=F("m15_ha_open_2")),
-                then=Value(True),
-            ),
-            When(m15_ema_50_1__lt=F("m15_ema_20_1"), then=Value(True)),
+            When(m15_ha_cross_0=True, then=Value(True)),
+            When(m15_ha_cross_1=True, then=Value(True)),
+            When(m15_ha_cross_2=True, then=Value(True)),
+            When(m15_ha_cross_3=True, then=Value(True)),
             default=Value(False),
             output_field=BooleanField(),
         ),
@@ -288,6 +267,59 @@ def intraday_m15_positive_page(request):
         "active_page": "intraday",
     }
     return render(request, "stock/intraday_m15_positive_page.html", context)
+
+
+@login_required(login_url="/accounts/login/")
+def intraday_m15_negative_page(request):
+    """Trend page for display potential"""
+    total_stock = StockData.objects.filter(is_m15_fetched=True).count()
+    filter_params = {
+        "is_m15_fetched": True,
+        "m15_valid": True,
+    }
+    annotate_params = {
+        "m15_ha_cross_0": Case(
+            When(Q(m15_ema_20_0__gt=F("m15_ha_close_0")) & Q(m15_ema_20_0__lt=F("m15_ha_open_0")), then=Value(True)),
+            default=Value(False),
+            output_field=BooleanField(),
+        ),
+        "m15_ha_cross_1": Case(
+            When(Q(m15_ema_20_1__gt=F("m15_ha_close_1")) & Q(m15_ema_20_1__lt=F("m15_ha_open_1")), then=Value(True)),
+            default=Value(False),
+            output_field=BooleanField(),
+        ),
+        "m15_ha_cross_2": Case(
+            When(Q(m15_ema_20_2__gt=F("m15_ha_close_2")) & Q(m15_ema_20_2__lt=F("m15_ha_open_2")), then=Value(True)),
+            default=Value(False),
+            output_field=BooleanField(),
+        ),
+        "m15_ha_cross_3": Case(
+            When(Q(m15_ema_20_3__gt=F("m15_ha_close_3")) & Q(m15_ema_20_3__lt=F("m15_ha_open_3")), then=Value(True)),
+            default=Value(False),
+            output_field=BooleanField(),
+        ),
+        "m15_valid": Case(
+            When(m15_ha_cross_0=True, then=Value(True)),
+            When(m15_ha_cross_1=True, then=Value(True)),
+            When(m15_ha_cross_2=True, then=Value(True)),
+            When(m15_ha_cross_3=True, then=Value(True)),
+            default=Value(False),
+            output_field=BooleanField(),
+        ),
+    }
+    m15_negative_list = (
+        StockData.objects.annotate(**annotate_params).filter(**filter_params)
+    )
+    to_calculate = StockData.objects.filter(is_m15_fetched=False).count()
+    context = {
+        "title": "15 Min Negative",
+        "stocks": m15_negative_list,
+        "to_calculate": to_calculate,
+        "total_stock": total_stock,
+        "potential_count": m15_negative_list.count(),
+        "active_page": "intraday",
+    }
+    return render(request, "stock/intraday_m15_negative_page.html", context)
 
 
 @login_required(login_url="/accounts/login/")
@@ -321,9 +353,11 @@ def trading_negative_page(request):
         form = TradingForm(request.POST)
         if form.is_valid():
             symbol = form.cleaned_data["symbol"]
+            trading_status = form.cleaned_data["trading_status"]
             stock_data = StockData.objects.get(symbol=symbol)
             if "_add" in request.POST:
                 stock_data.is_trading = True
+                stock_data.trading_status = trading_status
             elif "_remove" in request.POST:
                 stock_data.is_trading = False
             stock_data.save()

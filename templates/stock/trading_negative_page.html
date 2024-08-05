@@ -38,6 +38,7 @@
                             <tr>
                                 <th>Symbol</th>
                                 <th>Company</th>
+                                <th>Trading Status</th>
                                 <th>5 Min Candle</th>
                                 <th>HA Cross Up</th>
                             </tr>
@@ -45,6 +46,7 @@
                             <tr>
                                 <td>{{ row.symbol }}</td>
                                 <td>{{ row.company_name }}</td>
+                                <td>{{ row.get_trading_status_display }}</td>
                                 <td>
                                     <div class="rect-box {% if row.m5_3 %}green-col{% else %}red-col{% endif %}"></div>
                                     <div class="rect-box {% if row.m5_2 %}green-col{% else %}red-col{% endif %}"></div>
