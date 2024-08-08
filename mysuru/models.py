@@ -4,6 +4,7 @@ import pandas as pd
 from dateutil.relativedelta import relativedelta
 from django.db import models
 
+from core.zero_util import ZeroTool, ZeroInstrument
 from core.smart_util import SmartInstrument, SmartTool
 from core.tools import (
     calculate_stochastic,
@@ -31,7 +32,9 @@ class StockData(models.Model):
     symbol = models.CharField(max_length=50, verbose_name="Symbol")
     company_name = models.CharField(max_length=200, verbose_name="Company Name", null=True, blank=True)
     smart_token = models.CharField(max_length=50, verbose_name="Smart Token", null=True, blank=True)
+    zero_token = models.CharField(max_length=50, verbose_name="Zero Token", null=True, blank=True)
     smart_token_fetched = models.BooleanField(verbose_name="Smart Token Fetched", default=False)
+    zero_token_fetched = models.BooleanField(verbose_name="Zero Token Fetched", default=False)
 
     is_wk_fetched = models.BooleanField(verbose_name="Week Fetched", default=False)
     wk_open = models.FloatField(verbose_name="Open", null=True, blank=True)
@@ -394,6 +397,35 @@ class StockData(models.Model):
         self.smart_token_fetched = True
         self.save()
 
+    def get_zero_token(self):
+        tag_data = get_param_config_tag(tag="ZERO_HISTORY")
+        zero = ZeroTool(**tag_data)
+        kite = zero.get_kite()
+        try:
+            instrument = f"NSE:{self.symbol}"
+            quote_response = kite.quote(instrument)
+            self.zero_token = quote_response[instrument]["instrument_token"]
+        except:
+            pass
+
+        self.zero_token_fetched = True
+        self.save()
+
+    # def get_zero_token(self):
+    #     """Get smart token from api"""
+    #     try:
+    #         tag_data = get_param_config_tag(tag="ZERO_HISTORY")
+    #         zero = ZeroTool(**tag_data)
+    #         kite = zero.get_kite()
+    #         obj = ZeroInstrument(instrument=self.symbol, kite=kite)
+    #         result = obj.get_instrument()
+    #         self.zero_token = str(result.get("instrument_token"))
+    #     except:
+    #         pass
+    #
+    #     self.zero_token_fetched = True
+    #     self.save()
+
     def get_smart_ohlc(self, interval, days):
         """Get Open, High, Low, Close from smart API"""
         from_date = datetime.now() - relativedelta(days=days)
@@ -410,6 +442,22 @@ class StockData(models.Model):
 
         df = pd.DataFrame(history_data)
         df[["date", "open", "high", "low", "close", "volume"]] = pd.DataFrame(df.data.tolist(), index=df.index)
+        df["date"] = pd.to_datetime(df["date"])
+        return df
+
+    def get_zero_ohlc(self, interval, days):
+        """Get Open, High, Low, Close from zero API"""
+        from_date = datetime.now() - relativedelta(days=days)
+        tag_data = get_param_config_tag(tag="ZERO_HISTORY")
+        zero = ZeroTool(**tag_data)
+        history_data = zero.get_historical_data(
+            symboltoken=self.zero_token,
+            interval=interval,
+            fromdate=from_date.strftime("%Y-%m-%d %H:%M:%S"),
+            todate=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        )
+
+        df = pd.DataFrame(history_data)
         df["date"] = pd.to_datetime(df["date"])
         return df
 
@@ -430,7 +478,7 @@ class StockData(models.Model):
         dfw.reset_index(inplace=True)
         return dfw
 
-    def get_fetch_params(self, data_type):
+    def get_fetch_params_smart(self, data_type):
         params = {
             "wk": ("ONE_DAY", 900),
             "day": ("ONE_DAY", 400),
@@ -440,14 +488,26 @@ class StockData(models.Model):
         }
         return params.get(data_type)
 
+    def get_fetch_params_zero(self, data_type):
+        params = {
+            "wk": ("day", 900),
+            "day": ("day", 400),
+            "hr": ("60minute", 60),
+            "m15": ("15minute", 60),
+            "m5": ("5minute", 60),
+        }
+        return params.get(data_type)
+
     def generate_trend_value(self, data_type):
         """Generate trend value"""
-        if not self.smart_token:
+        if not self.zero_token:
             return None
 
         try:
-            interval, days = self.get_fetch_params(data_type)
-            df = self.get_smart_ohlc(interval=interval, days=days)
+            # interval, days = self.get_fetch_params_smart(data_type)
+            # df = self.get_smart_ohlc(interval=interval, days=days)
+            interval, days = self.get_fetch_params_zero(data_type)
+            df = self.get_zero_ohlc(interval=interval, days=days)
             if data_type == "wk":
                 df = self.reset_date_ohlc(df=df)
 
