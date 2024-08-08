@@ -16,6 +16,7 @@ urlpatterns = [
     # Intraday
     path("intraday_m15_positive_page/", views.intraday_m15_positive_page, name="intraday"),
     path("intraday_m15_negative_page/", views.intraday_m15_negative_page, name="intraday_negative"),
+    path("intraday_m5_positive_page/", views.intraday_m5_positive_page, name="intraday_5min_positive"),
     # Trading
     path("trading_negative_page/", views.trading_negative_page, name="trading"),
     # Configuration

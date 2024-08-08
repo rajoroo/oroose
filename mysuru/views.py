@@ -323,6 +323,70 @@ def intraday_m15_negative_page(request):
 
 
 @login_required(login_url="/accounts/login/")
+def intraday_m5_positive_page(request):
+    """Trend page for display potential"""
+    potential_stock_filters = {
+        "is_wk_fetched": True,
+        "wk_ema_200_0__lt": F("wk_ema_50_0"),
+        "wk_ema_50_0__lt": F("wk_ema_20_0"),
+        "wk_ema_20_0__lt": F("wk_ha_close_0"),
+        "wk_ha_open_0__lt": F("wk_ha_close_0"),
+        "wk_rsi_0__gt": 60,
+    }
+    total_stock = StockData.objects.filter(**potential_stock_filters).count()
+    filter_params = {
+        "is_m5_fetched": True,
+        "m5_valid": True,
+    }
+    annotate_params = {
+        "m5_stoch_cross_0": Case(
+            When(Q(m5_stoch_black_0__gt=F("m5_stoch_red_0")) & Q(m5_stoch_red_1__gt=F("m5_stoch_black_1")), then=Value(True)),
+            default=Value(False),
+            output_field=BooleanField(),
+        ),
+        "m5_stoch_cross_1": Case(
+            When(Q(m5_stoch_black_1__gt=F("m5_stoch_red_1")) & Q(m5_stoch_red_2__gt=F("m5_stoch_black_2")),
+                 then=Value(True)),
+            default=Value(False),
+            output_field=BooleanField(),
+        ),
+        "m5_stoch_cross_2": Case(
+            When(Q(m5_stoch_black_2__gt=F("m5_stoch_red_2")) & Q(m5_stoch_red_3__gt=F("m5_stoch_black_3")),
+                 then=Value(True)),
+            default=Value(False),
+            output_field=BooleanField(),
+        ),
+        "m5_stoch_cross_3": Case(
+            When(Q(m5_stoch_black_3__gt=F("m5_stoch_red_3")) & Q(m5_stoch_red_4__gt=F("m5_stoch_black_4")),
+                 then=Value(True)),
+            default=Value(False),
+            output_field=BooleanField(),
+        ),
+        "m5_valid": Case(
+            When(m5_stoch_cross_0=True, then=Value(True)),
+            When(m5_stoch_cross_1=True, then=Value(True)),
+            When(m5_stoch_cross_2=True, then=Value(True)),
+            When(m5_stoch_cross_3=True, then=Value(True)),
+            default=Value(False),
+            output_field=BooleanField(),
+        ),
+    }
+    m5_positive_list = (
+        StockData.objects.annotate(**annotate_params).filter(**potential_stock_filters).filter(**filter_params)
+    )
+    to_calculate = StockData.objects.filter(**potential_stock_filters).filter(is_m5_fetched=False).count()
+    context = {
+        "title": "5 Min Positive",
+        "stocks": m5_positive_list,
+        "to_calculate": to_calculate,
+        "total_stock": total_stock,
+        "potential_count": m5_positive_list.count(),
+        "active_page": "intraday",
+    }
+    return render(request, "stock/intraday_m5_positive_page.html", context)
+
+
+@login_required(login_url="/accounts/login/")
 def trading_negative_page(request):
     """Trend page for display potential"""
     annotate_params = {
