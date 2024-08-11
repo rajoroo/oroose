@@ -23,6 +23,7 @@ urlpatterns = [
     path("accounts/", include("django.contrib.auth.urls")),
     path("", views.home_page, name="home"),
     path("mysuru/", include("mysuru.urls")),
+    path("trading_monitor/", include("jrose.urls")),
     path("configuration_page/", views.configuration_page, name="configuration"),
     path("config_file_upload/", views.upload_config_file, name="upload_config_file"),
     path("generate_smart_token/", views.generate_smart_token, name="generate_smart_token"),

@@ -1,0 +1,18 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block title %}
+<title>{{title}}</title>
+{% endblock title %}
+
+{% block content %}
+
+    {% include "trading_monitor/trading_stock_link.html" %}
+    {% include "trading_monitor/m15_negative_table.html" %}
+
+{% endblock content %}
+
+{% block js_scripts %}
+<script src="{% static 'js/load_bengaluru.js' %}" crossorigin="anonymous"></script>
+<script src="{% static 'js/load_upload_file.js' %}" crossorigin="anonymous"></script>
+{% endblock js_scripts %}

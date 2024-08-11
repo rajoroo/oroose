@@ -28,20 +28,20 @@
                                 <th>Symbol</th>
                                 <th>Company</th>
                                 <th>Close</th>
-                                <th>HA Cross 0</th>
-                                <th>HA Cross 1</th>
-                                <th>HA Cross 2</th>
-                                <th>HA Cross 3</th>
+                                <th>Stoch Cross 0</th>
+                                <th>Stoch Cross 1</th>
+                                <th>Stoch Cross 2</th>
+                                <th>Stoch Cross 3</th>
                             </tr>
                             {% for row in stocks %}
                             <tr>
                                 <td>{{ row.symbol }}</td>
                                 <td>{{ row.company_name }}</td>
                                 <td>{{ row.m15_close }}</td>
-                                <td {% if row.m15_ha_cross_0 %}class="green-col"{% endif %}>{{ row.m15_ha_cross_0 }}</td>
-                                <td {% if row.m15_ha_cross_1 %}class="green-col"{% endif %}>{{ row.m15_ha_cross_1 }}</td>
-                                <td {% if row.m15_ha_cross_2 %}class="green-col"{% endif %}>{{ row.m15_ha_cross_2 }}</td>
-                                <td {% if row.m15_ha_cross_3 %}class="green-col"{% endif %}>{{ row.m15_ha_cross_3 }}</td>
+                                <td {% if row.m15_stoch_cross_0 %}class="green-col"{% endif %}>{{ row.m15_stoch_cross_0 }}</td>
+                                <td {% if row.m15_stoch_cross_1 %}class="green-col"{% endif %}>{{ row.m15_stoch_cross_1 }}</td>
+                                <td {% if row.m15_stoch_cross_2 %}class="green-col"{% endif %}>{{ row.m15_stoch_cross_2 }}</td>
+                                <td {% if row.m15_stoch_cross_3 %}class="green-col"{% endif %}>{{ row.m15_stoch_cross_3 }}</td>
                             </tr>
                             {% endfor %}
                         </table>

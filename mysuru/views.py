@@ -225,31 +225,34 @@ def intraday_m15_positive_page(request):
         "m15_valid": True,
     }
     annotate_params = {
-        "m15_ha_cross_0": Case(
-            When(Q(m15_ema_20_0__lt=F("m15_ha_close_0")) & Q(m15_ema_20_0__gt=F("m15_ha_open_0")), then=Value(True)),
+        "m15_stoch_cross_0": Case(
+            When(Q(m15_stoch_black_0__gt=F("m15_stoch_red_0")) & Q(m15_stoch_red_1__gt=F("m15_stoch_black_1")), then=Value(True)),
             default=Value(False),
             output_field=BooleanField(),
         ),
-        "m15_ha_cross_1": Case(
-            When(Q(m15_ema_20_1__lt=F("m15_ha_close_1")) & Q(m15_ema_20_1__gt=F("m15_ha_open_1")), then=Value(True)),
+        "m15_stoch_cross_1": Case(
+            When(Q(m15_stoch_black_1__gt=F("m15_stoch_red_1")) & Q(m15_stoch_red_2__gt=F("m15_stoch_black_2")),
+                 then=Value(True)),
             default=Value(False),
             output_field=BooleanField(),
         ),
-        "m15_ha_cross_2": Case(
-            When(Q(m15_ema_20_2__lt=F("m15_ha_close_2")) & Q(m15_ema_20_2__gt=F("m15_ha_open_2")), then=Value(True)),
+        "m15_stoch_cross_2": Case(
+            When(Q(m15_stoch_black_2__gt=F("m15_stoch_red_2")) & Q(m15_stoch_red_3__gt=F("m15_stoch_black_3")),
+                 then=Value(True)),
             default=Value(False),
             output_field=BooleanField(),
         ),
-        "m15_ha_cross_3": Case(
-            When(Q(m15_ema_20_3__lt=F("m15_ha_close_3")) & Q(m15_ema_20_3__gt=F("m15_ha_open_3")), then=Value(True)),
+        "m15_stoch_cross_3": Case(
+            When(Q(m15_stoch_black_3__gt=F("m15_stoch_red_3")) & Q(m15_stoch_red_4__gt=F("m15_stoch_black_4")),
+                 then=Value(True)),
             default=Value(False),
             output_field=BooleanField(),
         ),
         "m15_valid": Case(
-            When(m15_ha_cross_0=True, then=Value(True)),
-            When(m15_ha_cross_1=True, then=Value(True)),
-            When(m15_ha_cross_2=True, then=Value(True)),
-            When(m15_ha_cross_3=True, then=Value(True)),
+            When(m15_stoch_cross_0=True, then=Value(True)),
+            When(m15_stoch_cross_1=True, then=Value(True)),
+            When(m15_stoch_cross_2=True, then=Value(True)),
+            When(m15_stoch_cross_3=True, then=Value(True)),
             default=Value(False),
             output_field=BooleanField(),
         ),
@@ -278,31 +281,34 @@ def intraday_m15_negative_page(request):
         "m15_valid": True,
     }
     annotate_params = {
-        "m15_ha_cross_0": Case(
-            When(Q(m15_ema_20_0__gt=F("m15_ha_close_0")) & Q(m15_ema_20_0__lt=F("m15_ha_open_0")), then=Value(True)),
+        "m15_stoch_cross_0": Case(
+            When(Q(m15_stoch_red_0__gt=F("m15_stoch_black_0")) & Q(m15_stoch_black_1__gt=F("m15_stoch_red_1")), then=Value(True)),
             default=Value(False),
             output_field=BooleanField(),
         ),
-        "m15_ha_cross_1": Case(
-            When(Q(m15_ema_20_1__gt=F("m15_ha_close_1")) & Q(m15_ema_20_1__lt=F("m15_ha_open_1")), then=Value(True)),
+        "m15_stoch_cross_1": Case(
+            When(Q(m15_stoch_red_1__gt=F("m15_stoch_black_1")) & Q(m15_stoch_black_2__gt=F("m15_stoch_red_2")),
+                 then=Value(True)),
             default=Value(False),
             output_field=BooleanField(),
         ),
-        "m15_ha_cross_2": Case(
-            When(Q(m15_ema_20_2__gt=F("m15_ha_close_2")) & Q(m15_ema_20_2__lt=F("m15_ha_open_2")), then=Value(True)),
+        "m15_stoch_cross_2": Case(
+            When(Q(m15_stoch_red_2__gt=F("m15_stoch_black_2")) & Q(m15_stoch_black_3__gt=F("m15_stoch_red_3")),
+                 then=Value(True)),
             default=Value(False),
             output_field=BooleanField(),
         ),
-        "m15_ha_cross_3": Case(
-            When(Q(m15_ema_20_3__gt=F("m15_ha_close_3")) & Q(m15_ema_20_3__lt=F("m15_ha_open_3")), then=Value(True)),
+        "m15_stoch_cross_3": Case(
+            When(Q(m15_stoch_red_3__gt=F("m15_stoch_black_3")) & Q(m15_stoch_black_4__gt=F("m15_stoch_red_4")),
+                 then=Value(True)),
             default=Value(False),
             output_field=BooleanField(),
         ),
         "m15_valid": Case(
-            When(m15_ha_cross_0=True, then=Value(True)),
-            When(m15_ha_cross_1=True, then=Value(True)),
-            When(m15_ha_cross_2=True, then=Value(True)),
-            When(m15_ha_cross_3=True, then=Value(True)),
+            When(m15_stoch_cross_0=True, then=Value(True)),
+            When(m15_stoch_cross_1=True, then=Value(True)),
+            When(m15_stoch_cross_2=True, then=Value(True)),
+            When(m15_stoch_cross_3=True, then=Value(True)),
             default=Value(False),
             output_field=BooleanField(),
         ),

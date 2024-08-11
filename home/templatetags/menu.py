@@ -13,6 +13,7 @@ def show_menu_navbar(page, path):
         {"name": "short_term", "display_name": "Short Term"},
         {"name": "intraday", "display_name": "Intraday"},
         {"name": "trading", "display_name": "Trading"},
+        {"name": "trading_monitor", "display_name": "Trading Monitor"},
         {"name": "configuration", "display_name": "Configuration"},
     ]
 
