@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from django.conf import settings
-from django.db.models import F
+from django.db.models import F, Q
 
 from core.telegram_util import TelegramAlert
 from .stocks import LiveStocks
@@ -146,7 +146,9 @@ class FetchTrend:
         for rec in recs:
             print(f"EMA: {rec.m5_ema_20_0} Close: {rec.m5_ha_close_0}")
         recs = recs.filter(
-            m5_ema_20_0__gt=F("m5_ha_close_0")).values_list("symbol", flat=True)
+            Q(m15_ema_20_0__gt=F("m15_ha_close_0")) &
+            Q(m15_ema_20_0__gt=F("m15_ha_open_0"))
+        ).values_list("symbol", flat=True)
         if recs:
             symbols = "\n".join(recs)
             TelegramAlert.send_message(symbols)
@@ -156,7 +158,9 @@ class FetchTrend:
         for rec in recs:
             print(f"EMA: {rec.m5_ema_20_0} Close: {rec.m5_ha_close_0}")
         recs = recs.filter(
-            m5_ema_20_0__lt=F("m5_ha_close_0")).values_list("symbol", flat=True)
+            Q(m15_ema_20_0__lt=F("m15_ha_close_0")) &
+            Q(m15_ema_20_0__lt=F("m15_ha_open_0"))
+        ).values_list("symbol", flat=True)
         if recs:
             symbols = "\n".join(recs)
             TelegramAlert.send_message(symbols)

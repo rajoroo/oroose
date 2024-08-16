@@ -213,3 +213,42 @@ def m15_negative_queryset():
         )
         .order_by("-m15_full_cross")
     )
+
+
+def daily_potential_queryset():
+    """Daily Potential stocks"""
+    return (
+        StockData.objects.filter(
+            is_day_fetched=True,
+            day_ema_200_0__lt=F("day_ema_50_0"),
+        )
+        .annotate(
+            day_50_cross=Case(
+                When(Q(day_ema_50_0__gt=F("day_ha_open_0")) & Q(day_ema_50_0__lt=F("day_ha_close_0")), then=Value(True)
+                     ),
+                default=Value(False),
+                output_field=BooleanField(),
+            ),
+            day_stoch_cross=Case(
+                When(
+                    Q(day_stoch_black_0__gt=F("day_stoch_red_0")) & Q(day_stoch_red_1__gt=F("day_stoch_black_1")),
+                    then=Value(True)
+                ),
+                default=Value(False),
+                output_field=BooleanField(),
+            ),
+            day_rsi_cross=Case(
+                When(day_rsi_0__gt=60, then=Value(True)),
+                default=Value(False),
+                output_field=BooleanField(),
+            ),
+            day_valid=Case(
+                When(day_50_cross=True, then=Value(True)),
+                When(day_stoch_cross=True, then=Value(True)),
+                default=Value(False),
+                output_field=BooleanField(),
+            ),
+        )
+        .filter(day_valid=True)
+        .order_by("-day_stoch_black_0")
+    )

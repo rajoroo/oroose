@@ -1,0 +1,42 @@
+{% for rec in stock_list %}
+<div class="row">
+    <div class="col-12 col-sm-12">
+        <div class="card nifty-table">
+            <div class="card-header border-bottom">
+                <h3 class="card-title mb-0">{{ rec.title }}</h3>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <div class="pt-3 txt-rt">
+                        <span>Total - {{ total_stock }} | Remaining to calculate - {{ to_calculate }} | Stock Count - {{ rec.stock_count }}</span>
+                    </div>
+                    {% if rec.stocks %}
+                    <table class="green-table">
+                        <tr>
+                            <th>Symbol</th>
+                            <th>Company</th>
+                            <th>Open</th>
+                            <th>Close</th>
+                            <th>Cross 50 EMA</th>
+                            <th>Stoch Cross</th>
+                            <th>RSI</th>
+                        </tr>
+                        {% for row in rec.stocks %}
+                        <tr>
+                            <td>{{ row.symbol }}</td>
+                            <td>{{ row.company_name }}</td>
+                            <td>{{ row.day_open }}</td>
+                            <td>{{ row.day_close }}</td>
+                            <td {% if row.day_50_cross %}class="green-col"{% endif %}>{{ row.day_50_cross }}</td>
+                            <td {% if row.day_stoch_cross %}class="green-col"{% endif %}>{{ row.day_stoch_black_0 }}</td>
+                            <td {% if row.day_rsi_cross %}class="green-col"{% endif %}>{{ row.day_rsi_0 }}</td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}

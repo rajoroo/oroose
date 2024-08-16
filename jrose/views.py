@@ -1,8 +1,8 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from django.db.models import Q
+from django.db.models import Q, F
 from mysuru.models import StockData
-from jrose.stock_data_fetch import m15_positive_queryset, m15_negative_queryset
+from jrose.stock_data_fetch import m15_positive_queryset, m15_negative_queryset, daily_potential_queryset
 
 
 @login_required(login_url="/accounts/login/")
@@ -75,3 +75,25 @@ def m15_negative(request):
     return render(request, "trading_monitor/m15_negative_page.html", context)
 
 
+@login_required(login_url="/accounts/login/")
+def daily_potential(request):
+    """Daily potential Stocks"""
+
+    stocks = daily_potential_queryset()
+    to_calculate = StockData.objects.filter(is_day_fetched=False).count()
+    total_stock = StockData.objects.filter().all().count()
+    stock_list = [
+        {
+            "title": "Daily Potential",
+            "stocks": stocks,
+            "stock_count": stocks.count(),
+            "help": "Daily Potential stocks"
+        },
+    ]
+    context = {
+        "active_page": "daily_potential",
+        "stock_list": stock_list,
+        "to_calculate": to_calculate,
+        "total_stock": total_stock,
+    }
+    return render(request, "stock/daily_potential.html", context)
