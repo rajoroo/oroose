@@ -80,14 +80,27 @@ def daily_potential(request):
     """Daily potential Stocks"""
 
     stocks = daily_potential_queryset()
+    daily_potential_qs = stocks.filter(
+        day_ema_20_0__gt=F("day_ema_50_0"),
+        day_ha_close_0__gt=F("day_ema_20_0"),
+        day_ha_open_0__gt=F("day_ema_20_0"),
+    )
+    daily_potential_pk = daily_potential_qs.values_list("pk", flat=True)
+    stoch_cross_qs = stocks.filter(~Q(pk__in=daily_potential_pk))
     to_calculate = StockData.objects.filter(is_day_fetched=False).count()
     total_stock = StockData.objects.filter().all().count()
     stock_list = [
         {
             "title": "Daily Potential",
-            "stocks": stocks,
-            "stock_count": stocks.count(),
+            "stocks": daily_potential_qs,
+            "stock_count": daily_potential_qs.count(),
             "help": "Daily Potential stocks"
+        },
+        {
+            "title": "Stoch Cross",
+            "stocks": stoch_cross_qs,
+            "stock_count": stoch_cross_qs.count(),
+            "help": "Stoch Cross Stocks"
         },
     ]
     context = {

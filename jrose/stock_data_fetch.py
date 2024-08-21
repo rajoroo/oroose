@@ -223,15 +223,33 @@ def daily_potential_queryset():
             day_ema_200_0__lt=F("day_ema_50_0"),
         )
         .annotate(
-            day_50_cross=Case(
-                When(Q(day_ema_50_0__gt=F("day_ha_open_0")) & Q(day_ema_50_0__lt=F("day_ha_close_0")), then=Value(True)
-                     ),
+            day_stoch_cross_0=Case(
+                When(
+                    Q(day_stoch_black_0__gt=F("day_stoch_red_0")) & Q(day_stoch_red_1__gt=F("day_stoch_black_1")),
+                    then=Value(True)
+                ),
                 default=Value(False),
                 output_field=BooleanField(),
             ),
-            day_stoch_cross=Case(
+            day_stoch_cross_1=Case(
                 When(
-                    Q(day_stoch_black_0__gt=F("day_stoch_red_0")) & Q(day_stoch_red_1__gt=F("day_stoch_black_1")),
+                    Q(day_stoch_black_1__gt=F("day_stoch_red_1")) & Q(day_stoch_red_2__gt=F("day_stoch_black_2")),
+                    then=Value(True)
+                ),
+                default=Value(False),
+                output_field=BooleanField(),
+            ),
+            day_stoch_cross_above_20_0=Case(
+                When(
+                    Q(day_stoch_black_0__gt=F("day_stoch_red_0")) & Q(day_stoch_red_1__gt=F("day_stoch_black_1")) & Q(day_ha_close_0__gt=F("day_ema_20_0")) & Q(day_ha_open_0__gt=F("day_ema_20_0")) ,
+                    then=Value(True)
+                ),
+                default=Value(False),
+                output_field=BooleanField(),
+            ),
+            day_stoch_cross_above_20_1=Case(
+                When(
+                    Q(day_stoch_black_1__gt=F("day_stoch_red_1")) & Q(day_stoch_red_2__gt=F("day_stoch_black_2")) & Q(day_ha_close_1__gt=F("day_ema_20_1")) & Q(day_ha_open_1__gt=F("day_ema_20_1")) ,
                     then=Value(True)
                 ),
                 default=Value(False),
@@ -243,8 +261,14 @@ def daily_potential_queryset():
                 output_field=BooleanField(),
             ),
             day_valid=Case(
-                When(day_50_cross=True, then=Value(True)),
-                When(day_stoch_cross=True, then=Value(True)),
+                When(day_stoch_cross_0=True, then=Value(True)),
+                When(day_stoch_cross_1=True, then=Value(True)),
+                default=Value(False),
+                output_field=BooleanField(),
+            ),
+            day_cross_above_20_valid=Case(
+                When(day_stoch_cross_above_20_0=True, then=Value(True)),
+                When(day_stoch_cross_above_20_1=True, then=Value(True)),
                 default=Value(False),
                 output_field=BooleanField(),
             ),
