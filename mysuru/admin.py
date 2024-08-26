@@ -6,16 +6,7 @@ from mysuru.models import StockData
 @admin.register(StockData)
 class StockDataAdmin(admin.ModelAdmin):
     fieldsets = [
-        (None, {"fields": [("symbol", "company_name")]}),
-        (
-            "Tokens",
-            {
-                "fields": [
-                    ("smart_token", "smart_token_fetched"),
-                    ("zero_token", "zero_token_fetched")
-                ]
-            },
-        ),
+        (None, {"fields": [("symbol", "company_name", "smart_token", "smart_token_fetched")]}),
         (
             "Weekly information",
             {

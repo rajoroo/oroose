@@ -24,12 +24,11 @@
                                 <th>Symbol</th>
                                 <th>Company</th>
                                 <th>Close</th>
-                                <th>EMA 200</th>
-                                <th>EMA 50</th>
-                                <th>EMA 20</th>
                                 <th>EMA Cross 0</th>
                                 <th>EMA Cross 1</th>
                                 <th>HA Cross</th>
+                                <th>Stoch Cross 0</th>
+                                <th>Stoch Cross 1</th>
                                 <th>RSI</th>
                                 <th>RSI Cross</th>
                             </tr>
@@ -38,12 +37,11 @@
                                 <td>{{ row.symbol }}</td>
                                 <td>{{ row.company_name }}</td>
                                 <td>{{ row.wk_close }}</td>
-                                <td>{{ row.wk_ema_200_0 }}</td>
-                                <td>{{ row.wk_ema_50_0 }}</td>
-                                <td>{{ row.wk_ema_20_0 }}</td>
                                 <td {% if row.ema_20_cross_0 %}class="green-col"{% endif %}>{{ row.ema_20_cross_0 }}</td>
                                 <td {% if row.ema_20_cross_1 %}class="green-col"{% endif %}>{{ row.ema_20_cross_1 }}</td>
                                 <td {% if row.ha_cross_0 %}class="green-col"{% endif %}>{{ row.ha_cross_0 }}</td>
+                                <td {% if row.wk_stoch_cross_0 %}class="green-col"{% endif %}>{{ row.wk_stoch_cross_0 }}</td>
+                                <td {% if row.wk_stoch_cross_1 %}class="green-col"{% endif %}>{{ row.wk_stoch_cross_1 }}</td>
                                 <td {% if row.rsi_above_60 %}class="green-col"{% endif %}>{{ row.wk_rsi_0 }}</td>
                                 <td {% if row.rsi_cross_0 %}class="green-col"{% endif %}>{{ row.rsi_cross_0 }}</td>
                             </tr>

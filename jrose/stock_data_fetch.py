@@ -260,6 +260,11 @@ def daily_potential_queryset():
                 default=Value(False),
                 output_field=BooleanField(),
             ),
+            wk_rsi_cross=Case(
+                When(wk_rsi_0__gt=60, then=Value(True)),
+                default=Value(False),
+                output_field=BooleanField(),
+            ),
             day_valid=Case(
                 When(day_stoch_cross_0=True, then=Value(True)),
                 When(day_stoch_cross_1=True, then=Value(True)),

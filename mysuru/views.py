@@ -107,6 +107,22 @@ def potential_page(request):
         "wk_ha_open_0__lt": F("wk_ha_close_0"),
     }
     annotate_params = {
+        "wk_stoch_cross_0": Case(
+        When(
+                Q(wk_stoch_black_0__gt=F("wk_stoch_red_0")) & Q(wk_stoch_red_1__gt=F("wk_stoch_black_1")),
+                then=Value(True)
+            ),
+            default=Value(False),
+            output_field=BooleanField(),
+        ),
+        "wk_stoch_cross_1": Case(
+            When(
+                Q(wk_stoch_black_1__gt=F("wk_stoch_red_1")) & Q(wk_stoch_red_2__gt=F("wk_stoch_black_2")),
+                then=Value(True)
+            ),
+            default=Value(False),
+            output_field=BooleanField(),
+        ),
         "ha_cross_0": Case(
             When(
                 Q(wk_ha_open_0__lt=F("wk_ha_close_0")) & Q(wk_ha_open_1__gt=F("wk_ha_close_1")), then=Value(True)

@@ -90,8 +90,7 @@ class FetchTrend:
         self.model_obj.objects.bulk_create(create_list)
         recs = self.model_obj.objects.all()
         for rec in recs:
-            # rec.get_smart_token()
-            rec.get_zero_token()
+            rec.get_smart_token()
 
         self.model_obj.objects.filter(smart_token__isnull=True, smart_token_fetched=True).delete()
         return True

@@ -24,7 +24,7 @@
                         </tr>
                         {% for row in rec.stocks %}
                         <tr>
-                            <td>{{ row.symbol }}</td>
+                            <td {% if row.wk_rsi_cross %}class="green-col"{% endif %}>{{ row.symbol }}</td>
                             <td>{{ row.company_name }}</td>
                             <td>{{ row.day_open }}</td>
                             <td>{{ row.day_close }}</td>
