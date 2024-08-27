@@ -456,7 +456,6 @@ class StockData(models.Model):
             if data_type == "m5":
                 self.trading_updated_at = df.iloc[-1]["date"]
 
-            print(df)
             df_ohlcv = get_ohlcv(df=df, data_type=data_type)
             df_ha = calculate_heikin_ashi(df=df)
             df_ema = calculate_exponential_moving_average(df=df_ha)

@@ -281,3 +281,130 @@ def daily_potential_queryset():
         .filter(day_valid=True)
         .order_by("-day_stoch_black_0")
     )
+
+
+def strong_buy_stoch_cross_queryset():
+    return (
+        StockData.objects.filter(
+            is_wk_fetched=True,
+            wk_ema_200_0__lt=F("day_ema_50_0"),
+        )
+        .annotate(
+            wk_stoch_cross=Case(
+                When(
+                    Q(wk_stoch_black_0__gt=F("wk_stoch_red_0")) & Q(wk_stoch_red_1__gt=F("wk_stoch_black_1")),
+                    then=Value(True)
+                ),
+                default=Value(False),
+                output_field=BooleanField(),
+            ),
+
+        )
+        .filter(wk_stoch_cross=True)
+        .order_by("wk_rsi_0")
+    )
+
+
+def strong_buy_ha_cross_queryset():
+    return (
+        StockData.objects.filter(
+            is_wk_fetched=True,
+            wk_ema_200_0__lt=F("day_ema_50_0"),
+        )
+        .annotate(
+            wk_ha_cross=Case(
+                When(
+                    Q(wk_ha_close_0__gt=F("wk_ha_open_0")) & Q(wk_ha_open_1__gt=F("wk_ha_close_1")),
+                    then=Value(True)
+                ),
+                default=Value(False),
+                output_field=BooleanField(),
+            ),
+
+        )
+        .filter(wk_ha_cross=True)
+        .order_by("wk_rsi_0")
+    )
+
+
+def buy_queryset():
+    return (
+        StockData.objects.filter(
+            is_wk_fetched=True,
+            wk_ema_200_0__lt=F("day_ema_50_0"),
+        )
+        .annotate(
+            wk_stoch_positive=Case(
+                When(
+                    Q(wk_stoch_black_0__gt=F("wk_stoch_red_0")) & Q(wk_stoch_black_1__gt=F("wk_stoch_red_1")),
+                    then=Value(True)
+                ),
+                default=Value(False),
+                output_field=BooleanField(),
+            ),
+            wk_ha_positive=Case(
+                When(
+                    Q(wk_ha_close_0__gt=F("wk_ha_open_0")) & Q(wk_ha_close_1__gt=F("wk_ha_open_1")),
+                    then=Value(True)
+                ),
+                default=Value(False),
+                output_field=BooleanField(),
+            ),
+            day_stoch_cross_0=Case(
+                When(
+                    Q(day_stoch_black_0__gt=F("day_stoch_red_0")) & Q(day_stoch_red_1__gt=F("day_stoch_black_1")),
+                    then=Value(True)
+                ),
+                default=Value(False),
+                output_field=BooleanField(),
+            ),
+            day_stoch_cross_1=Case(
+                When(
+                    Q(day_stoch_black_1__gt=F("day_stoch_red_1")) & Q(day_stoch_red_2__gt=F("day_stoch_black_2")),
+                    then=Value(True)
+                ),
+                default=Value(False),
+                output_field=BooleanField(),
+            ),
+            wk_valid=Case(
+                When(Q(wk_stoch_positive=True) & Q(wk_ha_positive=True), then=Value(True)),
+                default=Value(False),
+                output_field=BooleanField(),
+            )
+        )
+        .filter(wk_valid=True)
+        .order_by("wk_rsi_0")
+    )
+
+
+def strong_sell_stoch_cross_queryset():
+    return (
+        StockData.objects.filter(
+            is_wk_fetched=True,
+        )
+        .annotate(
+            wk_stoch_cross=Case(
+                When(
+                    wk_stoch_red_0__gt=F("wk_stoch_black_0"),
+                    then=Value(True)
+                ),
+                default=Value(False),
+                output_field=BooleanField(),
+            ),
+            wk_ha_cross=Case(
+                When(
+                    wk_ha_open_0__gt=F("wk_ha_close_0"),
+                    then=Value(True)
+                ),
+                default=Value(False),
+                output_field=BooleanField(),
+            ),
+            wk_valid=Case(
+                When(Q(wk_stoch_cross=True) & Q(wk_ha_cross=True), then=Value(True)),
+                default=Value(False),
+                output_field=BooleanField(),
+            )
+        )
+        .filter(wk_valid=True)
+        .order_by("wk_rsi_0")
+    )

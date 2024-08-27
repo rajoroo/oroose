@@ -1,0 +1,38 @@
+<div class="row">
+    <div class="col-12 col-sm-12">
+        <div class="card nifty-table">
+            <div class="card-header border-bottom">
+                <h3 class="card-title mb-0">Strong Sell</h3>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <div class="pt-3 txt-rt">
+                        <span>Total - {{ total_stock }} | Remaining to calculate - {{ to_calculate }} | Stock Count - {{ stock_count }}</span>
+                    </div>
+                    {% if stock_list %}
+                    <table class="green-table">
+                        <tr>
+                            <th>Symbol</th>
+                            <th>Company</th>
+                            <th>Close</th>
+                            <th>Stoch Cross</th>
+                            <th>HA Cross</th>
+                            <th>RSI</th>
+                        </tr>
+                        {% for row in stock_list %}
+                        <tr>
+                            <td>{{ row.symbol }}</td>
+                            <td>{{ row.company_name }}</td>
+                            <td>{{ row.wk_close }}</td>
+                            <td {% if row.wk_stoch_cross %}class="green-col"{% endif %}>{{ row.wk_stoch_cross }}</td>
+                            <td {% if row.wk_ha_cross %}class="green-col"{% endif %}>{{ row.wk_ha_cross }}</td>
+                            <td {% if row.wk_rsi_0 > 60 %}class="green-col"{% endif %}>{{ row.wk_rsi_0 }}</td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

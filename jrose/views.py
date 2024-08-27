@@ -1,8 +1,9 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from django.db.models import Q, F
+from django.db.models import F, Q, Case, When, Value, BooleanField
 from mysuru.models import StockData
-from jrose.stock_data_fetch import m15_positive_queryset, m15_negative_queryset, daily_potential_queryset
+from jrose.stock_data_fetch import m15_positive_queryset, m15_negative_queryset, daily_potential_queryset, \
+    strong_buy_stoch_cross_queryset, strong_buy_ha_cross_queryset, buy_queryset, strong_sell_stoch_cross_queryset
 
 
 @login_required(login_url="/accounts/login/")
@@ -85,6 +86,39 @@ def daily_potential(request):
         day_ha_close_0__gt=F("day_ema_20_0"),
         day_ha_open_0__gt=F("day_ema_20_0"),
     )
+    rsi_stock_qs = StockData.objects.annotate(
+        rsi_cross_0=Case(
+            When(Q(day_rsi_0__gt=60) & Q(day_rsi_1__lt=60), then=Value(True)),
+            default=Value(False),
+            output_field=BooleanField(),
+        ),
+        day_stoch_cross_0=Case(
+            When(
+                Q(day_stoch_black_0__gt=F("day_stoch_red_0")) & Q(day_stoch_red_1__gt=F("day_stoch_black_1")),
+                then=Value(True)
+            ),
+            default=Value(False),
+            output_field=BooleanField(),
+        ),
+        day_stoch_cross_1=Case(
+            When(
+                Q(day_stoch_black_1__gt=F("day_stoch_red_1")) & Q(day_stoch_red_2__gt=F("day_stoch_black_2")),
+                then=Value(True)
+            ),
+            default=Value(False),
+            output_field=BooleanField(),
+        ),
+        day_rsi_cross=Case(
+            When(day_rsi_0__gt=60, then=Value(True)),
+            default=Value(False),
+            output_field=BooleanField(),
+        ),
+        wk_rsi_cross=Case(
+            When(wk_rsi_0__gt=60, then=Value(True)),
+            default=Value(False),
+            output_field=BooleanField(),
+        ),
+    ).filter(day_rsi_cross=True)
     daily_potential_pk = daily_potential_qs.values_list("pk", flat=True)
     stoch_cross_qs = stocks.filter(~Q(pk__in=daily_potential_pk))
     to_calculate = StockData.objects.filter(is_day_fetched=False).count()
@@ -102,6 +136,13 @@ def daily_potential(request):
             "stock_count": stoch_cross_qs.count(),
             "help": "Stoch Cross Stocks"
         },
+        {
+            "title": "RSI > 60",
+            "stocks": rsi_stock_qs,
+            "stock_count": rsi_stock_qs.count(),
+            "help": "RSI > 60"
+
+        }
     ]
     context = {
         "active_page": "daily_potential",
@@ -110,3 +151,63 @@ def daily_potential(request):
         "total_stock": total_stock,
     }
     return render(request, "stock/daily_potential.html", context)
+
+
+@login_required(login_url="/accounts/login/")
+def strong_buy_view(request):
+    """Strong Buy Stocks"""
+
+    stoch_cross_qs = strong_buy_stoch_cross_queryset()
+    ha_cross_qs = strong_buy_ha_cross_queryset()
+    to_calculate = StockData.objects.filter(is_wk_fetched=False).count()
+    total_stock = StockData.objects.filter().all().count()
+
+    context = {
+        "active_page": "strong_buy",
+        "stoch_cross_list": stoch_cross_qs,
+        "stoch_cross_count": stoch_cross_qs.count(),
+        "ha_cross_list": ha_cross_qs,
+        "ha_cross_count": ha_cross_qs.count(),
+        "to_calculate": to_calculate,
+        "total_stock": total_stock,
+    }
+    return render(request, "stock/strong_buy_page.html", context)
+
+
+@login_required(login_url="/accounts/login/")
+def buy_view(request):
+    """Buy Stocks"""
+
+    stoch_cross_qs = strong_buy_stoch_cross_queryset().values_list("symbol", flat=True)
+    ha_cross_qs = strong_buy_ha_cross_queryset().values_list("symbol", flat=True)
+    symbols_list = list(stoch_cross_qs) + list(ha_cross_qs)
+    stoch_qs = buy_queryset().filter(~Q(symbol__in=symbols_list))
+    to_calculate = StockData.objects.filter(is_wk_fetched=False).count()
+    total_stock = StockData.objects.filter().all().count()
+
+    context = {
+        "active_page": "buy",
+        "stock_list": stoch_qs,
+        "stock_count": stoch_qs.count(),
+        "to_calculate": to_calculate,
+        "total_stock": total_stock,
+    }
+    return render(request, "stock/strong_sell_page.html", context)
+
+
+@login_required(login_url="/accounts/login/")
+def strong_sell_view(request):
+    """Strong Sell Stocks"""
+
+    stoch_qs = strong_sell_stoch_cross_queryset()
+    to_calculate = StockData.objects.filter(is_wk_fetched=False).count()
+    total_stock = StockData.objects.filter().all().count()
+
+    context = {
+        "active_page": "strong_sell",
+        "stock_list": stoch_qs,
+        "stock_count": stoch_qs.count(),
+        "to_calculate": to_calculate,
+        "total_stock": total_stock,
+    }
+    return render(request, "stock/strong_sell_page.html", context)
