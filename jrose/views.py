@@ -192,7 +192,7 @@ def buy_view(request):
         "to_calculate": to_calculate,
         "total_stock": total_stock,
     }
-    return render(request, "stock/strong_sell_page.html", context)
+    return render(request, "stock/buy_page.html", context)
 
 
 @login_required(login_url="/accounts/login/")
