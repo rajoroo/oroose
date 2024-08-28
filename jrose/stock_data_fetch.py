@@ -366,6 +366,14 @@ def buy_queryset():
                 default=Value(False),
                 output_field=BooleanField(),
             ),
+            day_rsi_cross_0=Case(
+                When(
+                    Q(day_rsi_0__gt=60) & Q(day_rsi_1__lt=60),
+                    then=Value(True)
+                ),
+                default=Value(False),
+                output_field=BooleanField(),
+            ),
             wk_valid=Case(
                 When(Q(wk_stoch_positive=True) & Q(wk_ha_positive=True), then=Value(True)),
                 default=Value(False),
