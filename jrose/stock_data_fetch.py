@@ -327,6 +327,31 @@ def strong_buy_ha_cross_queryset():
     )
 
 
+def smart_buy_queryset():
+    return (
+        StockData.objects.filter(
+            is_day_fetched=True,
+            day_rsi_0__gt=60
+        )
+        .annotate(
+            day_rsi_cross=Case(
+                When(Q(day_rsi_0__gt=60) & Q(day_rsi_1__lt=60), then=Value(True)),
+                default=Value(False),
+                output_field=BooleanField(),
+            ),
+            day_ha_cross=Case(
+                When(
+                    Q(day_ha_close_0__gt=F("day_ha_open_0")) & Q(day_ha_open_1__gt=F("day_ha_close_1")),
+                    then=Value(True)
+                ),
+                default=Value(False),
+                output_field=BooleanField(),
+            ),
+        )
+        .order_by("day_rsi_0")
+    )
+
+
 def buy_queryset():
     return (
         StockData.objects.filter(
