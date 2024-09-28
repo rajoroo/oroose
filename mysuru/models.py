@@ -3,6 +3,7 @@ from datetime import datetime, time
 import pandas as pd
 from dateutil.relativedelta import relativedelta
 from django.db import models
+from datetime import timedelta
 
 from core.smart_util import SmartInstrument, SmartTool
 from core.tools import (
@@ -411,6 +412,17 @@ class StockData(models.Model):
         df = pd.DataFrame(history_data)
         df[["date", "open", "high", "low", "close", "volume"]] = pd.DataFrame(df.data.tolist(), index=df.index)
         df["date"] = pd.to_datetime(df["date"])
+
+        # df2 = {
+        #     'date': (datetime.now() + timedelta(days=1)).strftime("%Y-%m-%d %H:%M"),
+        #     'open': df.iloc[-1]["close"],
+        #     'high': df.iloc[-1]["close"],
+        #     'low': df.iloc[-1]["close"],
+        #     'close': df.iloc[-1]["close"],
+        #     'volume': df.iloc[-1]["volume"]
+        # }
+        # df = df._append(df2, ignore_index=True)
+
         return df
 
     def reset_date_ohlc(self, df):

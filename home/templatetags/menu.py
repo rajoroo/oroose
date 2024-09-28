@@ -12,6 +12,7 @@ def show_menu_navbar(page, path):
         {"name": "smart_buy", "display_name": "Smart Buy"},
         {"name": "buy", "display_name": "Buy"},
         {"name": "strong_sell", "display_name": "Strong Sell"},
+        {"name": "trading", "display_name": "Trading"},
         {"name": "configuration", "display_name": "Configuration"},
     ]
 
