@@ -407,6 +407,7 @@ class StockData(models.Model):
             interval=interval,
             fromdate=from_date.strftime("%Y-%m-%d %H:%M"),
             todate=datetime.now().strftime("%Y-%m-%d %H:%M"),
+            # todate="2024-09-30 17:00",
         )
 
         df = pd.DataFrame(history_data)

@@ -347,6 +347,14 @@ def smart_buy_queryset():
                 default=Value(False),
                 output_field=BooleanField(),
             ),
+            m15_positive=Case(
+                When(
+                    Q(m15_ha_close_0__gt=F("m15_ha_open_0")) & Q(m15_ha_close_1__gt=F("m15_ha_open_1")),
+                    then=Value(True)
+                ),
+                default=Value(False),
+                output_field=BooleanField(),
+            ),
         )
         .order_by("day_rsi_0")
     )
