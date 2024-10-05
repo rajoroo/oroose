@@ -318,3 +318,24 @@ def get_rsi(df, data_type):
         f"{data_type}_rsi_4": 0,
         f"{data_type}_rsi_5": 0,
     }
+
+
+def integrated_tool(df):
+    df_expo = calculate_exponential_moving_average(df)
+    df_expo_1 = df_expo[["ema_200", "ema_50", "ema_20"]]
+    df_stoch = calculate_stochastic(df)
+    df_stoch = df_stoch[["k_smooth", "d"]]
+    df_stoch = df_stoch.rename(columns={'k_smooth': 'red', 'd': 'black'})
+    df_stoch_1 = df_stoch[["red", "black"]]
+    df_ha = calculate_heikin_ashi(df)
+    df_ha = df_ha[["open", "high", "low", "close"]]
+    df_ha = df_ha.rename(columns={'open': 'ha_open', 'high': 'ha_high', 'low': 'ha_low', 'close': 'ha_close'})
+    df_ha_1 = df_ha[["ha_open", "ha_close"]]
+    df_rsi = caculate_rsi(df)
+    df_rsi.name = "rsi"
+
+    df_new = df[["date", "open", "high", "low", "close"]]
+    df_list = [df_new, df_expo_1, df_stoch_1, df_ha_1, df_rsi]
+    result = pd.concat(df_list, axis=1)
+    return result
+
