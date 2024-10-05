@@ -59,7 +59,7 @@ def m15_analysis(symbol):
     df = df[['new_date', 'm15_status', 'rsi', 'ha_open_1', 'ha_close_1']]
     df["percentage"] = ((df["ha_close_1"] - df["ha_open_1"]) / df["ha_open_1"]) * 100
     df = df.drop(df[df.m15_status == False].index)
-    df = df.drop(df[df.rsi < 60].index)
+    # df = df.drop(df[df.rsi < 60].index)
     result = df.loc[:, 'percentage'].mean()
     # print(result)
 
