@@ -406,8 +406,8 @@ class StockData(models.Model):
             symboltoken=self.smart_token,
             interval=interval,
             fromdate=from_date.strftime("%Y-%m-%d %H:%M"),
-            # todate=datetime.now().strftime("%Y-%m-%d %H:%M"),
-            todate="2024-10-03 17:00",
+            todate=datetime.now().strftime("%Y-%m-%d %H:%M"),
+            # todate="2024-10-03 17:00",
         )
 
         df = pd.DataFrame(history_data)
