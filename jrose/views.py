@@ -247,8 +247,19 @@ def short_buy_view(request):
 
     rsi_list = short_by_rsi_cross_queryset().filter(m15_rsi_cross=False)
     rsi_cross_list = short_by_rsi_cross_queryset().filter(m15_rsi_cross=True)
-    to_calculate = StockData.objects.filter(is_wk_fetched=False).count()
-    total_stock = StockData.objects.filter().all().count()
+    to_calculate = StockData.objects.filter(
+        is_wk_fetched=True,
+        is_day_fetched=True,
+        is_m15_fetched=False,
+        wk_rsi_0__gt=60,
+        day_rsi_0__gt=60
+    ).count()
+    total_stock = StockData.objects.filter(
+        is_wk_fetched=True,
+        is_day_fetched=True,
+        wk_rsi_0__gt=60,
+        day_rsi_0__gt=60
+    ).all().count()
 
     context = {
         "active_page": "short_buy",

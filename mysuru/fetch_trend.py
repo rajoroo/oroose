@@ -95,6 +95,21 @@ class FetchTrend:
         self.model_obj.objects.filter(smart_token__isnull=True, smart_token_fetched=True).delete()
         return True
 
+    def fetch_trend_m15_short_value(self, data_type):
+        """Fetch trend value"""
+        filter_params = {
+            "is_wk_fetched": True,
+            "is_day_fetched": True,
+            "is_m15_fetched": False,
+            "wk_rsi_0__gt": 60,
+            "day_rsi_0__gt": 60,
+        }
+        recs = self.model_obj.objects.filter(**filter_params)
+        for rec in recs:
+            rec.generate_trend_value(data_type=data_type)
+
+        return True
+
     def fetch_trend_value(self, data_type):
         """Fetch trend value"""
         filter_params = {f"is_{data_type}_fetched": False}

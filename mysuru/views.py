@@ -87,6 +87,12 @@ def trend_page_load_bhav(request):
     return redirect("configuration")
 
 
+def trend_page_load_m15_short(request):
+    trend_obj = FetchTrend()
+    trend_obj.fetch_trend_m15_short_value("m15")
+    return redirect("configuration")
+
+
 def trend_page_upload(request):
     pass
 
