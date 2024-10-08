@@ -11,4 +11,5 @@ urlpatterns = [
     path("smart_buy", views.smart_buy_view, name="smart_buy"),
     path("buy", views.buy_view, name="buy"),
     path("strong_sell", views.strong_sell_view, name="strong_sell"),
+    path("short_buy", views.short_buy_view, name="short_buy"),
 ]

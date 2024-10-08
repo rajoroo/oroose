@@ -449,3 +449,26 @@ def strong_sell_stoch_cross_queryset():
         .filter(wk_valid=True)
         .order_by("wk_rsi_0")
     )
+
+
+def short_by_rsi_cross_queryset():
+    return (
+        StockData.objects.filter(
+            is_wk_fetched=True,
+            is_day_fetched=True,
+            is_m15_fetched=True,
+            wk_rsi_0__gt=60,
+            day_rsi_0__gt=60,
+            m15_rsi_0__gt=60,
+        )
+        .annotate(
+            m15_rsi_cross=Case(
+                When(
+                    Q(m15_rsi_0__gt=60) & Q(m15_rsi_1__lt=60),
+                    then=Value(True)
+                ),
+                default=Value(False),
+                output_field=BooleanField(),
+            ),
+        )
+    )

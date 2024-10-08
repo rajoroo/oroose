@@ -4,7 +4,7 @@ from django.db.models import F, Q, Case, When, Value, BooleanField
 from mysuru.models import StockData
 from jrose.stock_data_fetch import m15_positive_queryset, m15_negative_queryset, daily_potential_queryset, \
     strong_buy_stoch_cross_queryset, strong_buy_ha_cross_queryset, buy_queryset, strong_sell_stoch_cross_queryset, \
-    smart_buy_queryset
+    smart_buy_queryset, short_by_rsi_cross_queryset
 
 
 @login_required(login_url="/accounts/login/")
@@ -239,3 +239,24 @@ def strong_sell_view(request):
         "total_stock": total_stock,
     }
     return render(request, "stock/strong_sell_page.html", context)
+
+
+@login_required(login_url="/accounts/login/")
+def short_buy_view(request):
+    """Short Buy Stocks"""
+
+    rsi_list = short_by_rsi_cross_queryset().filter(m15_rsi_cross=False)
+    rsi_cross_list = short_by_rsi_cross_queryset().filter(m15_rsi_cross=True)
+    to_calculate = StockData.objects.filter(is_wk_fetched=False).count()
+    total_stock = StockData.objects.filter().all().count()
+
+    context = {
+        "active_page": "short_buy",
+        "rsi_cross_list": rsi_cross_list,
+        "rsi_cross_count": rsi_cross_list.count(),
+        "rsi_list": rsi_list,
+        "rsi_count": rsi_list.count(),
+        "to_calculate": to_calculate,
+        "total_stock": total_stock,
+    }
+    return render(request, "stock/short_buy_page.html", context)
