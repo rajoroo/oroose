@@ -245,8 +245,9 @@ def strong_sell_view(request):
 def short_buy_view(request):
     """Short Buy Stocks"""
 
-    rsi_list = short_by_rsi_cross_queryset().filter(m15_rsi_cross=False)
-    rsi_cross_list = short_by_rsi_cross_queryset().filter(m15_rsi_cross=True)
+    rsi_list = short_by_rsi_cross_queryset().filter(m15_rsi_cross=False, m15_rsi_0__gt=60).order_by('?')
+    rsi_cross_list = short_by_rsi_cross_queryset().filter(m15_rsi_cross=True, m15_rsi_0__gt=60).order_by('?')
+    rsi_cross_above_ema_20 = short_by_rsi_cross_queryset().filter(m15_rsi_cross_above_ema_20=True).order_by('?')
     to_calculate = StockData.objects.filter(
         is_wk_fetched=True,
         is_day_fetched=True,
@@ -267,6 +268,8 @@ def short_buy_view(request):
         "rsi_cross_count": rsi_cross_list.count(),
         "rsi_list": rsi_list,
         "rsi_count": rsi_list.count(),
+        "rsi_cross_above_ema_20": rsi_cross_above_ema_20,
+        "rsi_cross_above_ema_20_count": rsi_cross_above_ema_20.count(),
         "to_calculate": to_calculate,
         "total_stock": total_stock,
     }

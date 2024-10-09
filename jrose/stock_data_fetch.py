@@ -459,12 +459,19 @@ def short_by_rsi_cross_queryset():
             is_m15_fetched=True,
             wk_rsi_0__gt=60,
             day_rsi_0__gt=60,
-            m15_rsi_0__gt=60,
         )
         .annotate(
             m15_rsi_cross=Case(
                 When(
                     Q(m15_rsi_0__gt=60) & Q(m15_rsi_1__lt=60),
+                    then=Value(True)
+                ),
+                default=Value(False),
+                output_field=BooleanField(),
+            ),
+            m15_rsi_cross_above_ema_20=Case(
+                When(
+                    Q(m15_ha_close_0__gt=F("m15_ha_open_0")) & Q(m15_ha_open_1__gt=F("m15_ha_close_1")) & Q(m15_ha_open_0__gt=F("m15_ema_20_0")) & Q(m15_ha_close_0__gt=F("m15_ema_20_0")),
                     then=Value(True)
                 ),
                 default=Value(False),
