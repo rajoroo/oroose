@@ -154,5 +154,6 @@ def trend_page_reset_fetch(request, name):
 
 
 def schedule_trading_start(request):
-    schedule("mysuru.task.trading_m5_fetch", "m5", schedule_type=Schedule.MINUTES, minutes=5)
+    # schedule("mysuru.task.trading_m5_fetch", "m5", schedule_type=Schedule.MINUTES, minutes=5)
+    schedule("mysuru.task.trading_m15_sensitive_fetch", "m5", schedule_type=Schedule.MINUTES, minutes=5)
     return redirect("configuration")
