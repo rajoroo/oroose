@@ -5,8 +5,7 @@ from mysuru.models import StockData
 def smart_buy_queryset():
     return (
         StockData.objects.filter(
-            is_day_fetched=True,
-            day_rsi_0__gt=60
+            is_day_fetched=True
         )
         .annotate(
             day_rsi_cross=Case(
@@ -16,15 +15,27 @@ def smart_buy_queryset():
             ),
             day_ha_cross=Case(
                 When(
-                    Q(day_ha_close_0__gt=F("day_ha_open_0")) & Q(day_ha_open_1__gt=F("day_ha_close_1")),
+                    Q(day_ha_close_0__gt=F("day_ha_open_0")) &
+                    Q(day_ha_open_1__gt=F("day_ha_close_1")) &
+                    Q(day_rsi_0__gt=60),
                     then=Value(True)
                 ),
                 default=Value(False),
                 output_field=BooleanField(),
             ),
-            m15_positive=Case(
+            day_stoch_cross=Case(
                 When(
-                    Q(m15_ha_close_0__gt=F("m15_ha_open_0")) & Q(m15_ha_close_1__gt=F("m15_ha_open_1")),
+                    Q(day_stoch_black_0__gt=F("day_stoch_red_0")) &
+                    Q(day_stoch_black_1__lt=F("day_stoch_red_1")) &
+                    Q(day_stoch_black_0__gt=20),
+                    then=Value(True)
+                ),
+                default=Value(False),
+                output_field=BooleanField(),
+            ),
+            day_stoch_valid=Case(
+                When(
+                    Q(day_stoch_black_0__gt=F("day_stoch_red_0")),
                     then=Value(True)
                 ),
                 default=Value(False),
