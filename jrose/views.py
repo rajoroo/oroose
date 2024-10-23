@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from mysuru.models import StockData
-from jrose.stock_data_fetch import smart_buy_queryset
+from jrose.stock_data_fetch import smart_buy_queryset, hour_queryset
 
 
 @login_required(login_url="/accounts/login/")
@@ -20,6 +20,24 @@ def day_page(request):
         "total_stock": total_stock,
     }
     return render(request, "stock/day_page.html", context)
+
+
+@login_required(login_url="/accounts/login/")
+def hour_page(request):
+    """Stocks Hour View"""
+
+    stock_qs = hour_queryset()
+    to_calculate = StockData.objects.filter(is_hr_fetched=False).count()
+    total_stock = StockData.objects.filter().all().count()
+
+    context = {
+        "active_page": "hr_page",
+        "stock_list": stock_qs,
+        "stock_count": stock_qs.count(),
+        "to_calculate": to_calculate,
+        "total_stock": total_stock,
+    }
+    return render(request, "stock/hr_page.html", context)
 
 
 @login_required(login_url="/accounts/login/")

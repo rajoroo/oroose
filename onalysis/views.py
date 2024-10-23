@@ -80,3 +80,37 @@ def m15_get_percentage():
 
     print(data)
     return data
+
+
+def hr_analysis(symbol):
+    obj = StockData.objects.get(symbol=symbol)
+    df = obj.get_smart_ohlc('ONE_HOUR', 60)
+    df = integrated_tool(df)
+    df['stoch_cross_pos'] = np.where((df['black'] > df['red']) & (df['black'].shift(1) < df['red'].shift(1)), True, False)
+    df['stoch_cross_neg'] = np.where((df['black'] < df['red']) & (df['black'].shift(1) > df['red'].shift(1)), True, False)
+    df['stoch_cross'] = np.where(df['stoch_cross_pos'] | df['stoch_cross_neg'], True, False)
+    df = df.drop(df[df.stoch_cross == False].index)
+    df = df.reset_index(drop=True)
+    df["next_close"] = df['close'].shift(-1)
+    df = df.drop(df[df.stoch_cross_neg == False].index)
+    df = df.reset_index(drop=True)
+    df["percentage"] = ((df["next_close"] - df["close"]) / df["close"]) * 100
+    # print(df)
+    result = df.loc[:, 'percentage'].mean()
+    # print(result)
+    return result
+
+
+def hr_get_percentage():
+    recs = StockData.objects.all()
+
+    data = {}
+
+    for rec in recs:
+        val = hr_analysis(rec.symbol)
+        print(rec.symbol, "---", val)
+        print("---------------------------------------------")
+        data[rec.symbol] = val
+
+    print(data)
+    return data

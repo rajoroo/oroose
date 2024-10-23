@@ -26,8 +26,7 @@ def smart_buy_queryset():
             day_stoch_cross=Case(
                 When(
                     Q(day_stoch_black_0__gt=F("day_stoch_red_0")) &
-                    Q(day_stoch_black_1__lt=F("day_stoch_red_1")) &
-                    Q(day_stoch_black_0__gt=20),
+                    Q(day_stoch_black_1__lt=F("day_stoch_red_1")) ,
                     then=Value(True)
                 ),
                 default=Value(False),
@@ -43,4 +42,31 @@ def smart_buy_queryset():
             ),
         )
         .order_by("day_rsi_0")
+    )
+
+
+def hour_queryset():
+    return (
+        StockData.objects.filter(
+            is_hr_fetched=True
+        )
+        .annotate(
+            hr_stoch_cross=Case(
+                When(
+                    Q(hr_stoch_black_0__gt=F("hr_stoch_red_0")) &
+                    Q(hr_stoch_black_1__lt=F("hr_stoch_red_1")) ,
+                    then=Value(True)
+                ),
+                default=Value(False),
+                output_field=BooleanField(),
+            ),
+            hr_stoch_valid=Case(
+                When(
+                    Q(hr_stoch_black_0__gt=F("hr_stoch_red_0")),
+                    then=Value(True)
+                ),
+                default=Value(False),
+                output_field=BooleanField(),
+            ),
+        )
     )
