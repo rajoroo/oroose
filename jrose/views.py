@@ -46,7 +46,7 @@ def smart_buy_view(request):
 
     rsi_cross_qs = smart_buy_queryset().filter(day_rsi_cross=True)
     ha_cross_qs = smart_buy_queryset().filter(day_ha_cross=True)
-    stoch_cross_qs = smart_buy_queryset().filter(day_stoch_cross=True).order_by("day_stoch_black_0")
+    stoch_cross_qs = smart_buy_queryset().filter(day_stoch_cross_0=True).order_by("day_stoch_black_0")
     to_calculate = StockData.objects.filter(is_day_fetched=False).count()
     total_stock = StockData.objects.filter().all().count()
 
