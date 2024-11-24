@@ -18,7 +18,7 @@ def week_queryset():
                 output_field=BooleanField(),
             ),
         )
-        .order_by("wk_rsi_0")
+        .order_by("wk_stoch_black_0")
     )
 
 
@@ -55,10 +55,19 @@ def day_queryset():
                 default=Value(False),
                 output_field=BooleanField(),
             ),
-            day_stoch_cross_2=Case(
+            day_stoch_cross_20_0=Case(
                 When(
-                    Q(day_stoch_black_2__gt=F("day_stoch_red_2")) &
-                    Q(day_stoch_black_3__lt=F("day_stoch_red_3")),
+                    Q(day_stoch_black_0__gt=20) &
+                    Q(day_stoch_black_1__lt=20),
+                    then=Value(True)
+                ),
+                default=Value(False),
+                output_field=BooleanField(),
+            ),
+            day_stoch_cross_20_1=Case(
+                When(
+                    Q(day_stoch_black_1__gt=20) &
+                    Q(day_stoch_black_2__lt=20),
                     then=Value(True)
                 ),
                 default=Value(False),
@@ -66,42 +75,52 @@ def day_queryset():
             ),
             day_stoch_valid=Case(
                 When(
-                    Q(day_stoch_cross_0=True) | Q(day_stoch_cross_2=True) | Q(day_stoch_cross_2=True) ,
+                    Q(day_stoch_cross_0=True) |
+                    Q(day_stoch_cross_1=True) |
+                    Q(day_stoch_cross_20_0=True) |
+                    Q(day_stoch_cross_20_1=True),
                     then=Value(True)
                 ),
                 default=Value(False),
                 output_field=BooleanField(),
             ),
         )
-        .order_by("day_rsi_0")
+        .order_by("day_stoch_black_0")
     )
 
 
-def smart_buy_queryset():
+def smart_buy_week_queryset():
     return (
         StockData.objects.filter(
-            is_day_fetched=True
+            is_wk_fetched=True
         )
         .annotate(
-            day_rsi_cross=Case(
-                When(Q(day_rsi_0__gt=60) & Q(day_rsi_1__lt=60), then=Value(True)),
-                default=Value(False),
-                output_field=BooleanField(),
-            ),
-            day_ha_cross=Case(
+            wk_stoch_cross=Case(
                 When(
-                    Q(day_ha_close_0__gt=F("day_ha_open_0")) &
-                    Q(day_ha_open_1__gt=F("day_ha_close_1")) &
-                    Q(day_rsi_0__gt=60),
+                    Q(wk_stoch_black_0__gt=F("wk_stoch_red_0")) &
+                    Q(wk_stoch_black_1__lt=F("wk_stoch_red_1")),
                     then=Value(True)
                 ),
                 default=Value(False),
                 output_field=BooleanField(),
             ),
+        )
+        .filter(wk_stoch_cross=True)
+        .order_by("wk_stoch_black_0")
+    )
+
+
+def smart_buy_day_queryset():
+    return (
+        StockData.objects.filter(
+            is_wk_fetched=True,
+            is_day_fetched=True
+        )
+        .annotate(
             day_stoch_cross_0=Case(
                 When(
                     Q(day_stoch_black_0__gt=F("day_stoch_red_0")) &
-                    Q(day_stoch_black_1__lt=F("day_stoch_red_1")) ,
+                    Q(day_stoch_black_1__lt=F("day_stoch_red_1")),
                     then=Value(True)
                 ),
                 default=Value(False),
@@ -116,31 +135,40 @@ def smart_buy_queryset():
                 default=Value(False),
                 output_field=BooleanField(),
             ),
-            day_stoch_valid=Case(
+            day_stoch_cross_20_0=Case(
                 When(
-                    Q(day_stoch_black_0__gt=F("day_stoch_red_0")),
+                    Q(day_stoch_black_0__gt=20) &
+                    Q(day_stoch_black_1__lt=20),
                     then=Value(True)
                 ),
                 default=Value(False),
                 output_field=BooleanField(),
             ),
-        )
-        .order_by("day_rsi_0")
-    )
-
-
-def hour_queryset():
-    return (
-        StockData.objects.filter(
-            is_hr_fetched=True
-        )
-        .filter(hr_rsi_0__gt=60)
-        .annotate(
-            hr_rsi_cross=Case(
-                When(Q(hr_rsi_0__gt=60) & Q(hr_rsi_1__lt=60), then=Value(True)),
+            day_stoch_cross_20_1=Case(
+                When(
+                    Q(day_stoch_black_1__gt=20) &
+                    Q(day_stoch_black_2__lt=20),
+                    then=Value(True)
+                ),
                 default=Value(False),
                 output_field=BooleanField(),
             ),
+            day_stoch_valid=Case(
+                When(
+                    Q(day_stoch_cross_0=True) |
+                    Q(day_stoch_cross_1=True) |
+                    Q(day_stoch_cross_20_0=True) |
+                    Q(day_stoch_cross_20_1=True),
+                    then=Value(True)
+                ),
+                default=Value(False),
+                output_field=BooleanField(),
+            )
         )
-        .order_by("hr_rsi_0")
+        .filter(
+            wk_rsi_0__gt=60,
+            day_stoch_valid=True
+        )
+        .order_by("day_stoch_black_0")
     )
+

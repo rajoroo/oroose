@@ -85,10 +85,19 @@ def handle_config_file(csv_file):
     ParameterConfig.objects.bulk_create(configs)
 
 
-def wma(arr, period):
-    kernel = np.arange(period, 0, -1)
-    kernel = np.concatenate([np.zeros(period - 1), kernel / kernel.sum()])
-    return np.convolve(arr, kernel, 'same')
+# def wma(arr, period):
+#     kernel = np.arange(period, 0, -1)
+#     kernel = np.concatenate([np.zeros(period - 1), kernel / kernel.sum()])
+#     return np.convolve(arr, kernel, 'same')
+
+
+def wma(df, column='close', n=20):
+
+    weights = np.arange(1, n + 1)
+    wmas = df[column].rolling(n).apply(lambda x: np.dot(x, weights) /
+                                       weights.sum(), raw=True).to_list()
+
+    return wmas
 
 
 def calculate_exponential_moving_average(df):
@@ -103,10 +112,10 @@ def calculate_exponential_moving_average(df):
 
 def calculate_weighted_moving_average(df):
     """Calculate exponential moving average 200, 50 and 20."""
-    df["ema_200"] = wma(df['close'], 200)
-    df["ema_50"] = wma(df['close'], 50)
-    df["ema_20"] = wma(df['close'], 20)
-    df["ema_5"] = wma(df['close'], 5)
+    df["ema_200"] = wma(df, 'close', 200)
+    df["ema_50"] = wma(df, 'close', 50)
+    df["ema_20"] = wma(df, 'close', 20)
+    df["ema_5"] = wma(df, 'close', 5)
     df["ema_200_percentage"] = ((df["ema_200"] / df["close"]) - 1) * 100
     return df
 

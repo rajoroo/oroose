@@ -9,6 +9,8 @@ def show_menu_navbar(page, path):
     menu = [
         {"name": "home", "display_name": "Home"},
         {"name": "week_page", "display_name": "Week"},
+        {"name": "day_page", "display_name": "Day"},
+        {"name": "smart_buy_page", "display_name": "Smart Buy"},
         {"name": "trading", "display_name": "Trading"},
         {"name": "configuration", "display_name": "Configuration"},
     ]

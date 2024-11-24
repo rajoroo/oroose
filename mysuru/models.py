@@ -502,7 +502,7 @@ class StockData(models.Model):
 
             df_ohlcv = get_ohlcv(df=df, data_type=data_type)
             df_ha = calculate_heikin_ashi(df=df)
-            df_ema = calculate_exponential_moving_average(df=df_ha)
+            df_ema = calculate_weighted_moving_average(df=df_ha)
             df_stoch = calculate_stochastic(df=df_ha)
             df_rsi = caculate_rsi(df=df_ha)
 
@@ -511,10 +511,7 @@ class StockData(models.Model):
             data_ha = get_heikin_ashi(df_ha, data_type)
             data_rsi = get_rsi(df_rsi, data_type)
 
-            print("i call---0")
             all_data = df_ohlcv | data_ema | data_stoch | data_ha | data_rsi
-            print(all_data.items())
-            print("i call---1")
             for attr, value in all_data.items():
                 setattr(self, attr, value)
 

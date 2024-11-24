@@ -15,9 +15,7 @@
                             <th>Symbol</th>
                             <th>Company</th>
                             <th>Close</th>
-                            <th>Stoch 0</th>
-                            <th>Stoch 1</th>
-                            <th>Stoch Black (+ve)</th>
+                            <th>Stoch Black</th>
                             <th>Stoch Red</th>
                             <th>RSI</th>
                         </tr>
@@ -26,11 +24,9 @@
                             <td>{{ row.symbol }}</td>
                             <td>{{ row.company_name }}</td>
                             <td>{{ row.day_close }}</td>
-                            <td {% if row.day_stoch_cross_0 %}class="green-col"{% endif %}>{{ row.day_stoch_cross_0 }}</td>
-                            <td {% if row.day_stoch_cross_1 %}class="green-col"{% endif %}>{{ row.day_stoch_cross_1 }}</td>
                             <td {% if row.day_stoch_valid %}class="green-col"{% endif %}>{{ row.day_stoch_black_0 }}</td>
                             <td>{{ row.day_stoch_red_0 }}</td>
-                            <td {% if row.day_rsi_0 > 60 %}class="green-col"{% endif %}>{{ row.day_rsi_0 }}</td>
+                            <td>{{ row.day_rsi_0 }}</td>
                         </tr>
                         {% endfor %}
                     </table>
