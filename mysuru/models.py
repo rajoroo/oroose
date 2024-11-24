@@ -12,6 +12,7 @@ from core.tools import (
     calculate_heikin_ashi,
     caculate_rsi,
     calculate_exponential_moving_average,
+    calculate_weighted_moving_average,
     get_ema,
     get_stochastic,
     get_heikin_ashi,
@@ -510,7 +511,10 @@ class StockData(models.Model):
             data_ha = get_heikin_ashi(df_ha, data_type)
             data_rsi = get_rsi(df_rsi, data_type)
 
+            print("i call---0")
             all_data = df_ohlcv | data_ema | data_stoch | data_ha | data_rsi
+            print(all_data.items())
+            print("i call---1")
             for attr, value in all_data.items():
                 setattr(self, attr, value)
 

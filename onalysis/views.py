@@ -114,3 +114,44 @@ def hr_get_percentage():
 
     print(data)
     return data
+
+def wma(arr, period):
+    kernel = np.arange(period, 0, -1)
+    kernel = np.concatenate([np.zeros(period - 1), kernel / kernel.sum()])
+    return np.convolve(arr, kernel, 'same')
+
+
+def m5_analysis(symbol):
+    obj = StockData.objects.get(symbol=symbol)
+    df = obj.get_smart_ohlc('FIVE_MINUTE', 90)
+    df = integrated_tool(df)
+    df['ha_ema_5'] = wma(df['ha_close'], 5)
+    df['ha_ema_50'] = wma(df['ha_close'], 50)
+    df["pv"] = df["ha_ema_5"] >= df["ha_ema_50"]
+    df["nv"] = df["ha_ema_5"] <= df["ha_ema_50"]
+    diff = df['ha_ema_5'] < df['ha_ema_50']
+    diff_forward = diff.shift(1)
+    crossing = np.where(abs(diff - diff_forward) == 1)[0]
+    df = df.iloc[crossing]
+    df = df[["date", "ha_close", "ha_ema_5", "ha_ema_50", "pv", "nv"]]
+    df["next_close"] = df['ha_close'].shift(-1)
+    df["percentage"] = ((df["next_close"] - df["ha_close"]) / df["ha_close"]) * 100
+    df = df.drop(df[df.nv == False].index)
+    result = df.loc[:, 'percentage'].mean()
+    print(result)
+    return df
+
+
+def m5_get_percentage():
+    recs = StockData.objects.all()
+
+    data = {}
+
+    for rec in recs:
+        val = m5_analysis(rec.symbol)
+        print(rec.symbol, "---", val)
+        print("---------------------------------------------")
+        data[rec.symbol] = val
+
+    print(data)
+    return data

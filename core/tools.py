@@ -85,12 +85,28 @@ def handle_config_file(csv_file):
     ParameterConfig.objects.bulk_create(configs)
 
 
+def wma(arr, period):
+    kernel = np.arange(period, 0, -1)
+    kernel = np.concatenate([np.zeros(period - 1), kernel / kernel.sum()])
+    return np.convolve(arr, kernel, 'same')
+
+
 def calculate_exponential_moving_average(df):
     """Calculate exponential moving average 200, 50 and 20."""
     df["ema_200"] = df["close"].ewm(span=200, min_periods=0, adjust=False, ignore_na=False).mean()
     df["ema_50"] = df["close"].ewm(span=50, min_periods=0, adjust=False, ignore_na=False).mean()
     df["ema_20"] = df["close"].ewm(span=20, min_periods=0, adjust=False, ignore_na=False).mean()
     df["ema_5"] = df["close"].ewm(span=5, min_periods=0, adjust=False, ignore_na=False).mean()
+    df["ema_200_percentage"] = ((df["ema_200"] / df["close"]) - 1) * 100
+    return df
+
+
+def calculate_weighted_moving_average(df):
+    """Calculate exponential moving average 200, 50 and 20."""
+    df["ema_200"] = wma(df['close'], 200)
+    df["ema_50"] = wma(df['close'], 50)
+    df["ema_20"] = wma(df['close'], 20)
+    df["ema_5"] = wma(df['close'], 5)
     df["ema_200_percentage"] = ((df["ema_200"] / df["close"]) - 1) * 100
     return df
 
@@ -329,7 +345,7 @@ def get_rsi(df, data_type):
 
 def integrated_tool(df):
     df_expo = calculate_exponential_moving_average(df)
-    df_expo_1 = df_expo[["ema_200", "ema_50", "ema_20"]]
+    df_expo_1 = df_expo[["ema_200", "ema_50", "ema_20", "ema_5"]]
     df_stoch = calculate_stochastic(df)
     df_stoch = df_stoch[["k_smooth", "d"]]
     df_stoch = df_stoch.rename(columns={'k_smooth': 'red', 'd': 'black'})

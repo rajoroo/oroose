@@ -2,6 +2,81 @@ from django.db.models import F, Q, Case, When, Value, BooleanField
 from mysuru.models import StockData
 
 
+def week_queryset():
+    return (
+        StockData.objects.filter(
+            is_wk_fetched=True
+        )
+        .annotate(
+            wk_stoch_cross=Case(
+                When(
+                    Q(wk_stoch_black_0__gt=F("wk_stoch_red_0")) &
+                    Q(wk_stoch_black_1__lt=F("wk_stoch_red_1")),
+                    then=Value(True)
+                ),
+                default=Value(False),
+                output_field=BooleanField(),
+            ),
+        )
+        .order_by("wk_rsi_0")
+    )
+
+
+def day_queryset():
+    return (
+        StockData.objects.filter(
+            is_day_fetched=True
+        )
+        .annotate(
+            day_ha_cross=Case(
+                When(
+                    Q(day_ha_close_0__gt=F("day_ha_open_0")) &
+                    Q(day_ha_open_1__gt=F("day_ha_close_1")),
+                    then=Value(True)
+                ),
+                default=Value(False),
+                output_field=BooleanField(),
+            ),
+            day_stoch_cross_0=Case(
+                When(
+                    Q(day_stoch_black_0__gt=F("day_stoch_red_0")) &
+                    Q(day_stoch_black_1__lt=F("day_stoch_red_1")),
+                    then=Value(True)
+                ),
+                default=Value(False),
+                output_field=BooleanField(),
+            ),
+            day_stoch_cross_1=Case(
+                When(
+                    Q(day_stoch_black_1__gt=F("day_stoch_red_1")) &
+                    Q(day_stoch_black_2__lt=F("day_stoch_red_2")),
+                    then=Value(True)
+                ),
+                default=Value(False),
+                output_field=BooleanField(),
+            ),
+            day_stoch_cross_2=Case(
+                When(
+                    Q(day_stoch_black_2__gt=F("day_stoch_red_2")) &
+                    Q(day_stoch_black_3__lt=F("day_stoch_red_3")),
+                    then=Value(True)
+                ),
+                default=Value(False),
+                output_field=BooleanField(),
+            ),
+            day_stoch_valid=Case(
+                When(
+                    Q(day_stoch_cross_0=True) | Q(day_stoch_cross_2=True) | Q(day_stoch_cross_2=True) ,
+                    then=Value(True)
+                ),
+                default=Value(False),
+                output_field=BooleanField(),
+            ),
+        )
+        .order_by("day_rsi_0")
+    )
+
+
 def smart_buy_queryset():
     return (
         StockData.objects.filter(
