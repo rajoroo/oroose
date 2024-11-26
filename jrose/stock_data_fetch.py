@@ -172,3 +172,18 @@ def smart_buy_day_queryset():
         .order_by("day_stoch_black_0")
     )
 
+
+def smart_buy_potential_queryset():
+    return (
+        StockData.objects.filter(
+            is_wk_fetched=True,
+            wk_rsi_0__gt=60
+        )
+        .annotate(
+            wk_rsi_cross=Case(
+                When(wk_rsi_1__lt=60, then=Value(True)),
+                default=Value(False),
+                output_field=BooleanField(),
+            ),
+        )
+    )
