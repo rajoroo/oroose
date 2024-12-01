@@ -114,7 +114,8 @@ def smart_buy_day_queryset():
     return (
         StockData.objects.filter(
             is_wk_fetched=True,
-            is_day_fetched=True
+            is_day_fetched=True,
+            day_stoch_black_0__lt=50
         )
         .annotate(
             day_stoch_cross_0=Case(
@@ -163,27 +164,20 @@ def smart_buy_day_queryset():
                 ),
                 default=Value(False),
                 output_field=BooleanField(),
+            ),
+            day_stoch_cross_above_20=Case(
+                When(
+                    Q(day_stoch_cross_20_0=True) |
+                    Q(day_stoch_cross_20_1=True),
+                    then=Value(True)
+                ),
+                default=Value(False),
+                output_field=BooleanField(),
             )
         )
         .filter(
-            wk_rsi_0__gt=60,
             day_stoch_valid=True
         )
         .order_by("day_stoch_black_0")
     )
 
-
-def smart_buy_potential_queryset():
-    return (
-        StockData.objects.filter(
-            is_wk_fetched=True,
-            wk_rsi_0__gt=60
-        )
-        .annotate(
-            wk_rsi_cross=Case(
-                When(wk_rsi_1__lt=60, then=Value(True)),
-                default=Value(False),
-                output_field=BooleanField(),
-            ),
-        )
-    )

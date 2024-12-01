@@ -1,8 +1,7 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 
-from jrose.stock_data_fetch import week_queryset, day_queryset, smart_buy_week_queryset, smart_buy_day_queryset, \
-    smart_buy_potential_queryset
+from jrose.stock_data_fetch import week_queryset, day_queryset, smart_buy_week_queryset, smart_buy_day_queryset
 from mysuru.models import StockData
 
 
@@ -48,7 +47,6 @@ def smart_buy_page(request):
 
     stock_week_qs = smart_buy_week_queryset()
     stock_day_qs = smart_buy_day_queryset()
-    stock_potential_qs = smart_buy_potential_queryset()
     to_calculate = StockData.objects.filter(is_day_fetched=False).count()
     total_stock = StockData.objects.filter().all().count()
 
@@ -58,8 +56,6 @@ def smart_buy_page(request):
         "stock_week_count": stock_week_qs.count(),
         "stock_day_list": stock_day_qs,
         "stock_day_count": stock_day_qs.count(),
-        "stock_potential_list": stock_potential_qs,
-        "stock_potential_count": stock_potential_qs.count(),
         "to_calculate": to_calculate,
         "total_stock": total_stock,
     }
