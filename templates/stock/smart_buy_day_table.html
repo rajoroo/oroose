@@ -19,6 +19,8 @@
                             <th>Stoch Red</th>
                             <th>RSI Cross</th>
                             <th>Cross > 20</th>
+                            <th>Stoch Cross 0</th>
+                            <th>Stoch Cross 1</th>
                         </tr>
                         {% for row in stock_day_list %}
                         <tr>
@@ -29,6 +31,8 @@
                             <td>{{ row.day_stoch_red_0 }}</td>
                             <td>{{ row.day_rsi_0 }}</td>
                             <td {% if row.day_stoch_cross_above_20 %}class="green-col"{% endif %}>{{ row.day_stoch_cross_above_20 }}</td>
+                            <td {% if row.day_stoch_cross_0 %}class="green-col"{% endif %}>{{ row.day_stoch_cross_0 }}</td>
+                            <td {% if row.day_stoch_cross_1 %}class="green-col"{% endif %}>{{ row.day_stoch_cross_1 }}</td>
                         </tr>
                         {% endfor %}
                     </table>
