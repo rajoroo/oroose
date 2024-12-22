@@ -6,16 +6,16 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('mysuru', '0006_stockdata_zero_token_stockdata_zero_token_fetched'),
+        ("mysuru", "0006_stockdata_zero_token_stockdata_zero_token_fetched"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='stockdata',
-            name='zero_token',
+            model_name="stockdata",
+            name="zero_token",
         ),
         migrations.RemoveField(
-            model_name='stockdata',
-            name='zero_token_fetched',
+            model_name="stockdata",
+            name="zero_token_fetched",
         ),
     ]

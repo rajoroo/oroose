@@ -91,11 +91,10 @@ def handle_config_file(csv_file):
 #     return np.convolve(arr, kernel, 'same')
 
 
-def wma(df, column='close', n=20):
+def wma(df, column="close", n=20):
 
     weights = np.arange(1, n + 1)
-    wmas = df[column].rolling(n).apply(lambda x: np.dot(x, weights) /
-                                       weights.sum(), raw=True).to_list()
+    wmas = df[column].rolling(n).apply(lambda x: np.dot(x, weights) / weights.sum(), raw=True).to_list()
 
     return wmas
 
@@ -113,11 +112,11 @@ def calculate_exponential_moving_average(df):
 
 def calculate_weighted_moving_average(df):
     """Calculate exponential moving average 200, 50 and 20."""
-    df["ema_200"] = wma(df, 'close', 200)
-    df["ema_50"] = wma(df, 'close', 50)
-    df["ema_20"] = wma(df, 'close', 20)
-    df["ema_14"] = wma(df, 'close', 14)
-    df["ema_5"] = wma(df, 'close', 5)
+    df["ema_200"] = wma(df, "close", 200)
+    df["ema_50"] = wma(df, "close", 50)
+    df["ema_20"] = wma(df, "close", 20)
+    df["ema_14"] = wma(df, "close", 14)
+    df["ema_5"] = wma(df, "close", 5)
     df["ema_200_percentage"] = ((df["ema_200"] / df["close"]) - 1) * 100
     return df
 
@@ -377,11 +376,11 @@ def integrated_tool(df):
     df_expo_1 = df_expo[["ema_200", "ema_50", "ema_20", "ema_5"]]
     df_stoch = calculate_stochastic(df)
     df_stoch = df_stoch[["k_smooth", "d"]]
-    df_stoch = df_stoch.rename(columns={'k_smooth': 'red', 'd': 'black'})
+    df_stoch = df_stoch.rename(columns={"k_smooth": "red", "d": "black"})
     df_stoch_1 = df_stoch[["red", "black"]]
     df_ha = calculate_heikin_ashi(df)
     df_ha = df_ha[["open", "high", "low", "close"]]
-    df_ha = df_ha.rename(columns={'open': 'ha_open', 'high': 'ha_high', 'low': 'ha_low', 'close': 'ha_close'})
+    df_ha = df_ha.rename(columns={"open": "ha_open", "high": "ha_high", "low": "ha_low", "close": "ha_close"})
     df_ha_1 = df_ha[["ha_open", "ha_close"]]
     df_rsi = caculate_rsi(df)
     df_rsi.name = "rsi"
@@ -390,4 +389,3 @@ def integrated_tool(df):
     df_list = [df_new, df_expo_1, df_stoch_1, df_ha_1, df_rsi]
     result = pd.concat(df_list, axis=1)
     return result
-

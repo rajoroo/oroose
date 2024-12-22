@@ -159,10 +159,9 @@ class FetchTrend:
         recs = self.model_obj.objects.filter(is_trading=True, trading_status="up")
         for rec in recs:
             print(f"EMA: {rec.m5_ema_20_0} Close: {rec.m5_ha_close_0}")
-        recs = recs.filter(
-            Q(m5_ema_20_0__gt=F("m5_ha_close_0")) &
-            Q(m5_ema_20_0__gt=F("m5_ha_open_0"))
-        ).values_list("symbol", flat=True)
+        recs = recs.filter(Q(m5_ema_20_0__gt=F("m5_ha_close_0")) & Q(m5_ema_20_0__gt=F("m5_ha_open_0"))).values_list(
+            "symbol", flat=True
+        )
         if recs:
             symbols = "\n".join(recs)
             TelegramAlert.send_message(symbols)
@@ -171,11 +170,9 @@ class FetchTrend:
         recs = self.model_obj.objects.filter(is_trading=True, trading_status="dn")
         for rec in recs:
             print(f"EMA: {rec.m5_ema_20_0} Close: {rec.m5_ha_close_0}")
-        recs = recs.filter(
-            Q(m5_ema_20_0__lt=F("m5_ha_close_0")) &
-            Q(m5_ema_20_0__lt=F("m5_ha_open_0"))
-        ).values_list("symbol", flat=True)
+        recs = recs.filter(Q(m5_ema_20_0__lt=F("m5_ha_close_0")) & Q(m5_ema_20_0__lt=F("m5_ha_open_0"))).values_list(
+            "symbol", flat=True
+        )
         if recs:
             symbols = "\n".join(recs)
             TelegramAlert.send_message(symbols)
-

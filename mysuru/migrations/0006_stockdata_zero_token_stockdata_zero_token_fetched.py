@@ -6,18 +6,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('mysuru', '0005_stockdata_trading_status'),
+        ("mysuru", "0005_stockdata_trading_status"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='stockdata',
-            name='zero_token',
-            field=models.CharField(blank=True, max_length=50, null=True, verbose_name='Zero Token'),
+            model_name="stockdata",
+            name="zero_token",
+            field=models.CharField(blank=True, max_length=50, null=True, verbose_name="Zero Token"),
         ),
         migrations.AddField(
-            model_name='stockdata',
-            name='zero_token_fetched',
-            field=models.BooleanField(default=False, verbose_name='Zero Token Fetched'),
+            model_name="stockdata",
+            name="zero_token_fetched",
+            field=models.BooleanField(default=False, verbose_name="Zero Token Fetched"),
         ),
     ]

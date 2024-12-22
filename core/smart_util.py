@@ -116,8 +116,8 @@ class SmartInstrument:
 
 def download_future():
     df = pd.read_json(settings.SMART_MASTER)
-    df = df.loc[df['exch_seg'] == "NFO"]
-    df = df.loc[df['instrumenttype'] == "FUTSTK"]
-    df = df.drop_duplicates(subset='name', keep="last")
-    df = df[~df['name'].str.endswith('TEST')]
+    df = df.loc[df["exch_seg"] == "NFO"]
+    df = df.loc[df["instrumenttype"] == "FUTSTK"]
+    df = df.drop_duplicates(subset="name", keep="last")
+    df = df[~df["name"].str.endswith("TEST")]
     return df

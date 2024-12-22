@@ -7,7 +7,7 @@ from jrose.stock_data_fetch import (
     smart_buy_week_stoch_cross_queryset,
     smart_buy_day_stoch_cross_queryset,
     smart_buy_day_wma_cross_queryset,
-    smart_buy_day_above_wma_queryset
+    smart_buy_day_above_wma_queryset,
 )
 from mysuru.models import StockData
 from django.db.models import F
@@ -81,4 +81,3 @@ def smart_buy_page(request):
         "total_stock": total_stock,
     }
     return render(request, "stock/smart_buy_page.html", context)
-

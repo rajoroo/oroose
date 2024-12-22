@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('mysuru', '0004_alter_stockdata_trading_updated_at'),
+        ("mysuru", "0004_alter_stockdata_trading_updated_at"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='stockdata',
-            name='trading_status',
-            field=models.CharField(blank=True, choices=[('up', 'UP'), ('dn', 'Down')], max_length=2, null=True),
+            model_name="stockdata",
+            name="trading_status",
+            field=models.CharField(blank=True, choices=[("up", "UP"), ("dn", "Down")], max_length=2, null=True),
         ),
     ]
