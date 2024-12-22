@@ -12,6 +12,7 @@
                     {% if stock_list %}
                     <table class="green-table">
                         <tr>
+                            <th>S.No</th>
                             <th>Symbol</th>
                             <th>Company</th>
                             <th>Close</th>
@@ -21,6 +22,7 @@
                         </tr>
                         {% for row in stock_list %}
                         <tr>
+                            <td>{{ forloop.counter }}</td>
                             <td>{{ row.symbol }}</td>
                             <td>{{ row.company_name }}</td>
                             <td>{{ row.day_close }}</td>

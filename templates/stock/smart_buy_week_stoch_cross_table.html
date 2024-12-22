@@ -12,6 +12,7 @@
                     {% if stock_week_stoch_cross_list %}
                     <table class="green-table">
                         <tr>
+                            <th>S.No</th>
                             <th>Symbol</th>
                             <th>Company</th>
                             <th>Close</th>
@@ -20,6 +21,7 @@
                         </tr>
                         {% for row in stock_week_stoch_cross_list %}
                         <tr>
+                            <td>{{ forloop.counter }}</td>
                             <td>{{ row.symbol }}</td>
                             <td>{{ row.company_name }}</td>
                             <td>{{ row.wk_close }}</td>

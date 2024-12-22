@@ -9,9 +9,10 @@
                     <div class="pt-3 txt-rt">
                         <span>Total - {{ total_stock }} | Remaining to calculate - {{ to_calculate }} | Stock Count - {{ stoch_positive_count }}</span>
                     </div>
-                    {% if stock_list %}
+                    {% if stoch_positive_list %}
                     <table class="green-table">
                         <tr>
+                            <th>S.No</th>
                             <th>Symbol</th>
                             <th>Company</th>
                             <th>Close</th>
@@ -21,6 +22,7 @@
                         </tr>
                         {% for row in stoch_positive_list %}
                         <tr>
+                            <td>{{ forloop.counter }}</td>
                             <td>{{ row.symbol }}</td>
                             <td>{{ row.company_name }}</td>
                             <td>{{ row.wk_close }}</td>

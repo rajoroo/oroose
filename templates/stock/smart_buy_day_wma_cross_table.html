@@ -12,6 +12,7 @@
                     {% if stock_day_wma_cross_list %}
                     <table class="green-table">
                         <tr>
+                            <th>S.No</th>
                             <th>Symbol</th>
                             <th>Company</th>
                             <th>WMA 14</th>
@@ -21,6 +22,7 @@
                         </tr>
                         {% for row in stock_day_wma_cross_list %}
                         <tr>
+                            <td>{{ forloop.counter }}</td>
                             <td>{{ row.symbol }}</td>
                             <td>{{ row.company_name }}</td>
                             <td>{{ row.day_ema_14_0 }}</td>
