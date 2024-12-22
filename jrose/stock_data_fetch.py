@@ -110,48 +110,6 @@ def smart_buy_week_stoch_cross_queryset():
     )
 
 
-def smart_buy_week_rsi_cross_queryset():
-    return (
-        StockData.objects.filter(
-            is_wk_fetched=True,
-            wk_rsi_0__gt=60
-        )
-        .order_by("wk_rsi_0")
-    )
-
-
-def smart_buy_week_wma_cross_queryset():
-    return (
-        StockData.objects.filter(
-            is_wk_fetched=True,
-            wk_close__gt=F("wk_ema_20_0")
-        )
-        .annotate(
-            wk_cross_wma=Case(
-                When(
-                    Q(wk_close__gt=F("wk_ema_20_0")) &
-                    Q(wk_open__lt=F("wk_ema_20_0")),
-                    then=Value(True)
-                ),
-                default=Value(False),
-                output_field=BooleanField(),
-            )
-        )
-        .filter(wk_cross_wma=True)
-        .order_by("wk_rsi_0")
-    )
-
-
-def smart_buy_week_above_wma_queryset():
-    return (
-        StockData.objects.filter(
-            is_wk_fetched=True,
-            wk_close__gt=F("wk_ema_20_0")
-        )
-        .order_by("wk_rsi_0")
-    )
-
-
 def smart_buy_day_stoch_cross_queryset():
     return (
         StockData.objects.filter(
@@ -201,4 +159,39 @@ def smart_buy_day_stoch_cross_queryset():
         )
         .order_by("day_stoch_black_0")
     )
+
+
+def smart_buy_day_wma_cross_queryset():
+    return (
+        StockData.objects.filter(
+            is_wk_fetched=True,
+            is_day_fetched=True,
+            day_close__gt=F("day_ema_14_0")
+        )
+        .annotate(
+            day_cross_wma=Case(
+                When(
+                    Q(day_close__gt=F("day_ema_14_0")) &
+                    Q(day_open__lt=F("day_ema_14_0")),
+                    then=Value(True)
+                ),
+                default=Value(False),
+                output_field=BooleanField(),
+            )
+        )
+        .filter(day_cross_wma=True)
+        .order_by("day_stoch_black_0")
+    )
+
+
+def smart_buy_day_above_wma_queryset():
+    return (
+        StockData.objects.filter(
+            is_wk_fetched=True,
+            is_day_fetched=True,
+            day_close__gt=F("day_ema_14_0")
+        )
+        .order_by("day_stoch_black_0")
+    )
+
 

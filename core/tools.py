@@ -105,6 +105,7 @@ def calculate_exponential_moving_average(df):
     df["ema_200"] = df["close"].ewm(span=200, min_periods=0, adjust=False, ignore_na=False).mean()
     df["ema_50"] = df["close"].ewm(span=50, min_periods=0, adjust=False, ignore_na=False).mean()
     df["ema_20"] = df["close"].ewm(span=20, min_periods=0, adjust=False, ignore_na=False).mean()
+    df["ema_14"] = df["close"].ewm(span=14, min_periods=0, adjust=False, ignore_na=False).mean()
     df["ema_5"] = df["close"].ewm(span=5, min_periods=0, adjust=False, ignore_na=False).mean()
     df["ema_200_percentage"] = ((df["ema_200"] / df["close"]) - 1) * 100
     return df
@@ -115,6 +116,7 @@ def calculate_weighted_moving_average(df):
     df["ema_200"] = wma(df, 'close', 200)
     df["ema_50"] = wma(df, 'close', 50)
     df["ema_20"] = wma(df, 'close', 20)
+    df["ema_14"] = wma(df, 'close', 14)
     df["ema_5"] = wma(df, 'close', 5)
     df["ema_200_percentage"] = ((df["ema_200"] / df["close"]) - 1) * 100
     return df
@@ -199,47 +201,65 @@ def get_ema(df, data_type):
             f"{data_type}_ema_200_0": round(df.iloc[-1]["ema_200"], 2),
             f"{data_type}_ema_50_0": round(df.iloc[-1]["ema_50"], 2),
             f"{data_type}_ema_20_0": round(df.iloc[-1]["ema_20"], 2),
+            f"{data_type}_ema_14_0": round(df.iloc[-1]["ema_14"], 2),
             f"{data_type}_ema_5_0": round(df.iloc[-1]["ema_5"], 2),
             f"{data_type}_ema_200_1": round(df.iloc[-2]["ema_200"], 2),
             f"{data_type}_ema_50_1": round(df.iloc[-2]["ema_50"], 2),
             f"{data_type}_ema_20_1": round(df.iloc[-2]["ema_20"], 2),
+            f"{data_type}_ema_14_1": round(df.iloc[-1]["ema_14"], 2),
             f"{data_type}_ema_5_1": round(df.iloc[-2]["ema_5"], 2),
             f"{data_type}_ema_200_2": round(df.iloc[-3]["ema_200"], 2),
             f"{data_type}_ema_50_2": round(df.iloc[-3]["ema_50"], 2),
             f"{data_type}_ema_20_2": round(df.iloc[-3]["ema_20"], 2),
+            f"{data_type}_ema_14_2": round(df.iloc[-1]["ema_14"], 2),
             f"{data_type}_ema_5_2": round(df.iloc[-3]["ema_5"], 2),
             f"{data_type}_ema_200_3": round(df.iloc[-4]["ema_200"], 2),
             f"{data_type}_ema_50_3": round(df.iloc[-4]["ema_50"], 2),
             f"{data_type}_ema_20_3": round(df.iloc[-4]["ema_20"], 2),
+            f"{data_type}_ema_14_3": round(df.iloc[-1]["ema_14"], 2),
             f"{data_type}_ema_5_3": round(df.iloc[-4]["ema_5"], 2),
             f"{data_type}_ema_200_4": round(df.iloc[-5]["ema_200"], 2),
             f"{data_type}_ema_50_4": round(df.iloc[-5]["ema_50"], 2),
             f"{data_type}_ema_20_4": round(df.iloc[-5]["ema_20"], 2),
+            f"{data_type}_ema_14_4": round(df.iloc[-1]["ema_14"], 2),
             f"{data_type}_ema_5_4": round(df.iloc[-5]["ema_5"], 2),
             f"{data_type}_ema_200_5": round(df.iloc[-6]["ema_200"], 2),
             f"{data_type}_ema_50_5": round(df.iloc[-6]["ema_50"], 2),
             f"{data_type}_ema_20_5": round(df.iloc[-6]["ema_20"], 2),
+            f"{data_type}_ema_14_5": round(df.iloc[-1]["ema_14"], 2),
             f"{data_type}_ema_5_5": round(df.iloc[-6]["ema_5"], 2),
         }
     return {
         f"{data_type}_ema_200_0": 0,
         f"{data_type}_ema_50_0": 0,
         f"{data_type}_ema_20_0": 0,
+        f"{data_type}_ema_14_0": 0,
+        f"{data_type}_ema_5_0": 0,
         f"{data_type}_ema_200_1": 0,
         f"{data_type}_ema_50_1": 0,
         f"{data_type}_ema_20_1": 0,
+        f"{data_type}_ema_14_1": 0,
+        f"{data_type}_ema_5_1": 0,
         f"{data_type}_ema_200_2": 0,
         f"{data_type}_ema_50_2": 0,
         f"{data_type}_ema_20_2": 0,
+        f"{data_type}_ema_14_2": 0,
+        f"{data_type}_ema_5_2": 0,
         f"{data_type}_ema_200_3": 0,
         f"{data_type}_ema_50_3": 0,
         f"{data_type}_ema_20_3": 0,
+        f"{data_type}_ema_14_3": 0,
+        f"{data_type}_ema_5_3": 0,
         f"{data_type}_ema_200_4": 0,
         f"{data_type}_ema_50_4": 0,
         f"{data_type}_ema_20_4": 0,
+        f"{data_type}_ema_14_4": 0,
+        f"{data_type}_ema_5_4": 0,
         f"{data_type}_ema_200_5": 0,
         f"{data_type}_ema_50_5": 0,
         f"{data_type}_ema_20_5": 0,
+        f"{data_type}_ema_14_5": 0,
+        f"{data_type}_ema_5_5": 0,
     }
 
 

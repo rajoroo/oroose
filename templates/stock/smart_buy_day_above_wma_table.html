@@ -2,27 +2,31 @@
     <div class="col-12 col-sm-12">
         <div class="card nifty-table">
             <div class="card-header border-bottom">
-                <h3 class="card-title mb-0">Week RSI Cross</h3>
+                <h3 class="card-title mb-0">Day above WMA</h3>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
                     <div class="pt-3 txt-rt">
-                        <span>Total - {{ total_stock }} | Remaining to calculate - {{ to_calculate }} | Stock Count - {{ stock_week_rsi_cross_count }}</span>
+                        <span>Total - {{ total_stock }} | Remaining to calculate - {{ to_calculate }} | Stock Count - {{ stock_day_above_wma_count }}</span>
                     </div>
-                    {% if stock_week_rsi_cross_list %}
+                    {% if stock_day_above_wmq_list %}
                     <table class="green-table">
                         <tr>
                             <th>Symbol</th>
                             <th>Company</th>
+                            <th>WMA 14</th>
                             <th>Close</th>
-                            <th>RSI</th>
+                            <th>Stoch Black</th>
+                            <th>Stoch Red</th>
                         </tr>
-                        {% for row in stock_week_rsi_cross_list %}
+                        {% for row in stock_day_above_wmq_list %}
                         <tr>
                             <td>{{ row.symbol }}</td>
                             <td>{{ row.company_name }}</td>
+                            <td>{{ row.wk_ema_14_0 }}</td>
                             <td>{{ row.wk_close }}</td>
-                            <td>{{ row.wk_rsi_0 }}</td>
+                            <td>{{ row.day_stoch_black_0 }}</td>
+                            <td>{{ row.day_stoch_red_0 }}</td>
                         </tr>
                         {% endfor %}
                     </table>
