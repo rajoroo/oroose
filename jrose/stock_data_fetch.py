@@ -18,6 +18,11 @@ def week_queryset():
         .order_by("wk_stoch_black_0")
     )
 
+def week_above_wma_queryset():
+    return StockData.objects.filter(is_wk_fetched=True, wk_close__gt=F("wk_ema_14_0")).order_by(
+        "wk_stoch_black_0"
+    )
+
 
 def day_queryset():
     return (

@@ -7,7 +7,7 @@ from jrose.stock_data_fetch import (
     smart_buy_week_stoch_cross_queryset,
     smart_buy_day_stoch_cross_queryset,
     smart_buy_day_wma_cross_queryset,
-    smart_buy_day_above_wma_queryset,
+    smart_buy_day_above_wma_queryset, week_above_wma_queryset,
 )
 from mysuru.models import StockData
 from django.db.models import F
@@ -19,6 +19,7 @@ def week_page(request):
 
     stock_qs = week_queryset()
     stoch_positive_qs = week_queryset().filter(wk_stoch_black_0__gt=F("wk_stoch_red_0")).order_by("wk_stoch_black_0")
+    stoch_wk_above_wma_qs = week_above_wma_queryset()
     to_calculate = StockData.objects.filter(is_wk_fetched=False).count()
     total_stock = StockData.objects.filter().all().count()
 
@@ -28,6 +29,8 @@ def week_page(request):
         "stock_count": stock_qs.count(),
         "stoch_positive_list": stoch_positive_qs,
         "stoch_positive_count": stoch_positive_qs.count(),
+        "stoch_wk_above_wma_list": stoch_wk_above_wma_qs,
+        "stoch_wk_above_wma_count": stoch_wk_above_wma_qs.count(),
         "to_calculate": to_calculate,
         "total_stock": total_stock,
     }
