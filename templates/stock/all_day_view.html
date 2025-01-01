@@ -2,14 +2,14 @@
     <div class="col-12 col-sm-12">
         <div class="card nifty-table">
             <div class="card-header border-bottom">
-                <h3 class="card-title mb-0">Week Above WMA</h3>
+                <h3 class="card-title mb-0">All Day Data</h3>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
                     <div class="pt-3 txt-rt">
-                        <span>Total - {{ total_stock }} | Remaining to calculate - {{ to_calculate }} | Stock Count - {{ stoch_wk_above_wma_count }}</span>
+                        <span>Total - {{ total_stock }} | Remaining to calculate - {{ to_calculate }} | Stock Count - {{ all_day_data_count }}</span>
                     </div>
-                    {% if stoch_wk_above_wma_list %}
+                    {% if all_day_data_list %}
                     <table class="green-table">
                         <tr>
                             <th>S.No</th>
@@ -20,15 +20,15 @@
                             <th>Stoch Red</th>
                             <th>RSI</th>
                         </tr>
-                        {% for row in stoch_wk_above_wma_list %}
+                        {% for row in all_day_data_list %}
                         <tr>
                             <td>{{ forloop.counter }}</td>
                             <td>{{ row.symbol }}</td>
                             <td>{{ row.company_name }}</td>
-                            <td>{{ row.wk_close }}</td>
-                            <td {% if row.wk_stoch_cross %}class="green-col"{% endif %}>{{ row.wk_stoch_black_0 }}</td>
-                            <td>{{ row.wk_stoch_red_0 }}</td>
-                            <td>{{ row.wk_rsi_0 }}</td>
+                            <td>{{ row.day_close }}</td>
+                            <td>{{ row.day_stoch_black_0 }}</td>
+                            <td>{{ row.day_stoch_red_0 }}</td>
+                            <td>{{ row.day_rsi_0 }}</td>
                         </tr>
                         {% endfor %}
                     </table>

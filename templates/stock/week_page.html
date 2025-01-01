@@ -7,9 +7,10 @@
 
 {% block content %}
 
-    {% include "stock/wk_view_table.html" %}
-    {% include "stock/wk_stoch_view_table.html" %}
-    {% include "stock/wk_stoch_wk_above_wma_view_table.html" %}
+    {% include "stock/all_week_view.html" %}
+    {% include "stock/week_above_50_wma_view.html" %}
+    {% include "stock/week_above_50_wma_stoch_cross_view.html" %}
+    {% include "stock/week_above_50_wma_stoch_positive_view.html" %}
 
 {% endblock content %}
 

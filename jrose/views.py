@@ -2,35 +2,43 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 
 from jrose.stock_data_fetch import (
-    week_queryset,
-    day_queryset,
-    smart_buy_week_stoch_cross_queryset,
-    smart_buy_day_stoch_cross_queryset,
-    smart_buy_day_wma_cross_queryset,
-    smart_buy_day_above_wma_queryset, week_above_wma_queryset,
+    all_week_data_queryset,
+    week_above_50_wma_queryset,
+    week_above_50_wma_stoch_positive_queryset,
+    all_day_data_queryset,
+    week_above_50_wma_stoch_cross_queryset,
+    week_above_50_wma_day_stoch_cross_queryset,
+    week_above_50_wma_day_stoch_positive_queryset, day_above_50_wma_queryset,
 )
 from mysuru.models import StockData
-from django.db.models import F
 
 
 @login_required(login_url="/accounts/login/")
 def week_page(request):
     """Stocks Week View"""
 
-    stock_qs = week_queryset()
-    stoch_positive_qs = week_queryset().filter(wk_stoch_black_0__gt=F("wk_stoch_red_0")).order_by("wk_stoch_black_0")
-    stoch_wk_above_wma_qs = week_above_wma_queryset()
+    all_week_data = all_week_data_queryset()
+    week_above_50_wma_data = week_above_50_wma_queryset()
+    week_above_50_wma_stoch_cross_data = week_above_50_wma_stoch_cross_queryset()
+    week_above_50_wma_stoch_positive_data = week_above_50_wma_stoch_positive_queryset()
     to_calculate = StockData.objects.filter(is_wk_fetched=False).count()
     total_stock = StockData.objects.filter().all().count()
 
     context = {
         "active_page": "week_page",
-        "stock_list": stock_qs,
-        "stock_count": stock_qs.count(),
-        "stoch_positive_list": stoch_positive_qs,
-        "stoch_positive_count": stoch_positive_qs.count(),
-        "stoch_wk_above_wma_list": stoch_wk_above_wma_qs,
-        "stoch_wk_above_wma_count": stoch_wk_above_wma_qs.count(),
+        # All Week data
+        "all_week_data_list": all_week_data,
+        "all_week_data_count": all_week_data.count(),
+        # Week above 50 WMA
+        "week_above_50_wma_data_list": week_above_50_wma_data,
+        "week_above_50_wma_data_count": week_above_50_wma_data.count(),
+        # Week above 50 WMA stochastic cross
+        "week_above_50_wma_stoch_cross_data_list": week_above_50_wma_stoch_cross_data,
+        "week_above_50_wma_stoch_cross_data_count": week_above_50_wma_stoch_cross_data.count(),
+        # Week above 50 WMA stochastic positive
+        "week_above_50_wma_stoch_positive_data_list": week_above_50_wma_stoch_positive_data,
+        "week_above_50_wma_stoch_positive_data_count": week_above_50_wma_stoch_positive_data.count(),
+        # Total Count
         "to_calculate": to_calculate,
         "total_stock": total_stock,
     }
@@ -41,14 +49,28 @@ def week_page(request):
 def day_page(request):
     """Stocks Day View"""
 
-    stock_qs = day_queryset()
+    all_day_data = all_day_data_queryset()
+    week_above_50_wma_day_stoch_cross_data = week_above_50_wma_day_stoch_cross_queryset()
+    week_above_50_wma_day_stoch_positive_data = week_above_50_wma_day_stoch_positive_queryset()
+    day_above_50_wma_data = day_above_50_wma_queryset()
     to_calculate = StockData.objects.filter(is_day_fetched=False).count()
     total_stock = StockData.objects.filter().all().count()
 
     context = {
         "active_page": "day_page",
-        "stock_list": stock_qs,
-        "stock_count": stock_qs.count(),
+        # All Day data
+        "all_day_data_list": all_day_data,
+        "all_day_data_count": all_day_data.count(),
+        # Week above 50 WMA Day stochastic cross
+        "week_above_50_wma_day_stoch_cross_data_list": week_above_50_wma_day_stoch_cross_data,
+        "week_above_50_wma_day_stoch_cross_data_count": week_above_50_wma_day_stoch_cross_data.count(),
+        # Week above 50 WMA Day stochastic positive
+        "week_above_50_wma_day_stoch_positive_data_list": week_above_50_wma_day_stoch_positive_data,
+        "week_above_50_wma_day_stoch_positive_data_count": week_above_50_wma_day_stoch_positive_data.count(),
+        # Day above 50 WMA
+        "day_above_50_wma_data_list": day_above_50_wma_data,
+        "day_above_50_wma_data_count": day_above_50_wma_data.count(),
+        # Total Count
         "to_calculate": to_calculate,
         "total_stock": total_stock,
     }
@@ -59,27 +81,20 @@ def day_page(request):
 def smart_buy_page(request):
     """Stocks Smart View"""
 
-    stock_week_stoch_cross_qs = smart_buy_week_stoch_cross_queryset()
-    stoch_day_stoch_cross_qs = smart_buy_day_stoch_cross_queryset()
-    stoch_day_wma_cross_qs = smart_buy_day_wma_cross_queryset()
-    stoch_day_above_wma_qs = smart_buy_day_above_wma_queryset()
+    week_above_50_wma_stoch_cross_data = week_above_50_wma_stoch_cross_queryset()
+    week_above_50_wma_day_stoch_cross_data = week_above_50_wma_day_stoch_cross_queryset()
     to_calculate = StockData.objects.filter(is_day_fetched=False).count()
     total_stock = StockData.objects.filter().all().count()
 
     context = {
         "active_page": "smart_buy_page",
-        # Week Cross
-        "stock_week_stoch_cross_list": stock_week_stoch_cross_qs,
-        "stock_week_stoch_cross_count": stock_week_stoch_cross_qs.count(),
-        # Day Cross
-        "stock_day_stoch_cross_list": stoch_day_stoch_cross_qs,
-        "stock_day_stoch_cross_count": stoch_day_stoch_cross_qs.count(),
-        # Day Cross WMA 20
-        "stock_day_wma_cross_list": stoch_day_wma_cross_qs,
-        "stock_day_wma_cross_count": stoch_day_wma_cross_qs.count(),
-        # Day above WMA 20
-        "stock_day_above_wmq_list": stoch_day_above_wma_qs,
-        "stock_day_above_wma_count": stoch_day_above_wma_qs.count(),
+        # Week above 50 WMA stochastic cross
+        "week_above_50_wma_stoch_cross_data_list": week_above_50_wma_stoch_cross_data,
+        "week_above_50_wma_stoch_cross_data_count": week_above_50_wma_stoch_cross_data.count(),
+        # Week above 50 WMA Day stochastic cross
+        "week_above_50_wma_day_stoch_cross_data_list": week_above_50_wma_day_stoch_cross_data,
+        "week_above_50_wma_day_stoch_cross_data_count": week_above_50_wma_day_stoch_cross_data.count(),
+        # Total Count
         "to_calculate": to_calculate,
         "total_stock": total_stock,
     }
