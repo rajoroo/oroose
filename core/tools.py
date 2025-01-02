@@ -179,6 +179,12 @@ def get_ohlcv(df, data_type):
         return {
             f"{data_type}_open": round(df.iloc[-1]["open"], 2),
             f"{data_type}_close": round(df.iloc[-1]["close"], 2),
+            f"{data_type}_close_0": round(df.iloc[-1]["close"], 2),
+            f"{data_type}_close_1": round(df.iloc[-2]["close"], 2),
+            f"{data_type}_close_2": round(df.iloc[-3]["close"], 2),
+            f"{data_type}_close_3": round(df.iloc[-4]["close"], 2),
+            f"{data_type}_close_4": round(df.iloc[-5]["close"], 2),
+            f"{data_type}_close_5": round(df.iloc[-6]["close"], 2),
             f"{data_type}_high": round(df.iloc[-1]["high"], 2),
             f"{data_type}_low": round(df.iloc[-1]["low"], 2),
             f"{data_type}_volume": round(df.iloc[-1]["volume"], 2),

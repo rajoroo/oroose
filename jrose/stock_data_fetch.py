@@ -79,8 +79,10 @@ def day_cross_50_wma_queryset():
     return (
         StockData.objects.filter(
             is_day_fetched=True,
-            day_ema_50_0__lt=F("day_close"),
-            day_ema_50_1__gt=F("day_close"),
+            day_close_0__gt=F("day_ema_50_0"),
+            day_close_1__lt=F("day_ema_50_0"),
+            # day_ema_50_0__lt=F("day_close"),
+            # day_ema_50_1__gt=F("day_close"),
         )
         .order_by("day_stoch_black_0")
     )
