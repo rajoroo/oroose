@@ -498,22 +498,11 @@ class StockData(models.Model):
             interval=interval,
             fromdate=from_date.strftime("%Y-%m-%d %H:%M"),
             todate=datetime.now().strftime("%Y-%m-%d %H:%M"),
-            # todate="2024-10-03 17:00",
         )
 
         df = pd.DataFrame(history_data)
         df[["date", "open", "high", "low", "close", "volume"]] = pd.DataFrame(df.data.tolist(), index=df.index)
         df["date"] = pd.to_datetime(df["date"])
-
-        # df2 = {
-        #     'date': (datetime.now() + timedelta(days=1)).strftime("%Y-%m-%d %H:%M"),
-        #     'open': df.iloc[-1]["close"],
-        #     'high': df.iloc[-1]["close"],
-        #     'low': df.iloc[-1]["close"],
-        #     'close': df.iloc[-1]["close"],
-        #     'volume': df.iloc[-1]["volume"]
-        # }
-        # df = df._append(df2, ignore_index=True)
 
         return df
 
