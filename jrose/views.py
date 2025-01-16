@@ -8,8 +8,13 @@ from jrose.stock_data_fetch import (
     all_day_data_queryset,
     week_above_50_wma_stoch_cross_queryset,
     week_above_50_wma_day_stoch_cross_queryset,
-    week_above_50_wma_day_stoch_positive_queryset, day_above_50_wma_queryset, day_cross_50_wma_queryset,
-    week_level_0_to_20_queryset, week_level_20_to_50_queryset, week_level_50_to_80_queryset,
+    week_above_50_wma_day_stoch_positive_queryset,
+    day_above_50_wma_queryset,
+    day_cross_50_wma_queryset,
+    week_level_0_to_20_queryset,
+    week_level_20_to_50_queryset,
+    week_level_50_to_80_queryset,
+    week_below_50_wma_day_stoch_cross_queryset,
 )
 from mysuru.models import StockData
 
@@ -52,6 +57,7 @@ def day_page(request):
 
     all_day_data = all_day_data_queryset()
     week_above_50_wma_day_stoch_cross_data = week_above_50_wma_day_stoch_cross_queryset()
+    week_below_50_wma_day_stoch_cross_data = week_below_50_wma_day_stoch_cross_queryset()
     week_above_50_wma_day_stoch_positive_data = week_above_50_wma_day_stoch_positive_queryset()
     day_cross_50_wma_data = day_cross_50_wma_queryset()
     day_above_50_wma_data = day_above_50_wma_queryset()
@@ -66,6 +72,9 @@ def day_page(request):
         # Week above 50 WMA Day stochastic cross
         "week_above_50_wma_day_stoch_cross_data_list": week_above_50_wma_day_stoch_cross_data,
         "week_above_50_wma_day_stoch_cross_data_count": week_above_50_wma_day_stoch_cross_data.count(),
+        # Week below 50 WMA Day stochastic cross
+        "week_below_50_wma_day_stoch_cross_data_list": week_below_50_wma_day_stoch_cross_data,
+        "week_below_50_wma_day_stoch_cross_data_count": week_below_50_wma_day_stoch_cross_data.count(),
         # Week above 50 WMA Day stochastic positive
         "week_above_50_wma_day_stoch_positive_data_list": week_above_50_wma_day_stoch_positive_data,
         "week_above_50_wma_day_stoch_positive_data_count": week_above_50_wma_day_stoch_positive_data.count(),
@@ -88,6 +97,7 @@ def smart_buy_page(request):
 
     week_above_50_wma_stoch_cross_data = week_above_50_wma_stoch_cross_queryset()
     week_above_50_wma_day_stoch_cross_data = week_above_50_wma_day_stoch_cross_queryset()
+    week_below_50_wma_day_stoch_cross_data = week_below_50_wma_day_stoch_cross_queryset()
     day_cross_50_wma_data = day_cross_50_wma_queryset()
     to_calculate = StockData.objects.filter(is_day_fetched=False).count()
     total_stock = StockData.objects.filter().all().count()
@@ -100,6 +110,9 @@ def smart_buy_page(request):
         # Week above 50 WMA Day stochastic cross
         "week_above_50_wma_day_stoch_cross_data_list": week_above_50_wma_day_stoch_cross_data,
         "week_above_50_wma_day_stoch_cross_data_count": week_above_50_wma_day_stoch_cross_data.count(),
+        # Week below 50 WMA Day stochastic cross
+        "week_below_50_wma_day_stoch_cross_data_list": week_below_50_wma_day_stoch_cross_data,
+        "week_below_50_wma_day_stoch_cross_data_count": week_below_50_wma_day_stoch_cross_data.count(),
         # Day cross 50 WMA
         "day_cross_50_wma_data_list": day_cross_50_wma_data,
         "day_cross_50_wma_data_count": day_cross_50_wma_data.count(),
