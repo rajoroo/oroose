@@ -25,6 +25,12 @@ def week_above_50_wma_stoch_positive_queryset():
     ).order_by("wk_stoch_black_0")
 
 
+def week_above_rsi_60_queryset():
+    return StockData.objects.filter(
+        is_wk_fetched=True, wk_rsi_0__gt=60
+    ).order_by("wk_rsi_0")
+
+
 # ================================= DAY START =================================
 
 

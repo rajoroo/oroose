@@ -14,7 +14,7 @@ from jrose.stock_data_fetch import (
     week_level_0_to_20_queryset,
     week_level_20_to_50_queryset,
     week_level_50_to_80_queryset,
-    week_below_50_wma_day_stoch_cross_queryset,
+    week_below_50_wma_day_stoch_cross_queryset, week_above_rsi_60_queryset,
 )
 from mysuru.models import StockData
 
@@ -27,6 +27,7 @@ def week_page(request):
     week_above_50_wma_data = week_above_50_wma_queryset()
     week_above_50_wma_stoch_cross_data = week_above_50_wma_stoch_cross_queryset()
     week_above_50_wma_stoch_positive_data = week_above_50_wma_stoch_positive_queryset()
+    week_above_rsi_60_data = week_above_rsi_60_queryset()
     to_calculate = StockData.objects.filter(is_wk_fetched=False).count()
     total_stock = StockData.objects.filter().all().count()
 
@@ -44,6 +45,9 @@ def week_page(request):
         # Week above 50 WMA stochastic positive
         "week_above_50_wma_stoch_positive_data_list": week_above_50_wma_stoch_positive_data,
         "week_above_50_wma_stoch_positive_data_count": week_above_50_wma_stoch_positive_data.count(),
+        # Week above RSI 60
+        "week_above_rsi_60_data_list": week_above_rsi_60_data,
+        "week_above_rsi_60_data_count": week_above_rsi_60_data.count(),
         # Total Count
         "to_calculate": to_calculate,
         "total_stock": total_stock,
