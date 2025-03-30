@@ -54,7 +54,7 @@ def hr_page(request):
     """Stocks Hour View"""
 
     all_hr_data = all_hr_data_queryset()
-    to_calculate = StockData.objects.filter(is_day_fetched=False).count()
+    to_calculate = StockData.objects.filter(is_hr_fetched=False).count()
     total_stock = StockData.objects.filter().all().count()
 
     context = {
