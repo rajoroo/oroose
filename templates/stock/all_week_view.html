@@ -19,6 +19,7 @@
                             <th>Stoch Black</th>
                             <th>Stoch Red</th>
                             <th>RSI</th>
+                            <th>Rev RSI</th>
                         </tr>
                         {% for row in all_week_data_list %}
                         <tr>
@@ -29,6 +30,7 @@
                             <td>{{ row.wk_stoch_black_0 }}</td>
                             <td>{{ row.wk_stoch_red_0 }}</td>
                             <td>{{ row.wk_rsi_0 }}</td>
+                            <td>{{ row.wk_rev_rsi }}</td>
                         </tr>
                         {% endfor %}
                     </table>

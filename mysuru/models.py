@@ -17,7 +17,7 @@ from core.tools import (
     get_stochastic,
     get_heikin_ashi,
     get_rsi,
-    get_ohlcv,
+    get_ohlcv, calculate_reverse_rsi,
 )
 
 
@@ -119,6 +119,7 @@ class StockData(models.Model):
     wk_ha_low_5 = models.FloatField(verbose_name="HA Low", null=True, blank=True)
     wk_ha_close_5 = models.FloatField(verbose_name="HA Close", null=True, blank=True)
     wk_rsi_5 = models.FloatField(verbose_name="RSI", null=True, blank=True)
+    wk_rev_rsi = models.FloatField(verbose_name="Reverse RSI", null=True, blank=True)
 
     is_day_fetched = models.BooleanField(verbose_name="Day Fetched", default=False)
     day_open = models.FloatField(verbose_name="Open", null=True, blank=True)
@@ -204,6 +205,7 @@ class StockData(models.Model):
     day_ha_low_5 = models.FloatField(verbose_name="HA Low", null=True, blank=True)
     day_ha_close_5 = models.FloatField(verbose_name="HA Close", null=True, blank=True)
     day_rsi_5 = models.FloatField(verbose_name="RSI", null=True, blank=True)
+    day_rev_rsi = models.FloatField(verbose_name="Reverse RSI", null=True, blank=True)
 
     is_hr_fetched = models.BooleanField(verbose_name="Hour Fetched", default=False)
     hr_open = models.FloatField(verbose_name="Open", null=True, blank=True)
@@ -289,6 +291,7 @@ class StockData(models.Model):
     hr_ha_low_5 = models.FloatField(verbose_name="HA Low", null=True, blank=True)
     hr_ha_close_5 = models.FloatField(verbose_name="HA Close", null=True, blank=True)
     hr_rsi_5 = models.FloatField(verbose_name="RSI", null=True, blank=True)
+    hr_rev_rsi = models.FloatField(verbose_name="Reverse RSI", null=True, blank=True)
 
     is_m15_fetched = models.BooleanField(verbose_name="15 Min Fetched", default=False)
     m15_open = models.FloatField(verbose_name="Open", null=True, blank=True)
@@ -374,6 +377,7 @@ class StockData(models.Model):
     m15_ha_low_5 = models.FloatField(verbose_name="HA Low", null=True, blank=True)
     m15_ha_close_5 = models.FloatField(verbose_name="HA Close", null=True, blank=True)
     m15_rsi_5 = models.FloatField(verbose_name="RSI", null=True, blank=True)
+    m15_rev_rsi = models.FloatField(verbose_name="Reverse RSI", null=True, blank=True)
 
     is_m5_fetched = models.BooleanField(verbose_name="5 Min Fetched", default=False)
     m5_open = models.FloatField(verbose_name="Open", null=True, blank=True)
@@ -459,6 +463,7 @@ class StockData(models.Model):
     m5_ha_low_5 = models.FloatField(verbose_name="HA Low", null=True, blank=True)
     m5_ha_close_5 = models.FloatField(verbose_name="HA Close", null=True, blank=True)
     m5_rsi_5 = models.FloatField(verbose_name="RSI", null=True, blank=True)
+    m5_rev_rsi = models.FloatField(verbose_name="Reverse RSI", null=True, blank=True)
 
     trading_updated_at = models.DateTimeField(verbose_name="Trading Updated at", null=True, blank=True)
     is_trading = models.BooleanField(verbose_name="Is Trading", default=False)
@@ -554,6 +559,7 @@ class StockData(models.Model):
             df_ema = calculate_weighted_moving_average(df=df_ha)
             df_stoch = calculate_stochastic(df=df_ha)
             df_rsi = caculate_rsi(df=df_ha)
+            df_reverse_rsi = calculate_reverse_rsi(df=df_ha)
 
             data_ema = get_ema(df_ema, data_type)
             data_stoch = get_stochastic(df_stoch, data_type)
@@ -565,6 +571,8 @@ class StockData(models.Model):
                 setattr(self, attr, value)
 
             setattr(self, f"is_{data_type}_fetched", True)
+            if df_reverse_rsi:
+                setattr(self,  f"{data_type}_rev_rsi", df_reverse_rsi)
             self.save()
             print(f"------------------{self.symbol}----------------------")
         except ValueError as ve:

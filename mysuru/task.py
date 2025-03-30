@@ -23,11 +23,18 @@ def trading_m5_sensitive_fetch(name):
     trend_obj.fetch_trading_value(name)
     recs = StockData.objects.filter(is_trading=True, trading_status="up")
     for rec in recs:
-        if rec.m5_ema_5_0 > rec.m5_ema_20_0:
-            print(
-                f"EMA 5: {rec.m5_ema_5_0} EMA 20: {rec.m5_ema_5_0} EMA 50: {rec.m5_ema_50_0} Close: {rec.m5_ha_close_0} Green"
-            )
-        else:
-            message = f"SYMBOL:{rec.symbol} EMA 5: {rec.m5_ema_5_0} EMA 20: {rec.m5_ema_5_0} EMA 50: {rec.m5_ema_50_0} Close: {rec.m5_ha_close_0} Red"
-            print(message)
+        rsi_value = getattr(rec, f"{name}_rsi_0")
+        reverse_rsi_value = getattr(rec, f"{name}_rev_rsi")
+        message = f"SYMBOL:{rec.symbol} -- {name} RSI:{rsi_value} -- {name} Reverse RSI: {reverse_rsi_value}"
+        print(message)
+        if rsi_value < 50:
+            TelegramAlert.send_message(message)
+
+    recs = StockData.objects.filter(is_trading=True, trading_status="dn")
+    for rec in recs:
+        rsi_value = getattr(rec, f"{name}_rsi_0")
+        reverse_rsi_value = getattr(rec, f"{name}_rev_rsi")
+        message = f"SYMBOL:{rec.symbol} -- {name} RSI:{rsi_value} -- {name} Reverse RSI: {reverse_rsi_value}"
+        print(message)
+        if rsi_value > 50:
             TelegramAlert.send_message(message)

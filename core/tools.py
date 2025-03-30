@@ -174,6 +174,26 @@ def caculate_rsi(df, periods=14, ema=True):
     return df_rsi
 
 
+def calculate_reverse_rsi(df, rsi_given=50.0):
+    rsi_value = caculate_rsi(df)
+    last_close_rsi = round(rsi_value.iloc[-1], 2)
+    last_close_value = df.iloc[-1]["close"]
+    new_close_value = None
+    for percentage in range(1, 100):
+        if last_close_rsi > rsi_given:
+            new_row = {"close": last_close_value + ((last_close_value * 0.1 * percentage)/100)}
+        else:
+            new_row = {"close": last_close_value - ((last_close_value * 0.1 * percentage) / 100)}
+        df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
+        rsi_change = caculate_rsi(df)
+        new_close_value = round(new_row["close"], 2)
+
+        if (last_close_rsi < rsi_given < round(rsi_change.iloc[-1], 2)) or (last_close_value > rsi_given > round(rsi_change.iloc[-1], 2)):
+            break
+
+    return new_close_value
+
+
 def get_ohlcv(df, data_type):
     if len(df.index) > 7:
         return {
@@ -376,6 +396,9 @@ def get_rsi(df, data_type):
         f"{data_type}_rsi_5": 0,
     }
 
+
+def get_reverse_rsi(value, data_type):
+    pass
 
 def integrated_tool(df):
     df_expo = calculate_exponential_moving_average(df)
