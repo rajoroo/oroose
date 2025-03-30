@@ -574,7 +574,7 @@ class StockData(models.Model):
             if df_reverse_rsi:
                 setattr(self,  f"{data_type}_rev_rsi", df_reverse_rsi)
             self.save()
-            print(f"------------------{self.symbol}----------------------")
+            print(f"------------------{self.symbol}----{data_type}------------------")
         except ValueError as ve:
             print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
             print(ve)

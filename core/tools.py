@@ -181,14 +181,16 @@ def calculate_reverse_rsi(df, rsi_given=50.0):
     new_close_value = None
     for percentage in range(1, 100):
         if last_close_rsi > rsi_given:
-            new_row = {"close": last_close_value + ((last_close_value * 0.1 * percentage)/100)}
+            new_row = {"close": last_close_value - ((last_close_value * 0.1 * percentage)/100)}
         else:
-            new_row = {"close": last_close_value - ((last_close_value * 0.1 * percentage) / 100)}
+            new_row = {"close": last_close_value + ((last_close_value * 0.1 * percentage) / 100)}
         df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
         rsi_change = caculate_rsi(df)
         new_close_value = round(new_row["close"], 2)
 
-        if (last_close_rsi < rsi_given < round(rsi_change.iloc[-1], 2)) or (last_close_value > rsi_given > round(rsi_change.iloc[-1], 2)):
+        # print(last_close_rsi, rsi_given, round(rsi_change.iloc[-1], 2), last_close_value, new_close_value)
+
+        if (round(rsi_change.iloc[-1], 2) < rsi_given < last_close_rsi) or (round(rsi_change.iloc[-1], 2) > rsi_given > last_close_rsi):
             break
 
     return new_close_value
