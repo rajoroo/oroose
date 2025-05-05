@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from jrose.stock_data_fetch import (
     all_week_data_queryset,
     all_day_data_queryset,
-    all_hr_data_queryset,
+    all_hr_data_queryset, daily_potential_queryset,
 )
 from mysuru.models import StockData
 
@@ -68,3 +68,25 @@ def hr_page(request):
     }
     return render(request, "stock/hr_page.html", context)
 
+
+@login_required(login_url="/accounts/login/")
+def potential_page(request):
+    """Day stochastic and Heikin ashi crossover"""
+    stoch_data_list = daily_potential_queryset().filter(stoch_cross=True)
+    ha_data_list = daily_potential_queryset().filter(ha_cross=True)
+    to_calculate = StockData.objects.filter(is_day_fetched=False).count()
+    total_stock = StockData.objects.filter().all().count()
+
+    context = {
+        "active_page": "potential_page",
+        # Stochastic data
+        "stoch_data_list": stoch_data_list,
+        "stoch_data_count": stoch_data_list.count(),
+        # Heikinashi data
+        "ha_data_list": ha_data_list,
+        "ha_data_count": ha_data_list.count(),
+        # Total Count
+        "to_calculate": to_calculate,
+        "total_stock": total_stock,
+    }
+    return render(request, "stock/potential_page.html", context)

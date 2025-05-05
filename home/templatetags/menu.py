@@ -11,6 +11,7 @@ def show_menu_navbar(page, path):
         {"name": "week_page", "display_name": "Week"},
         {"name": "day_page", "display_name": "Day"},
         {"name": "hr_page", "display_name": "Hour"},
+        {"name": "potential_page", "display_name": "Potential"},
         {"name": "trading", "display_name": "Trading"},
         {"name": "configuration", "display_name": "Configuration"},
     ]

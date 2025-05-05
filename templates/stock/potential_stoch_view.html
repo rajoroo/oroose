@@ -1,15 +1,16 @@
+{% load static %}
 <div class="row">
     <div class="col-12 col-sm-12">
         <div class="card nifty-table">
             <div class="card-header border-bottom">
-                <h3 class="card-title mb-0">All Day Data</h3>
+                <h3 class="card-title mb-0">Stochastic</h3>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
                     <div class="pt-3 txt-rt">
-                        <span>Total - {{ total_stock }} | Remaining to calculate - {{ to_calculate }} | Stock Count - {{ all_day_data_count }}</span>
+                        <span>Total - {{ total_stock }} | Remaining to calculate - {{ to_calculate }} | Stock Count - {{ stoch_data_count }}</span>
                     </div>
-                    {% if all_day_data_list %}
+                    {% if stoch_data_list %}
                     <table class="green-table">
                         <tr>
                             <th>S.No</th>
@@ -19,22 +20,16 @@
                             <th>Stoch Black</th>
                             <th>Stoch Red</th>
                             <th>RSI</th>
-                            <th>Rev RSI 60</th>
-                            <th>Rev RSI 50</th>
-                            <th>Rev RSI 40</th>
                         </tr>
-                        {% for row in all_day_data_list %}
+                        {% for row in stoch_data_list %}
                         <tr>
                             <td>{{ forloop.counter }}</td>
                             <td>{{ row.symbol }}</td>
                             <td>{{ row.company_name }}</td>
                             <td>{{ row.day_close }}</td>
-                            <td>{{ row.day_stoch_black_0 }}</td>
+                            <td>{{ row.day_stoch_black_0 }}{% if row.day_stoch_cross_0 %}<img src="{% static 'images/one.svg' %}" width="15">{% endif %}{% if row.day_stoch_cross_1 %}<img src="{% static 'images/two.svg' %}" width="15">{% endif %}</td>
                             <td>{{ row.day_stoch_red_0 }}</td>
                             <td>{{ row.day_rsi_0 }}</td>
-                            <td>{{ row.day_rev_rsi_60 }}</td>
-                            <td>{{ row.day_rev_rsi_50 }}</td>
-                            <td>{{ row.day_rev_rsi_40 }}</td>
                         </tr>
                         {% endfor %}
                     </table>

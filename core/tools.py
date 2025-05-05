@@ -1,6 +1,10 @@
 import csv
 import io
+import math
 from datetime import datetime
+from stocktrends import Renko
+import scipy.optimize as opt
+import pandas_ta as ta
 
 import numpy as np
 import pandas as pd
@@ -174,7 +178,7 @@ def caculate_rsi(df, periods=14, ema=True):
     return df_rsi
 
 
-def calculate_reverse_rsi(df, rsi_given=50.0):
+def calculate_reverse_rsi(df, rsi_given=60.0):
     rsi_value = caculate_rsi(df)
     last_close_rsi = round(rsi_value.iloc[-1], 2)
     last_close_value = df.iloc[-1]["close"]
@@ -195,6 +199,35 @@ def calculate_reverse_rsi(df, rsi_given=50.0):
 
     return new_close_value
 
+
+def wwma(values, n):
+    """
+     J. Welles Wilder's EMA
+    """
+    return values.ewm(alpha=1/n, adjust=False).mean()
+
+def atr(df, n=21):
+    data = df.copy()
+    high = data["high"]
+    low = data["low"]
+    close = data["close"]
+    data['tr0'] = abs(high - low)
+    data['tr1'] = abs(high - close.shift())
+    data['tr2'] = abs(low - close.shift())
+    tr = data[['tr0', 'tr1', 'tr2']].max(axis=1)
+    atr = wwma(tr, n)
+    return atr
+
+
+def calculate_renko_series(data):  # Get the Renko data
+    atr_value = atr(data)
+    val = round(atr_value.iloc[-1], 2)
+    renko = Renko(data)
+    renko.brick_size = val
+    df = renko.get_ohlc_data()
+    df["ema_20"] = wma(df, "close", 20)
+    df["hh"] = df["ema_20"] - df["close"]
+    return df
 
 def get_ohlcv(df, data_type):
     if len(df.index) > 7:

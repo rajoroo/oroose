@@ -6,5 +6,6 @@ urlpatterns = [
     path("week_page", views.week_page, name="week_page"),
     path("day_page", views.day_page, name="day_page"),
     path("hr_page", views.hr_page, name="hr_page"),
+    path("potential_page", views.potential_page, name="potential_page"),
 
 ]
