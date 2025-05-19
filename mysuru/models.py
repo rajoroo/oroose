@@ -572,7 +572,7 @@ class StockData(models.Model):
             df_reverse_rsi_60 = calculate_reverse_rsi(df=df_ha, rsi_given=60.0)
             df_reverse_rsi_50 = calculate_reverse_rsi(df=df_ha, rsi_given=50.0)
             df_reverse_rsi_40 = calculate_reverse_rsi(df=df_ha, rsi_given=40.0)
-            renko_series = calculate_renko_series(df)
+            # renko_series = calculate_renko_series(df)
 
             data_ema = get_ema(df_ema, data_type)
             data_stoch = get_stochastic(df_stoch, data_type)
@@ -595,4 +595,4 @@ class StockData(models.Model):
             print(ve)
             print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 
-        return renko_series
+        return True

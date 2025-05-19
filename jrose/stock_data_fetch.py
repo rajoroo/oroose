@@ -19,7 +19,7 @@ def daily_potential_queryset():
     return (
         StockData.objects.filter(
             is_day_fetched=True,
-            day_ema_200_0__lt=F("day_ema_50_0"),
+            # day_ema_200_0__lt=F("day_ema_50_0"),
         )
         .annotate(
             day_stoch_cross_0=Case(
@@ -41,6 +41,14 @@ def daily_potential_queryset():
             stoch_cross=Case(
                 When(
                     Q(day_stoch_cross_0=True) | Q(day_stoch_cross_1=True),
+                    then=Value(True)
+                ),
+                default=Value(False),
+                output_field=BooleanField(),
+            ),
+            stoch_postive=Case(
+                When(
+                    Q(day_stoch_black_0__gt=F("day_stoch_red_0")),
                     then=Value(True)
                 ),
                 default=Value(False),
@@ -73,5 +81,6 @@ def daily_potential_queryset():
                 output_field=BooleanField(),
             ),
         )
-        .order_by("-day_stoch_black_0")
+        .order_by("day_stoch_black_0")
     )
+
