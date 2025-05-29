@@ -84,3 +84,23 @@ def daily_potential_queryset():
         .order_by("day_stoch_black_0")
     )
 
+
+def wk_rsi_greater_than_60():
+    return (
+        StockData.objects.filter(
+            is_wk_fetched=True,
+            wk_rsi_0__gt=60
+        )
+        .order_by("wk_rsi_0")
+    )
+
+
+def wk_stoch_lesser_than_50():
+    return (
+        StockData.objects.filter(
+            is_wk_fetched=True,
+            wk_stoch_red_0__lte=50,
+            wk_stoch_black_0__gt=F("wk_stoch_red_0")
+        )
+        .order_by("wk_stoch_black_0")
+    )

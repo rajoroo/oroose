@@ -7,6 +7,8 @@
 
 {% block content %}
 
+    {% include "stock/potential_rsi_above_60.html" %}
+    {% include "stock/potential_stoch_below_50.html" %}
     {% include "stock/potential_stoch_view.html" %}
     {% include "stock/potential_ha_view.html" %}
 

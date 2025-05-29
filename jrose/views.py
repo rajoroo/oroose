@@ -4,7 +4,10 @@ from django.contrib.auth.decorators import login_required
 from jrose.stock_data_fetch import (
     all_week_data_queryset,
     all_day_data_queryset,
-    all_hr_data_queryset, daily_potential_queryset,
+    all_hr_data_queryset,
+    daily_potential_queryset,
+    wk_rsi_greater_than_60,
+    wk_stoch_lesser_than_50
 )
 from mysuru.models import StockData
 
@@ -72,6 +75,8 @@ def hr_page(request):
 @login_required(login_url="/accounts/login/")
 def potential_page(request):
     """Day stochastic and Heikin ashi crossover"""
+    wk_rsi_above_60 = wk_rsi_greater_than_60()
+    wk_stoch_below_50 = wk_stoch_lesser_than_50()
     stoch_data_list = daily_potential_queryset().filter(stoch_cross=True)
     ha_data_list = daily_potential_queryset().filter(ha_cross=True)
     to_calculate = StockData.objects.filter(is_day_fetched=False).count()
@@ -79,6 +84,12 @@ def potential_page(request):
 
     context = {
         "active_page": "potential_page",
+        # Week RSI above 60
+        "wk_rsi_above_60_list": wk_rsi_above_60,
+        "wk_rsi_above_60_count": wk_rsi_above_60.count(),
+        # Week positive stoch below 50
+        "wk_stoch_below_50_list": wk_stoch_below_50,
+        "wk_stoch_below_50_count": wk_stoch_below_50.count(),
         # Stochastic data
         "stoch_data_list": stoch_data_list,
         "stoch_data_count": stoch_data_list.count(),

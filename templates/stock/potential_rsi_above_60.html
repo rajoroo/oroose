@@ -1,0 +1,41 @@
+{% load static %}
+<div class="row">
+    <div class="col-12 col-sm-12">
+        <div class="card nifty-table">
+            <div class="card-header border-bottom">
+                <h3 class="card-title mb-0">Week RSI > 60</h3>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <div class="pt-3 txt-rt">
+                        <span>Total - {{ total_stock }} | Remaining to calculate - {{ to_calculate }} | Stock Count - {{ wk_rsi_above_60_count }}</span>
+                    </div>
+                    {% if wk_rsi_above_60_list %}
+                    <table class="green-table">
+                        <tr>
+                            <th>S.No</th>
+                            <th>Symbol</th>
+                            <th>Company</th>
+                            <th>Close</th>
+                            <th>Stoch Black</th>
+                            <th>Stoch Red</th>
+                            <th>RSI</th>
+                        </tr>
+                        {% for row in wk_rsi_above_60_list %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ row.symbol }}</td>
+                            <td>{{ row.company_name }}</td>
+                            <td>{{ row.wk_close }}</td>
+                            <td>{{ row.wk_stoch_black_0 }}</td>
+                            <td>{{ row.wk_stoch_red_0 }}</td>
+                            <td>{{ row.wk_rsi_0 }}</td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
