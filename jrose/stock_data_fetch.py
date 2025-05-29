@@ -102,5 +102,15 @@ def wk_stoch_lesser_than_50():
             wk_stoch_red_0__lte=50,
             wk_stoch_black_0__gt=F("wk_stoch_red_0")
         )
+        .annotate(
+            stoch_cross=Case(
+                When(
+                    Q(day_stoch_black_0__gt=F("day_stoch_red_0")) & Q(day_stoch_red_1__gt=F("day_stoch_black_1")),
+                    then=Value(True)
+                ),
+                default=Value(False),
+                output_field=BooleanField(),
+            ),
+        )
         .order_by("wk_stoch_black_0")
     )
