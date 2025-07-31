@@ -594,5 +594,8 @@ class StockData(models.Model):
             print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
             print(ve)
             print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        except AttributeError as ae:
+            print(ae)
+
 
         return True
