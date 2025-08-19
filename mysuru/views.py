@@ -7,8 +7,6 @@ from mysuru.fetch_trend import FetchTrend
 from mysuru.models import StockData
 from datetime import datetime
 from mysuru.task import trading_m5_fetch
-from django_q.tasks import schedule
-from django_q.models import Schedule
 import arrow
 
 
@@ -148,12 +146,8 @@ def trend_page_reset_fetch(request, name):
     Parameters:
         name - model name string representation
     """
+    print("i call----")
     trend_obj = FetchTrend()
     trend_obj.trend_reset(name)
     return redirect("configuration")
 
-
-def schedule_trading_start(request):
-    # schedule("mysuru.task.trading_m5_fetch", "m5", schedule_type=Schedule.MINUTES, minutes=5)
-    schedule("mysuru.task.trading_m5_sensitive_fetch", "m15", schedule_type=Schedule.MINUTES, minutes=5)
-    return redirect("configuration")

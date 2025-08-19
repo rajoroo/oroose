@@ -2,9 +2,7 @@ import csv
 import io
 import math
 from datetime import datetime
-from stocktrends import Renko
 import scipy.optimize as opt
-import pandas_ta as ta
 
 import numpy as np
 import pandas as pd
@@ -218,16 +216,6 @@ def atr(df, n=21):
     atr = wwma(tr, n)
     return atr
 
-
-def calculate_renko_series(data):  # Get the Renko data
-    atr_value = atr(data)
-    val = round(atr_value.iloc[-1], 2)
-    renko = Renko(data)
-    renko.brick_size = val
-    df = renko.get_ohlc_data()
-    df["ema_20"] = wma(df, "close", 20)
-    df["hh"] = df["ema_20"] - df["close"]
-    return df
 
 def get_ohlcv(df, data_type):
     if len(df.index) > 7:

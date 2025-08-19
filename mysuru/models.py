@@ -17,7 +17,7 @@ from core.tools import (
     get_stochastic,
     get_heikin_ashi,
     get_rsi,
-    get_ohlcv, calculate_reverse_rsi, calculate_renko_series,
+    get_ohlcv, calculate_reverse_rsi,
 )
 
 
