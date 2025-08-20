@@ -2,7 +2,7 @@
     <h5 class="modal-title" id="exampleModalLabel">{{ title }}</h5>
 </div>
 <div class="modal-body">
-    <form method="post" action="{% url 'trend_page_upload' %}" enctype="multipart/form-data">
+    <form method="post" action="{% url 'stock_collection_upload' %}" enctype="multipart/form-data">
         <input type="file" name="file">
         <button type="submit" class="btn btn-primary">Upload</button>
     </form>

@@ -1,5 +1,5 @@
 from core.telegram_util import TelegramAlert
-from mysuru.fetch_trend import FetchTrend
+from mysuru.stock_collection import StockCollection
 from datetime import datetime
 from mysuru.models import StockData
 

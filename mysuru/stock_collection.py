@@ -3,8 +3,11 @@ import pandas as pd
 from mysuru.models import StockData
 
 
-class FetchTrend:
-    def create_trend(self, csv_file):
+class StockCollection:
+    """Stock collection create, fetch, and reset stock"""
+
+    def create(self, csv_file):
+        """Create stock data"""
         StockData.objects.all().delete()
         csv_data = io.StringIO(csv_file.read().decode("utf-8"))
         df = pd.read_csv(csv_data)
@@ -16,8 +19,17 @@ class FetchTrend:
         ]
         StockData.objects.bulk_create(stocks)
 
-    def fetch_trend_value(self, data_type):
-        """Fetch trend value"""
+    def fetch_smart_token(self):
+        """Add smart token to stock data"""
+        recs = StockData.objects.all()
+        for rec in recs:
+            rec.get_smart_token()
+
+        StockData.objects.filter(smart_token__isnull=True, smart_token_fetched=True).delete()
+        return True
+
+    def fetch(self, data_type):
+        """Fetch stock data"""
         filter_params = {f"is_{data_type}_fetched": False}
         recs = StockData.objects.filter(**filter_params)[:500]
         for rec in recs:
@@ -25,8 +37,8 @@ class FetchTrend:
 
         return True
 
-    def trend_reset(self, data_type):
-        """Fetch potential trend value"""
+    def reset(self, data_type):
+        """Reset stock data"""
         filter_params = {f"is_{data_type}_fetched": True}
         update_params = {f"is_{data_type}_fetched": False}
         recs = StockData.objects.filter(**filter_params)

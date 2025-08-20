@@ -1,4 +1,4 @@
-from mysuru.fetch_trend import FetchTrend
+from mysuru.stock_collection import StockCollection
 from django.views.decorators.csrf import csrf_exempt
 from home.forms import UploadFileForm
 from django.http import HttpResponseRedirect
@@ -8,12 +8,13 @@ from django.urls import reverse
 
 
 @csrf_exempt
-def trend_page_upload(request):
+def stock_collection_upload(request):
+    """Upload and create stock data"""
     if request.method == "POST":
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
-            trend_obj = FetchTrend()
-            trend_obj.create_trend(request.FILES["file"])
+            trend_obj = StockCollection()
+            trend_obj.create(request.FILES["file"])
             return HttpResponseRedirect(reverse("configuration"))
     else:
         form = UploadFileForm()
@@ -22,24 +23,23 @@ def trend_page_upload(request):
     return response
 
 
-def trend_page_fetch(request, name):
-    """
-    Fetch data form the API
-    Parameters:
-        name - model name string representation
-    """
-    trend_obj = FetchTrend()
-    trend_obj.fetch_trend_value(name)
+def stock_collection_fetch_smart_token(request, name):
+    """Add smart token to stock data"""
+    trend_obj = StockCollection()
+    trend_obj.fetch_smart_token()
     return redirect("configuration")
 
 
-def trend_page_reset_fetch(request, name):
-    """
-    Fetch data form the API
-    Parameters:
-        name - model name string representation
-    """
-    trend_obj = FetchTrend()
-    trend_obj.trend_reset(name)
+def stock_collection_fetch(request, name):
+    """Fetch stock data"""
+    trend_obj = StockCollection()
+    trend_obj.fetch(name)
+    return redirect("configuration")
+
+
+def stock_collection_reset(request, name):
+    """Reset stock data"""
+    trend_obj = StockCollection()
+    trend_obj.reset(name)
     return redirect("configuration")
 
