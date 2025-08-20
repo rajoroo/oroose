@@ -23,7 +23,7 @@ def stock_collection_upload(request):
     return response
 
 
-def stock_collection_fetch_smart_token(request, name):
+def stock_collection_fetch_smart_token(request):
     """Add smart token to stock data"""
     trend_obj = StockCollection()
     trend_obj.fetch_smart_token()

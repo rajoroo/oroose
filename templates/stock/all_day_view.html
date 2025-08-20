@@ -19,9 +19,6 @@
                             <th>Stoch Black</th>
                             <th>Stoch Red</th>
                             <th>RSI</th>
-                            <th>Rev RSI 60</th>
-                            <th>Rev RSI 50</th>
-                            <th>Rev RSI 40</th>
                         </tr>
                         {% for row in all_day_data_list %}
                         <tr>
@@ -32,9 +29,6 @@
                             <td>{{ row.day_stoch_black_0 }}</td>
                             <td>{{ row.day_stoch_red_0 }}</td>
                             <td>{{ row.day_rsi_0 }}</td>
-                            <td>{{ row.day_rev_rsi_60 }}</td>
-                            <td>{{ row.day_rev_rsi_50 }}</td>
-                            <td>{{ row.day_rev_rsi_40 }}</td>
                         </tr>
                         {% endfor %}
                     </table>

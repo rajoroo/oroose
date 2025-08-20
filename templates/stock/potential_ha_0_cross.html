@@ -3,14 +3,14 @@
     <div class="col-12 col-sm-12">
         <div class="card nifty-table">
             <div class="card-header border-bottom">
-                <h3 class="card-title mb-0">Heikin Ashi</h3>
+                <h3 class="card-title mb-0">Week HA 0 Cross</h3>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
                     <div class="pt-3 txt-rt">
-                        <span>Total - {{ total_stock }} | Remaining to calculate - {{ to_calculate }} | Stock Count - {{ ha_data_count }}</span>
+                        <span>Total - {{ total_stock }} | Remaining to calculate - {{ to_calculate }} | Stock Count - {{ wk_ha_0_cross_count }}</span>
                     </div>
-                    {% if ha_data_list %}
+                    {% if wk_ha_0_cross_list %}
                     <table class="green-table">
                         <tr>
                             <th>S.No</th>
@@ -21,15 +21,15 @@
                             <th>Stoch Red</th>
                             <th>RSI</th>
                         </tr>
-                        {% for row in ha_data_list %}
+                        {% for row in wk_ha_0_cross_list %}
                         <tr>
                             <td>{{ forloop.counter }}</td>
                             <td>{{ row.symbol }}</td>
                             <td>{{ row.company_name }}</td>
-                            <td>{{ row.day_close }}</td>
-                            <td>{{ row.day_stoch_black_0 }}{% if row.day_ha_cross_0 %}<img src="{% static 'images/one.svg' %}" width="15">{% endif %}{% if row.day_ha_cross_1 %}<img src="{% static 'images/two.svg' %}" width="15">{% endif %}</td>
-                            <td>{{ row.day_stoch_red_0 }}</td>
-                            <td>{{ row.day_rsi_0 }}</td>
+                            <td>{{ row.wk_close }}</td>
+                            <td>{{ row.wk_stoch_black_0 }}</td>
+                            <td>{{ row.wk_stoch_red_0 }}</td>
+                            <td>{{ row.wk_rsi_0 }}</td>
                         </tr>
                         {% endfor %}
                     </table>

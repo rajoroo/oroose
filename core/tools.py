@@ -170,28 +170,6 @@ def caculate_rsi(df, periods=14, ema=True):
     return df_rsi
 
 
-def calculate_reverse_rsi(df, rsi_given=60.0):
-    rsi_value = caculate_rsi(df)
-    last_close_rsi = round(rsi_value.iloc[-1], 2)
-    last_close_value = df.iloc[-1]["close"]
-    new_close_value = None
-    for percentage in range(1, 100):
-        if last_close_rsi > rsi_given:
-            new_row = {"close": last_close_value - ((last_close_value * 0.1 * percentage)/100)}
-        else:
-            new_row = {"close": last_close_value + ((last_close_value * 0.1 * percentage) / 100)}
-        df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
-        rsi_change = caculate_rsi(df)
-        new_close_value = round(new_row["close"], 2)
-
-        # print(last_close_rsi, rsi_given, round(rsi_change.iloc[-1], 2), last_close_value, new_close_value)
-
-        if (round(rsi_change.iloc[-1], 2) < rsi_given < last_close_rsi) or (round(rsi_change.iloc[-1], 2) > rsi_given > last_close_rsi):
-            break
-
-    return new_close_value
-
-
 def wwma(values, n):
     """
      J. Welles Wilder's EMA
@@ -219,9 +197,6 @@ def get_ohlcv(df, data_type):
             f"{data_type}_close_0": round(df.iloc[-1]["close"], 2),
             f"{data_type}_close_1": round(df.iloc[-2]["close"], 2),
             f"{data_type}_close_2": round(df.iloc[-3]["close"], 2),
-            f"{data_type}_close_3": round(df.iloc[-4]["close"], 2),
-            f"{data_type}_close_4": round(df.iloc[-5]["close"], 2),
-            f"{data_type}_close_5": round(df.iloc[-6]["close"], 2),
             f"{data_type}_high": round(df.iloc[-1]["high"], 2),
             f"{data_type}_low": round(df.iloc[-1]["low"], 2),
             f"{data_type}_volume": round(df.iloc[-1]["volume"], 2),
@@ -255,21 +230,6 @@ def get_ema(df, data_type):
             f"{data_type}_ema_20_2": round(df.iloc[-3]["ema_20"], 2),
             f"{data_type}_ema_14_2": round(df.iloc[-1]["ema_14"], 2),
             f"{data_type}_ema_5_2": round(df.iloc[-3]["ema_5"], 2),
-            f"{data_type}_ema_200_3": round(df.iloc[-4]["ema_200"], 2),
-            f"{data_type}_ema_50_3": round(df.iloc[-4]["ema_50"], 2),
-            f"{data_type}_ema_20_3": round(df.iloc[-4]["ema_20"], 2),
-            f"{data_type}_ema_14_3": round(df.iloc[-1]["ema_14"], 2),
-            f"{data_type}_ema_5_3": round(df.iloc[-4]["ema_5"], 2),
-            f"{data_type}_ema_200_4": round(df.iloc[-5]["ema_200"], 2),
-            f"{data_type}_ema_50_4": round(df.iloc[-5]["ema_50"], 2),
-            f"{data_type}_ema_20_4": round(df.iloc[-5]["ema_20"], 2),
-            f"{data_type}_ema_14_4": round(df.iloc[-1]["ema_14"], 2),
-            f"{data_type}_ema_5_4": round(df.iloc[-5]["ema_5"], 2),
-            f"{data_type}_ema_200_5": round(df.iloc[-6]["ema_200"], 2),
-            f"{data_type}_ema_50_5": round(df.iloc[-6]["ema_50"], 2),
-            f"{data_type}_ema_20_5": round(df.iloc[-6]["ema_20"], 2),
-            f"{data_type}_ema_14_5": round(df.iloc[-1]["ema_14"], 2),
-            f"{data_type}_ema_5_5": round(df.iloc[-6]["ema_5"], 2),
         }
     return {
         f"{data_type}_ema_200_0": 0,
@@ -287,21 +247,6 @@ def get_ema(df, data_type):
         f"{data_type}_ema_20_2": 0,
         f"{data_type}_ema_14_2": 0,
         f"{data_type}_ema_5_2": 0,
-        f"{data_type}_ema_200_3": 0,
-        f"{data_type}_ema_50_3": 0,
-        f"{data_type}_ema_20_3": 0,
-        f"{data_type}_ema_14_3": 0,
-        f"{data_type}_ema_5_3": 0,
-        f"{data_type}_ema_200_4": 0,
-        f"{data_type}_ema_50_4": 0,
-        f"{data_type}_ema_20_4": 0,
-        f"{data_type}_ema_14_4": 0,
-        f"{data_type}_ema_5_4": 0,
-        f"{data_type}_ema_200_5": 0,
-        f"{data_type}_ema_50_5": 0,
-        f"{data_type}_ema_20_5": 0,
-        f"{data_type}_ema_14_5": 0,
-        f"{data_type}_ema_5_5": 0,
     }
 
 
@@ -311,29 +256,17 @@ def get_stochastic(df, data_type):
             f"{data_type}_stoch_black_0": round(df.iloc[-1]["d"], 2),
             f"{data_type}_stoch_black_1": round(df.iloc[-2]["d"], 2),
             f"{data_type}_stoch_black_2": round(df.iloc[-3]["d"], 2),
-            f"{data_type}_stoch_black_3": round(df.iloc[-4]["d"], 2),
-            f"{data_type}_stoch_black_4": round(df.iloc[-5]["d"], 2),
-            f"{data_type}_stoch_black_5": round(df.iloc[-6]["d"], 2),
             f"{data_type}_stoch_red_0": round(df.iloc[-1]["k_smooth"], 2),
             f"{data_type}_stoch_red_1": round(df.iloc[-2]["k_smooth"], 2),
             f"{data_type}_stoch_red_2": round(df.iloc[-3]["k_smooth"], 2),
-            f"{data_type}_stoch_red_3": round(df.iloc[-4]["k_smooth"], 2),
-            f"{data_type}_stoch_red_4": round(df.iloc[-5]["k_smooth"], 2),
-            f"{data_type}_stoch_red_5": round(df.iloc[-6]["k_smooth"], 2),
         }
     return {
         f"{data_type}_stoch_black_0": 0,
         f"{data_type}_stoch_black_1": 0,
         f"{data_type}_stoch_black_2": 0,
-        f"{data_type}_stoch_black_3": 0,
-        f"{data_type}_stoch_black_4": 0,
-        f"{data_type}_stoch_black_5": 0,
         f"{data_type}_stoch_red_0": 0,
         f"{data_type}_stoch_red_1": 0,
         f"{data_type}_stoch_red_2": 0,
-        f"{data_type}_stoch_red_3": 0,
-        f"{data_type}_stoch_red_4": 0,
-        f"{data_type}_stoch_red_5": 0,
     }
 
 
@@ -352,18 +285,6 @@ def get_heikin_ashi(df, data_type):
             f"{data_type}_ha_high_2": round(df.iloc[-3]["high"], 2),
             f"{data_type}_ha_low_2": round(df.iloc[-3]["low"], 2),
             f"{data_type}_ha_close_2": round(df.iloc[-3]["close"], 2),
-            f"{data_type}_ha_open_3": round(df.iloc[-4]["open"], 2),
-            f"{data_type}_ha_high_3": round(df.iloc[-4]["high"], 2),
-            f"{data_type}_ha_low_3": round(df.iloc[-4]["low"], 2),
-            f"{data_type}_ha_close_3": round(df.iloc[-4]["close"], 2),
-            f"{data_type}_ha_open_4": round(df.iloc[-5]["open"], 2),
-            f"{data_type}_ha_high_4": round(df.iloc[-5]["high"], 2),
-            f"{data_type}_ha_low_4": round(df.iloc[-5]["low"], 2),
-            f"{data_type}_ha_close_4": round(df.iloc[-5]["close"], 2),
-            f"{data_type}_ha_open_5": round(df.iloc[-6]["open"], 2),
-            f"{data_type}_ha_high_5": round(df.iloc[-6]["high"], 2),
-            f"{data_type}_ha_low_5": round(df.iloc[-6]["low"], 2),
-            f"{data_type}_ha_close_5": round(df.iloc[-6]["close"], 2),
         }
 
     return {
@@ -379,18 +300,6 @@ def get_heikin_ashi(df, data_type):
         f"{data_type}_ha_high_2": 0,
         f"{data_type}_ha_low_2": 0,
         f"{data_type}_ha_close_2": 0,
-        f"{data_type}_ha_open_3": 0,
-        f"{data_type}_ha_high_3": 0,
-        f"{data_type}_ha_low_3": 0,
-        f"{data_type}_ha_close_3": 0,
-        f"{data_type}_ha_open_4": 0,
-        f"{data_type}_ha_high_4": 0,
-        f"{data_type}_ha_low_4": 0,
-        f"{data_type}_ha_close_4": 0,
-        f"{data_type}_ha_open_5": 0,
-        f"{data_type}_ha_high_5": 0,
-        f"{data_type}_ha_low_5": 0,
-        f"{data_type}_ha_close_5": 0,
     }
 
 
@@ -400,17 +309,11 @@ def get_rsi(df, data_type):
             f"{data_type}_rsi_0": round(df.iloc[-1], 2),
             f"{data_type}_rsi_1": round(df.iloc[-2], 2),
             f"{data_type}_rsi_2": round(df.iloc[-3], 2),
-            f"{data_type}_rsi_3": round(df.iloc[-4], 2),
-            f"{data_type}_rsi_4": round(df.iloc[-5], 2),
-            f"{data_type}_rsi_5": round(df.iloc[-6], 2),
         }
     return {
         f"{data_type}_rsi_0": 0,
         f"{data_type}_rsi_1": 0,
         f"{data_type}_rsi_2": 0,
-        f"{data_type}_rsi_3": 0,
-        f"{data_type}_rsi_4": 0,
-        f"{data_type}_rsi_5": 0,
     }
 
 

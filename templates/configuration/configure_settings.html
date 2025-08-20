@@ -13,8 +13,9 @@
                 <div class="card-body">
                     <div class="btn-list">
                         <button type="button" class="btn btn-primary modal_act" trigger-url="{% url 'upload_config_file' %}" data-toggle="modal" data-target="#modal_popup_area">Upload config</button>
-                        <button type="button" class="btn btn-primary modal_act" trigger-url="{% url 'stock_collection_upload' %}" data-toggle="modal" data-target="#modal_popup_area">Upload Stock</button>
                         <button type="button" class="btn btn-primary" id="pull_fh" onclick="location.href='{% url 'generate_smart_token' %}'">Generate Smart Token</button>
+                        <button type="button" class="btn btn-primary modal_act" trigger-url="{% url 'stock_collection_upload' %}" data-toggle="modal" data-target="#modal_popup_area">Upload Stock</button>
+                        <button type="button" class="btn btn-primary" id="fetch_smart_token" onclick="location.href='{% url 'stock_collection_fetch_smart_token' %}'">Fetch Smart Token</button>
                         <button type="button" class="btn btn-primary" id="reset_config" onclick="location.href='{% url 'reset_configuration' %}'">Reset Config</button>
                     </div>
                 </div>
@@ -40,9 +41,9 @@
                 <div class="card-body">
                     <div class="btn-list">
                         <a href="{% url 'stock_collection_fetch' 'wk' %}" class="btn btn-primary ser_act">Fetch Week</a>
-                        <a href="{% url 'stock_collection_reset' 'wk' %}" class="btn btn-primary ser_act">Reset Week</a>
+                        <a href="{% url 'stock_collection_reset' 'wk' %}" class="btn btn-danger ser_act">Reset Week</a>
                         <a href="{% url 'stock_collection_fetch' 'day' %}" class="btn btn-primary ser_act">Fetch Day</a>
-                        <a href="{% url 'stock_collection_reset' 'day' %}" class="btn btn-primary ser_act">Reset Day</a>
+                        <a href="{% url 'stock_collection_reset' 'day' %}" class="btn btn-danger ser_act">Reset Day</a>
                     </div>
                 </div>
             </div>

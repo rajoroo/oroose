@@ -7,14 +7,11 @@
 
 {% block content %}
 
-    {% include "stock/potential_rsi_above_60.html" %}
-    {% include "stock/potential_stoch_below_50.html" %}
-    {% include "stock/potential_stoch_view.html" %}
-    {% include "stock/potential_ha_view.html" %}
+    {% include "stock/potential_ha_0_cross.html" %}
+    {% include "stock/potential_ha_1_cross.html" %}
 
 {% endblock content %}
 
 {% block js_scripts %}
-<script src="{% static 'js/load_bengaluru.js' %}" crossorigin="anonymous"></script>
 <script src="{% static 'js/load_upload_file.js' %}" crossorigin="anonymous"></script>
 {% endblock js_scripts %}
