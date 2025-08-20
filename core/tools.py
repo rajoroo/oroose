@@ -140,6 +140,7 @@ def calculate_heikin_ashi(df):
 
     ha_df["high"] = ha_df.loc[:, ["open", "close"]].join(df["high"]).max(axis=1)
     ha_df["low"] = ha_df.loc[:, ["open", "close"]].join(df["low"]).min(axis=1)
+    ha_df["avg"] = (ha_df["open"] + ha_df["close"]) / 2
     return ha_df
 
 
@@ -277,14 +278,17 @@ def get_heikin_ashi(df, data_type):
             f"{data_type}_ha_high_0": round(df.iloc[-1]["high"], 2),
             f"{data_type}_ha_low_0": round(df.iloc[-1]["low"], 2),
             f"{data_type}_ha_close_0": round(df.iloc[-1]["close"], 2),
+            f"{data_type}_ha_avg_0": round(df.iloc[-1]["avg"], 2),
             f"{data_type}_ha_open_1": round(df.iloc[-2]["open"], 2),
             f"{data_type}_ha_high_1": round(df.iloc[-2]["high"], 2),
             f"{data_type}_ha_low_1": round(df.iloc[-2]["low"], 2),
             f"{data_type}_ha_close_1": round(df.iloc[-2]["close"], 2),
+            f"{data_type}_ha_avg_1": round(df.iloc[-2]["avg"], 2),
             f"{data_type}_ha_open_2": round(df.iloc[-3]["open"], 2),
             f"{data_type}_ha_high_2": round(df.iloc[-3]["high"], 2),
             f"{data_type}_ha_low_2": round(df.iloc[-3]["low"], 2),
             f"{data_type}_ha_close_2": round(df.iloc[-3]["close"], 2),
+            f"{data_type}_ha_avg_2": round(df.iloc[-3]["avg"], 2),
         }
 
     return {
@@ -292,14 +296,17 @@ def get_heikin_ashi(df, data_type):
         f"{data_type}_ha_high_0": 0,
         f"{data_type}_ha_low_0": 0,
         f"{data_type}_ha_close_0": 0,
+        f"{data_type}_ha_avg_0": 0,
         f"{data_type}_ha_open_1": 0,
         f"{data_type}_ha_high_1": 0,
         f"{data_type}_ha_low_1": 0,
         f"{data_type}_ha_close_1": 0,
+        f"{data_type}_ha_avg_1": 0,
         f"{data_type}_ha_open_2": 0,
         f"{data_type}_ha_high_2": 0,
         f"{data_type}_ha_low_2": 0,
         f"{data_type}_ha_close_2": 0,
+        f"{data_type}_ha_avg_2": 0,
     }
 
 

@@ -6,6 +6,9 @@ from jrose.stock_data_fetch import (
     all_day_data_queryset,
     wk_ha_0_cross,
     wk_ha_1_cross,
+    wk_close_below_ha_0_green_open,
+    wk_close_below_ha_0_red_open,
+    wk_close_above_ha_0_red_open,
 )
 from mysuru.models import StockData
 
@@ -65,6 +68,15 @@ def potential_page(request):
         # Week Heikin Ashi 1 Cross
         "wk_ha_1_cross_list": wk_ha_1_cross(),
         "wk_ha_1_cross_count": wk_ha_1_cross().count(),
+        # Week Close Below Heikin Ashi 0 Green Open
+        "wk_close_below_ha_0_green_open_list": wk_close_below_ha_0_green_open(),
+        "wk_close_below_ha_0_green_open_count": wk_close_below_ha_0_green_open().count(),
+        # Week Close Below Heikin Ashi 0 Red Open
+        "wk_close_below_ha_0_red_open_list": wk_close_below_ha_0_red_open(),
+        "wk_close_below_ha_0_red_open_count": wk_close_below_ha_0_red_open().count(),
+        # Week Close Above Heikin Ashi 0 Red Open
+        "wk_close_above_ha_0_red_open_list": wk_close_above_ha_0_red_open(),
+        "wk_close_above_ha_0_red_open_count": wk_close_above_ha_0_red_open().count(),
         # Total Count
         "to_calculate": to_calculate,
         "total_stock": total_stock,
