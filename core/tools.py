@@ -87,12 +87,6 @@ def handle_config_file(csv_file):
     ParameterConfig.objects.bulk_create(configs)
 
 
-# def wma(arr, period):
-#     kernel = np.arange(period, 0, -1)
-#     kernel = np.concatenate([np.zeros(period - 1), kernel / kernel.sum()])
-#     return np.convolve(arr, kernel, 'same')
-
-
 def wma(df, column="close", n=20):
 
     weights = np.arange(1, n + 1)

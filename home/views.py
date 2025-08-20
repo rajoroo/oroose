@@ -33,7 +33,7 @@ def upload_config_file(request):
             return HttpResponseRedirect(reverse("configuration"))
     else:
         form = UploadFileForm()
-    rendered = render_to_string("configuration/file_upload.html", {"form": form, "title": "Upload Configs"})
+    rendered = render_to_string("configuration/config_file_upload.html", {"form": form, "title": "Upload Configs"})
     response = HttpResponse(rendered)
     return response
 

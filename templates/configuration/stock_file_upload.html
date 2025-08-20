@@ -1,0 +1,16 @@
+<div class="modal-header">
+    <h5 class="modal-title" id="exampleModalLabel">{{ title }}</h5>
+</div>
+<div class="modal-body">
+    <form method="post" action="{% url 'trend_page_upload' %}" enctype="multipart/form-data">
+        <input type="file" name="file">
+        <button type="submit" class="btn btn-primary">Upload</button>
+    </form>
+
+    {% if uploaded_file_url %}
+        <p>File uploaded at: <a href="{{ uploaded_file_url }}">{{ uploaded_file_url }}</a></p>
+    {% endif %}
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+</div>
