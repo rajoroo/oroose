@@ -4,9 +4,6 @@ from django.contrib.auth.decorators import login_required
 from jrose.stock_data_fetch import (
     all_week_data_queryset,
     all_day_data_queryset,
-    daily_potential_queryset,
-    wk_rsi_greater_than_60,
-    wk_stoch_lesser_than_50,
     wk_ha_0_cross,
     wk_ha_1_cross,
 )

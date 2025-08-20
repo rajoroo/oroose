@@ -122,32 +122,3 @@ def wk_ha_1_cross():
     )
 
 
-def wk_rsi_greater_than_60():
-    return (
-        StockData.objects.filter(
-            is_wk_fetched=True,
-            wk_rsi_0__gt=60
-        )
-        .order_by("wk_rsi_0")
-    )
-
-
-def wk_stoch_lesser_than_50():
-    return (
-        StockData.objects.filter(
-            is_wk_fetched=True,
-            wk_stoch_red_0__lte=50,
-            wk_stoch_black_0__gt=F("wk_stoch_red_0")
-        )
-        .annotate(
-            stoch_cross=Case(
-                When(
-                    Q(day_stoch_black_0__gt=F("day_stoch_red_0")) & Q(day_stoch_red_1__gt=F("day_stoch_black_1")),
-                    then=Value(True)
-                ),
-                default=Value(False),
-                output_field=BooleanField(),
-            ),
-        )
-        .order_by("wk_stoch_black_0")
-    )
