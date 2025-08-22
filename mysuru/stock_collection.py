@@ -44,4 +44,3 @@ class StockCollection:
         recs = StockData.objects.filter(**filter_params)
         recs.update(**update_params)
         return True
-

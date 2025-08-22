@@ -239,5 +239,4 @@ class StockData(models.Model):
         except AttributeError as ae:
             print(ae)
 
-
         return True

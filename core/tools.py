@@ -173,19 +173,20 @@ def caculate_rsi(df, periods=14, ema=True):
 
 def wwma(values, n):
     """
-     J. Welles Wilder's EMA
+    J. Welles Wilder's EMA
     """
-    return values.ewm(alpha=1/n, adjust=False).mean()
+    return values.ewm(alpha=1 / n, adjust=False).mean()
+
 
 def atr(df, n=21):
     data = df.copy()
     high = data["high"]
     low = data["low"]
     close = data["close"]
-    data['tr0'] = abs(high - low)
-    data['tr1'] = abs(high - close.shift())
-    data['tr2'] = abs(low - close.shift())
-    tr = data[['tr0', 'tr1', 'tr2']].max(axis=1)
+    data["tr0"] = abs(high - low)
+    data["tr1"] = abs(high - close.shift())
+    data["tr2"] = abs(low - close.shift())
+    tr = data[["tr0", "tr1", "tr2"]].max(axis=1)
     atr = wwma(tr, n)
     return atr
 
@@ -326,6 +327,7 @@ def get_rsi(df, data_type):
 
 def get_reverse_rsi(value, data_type):
     pass
+
 
 def integrated_tool(df):
     df_expo = calculate_exponential_moving_average(df)

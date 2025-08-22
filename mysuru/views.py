@@ -42,4 +42,3 @@ def stock_collection_reset(request, name):
     trend_obj = StockCollection()
     trend_obj.reset(name)
     return redirect("configuration")
-
