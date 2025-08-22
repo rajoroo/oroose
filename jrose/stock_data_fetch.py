@@ -76,3 +76,19 @@ def wk_close_above_ha_0_red_open():
         )
         .filter(wk_ha_close_0__lt=F("wk_ha_open_0"), wk_close_0__gt=F("wk_ha_open_0"))
     )
+
+
+def wk_ha_0_green():
+    return (
+        StockData.objects.filter(is_wk_fetched=True,)
+        .filter(wk_ha_close_0__gt=F("wk_ha_open_0"))
+        .order_by("wk_rsi_0")
+    )
+
+
+def wk_ha_0_red():
+    return (
+        StockData.objects.filter(is_wk_fetched=True,)
+        .filter(wk_ha_close_0__lt=F("wk_ha_open_0"))
+        .order_by("wk_rsi_0")
+    )

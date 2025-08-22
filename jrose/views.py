@@ -9,6 +9,8 @@ from jrose.stock_data_fetch import (
     wk_close_below_ha_0_green_open,
     wk_close_below_ha_0_red_open,
     wk_close_above_ha_0_red_open,
+    wk_ha_0_green,
+    wk_ha_0_red,
 )
 from mysuru.models import StockData
 
@@ -57,7 +59,7 @@ def day_page(request):
 def potential_page(request):
     """Day stochastic and Heikin ashi crossover"""
 
-    to_calculate = StockData.objects.filter(is_day_fetched=False).count()
+    to_calculate = StockData.objects.filter(is_wk_fetched=False).count()
     total_stock = StockData.objects.filter().all().count()
 
     context = {
@@ -84,3 +86,23 @@ def potential_page(request):
     return render(request, "stock/potential_page.html", context)
 
 
+@login_required(login_url="/accounts/login/")
+def heikinashi_page(request):
+    """Day stochastic and Heikin ashi crossover"""
+
+    to_calculate = StockData.objects.filter(is_wk_fetched=False).count()
+    total_stock = StockData.objects.filter().all().count()
+
+    context = {
+        "active_page": "heikinashi_page",
+        # Heikin Ashi 0 Green
+        "wk_ha_0_green_list": wk_ha_0_green(),
+        "wk_ha_0_green_count": wk_ha_0_green().count(),
+        # Heikin Ashi O Red
+        "wk_ha_0_red_list": wk_ha_0_red(),
+        "wk_ha_0_red_count": wk_ha_0_red().count(),
+        # Total Count
+        "to_calculate": to_calculate,
+        "total_stock": total_stock,
+    }
+    return render(request, "stock/heikinashi_page.html", context)

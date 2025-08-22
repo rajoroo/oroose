@@ -1,0 +1,17 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block title %}
+<title>{{title}}</title>
+{% endblock title %}
+
+{% block content %}
+
+    {% include "stock/wk_ha_0_green.html" %}
+    {% include "stock/wk_ha_0_red.html" %}
+
+{% endblock content %}
+
+{% block js_scripts %}
+<script src="{% static 'js/load_upload_file.js' %}" crossorigin="anonymous"></script>
+{% endblock js_scripts %}

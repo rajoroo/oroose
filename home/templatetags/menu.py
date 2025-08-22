@@ -11,6 +11,7 @@ def show_menu_navbar(page, path):
         {"name": "week_page", "display_name": "Week"},
         {"name": "day_page", "display_name": "Day"},
         {"name": "potential_page", "display_name": "Potential"},
+        {"name": "heikinashi_page", "display_name": "Heikin-Ashi"},
         {"name": "configuration", "display_name": "Configuration"},
     ]
 
