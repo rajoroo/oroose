@@ -7,13 +7,12 @@ register = template.Library()
 def show_menu_navbar(page, path):
 
     menu = [
-        {"name": "home", "display_name": "Home"},
-        {"name": "week_page", "display_name": "Week"},
-        {"name": "day_page", "display_name": "Day"},
-        {"name": "potential_page", "display_name": "Potential"},
-        {"name": "heikinashi_page", "display_name": "Heikin-Ashi"},
-        {"name": "stochastic_page", "display_name": "Stochastic"},
-        {"name": "configuration", "display_name": "Configuration"},
+        {"name": "week_page", "icon": "fas fa-calendar-week", "display_name": "Week"},
+        {"name": "day_page", "icon": "fas fa-calendar-day", "display_name": "Day"},
+        {"name": "potential_page", "icon": "fas fa-th-list", "display_name": "Potential"},
+        {"name": "heikinashi_page", "icon": "fas fa-chart-bar", "display_name": "Heikin-Ashi"},
+        {"name": "stochastic_page", "icon": "fas fa-chart-line", "display_name": "Stochastic"},
+        {"name": "configuration", "icon": "fas fa-toolbox", "display_name": "Configuration"},
     ]
 
     for item in menu:

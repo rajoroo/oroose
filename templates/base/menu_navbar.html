@@ -1,3 +1,5 @@
 {% for rec in menu %}
-<a href="{% url rec.name %}" class="dashboard-nav-item {{ rec.status }}">{{ rec.display_name }}</a>
+<a href="{% url rec.name %}" class="dashboard-nav-item {{ rec.status }}">
+    <i class="{{rec.icon}}"></i>{{ rec.display_name }}
+</a>
 {% endfor %}

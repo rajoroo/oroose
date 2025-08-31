@@ -17,11 +17,12 @@ from django.contrib import admin
 from django.urls import include, path
 
 from home import views
+from jrose.views import week_page
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("accounts/", include("django.contrib.auth.urls")),
-    path("", views.home_page, name="home"),
+    path("", week_page, name="home"),
     path("mysuru/", include("mysuru.urls")),
     path("trading_monitor/", include("jrose.urls")),
     path("configuration_page/", views.configuration_page, name="configuration"),

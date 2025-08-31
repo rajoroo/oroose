@@ -27,6 +27,7 @@ def week_page(request):
     total_stock = StockData.objects.filter().all().count()
 
     context = {
+        "title": "Week",
         "active_page": "week_page",
         # All Week data
         "all_week_data_list": all_week_data,
@@ -47,6 +48,7 @@ def day_page(request):
     total_stock = StockData.objects.filter().all().count()
 
     context = {
+        "title": "Day",
         "active_page": "day_page",
         # All Day data
         "all_day_data_list": all_day_data,
@@ -66,6 +68,7 @@ def potential_page(request):
     total_stock = StockData.objects.filter().all().count()
 
     context = {
+        "title": "Potential",
         "active_page": "potential_page",
         # Week Heikin Ashi 0 Cross
         "wk_ha_0_cross_list": wk_ha_0_cross(),
@@ -97,6 +100,7 @@ def heikinashi_page(request):
     total_stock = StockData.objects.filter().all().count()
 
     context = {
+        "title": "Heikin-Ashi",
         "active_page": "heikinashi_page",
         # Heikin Ashi 0 Green
         "wk_ha_0_green_list": wk_ha_0_green(),
@@ -119,6 +123,7 @@ def stochastic_page(request):
     total_stock = StockData.objects.filter().all().count()
 
     context = {
+        "title": "Stochastic",
         "active_page": "stochastic_page",
         # Stochastic Cross 0
         "stoch_cross_0_list": stoch_cross_0(),
