@@ -9,6 +9,7 @@ from core.models import ParameterConfig
 from core.smart_util import SmartTool
 from core.tools import get_param_config_tag, handle_config_file, save_param_config_tag
 from home.forms import UploadFileForm
+from django.contrib.auth import logout
 
 
 @login_required(login_url="/accounts/login/")
@@ -58,3 +59,9 @@ def reset_configuration(request):
     """Reset configurations"""
     ParameterConfig.objects.all().delete()
     return redirect("configuration")
+
+
+@login_required
+def oroose_logout(request):
+    logout(request)
+    return redirect("home")

@@ -29,4 +29,5 @@ urlpatterns = [
     path("config_file_upload/", views.upload_config_file, name="upload_config_file"),
     path("generate_smart_token/", views.generate_smart_token, name="generate_smart_token"),
     path("reset_configuration/", views.reset_configuration, name="reset_configuration"),
+    path('logout', views.oroose_logout, name='logout'),
 ]
