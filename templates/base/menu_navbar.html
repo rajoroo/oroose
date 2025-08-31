@@ -1,5 +1,3 @@
 {% for rec in menu %}
-<li class="nav-item col-6 col-md-auto">
-    <a class="nav-link p-2 {{ rec.status }}" href="{% url rec.name %}">{{ rec.display_name }}</a>
-</li>
+<a href="{% url rec.name %}" class="dashboard-nav-item {{ rec.status }}">{{ rec.display_name }}</a>
 {% endfor %}
