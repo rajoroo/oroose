@@ -85,3 +85,42 @@ def wk_ha_0_red():
         .filter(wk_ha_close_0__lt=F("wk_ha_open_0"))
         .order_by("wk_rsi_0")
     )
+
+
+def stoch_cross_0():
+    return (
+        StockData.objects.filter(
+            is_day_fetched=True,
+        )
+        .filter(
+            day_stoch_black_0__gt=F("day_stoch_red_0"),
+            day_stoch_red_1__gt=F("day_stoch_black_1")
+        )
+        .order_by("day_stoch_black_0")
+    )
+
+
+def stoch_cross_1():
+    return (
+        StockData.objects.filter(
+            is_day_fetched=True,
+        )
+        .filter(
+            day_stoch_black_1__gt=F("day_stoch_red_1"),
+            day_stoch_red_2__gt=F("day_stoch_black_2")
+        )
+        .order_by("day_stoch_black_1")
+    )
+
+
+def stoch_cross_above_20():
+    return (
+        StockData.objects.filter(
+            is_day_fetched=True,
+        )
+        .filter(
+            day_stoch_black_0__gt=F("day_stoch_red_0"),
+        )
+        .filter(day_stoch_black_0__gt=20, day_stoch_black_1__lt=20)
+        .order_by("day_stoch_black_0")
+    )

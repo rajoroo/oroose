@@ -7,4 +7,5 @@ urlpatterns = [
     path("day_page", views.day_page, name="day_page"),
     path("potential_page", views.potential_page, name="potential_page"),
     path("heikinashi_page", views.heikinashi_page, name="heikinashi_page"),
+    path("stochastic_page", views.stochastic_page, name="stochastic_page"),
 ]
